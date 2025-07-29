@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 360 360">
+  <path fill="#000" fill-rule="evenodd" stroke="#fff" stroke-width="40" paint-order="stroke"
+    d="M180 40l122 70l0 140l-122 70l-122-70l0-140l122-70zm0 40l88 50l0 40l-122-70l34 -20zm0 200l88-50l0-20l-159-90l-17 10l0 20l122 70l-34 20l-88-50l0 40l88 50z" />
+
+  <path fill="oklch(70% 0.1 140)"
+    d="M180 80l88 50l0 40l-122-70l34 -20zm0 200l88-50l0-20l-159-90l-17 10l0 20l122 70l-34 20l-88-50l0 40l88 50z" />
+</svg>
