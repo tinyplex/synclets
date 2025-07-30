@@ -1,16 +1,21 @@
 import type {
-  Connector,
-  Synchronizer,
-  Transport,
-  createSynchronizer as createSynchronizerDecl,
-} from './@types/index.js';
+  ConnectorClass,
+  Synclet,
+  TransportClass,
+} from './@types/index.d.ts';
+// import {Connector} from './connectors/Connector.ts';
 
-export const createSynchronizer: typeof createSynchronizerDecl = (
-  _connector: Connector,
-  _transport: Transport,
-): Synchronizer => {
+import {ValueConnector} from './connector/ValueConnector.ts';
+import {MemoryTransport} from './transport/MemoryTransport.ts';
+
+export const createSynclet = (
+  _connector: ConnectorClass,
+  _transport: TransportClass,
+): Synclet => {
   return {
     start: () => {},
     stop: () => {},
   };
 };
+
+createSynclet(ValueConnector, MemoryTransport);

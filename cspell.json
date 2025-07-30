@@ -1,12 +1,20 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp",
+    "*.svg",
+    "*.snap",
+    "*.json",
+    "*.test.ts"
+  ],
   "words": [
     "atrule",
     "attw",
     "onwarn",
     "Pearce",
-    "synclets",
     "Shantell",
+    "Synclet",
+    "synclets",
     "tinybase",
     "tinybasejs",
     "tinydocs"

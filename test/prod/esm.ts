@@ -1,26 +1,20 @@
-import type {
+import type {Synclet, Synclet as SyncletDebug} from 'synclets';
+import {createSynclet, createSynclet as createSyncletDebug} from 'synclets';
+
+class Connector {
+  async connect() {}
+  async disconnect() {}
+}
+
+class Transport {
+  async send() {}
+  async receive() {
+    return {};
+  }
+}
+
+const _synchronizer: Synclet = createSynclet(Connector, Transport);
+const _synchronizerDebug: SyncletDebug = createSyncletDebug(
   Connector,
-  Synchronizer,
-  Synchronizer as SynchronizerDebug,
   Transport,
-} from 'synclets';
-import {
-  createSynchronizer,
-  createSynchronizer as createSynchronizerDebug,
-} from 'synclets';
-
-const connector: Connector = {
-  connect: async () => {},
-  disconnect: async () => {},
-};
-
-const transport: Transport = {
-  send: async () => {},
-  receive: async () => ({}),
-};
-
-const _synchronizer: Synchronizer = createSynchronizer(connector, transport);
-const _synchronizerDebug: SynchronizerDebug = createSynchronizerDebug(
-  connector,
-  transport,
 );

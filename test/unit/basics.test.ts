@@ -1,14 +1,16 @@
-import {createSynchronizer} from 'synclets';
+import {createSynclet} from 'synclets';
 
 test('basic test', () => {
-  const connector = {
-    connect: async () => {},
-    disconnect: async () => {},
-  };
-  const transport = {
-    send: async () => {},
-    receive: async () => ({}),
-  };
-  createSynchronizer(connector, transport);
+  class Connector {
+    async connect() {}
+    async disconnect() {}
+  }
+  class Transport {
+    async send() {}
+    async receive() {
+      return {};
+    }
+  }
+  createSynclet(Connector, Transport);
   expect(true).toBe(true);
 });
