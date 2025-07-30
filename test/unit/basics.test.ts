@@ -1,11 +1,23 @@
 import {Synclet} from 'synclets';
-import {Connector} from 'synclets/connector';
-import {Transport} from 'synclets/transport';
+import {ValueConnector} from 'synclets/connector/value';
+import {MemoryTransport} from 'synclets/transport/memory';
 
-test('basic test', () => {
-  class MyConnector extends Connector {}
-  class MyTransport extends Transport {}
+test('constructor', () => {
+  const synclet = new Synclet(ValueConnector, MemoryTransport);
+  expect(synclet).toBeInstanceOf(Synclet);
+});
 
-  const _synclet = new Synclet(MyConnector, MyTransport);
-  expect(_synclet).toBeInstanceOf(Synclet);
+test('value via memory', async () => {
+  class TestValueConnector extends ValueConnector {
+    private value: string = '';
+    async getValue() {
+      return this.value;
+    }
+    async setValue(value: string) {
+      this.value = value;
+    }
+  }
+
+  const synclet1 = new Synclet(TestValueConnector, MemoryTransport);
+  const synclet2 = new Synclet(TestValueConnector, MemoryTransport);
 });

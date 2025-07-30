@@ -3,7 +3,7 @@
 import type {Timestamp, Value} from '../../index.d.ts';
 import type {Connector} from '../index.d.ts';
 
-export interface ValueConnector extends Connector {
+export class ValueConnector extends Connector {
   isValueConnector: true;
   getValue(): Promise<Value>;
   setValue(value: Value): Promise<void>;
