@@ -1,4 +1,4 @@
-import {createSynclet} from 'synclets';
+import {Synclet} from 'synclets';
 import {Connector} from 'synclets/connector';
 import {Transport} from 'synclets/transport';
 
@@ -6,6 +6,6 @@ test('basic test', () => {
   class MyConnector extends Connector {}
   class MyTransport extends Transport {}
 
-  createSynclet(MyConnector, MyTransport);
-  expect(true).toBe(true);
+  const _synclet = new Synclet(MyConnector, MyTransport);
+  expect(_synclet).toBeInstanceOf(Synclet);
 });

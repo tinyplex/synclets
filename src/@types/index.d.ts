@@ -9,12 +9,8 @@ export type Timestamp = string;
 
 export type Value = string | number | boolean | null | DeletedValue;
 
-export interface Synclet {
-  start(): void;
-  stop(): void;
+export class Synclet {
+  constructor(connectorClass: ConnectorClass, transportClass: TransportClass);
+  start(): Promise<void>;
+  stop(): Promise<void>;
 }
-
-export function createSynclet(
-  connector: ConnectorClass,
-  transport: TransportClass,
-): Synclet;
