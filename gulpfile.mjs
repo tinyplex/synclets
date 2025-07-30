@@ -585,13 +585,13 @@ export const testUnit = async () => {
   await test(['test/unit'], {coverageMode: 1, serialTests: true});
 };
 export const testUnitFast = async () => {
-  await test(['test/unit/core'], {coverageMode: 1});
+  await test(['test/unit'], {coverageMode: 1});
 };
 export const testUnitCountAsserts = async () => {
   await test(['test/unit'], {coverageMode: 2, countAsserts: true});
 };
 export const testUnitSaveCoverage = async () => {
-  await test(['test/unit/core'], {coverageMode: 3});
+  await test(['test/unit'], {coverageMode: 3});
 };
 export const compileAndTestUnit = series(compileForTest, testUnit);
 export const compileAndTestUnitFast = series(compileForTest, testUnitFast);

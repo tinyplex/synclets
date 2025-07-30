@@ -1,33 +1,31 @@
 import {Synclet} from 'synclets';
+import {BaseConnector} from 'synclets/connector';
 import {ValueConnector} from 'synclets/connector/value';
+import {BaseTransport} from 'synclets/transport';
 import {MemoryTransport} from 'synclets/transport/memory';
 
 test('constructor', () => {
-  const synclet = new Synclet(ValueConnector, MemoryTransport);
+  const synclet = new Synclet(BaseConnector, BaseTransport);
   expect(synclet).toBeInstanceOf(Synclet);
 });
 
-test('value via memory', async () => {
-  class TestValueConnector extends ValueConnector {
-    private value: string = '';
-    async getValue() {
-      return this.value;
-    }
-    async setValue(value: string) {
-      this.value = value;
-    }
-    getUnderlyingValue() {
-      return this.value;
-    }
-    setUnderlyingValue(value: string) {
-      this.value = value;
-    }
-  }
+test('accessors 1', () => {
+  const synclet = new Synclet(BaseConnector, BaseTransport);
+  expect(synclet.getConnector()).toBeInstanceOf(BaseConnector);
+  expect(synclet.getTransport()).toBeInstanceOf(BaseTransport);
+});
 
-  const synclet1 = new Synclet(TestValueConnector, MemoryTransport);
-  const synclet2 = new Synclet(TestValueConnector, MemoryTransport);
+test('accessors 2', () => {
+  const synclet = new Synclet(ValueConnector, MemoryTransport);
+  expect(synclet.getConnector()).toBeInstanceOf(ValueConnector);
+  expect(synclet.getTransport()).toBeInstanceOf(MemoryTransport);
+});
 
-  expect(synclet1.getConnector().getUnderlyingValue()).toEqual(
-    synclet2.getConnector().getUnderlyingValue(),
-  );
+test('start & stop', async () => {
+  const synclet = new Synclet(BaseConnector, BaseTransport);
+  expect(synclet.getStarted()).toBe(false);
+  await synclet.start();
+  expect(synclet.getStarted()).toBe(true);
+  await synclet.stop();
+  expect(synclet.getStarted()).toBe(false);
 });
