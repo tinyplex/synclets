@@ -19,15 +19,24 @@ export class Synclet<
     this.transport = new transportClass();
   }
 
-  getConnector = (): Connector => this.connector;
+  getConnector(): Connector {
+    return this.connector;
+  }
 
-  getTransport = (): Transport => this.transport;
+  getTransport(): Transport {
+    return this.transport;
+  }
 
-  getStarted = (): boolean => this.started;
+  getStarted(): boolean {
+    return this.started;
+  }
 
   async start() {
+    await this.connector.connect();
+    // await this.transport.connect();
     this.started = true;
   }
+
   async stop() {
     this.started = false;
   }

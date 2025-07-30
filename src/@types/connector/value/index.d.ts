@@ -1,7 +1,6 @@
 /// connector-value
 
-import type {Timestamp, Value} from '../../index.d.ts';
-import type {BaseConnector} from '../index.d.ts';
+import type {BaseConnector, Timestamp, Value} from '../index.d.ts';
 
 export class ValueConnector extends BaseConnector {
   isValueConnector: true;

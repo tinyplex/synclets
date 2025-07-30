@@ -1,5 +1,5 @@
+import type {Timestamp, Value} from '../../@types/connector/index.d.ts';
 import type {ValueConnector as ValueConnectorDecl} from '../../@types/connector/value/index.d.ts';
-import type {Timestamp, Value} from '../../@types/index.d.ts';
 import {BaseConnector} from '../index.ts';
 
 export class ValueConnector
