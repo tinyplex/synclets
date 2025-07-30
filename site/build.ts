@@ -7,8 +7,8 @@ import {Page} from './ui/Page.tsx';
 import {Readme} from './ui/Readme.tsx';
 
 const GROUPS = ['Interfaces', '*', 'Type aliases'];
-const CATEGORIES = ['Manager', 'Task', 'TaskRun', 'Category', '*'];
-const REFLECTIONS = [/^get/, /^set/, '*', /^del/];
+const CATEGORIES = ['*'];
+const REFLECTIONS = ['synclets', /^get/, /^set/, '*', /^del/];
 
 export const build = async (
   outDir: string,
@@ -59,7 +59,13 @@ export const build = async (
   docs.publish();
 };
 
-const addApi = (docs: Docs): Docs => docs.addApiFile('dist/@types/index.d.ts');
+const addApi = (docs: Docs): Docs =>
+  docs
+    .addApiFile('dist/@types/index.d.ts')
+    .addApiFile('dist/@types/connector/index.d.ts')
+    .addApiFile('dist/@types/connector/value/index.d.ts')
+    .addApiFile('dist/@types/transport/index.d.ts')
+    .addApiFile('dist/@types/transport/memory/index.d.ts');
 
 const addPages = (docs: Docs): Docs =>
   docs.addRootMarkdownFile('site/home/index.md').addMarkdownDir('site/guides');

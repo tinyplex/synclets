@@ -11,7 +11,13 @@ import {basename, dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
 
 const UTF8 = 'utf-8';
-const TEST_MODULES = [''];
+const TEST_MODULES = [
+  '',
+  'connector',
+  'connector/value',
+  'transport',
+  'transport/memory',
+];
 const ALL_MODULES = [...TEST_MODULES];
 const ALL_DEFINITIONS = [...ALL_MODULES];
 

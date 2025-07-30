@@ -1,16 +1,11 @@
 import {createSynclet} from 'synclets';
+import {Connector} from 'synclets/connector';
+import {Transport} from 'synclets/transport';
 
 test('basic test', () => {
-  class Connector {
-    async connect() {}
-    async disconnect() {}
-  }
-  class Transport {
-    async send() {}
-    async receive() {
-      return {};
-    }
-  }
-  createSynclet(Connector, Transport);
+  class MyConnector extends Connector {}
+  class MyTransport extends Transport {}
+
+  createSynclet(MyConnector, MyTransport);
   expect(true).toBe(true);
 });
