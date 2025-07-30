@@ -1,7 +1,10 @@
-import type {Transport as MemoryTransportDecl} from '../../@types/transport/index.d.ts';
-import {Transport} from '../index.ts';
+import type {MemoryTransport as MemoryTransportDecl} from '../../@types/transport/memory/index.d.ts';
+import {BaseTransport} from '../index.ts';
 
-export class MemoryTransport extends Transport implements MemoryTransportDecl {
+export class MemoryTransport
+  extends BaseTransport
+  implements MemoryTransportDecl
+{
   async send(): Promise<void> {}
 
   async receive(): Promise<any> {}

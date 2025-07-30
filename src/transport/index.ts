@@ -1,6 +1,6 @@
-import type {Transport as TransportDecl} from '../@types/transport/index.d.ts';
+import type {BaseTransport as BaseTransportDecl} from '../@types/transport/index.d.ts';
 
-export class Transport implements TransportDecl {
+export class BaseTransport implements BaseTransportDecl {
   async send(): Promise<void> {}
 
   async receive(): Promise<any> {}

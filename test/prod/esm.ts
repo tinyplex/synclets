@@ -1,9 +1,14 @@
 import {Synclet, Synclet as SyncletDebug} from 'synclets';
-import {Connector} from 'synclets/connector';
-import {Transport} from 'synclets/transport';
+import {BaseConnector} from 'synclets/connector';
+import {BaseTransport} from 'synclets/transport';
 
-class MyConnector extends Connector {}
-class MyTransport extends Transport {}
+class MyConnector extends BaseConnector {}
+class MyTransport extends BaseTransport {}
 
-const _synclet: Synclet = new Synclet(MyConnector, MyTransport);
-const _syncletDebug: SyncletDebug = new SyncletDebug(MyConnector, MyTransport);
+const synclet = new Synclet(MyConnector, MyTransport);
+synclet.getConnector();
+synclet.getTransport();
+
+const syncletDebug = new SyncletDebug(MyConnector, MyTransport);
+syncletDebug.getConnector();
+syncletDebug.getTransport();

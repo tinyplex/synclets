@@ -1,9 +1,9 @@
 /// connector-value
 
 import type {Timestamp, Value} from '../../index.d.ts';
-import type {Connector} from '../index.d.ts';
+import type {BaseConnector} from '../index.d.ts';
 
-export class ValueConnector extends Connector {
+export class ValueConnector extends BaseConnector {
   isValueConnector: true;
   getValue(): Promise<Value>;
   setValue(value: Value): Promise<void>;

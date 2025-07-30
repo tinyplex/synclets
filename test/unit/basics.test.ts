@@ -16,8 +16,18 @@ test('value via memory', async () => {
     async setValue(value: string) {
       this.value = value;
     }
+    getUnderlyingValue() {
+      return this.value;
+    }
+    setUnderlyingValue(value: string) {
+      this.value = value;
+    }
   }
 
   const synclet1 = new Synclet(TestValueConnector, MemoryTransport);
   const synclet2 = new Synclet(TestValueConnector, MemoryTransport);
+
+  expect(synclet1.getConnector().getUnderlyingValue()).toEqual(
+    synclet2.getConnector().getUnderlyingValue(),
+  );
 });

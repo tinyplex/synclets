@@ -1,8 +1,6 @@
 /// connector
 
-export class Connector {
+export class BaseConnector {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
 }
-
-export type ConnectorClass<C extends Connector = Connector> = new () => C;

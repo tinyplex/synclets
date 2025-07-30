@@ -1,6 +1,6 @@
-import type {Connector as ConnectorDecl} from '../@types/connector/index.d.ts';
+import type {BaseConnector as BaseConnectorDecl} from '../@types/connector/index.d.ts';
 
-export class Connector implements ConnectorDecl {
+export class BaseConnector implements BaseConnectorDecl {
   async connect(): Promise<void> {}
 
   async disconnect(): Promise<void> {}
