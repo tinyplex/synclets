@@ -1,10 +1,8 @@
-import type {Timestamp, Value} from '../../@types/connector/index.d.ts';
 import type {ValueConnector as ValueConnectorDecl} from '../../@types/connector/value/index.d.ts';
-import {Connector} from '../index.ts';
+import type {Timestamp, Value} from '../../@types/index.js';
+import {Connector} from '../../index.ts';
 
 export class ValueConnector extends Connector implements ValueConnectorDecl {
-  isValueConnector = true as const;
-
   async getValue(): Promise<Value> {
     return null;
   }

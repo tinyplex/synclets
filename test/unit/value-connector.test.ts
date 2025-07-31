@@ -19,8 +19,8 @@ test('value sync', async () => {
     }
   }
 
-  const synclet1 = new Synclet(TestValueConnector, MemoryTransport);
-  const synclet2 = new Synclet(TestValueConnector, MemoryTransport);
+  const synclet1 = new Synclet(new TestValueConnector(), new MemoryTransport());
+  const synclet2 = new Synclet(new TestValueConnector(), new MemoryTransport());
 
   expect(synclet1.getConnector().getUnderlyingValue()).toEqual(
     synclet2.getConnector().getUnderlyingValue(),

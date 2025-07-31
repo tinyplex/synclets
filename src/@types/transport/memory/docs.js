@@ -1,7 +1,7 @@
 /**
- * The transport-memory module.
+ * The transport/memory module.
  * @packageDocumentation
- * @module transport-memory
+ * @module transport/memory
  * @since v0.0.0
  */
-/// transport-memory
+/// transport/memory

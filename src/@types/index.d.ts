@@ -1,7 +1,32 @@
 /// synclets
 
-import type {Connector as BaseConnector} from './connector/index.d.ts';
-import type {Transport as BaseTransport} from './transport/index.d.ts';
+export type DeletedValue = '\uFFFC';
+
+export type Timestamp = string;
+
+export type Value = string | number | boolean | null | DeletedValue;
+
+export class Connector {
+  getConnected(): boolean;
+
+  connect(): Promise<void>;
+
+  disconnect(): Promise<void>;
+}
+type BaseConnector = Connector;
+
+export class Transport {
+  getConnected(): boolean;
+
+  connect(): Promise<void>;
+
+  disconnect(): Promise<void>;
+
+  send(data: any): Promise<void>;
+
+  receive(): Promise<any>;
+}
+type BaseTransport = Transport;
 
 export class Synclet<
   Connector extends BaseConnector,

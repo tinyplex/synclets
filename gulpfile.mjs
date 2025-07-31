@@ -7,17 +7,11 @@ import {
   writeFileSync,
 } from 'fs';
 import gulp from 'gulp';
-import {basename, dirname, join, resolve} from 'path';
+import {dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
 
 const UTF8 = 'utf-8';
-const TEST_MODULES = [
-  '',
-  'connector',
-  'connector/value',
-  'transport',
-  'transport/memory',
-];
+const TEST_MODULES = ['', 'common', 'connector/value', 'transport/memory'];
 const ALL_MODULES = [...TEST_MODULES];
 const ALL_DEFINITIONS = [...ALL_MODULES];
 
@@ -28,14 +22,19 @@ const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 
-const getGlobalName = (module) =>
-  'Synclets' +
-  (module == ''
-    ? ''
-    : basename(module)
-        .split('-')
-        .map((part) => part[0].toUpperCase() + part.slice(1).toLowerCase())
-        .join(''));
+const EXTERNAL = [];
+const MODULE_REPLACEMENTS = {};
+const MIN_MODULE_REPLACEMENTS = {};
+ALL_MODULES.forEach((module) => {
+  const fullModule = `synclets${module ? '/' : ''}${module}`;
+  const minModule = fullModule + '/min';
+  EXTERNAL.push(fullModule, minModule);
+  for (let n = 0; n < 6; n++) {
+    const path = `..${'/..'.repeat(n)}${module ? '/' : ''}${module}/index.ts`;
+    MODULE_REPLACEMENTS[path] = fullModule;
+    MIN_MODULE_REPLACEMENTS[path] = minModule;
+  }
+});
 
 const getPrettierConfig = async () => ({
   ...JSON.parse(await promises.readFile('.prettierrc', UTF8)),
@@ -390,8 +389,8 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   }
 
   const inputConfig = {
-    external: [],
     input: inputFile,
+    external: EXTERNAL,
     plugins: [
       esbuild({
         target: 'esnext',
@@ -402,11 +401,18 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
         '/*!': '\n/*',
         delimiters: ['', ''],
         preventAssignment: true,
+        ...(min ? MIN_MODULE_REPLACEMENTS : MODULE_REPLACEMENTS),
       }),
       shebang(),
       image(),
       min
-        ? [terser({toplevel: true, compress: {unsafe: true, passes: 3}})]
+        ? [
+            terser({
+              toplevel: true,
+              compress: {unsafe: true, passes: 3},
+              mangle: {properties: {regex: /.*/}},
+            }),
+          ]
         : prettierPlugin(await getPrettierConfig()),
     ],
     onwarn: (warning, warn) => {
@@ -424,7 +430,6 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
     entryFileNames: index,
     format: 'esm',
     interop: 'default',
-    name: getGlobalName(module),
   };
 
   await (await rollup(inputConfig)).write(outputConfig);
@@ -459,7 +464,12 @@ const test = async (
         ? {
             collectCoverage: true,
             coverageProvider: 'babel',
-            collectCoverageFrom: [`${DIST_DIR}/index.js`],
+            collectCoverageFrom: [
+              `${DIST_DIR}/index.js`,
+              `${DIST_DIR}/common/index.js`,
+              `${DIST_DIR}/connector/value/index.js`,
+              `${DIST_DIR}/transport/memory/index.js`,
+            ],
             coverageReporters: ['text-summary']
               .concat(coverageMode > 1 ? ['json-summary'] : [])
               .concat(coverageMode > 2 ? ['lcov'] : []),

@@ -1,15 +1,21 @@
-import type {Connector as ConnectorDecl} from '../@types/connector/index.d.ts';
+import type {Transport as TransportDecl} from '../@types/index.js';
 
-export class Connector implements ConnectorDecl {
+export class Transport implements TransportDecl {
   private connected: boolean = false;
 
   getConnected(): boolean {
     return this.connected;
   }
+
   async connect(): Promise<void> {
     this.connected = true;
   }
+
   async disconnect(): Promise<void> {
     this.connected = false;
   }
+
+  async send(): Promise<void> {}
+
+  async receive(): Promise<any> {}
 }
