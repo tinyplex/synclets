@@ -1,4 +1,4 @@
-import type {Connector, Synclet, Transport} from '../@types/index.d.ts';
+import type {Connector, Synclet, Transport} from '@synclets/@types';
 
 export type ProtectedConnector<C extends Connector = Connector> = C & {
   attachToSynclet: (synclet: Synclet) => void;

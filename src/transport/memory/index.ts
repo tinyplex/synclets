@@ -1,12 +1,6 @@
-import type {MemoryTransport as MemoryTransportDecl} from '../../@types/transport/memory/index.d.ts';
-import {
-  getUniqueId,
-  mapDel,
-  mapEnsure,
-  mapNew,
-  mapSet,
-} from '../../common/index.ts';
-import {Transport} from '../../index.ts';
+import {Transport} from '@synclets';
+import type {MemoryTransport as MemoryTransportDecl} from '@synclets/@types/transport/memory';
+import {getUniqueId, mapDel, mapEnsure, mapNew, mapSet} from '@synclets/utils';
 
 const clientPools: Map<string, Map<string, MemoryTransport>> = mapNew();
 
@@ -18,10 +12,6 @@ export class MemoryTransport extends Transport implements MemoryTransportDecl {
     super();
     this.#clientId = getUniqueId();
     this.#poolId = poolId;
-  }
-
-  foo(): string {
-    return 'FOO';
   }
 
   async connect(): Promise<void> {

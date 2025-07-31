@@ -12,6 +12,13 @@
     "types": ["node"],
     "composite": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@synclets": ["./index.ts"],
+      "@synclets/*": ["./*/index.ts"],
+      "@synclets/@types": ["./@types/index.d.ts"],
+      "@synclets/@types/*": ["./@types/*/index.d.ts"]
+    }
   }
 }

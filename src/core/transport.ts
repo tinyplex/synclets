@@ -1,5 +1,5 @@
-import type {Synclet, Transport as TransportDecl} from '../@types/index.d.ts';
-import {errorNew} from '../common/index.ts';
+import type {Synclet, Transport as TransportDecl} from '@synclets/@types';
+import {errorNew} from '@synclets/utils';
 import type {ProtectedTransport} from './protected.d.ts';
 
 export class Transport implements ProtectedTransport<TransportDecl> {

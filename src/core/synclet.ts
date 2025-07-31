@@ -2,7 +2,7 @@ import type {
   Connector as BaseConnector,
   Transport as BaseTransport,
   Synclet as SyncletDecl,
-} from '../@types/index.js';
+} from '@synclets/@types';
 import type {ProtectedConnector, ProtectedTransport} from './protected.d.ts';
 
 export class Synclet<

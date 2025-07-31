@@ -1,5 +1,5 @@
-import type {Connector as ConnectorDecl, Synclet} from '../@types/index.js';
-import {errorNew} from '../common/index.ts';
+import type {Connector as ConnectorDecl, Synclet} from '@synclets/@types';
+import {errorNew} from '@synclets/utils';
 import type {ProtectedConnector} from './protected.d.ts';
 
 export class Connector implements ProtectedConnector<ConnectorDecl> {

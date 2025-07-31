@@ -11,7 +11,7 @@ import {dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
 
 const UTF8 = 'utf-8';
-const TEST_MODULES = ['', 'common', 'connector/value', 'transport/memory'];
+const TEST_MODULES = ['', 'utils', 'connector/value', 'transport/memory'];
 const ALL_MODULES = [...TEST_MODULES];
 const ALL_DEFINITIONS = [...ALL_MODULES];
 
@@ -27,13 +27,11 @@ const MODULE_REPLACEMENTS = {};
 const MIN_MODULE_REPLACEMENTS = {};
 ALL_MODULES.forEach((module) => {
   const fullModule = `synclets${module ? '/' : ''}${module}`;
-  const minModule = fullModule + '/min';
+  const minModule = `synclets/min${module ? '/' : ''}${module}`;
   EXTERNAL.push(fullModule, minModule);
-  for (let n = 0; n < 6; n++) {
-    const path = `..${'/..'.repeat(n)}${module ? '/' : ''}${module}/index.ts`;
-    MODULE_REPLACEMENTS[path] = fullModule;
-    MIN_MODULE_REPLACEMENTS[path] = minModule;
-  }
+  const path = `@synclets${module ? '/' : ''}${module}`;
+  MODULE_REPLACEMENTS[path] = fullModule;
+  MIN_MODULE_REPLACEMENTS[path] = minModule;
 });
 
 const getPrettierConfig = async () => ({

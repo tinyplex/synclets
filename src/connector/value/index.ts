@@ -1,6 +1,6 @@
-import type {ValueConnector as ValueConnectorDecl} from '../../@types/connector/value/index.d.ts';
-import type {Timestamp, Value} from '../../@types/index.js';
-import {Connector} from '../../index.ts';
+import {Connector} from '@synclets';
+import type {Timestamp, Value} from '@synclets/@types';
+import type {ValueConnector as ValueConnectorDecl} from '@synclets/@types/connector/value';
 
 export class ValueConnector extends Connector implements ValueConnectorDecl {
   async getValue(): Promise<Value> {

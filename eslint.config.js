@@ -30,7 +30,10 @@ export default tsLint.config(
   {
     settings: {
       react: {version: 'detect'},
-      'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},
+      'import/resolver': {
+        typescript: {},
+        node: {extensions: ['.js', '.jsx', '.ts', '.tsx']},
+      },
       'import/core-modules': ['expo-sqlite'],
     },
 
@@ -72,10 +75,8 @@ export default tsLint.config(
         2,
         {
           ignore: [
+            '^@.*',
             '^\\./generated/client$',
-            '^custom-remote-handlers$',
-            '^electric-sql/(client/model|notifiers|wa-sqlite)$',
-            '^cloudflare:workers$',
             'eslint/config',
             'typescript-eslint',
           ],
