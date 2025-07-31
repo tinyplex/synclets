@@ -13,10 +13,14 @@ export class Synclet<
     connectorClass: Class<Connector>,
     transportClass: Class<Transport>,
   );
+
   getConnector(): Connector;
+
   getTransport(): Transport;
 
   getStarted(): boolean;
+
   start(): Promise<void>;
+
   stop(): Promise<void>;
 }

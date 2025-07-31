@@ -24,8 +24,16 @@ test('accessors 2', () => {
 test('start & stop', async () => {
   const synclet = new Synclet(BaseConnector, BaseTransport);
   expect(synclet.getStarted()).toBe(false);
+  expect(synclet.getConnector().getConnected()).toEqual(false);
+  expect(synclet.getTransport().getConnected()).toEqual(false);
+
   await synclet.start();
-  expect(synclet.getStarted()).toBe(true);
+  expect(synclet.getStarted()).toEqual(true);
+  expect(synclet.getConnector().getConnected()).toEqual(true);
+  expect(synclet.getTransport().getConnected()).toEqual(true);
+
   await synclet.stop();
-  expect(synclet.getStarted()).toBe(false);
+  expect(synclet.getStarted()).toEqual(false);
+  expect(synclet.getConnector().getConnected()).toEqual(false);
+  expect(synclet.getTransport().getConnected()).toEqual(false);
 });

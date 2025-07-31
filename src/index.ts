@@ -33,11 +33,13 @@ export class Synclet<
 
   async start() {
     await this.connector.connect();
-    // await this.transport.connect();
+    await this.transport.connect();
     this.started = true;
   }
 
   async stop() {
+    await this.connector.disconnect();
+    await this.transport.disconnect();
     this.started = false;
   }
 }

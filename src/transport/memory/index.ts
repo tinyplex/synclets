@@ -5,6 +5,10 @@ export class MemoryTransport
   extends BaseTransport
   implements MemoryTransportDecl
 {
+  async connect(): Promise<void> {}
+
+  async disconnect(): Promise<void> {}
+
   async send(): Promise<void> {}
 
   async receive(): Promise<any> {}
