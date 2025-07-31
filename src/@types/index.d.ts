@@ -1,18 +1,13 @@
 /// synclets
 
-import type {BaseConnector} from './connector/index.d.ts';
-import type {BaseTransport} from './transport/index.d.ts';
-
-export type Class<C> = new (...args: any[]) => C;
+import type {Connector as BaseConnector} from './connector/index.d.ts';
+import type {Transport as BaseTransport} from './transport/index.d.ts';
 
 export class Synclet<
   Connector extends BaseConnector,
   Transport extends BaseTransport,
 > {
-  constructor(
-    connectorClass: Class<Connector>,
-    transportClass: Class<Transport>,
-  );
+  constructor(connector: Connector, transport: Transport);
 
   getConnector(): Connector;
 

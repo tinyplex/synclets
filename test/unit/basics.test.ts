@@ -1,39 +1,39 @@
 import {Synclet} from 'synclets';
-import {BaseConnector} from 'synclets/connector';
-import {ValueConnector} from 'synclets/connector/value';
-import {BaseTransport} from 'synclets/transport';
-import {MemoryTransport} from 'synclets/transport/memory';
+import {Connector} from 'synclets/connector';
+import {Transport} from 'synclets/transport';
+
+let connector: Connector;
+let transport: Transport;
+
+beforeEach(() => {
+  connector = new Connector();
+  transport = new Transport();
+});
 
 test('constructor', () => {
-  const synclet = new Synclet(BaseConnector, BaseTransport);
+  const synclet = new Synclet(new Connector(), new Transport());
   expect(synclet).toBeInstanceOf(Synclet);
 });
 
-test('accessors 1', () => {
-  const synclet = new Synclet(BaseConnector, BaseTransport);
-  expect(synclet.getConnector()).toBeInstanceOf(BaseConnector);
-  expect(synclet.getTransport()).toBeInstanceOf(BaseTransport);
-});
-
-test('accessors 2', () => {
-  const synclet = new Synclet(ValueConnector, MemoryTransport);
-  expect(synclet.getConnector()).toBeInstanceOf(ValueConnector);
-  expect(synclet.getTransport()).toBeInstanceOf(MemoryTransport);
+test('accessors', () => {
+  const synclet = new Synclet(connector, transport);
+  expect(synclet.getConnector()).toBe(connector);
+  expect(synclet.getTransport()).toBe(transport);
 });
 
 test('start & stop', async () => {
-  const synclet = new Synclet(BaseConnector, BaseTransport);
-  expect(synclet.getStarted()).toBe(false);
-  expect(synclet.getConnector().getConnected()).toEqual(false);
-  expect(synclet.getTransport().getConnected()).toEqual(false);
+  const synclet1 = new Synclet(connector, transport);
+  expect(synclet1.getStarted()).toEqual(false);
+  expect(synclet1.getConnector().getConnected()).toEqual(false);
+  expect(synclet1.getTransport().getConnected()).toEqual(false);
 
-  await synclet.start();
-  expect(synclet.getStarted()).toEqual(true);
-  expect(synclet.getConnector().getConnected()).toEqual(true);
-  expect(synclet.getTransport().getConnected()).toEqual(true);
+  await synclet1.start();
+  expect(synclet1.getStarted()).toEqual(true);
+  expect(synclet1.getConnector().getConnected()).toEqual(true);
+  expect(synclet1.getTransport().getConnected()).toEqual(true);
 
-  await synclet.stop();
-  expect(synclet.getStarted()).toEqual(false);
-  expect(synclet.getConnector().getConnected()).toEqual(false);
-  expect(synclet.getTransport().getConnected()).toEqual(false);
+  await synclet1.stop();
+  expect(synclet1.getStarted()).toEqual(false);
+  expect(synclet1.getConnector().getConnected()).toEqual(false);
+  expect(synclet1.getTransport().getConnected()).toEqual(false);
 });

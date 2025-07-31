@@ -1,6 +1,6 @@
 /// transport
 
-export class BaseTransport {
+export class Transport {
   getConnected(): boolean;
 
   connect(): Promise<void>;

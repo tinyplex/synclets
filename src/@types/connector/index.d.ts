@@ -6,7 +6,7 @@ export type Timestamp = string;
 
 export type Value = string | number | boolean | null | DeletedValue;
 
-export class BaseConnector {
+export class Connector {
   getConnected(): boolean;
 
   connect(): Promise<void>;

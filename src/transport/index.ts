@@ -1,6 +1,6 @@
-import type {BaseTransport as BaseTransportDecl} from '../@types/transport/index.d.ts';
+import type {Transport as TransportDecl} from '../@types/transport/index.d.ts';
 
-export class BaseTransport implements BaseTransportDecl {
+export class Transport implements TransportDecl {
   private connected: boolean = false;
 
   getConnected(): boolean {
