@@ -29,8 +29,8 @@ export class Transport {
 type BaseTransport = Transport;
 
 export class Synclet<
-  Connector extends BaseConnector,
-  Transport extends BaseTransport,
+  Connector extends BaseConnector = BaseConnector,
+  Transport extends BaseTransport = BaseTransport,
 > {
   constructor(connector: Connector, transport: Transport);
 

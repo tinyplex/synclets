@@ -13,6 +13,20 @@ test('constructor', () => {
   expect(synclet).toBeInstanceOf(Synclet);
 });
 
+test('error on reassigning connector', () => {
+  new Synclet(connector, transport);
+  expect(() => {
+    new Synclet(connector, new Transport());
+  }).toThrow('Connector is already attached to a Synclet');
+});
+
+test('error on reassigning transport', () => {
+  new Synclet(connector, transport);
+  expect(() => {
+    new Synclet(new Connector(), transport);
+  }).toThrow('Transport is already attached to a Synclet');
+});
+
 test('accessors', () => {
   const synclet = new Synclet(connector, transport);
   expect(synclet.getConnector()).toBe(connector);

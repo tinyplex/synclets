@@ -3,27 +3,31 @@ import type {
   Transport as BaseTransport,
   Synclet as SyncletDecl,
 } from '../@types/index.js';
+import type {ProtectedConnector, ProtectedTransport} from './protected.d.ts';
 
 export class Synclet<
-  Connector extends BaseConnector,
-  Transport extends BaseTransport,
+  Connector extends BaseConnector = BaseConnector,
+  Transport extends BaseTransport = BaseTransport,
 > implements SyncletDecl<Connector, Transport>
 {
-  #connector: Connector;
-  #transport: Transport;
+  #connector: ProtectedConnector<Connector>;
+  #transport: ProtectedTransport<Transport>;
   #started: boolean = false;
 
   constructor(connector: Connector, transport: Transport) {
-    this.#connector = connector;
-    this.#transport = transport;
+    this.#connector = connector as ProtectedConnector<Connector>;
+    this.#connector.attachToSynclet(this);
+
+    this.#transport = transport as ProtectedTransport<Transport>;
+    this.#transport.attachToSynclet(this);
   }
 
   getConnector(): Connector {
-    return this.#connector;
+    return this.#connector as Connector;
   }
 
   getTransport(): Transport {
-    return this.#transport;
+    return this.#transport as Transport;
   }
 
   getStarted(): boolean {
