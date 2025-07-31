@@ -11,11 +11,13 @@ import {Transport} from '../../index.ts';
 const clientPools: Map<string, Map<string, MemoryTransport>> = mapNew();
 
 export class MemoryTransport extends Transport implements MemoryTransportDecl {
-  private clientId: string;
+  #clientId: string;
+  #poolId: string;
 
   constructor(private poolId: string = 'default') {
     super();
-    this.clientId = getUniqueId();
+    this.#clientId = getUniqueId();
+    this.#poolId = poolId;
   }
 
   foo(): string {
@@ -23,11 +25,11 @@ export class MemoryTransport extends Transport implements MemoryTransportDecl {
   }
 
   async connect(): Promise<void> {
-    mapSet(mapEnsure(clientPools, this.poolId, mapNew), this.clientId, this);
+    mapSet(mapEnsure(clientPools, this.#poolId, mapNew), this.#clientId, this);
   }
 
   async disconnect(): Promise<void> {
-    mapDel(mapEnsure(clientPools, this.poolId, mapNew), this.clientId);
+    mapDel(mapEnsure(clientPools, this.#poolId, mapNew), this.#clientId);
   }
 
   async send(): Promise<void> {}
@@ -35,6 +37,6 @@ export class MemoryTransport extends Transport implements MemoryTransportDecl {
   async receive(): Promise<any> {}
 
   getClientId(): string {
-    return this.clientId;
+    return this.#clientId;
   }
 }

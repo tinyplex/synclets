@@ -9,34 +9,36 @@ export class Synclet<
   Transport extends BaseTransport,
 > implements SyncletDecl<Connector, Transport>
 {
-  private started: boolean = false;
+  #connector: Connector;
+  #transport: Transport;
+  #started: boolean = false;
 
-  constructor(
-    private connector: Connector,
-    private transport: Transport,
-  ) {}
+  constructor(connector: Connector, transport: Transport) {
+    this.#connector = connector;
+    this.#transport = transport;
+  }
 
   getConnector(): Connector {
-    return this.connector;
+    return this.#connector;
   }
 
   getTransport(): Transport {
-    return this.transport;
+    return this.#transport;
   }
 
   getStarted(): boolean {
-    return this.started;
+    return this.#started;
   }
 
   async start() {
-    await this.connector.connect();
-    await this.transport.connect();
-    this.started = true;
+    await this.#connector.connect();
+    await this.#transport.connect();
+    this.#started = true;
   }
 
   async stop() {
-    await this.connector.disconnect();
-    await this.transport.disconnect();
-    this.started = false;
+    await this.#connector.disconnect();
+    await this.#transport.disconnect();
+    this.#started = false;
   }
 }

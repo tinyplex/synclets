@@ -1,18 +1,18 @@
 import type {Transport as TransportDecl} from '../@types/index.js';
 
 export class Transport implements TransportDecl {
-  private connected: boolean = false;
+  #connected: boolean = false;
 
   getConnected(): boolean {
-    return this.connected;
+    return this.#connected;
   }
 
   async connect(): Promise<void> {
-    this.connected = true;
+    this.#connected = true;
   }
 
   async disconnect(): Promise<void> {
-    this.connected = false;
+    this.#connected = false;
   }
 
   async send(): Promise<void> {}

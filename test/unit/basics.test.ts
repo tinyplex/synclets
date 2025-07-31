@@ -1,6 +1,4 @@
-import {Synclet} from 'synclets';
-import {Connector} from 'synclets/connector';
-import {Transport} from 'synclets/transport';
+import {Connector, Synclet, Transport} from 'synclets';
 
 let connector: Connector;
 let transport: Transport;
