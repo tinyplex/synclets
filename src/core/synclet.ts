@@ -1,7 +1,6 @@
 import type {
   Address,
-  Connector as BaseConnector,
-  Transport as BaseTransport,
+  createSynclet as createSyncletDecl,
 } from '@synclets/@types';
 import type {
   ProtectedConnector,
@@ -9,70 +8,59 @@ import type {
   ProtectedTransport,
 } from './protected.d.ts';
 
-export class Synclet<
-  Connector extends BaseConnector = BaseConnector,
-  Transport extends BaseTransport = BaseTransport,
-> implements ProtectedSynclet<Connector, Transport>
-{
-  #connector: ProtectedConnector<Connector>;
-  #transport: ProtectedTransport<Transport>;
-  #started: boolean = false;
+export const createSynclet: typeof createSyncletDecl = ((
+  connector: ProtectedConnector,
+  transport: ProtectedTransport,
+): ProtectedSynclet => {
+  let started = false;
 
-  constructor(connector: Connector, transport: Transport) {
-    this.#connector = connector as ProtectedConnector<Connector>;
-    this.#connector.attachToSynclet(this);
+  const getStarted = () => started;
 
-    this.#transport = transport as ProtectedTransport<Transport>;
-    this.#transport.attachToSynclet(this);
-  }
+  const start = async () => {
+    await connector.connect(changed);
+    await transport.connect(receive);
+    started = true;
+    await changed([]);
+  };
 
-  getConnector(): Connector {
-    return this.#connector as Connector;
-  }
+  const stop = async () => {
+    await connector.disconnect();
+    await transport.disconnect();
+    started = false;
+  };
 
-  getTransport(): Transport {
-    return this.#transport as Transport;
-  }
-
-  getStarted(): boolean {
-    return this.#started;
-  }
-
-  async start() {
-    await this.#transport.connect();
-    await this.#connector.connect();
-    this.#started = true;
-
-    await this.sync([]);
-  }
-
-  async stop() {
-    await this.#connector.disconnect();
-    await this.#transport.disconnect();
-    this.#started = false;
-  }
-
-  // ---
-
-  async sync(address: Address): Promise<void> {
-    if (!this.#started) {
+  const changed = async (address: Address) => {
+    if (!started) {
       return;
     }
-    await this.#transport.send(
+    await transport.send(
       JSON.stringify({
         address,
-        node: await this.#connector.getNode(address),
+        node: await connector.getNode(address),
       }),
     );
-  }
+  };
 
-  async receive(message: string): Promise<void> {
-    if (!this.#started) {
+  const receive = async (message: string) => {
+    if (!started) {
       return;
     }
     const {address, node} = JSON.parse(message);
     if (address && node) {
-      await this.#connector.setNode(address, node);
+      await connector.setNode(address, node);
     }
-  }
-}
+  };
+
+  const synclet: ProtectedSynclet = {
+    __brand: 'Synclet',
+    getStarted,
+    start,
+    stop,
+    changed,
+    receive,
+  };
+
+  connector.attachToSynclet(synclet);
+  transport.attachToSynclet(synclet);
+  return synclet;
+}) as any;

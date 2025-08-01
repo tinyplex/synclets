@@ -1,17 +1,32 @@
-import type {Address, Connector, Synclet, Transport} from '@synclets/@types';
+import type {
+  Address,
+  Connector,
+  Synclet,
+  Timestamp,
+  Transport,
+  Value,
+} from '@synclets/@types';
 
-export type ProtectedConnector<C extends Connector = Connector> = C & {
+export interface ProtectedConnector extends Connector {
   attachToSynclet: (synclet: ProtectedSynclet) => void;
-};
+  connect(change: (address: Address) => Promise<void>): Promise<void>;
+  disconnect(): Promise<void>;
+  getConnected(): boolean;
+  getNode(address: Address): Promise<Value>;
+  getNodeTimestamp(address: Address): Promise<Timestamp>;
+  setNode(address: Address, value: Value): Promise<void>;
+  setNodeTimestamp(address: Address, timestamp: Timestamp): Promise<void>;
+}
 
-export type ProtectedTransport<T extends Transport = Transport> = T & {
+export interface ProtectedTransport extends Transport {
   attachToSynclet: (synclet: ProtectedSynclet) => void;
-};
+  connect: (receive: (message: string) => Promise<void>) => Promise<void>;
+  disconnect: () => Promise<void>;
+  getConnected: () => boolean;
+  send: (message: string) => Promise<void>;
+}
 
-export type ProtectedSynclet<
-  C extends Connector = Connector,
-  T extends Transport = Transport,
-> = Synclet<C, T> & {
-  sync: (address: Address) => Promise<void>;
+export interface ProtectedSynclet extends Synclet {
+  changed: (address: Address) => Promise<void>;
   receive(message: string): Promise<void>;
-};
+}

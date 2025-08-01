@@ -408,7 +408,6 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
             terser({
               toplevel: true,
               compress: {unsafe: true, passes: 3},
-              mangle: {properties: {regex: /^#/}},
             }),
           ]
         : prettierPlugin(await getPrettierConfig()),

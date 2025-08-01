@@ -1,42 +1,41 @@
-import {Connector} from '@synclets';
-import type {Address, Timestamp, Value} from '@synclets/@types';
-import type {ValueConnector as ValueConnectorDecl} from '@synclets/@types/connector/value';
+import {createConnector} from '@synclets';
+import type {Address, Connector, Timestamp, Value} from '@synclets/@types';
+import type {createValueConnector as createValueConnectorDecl} from '@synclets/@types/connector/value';
 
-export class ValueConnector extends Connector implements ValueConnectorDecl {
-  async getNode(_address: Address): Promise<Value> {
-    return this.getValue();
-  }
+export const createValueConnector: typeof createValueConnectorDecl = ({
+  connect: connectImpl,
+  getValue,
+  getValueTimestamp,
+  setValue,
+  setValueTimestamp,
+}: {
+  connect?: (change: () => Promise<void>) => Promise<void>;
+  getValue?: () => Promise<Value>;
+  getValueTimestamp?: () => Promise<Timestamp>;
+  setValue?: (value: Value) => Promise<void>;
+  setValueTimestamp?: (timestamp: Timestamp) => Promise<void>;
+} = {}): Connector => {
+  const connect = async (change: (address: Address) => Promise<void>) =>
+    await connectImpl?.(() => change([]));
 
-  async getNodeTimestamp(_address: Address): Promise<Timestamp> {
-    return this.getValueTimestamp();
-  }
+  const getNode = async (): Promise<Value> => (await getValue?.()) ?? null;
 
-  async setNode(_address: Address, value: Value): Promise<void> {
-    this.setValue(value);
-  }
+  const getNodeTimestamp = async (): Promise<Timestamp> =>
+    (await getValueTimestamp?.()) ?? '';
 
-  async setNodeTimestamp(
+  const setNode = async (_address: Address, value: Value): Promise<void> =>
+    await setValue?.(value);
+
+  const setNodeTimestamp = async (
     _address: Address,
     timestamp: Timestamp,
-  ): Promise<void> {
-    this.setValueTimestamp(timestamp);
-  }
+  ): Promise<void> => await setValueTimestamp?.(timestamp);
 
-  // ---
-
-  async valueChanged(): Promise<void> {
-    await this.nodeChanged([]);
-  }
-
-  async getValue(): Promise<Value> {
-    return null;
-  }
-
-  async setValue(_value: Value): Promise<void> {}
-
-  async getValueTimestamp(): Promise<Timestamp> {
-    return '';
-  }
-
-  async setValueTimestamp(_timestamp: Timestamp): Promise<void> {}
-}
+  return createConnector({
+    connect,
+    getNode,
+    getNodeTimestamp,
+    setNode,
+    setNodeTimestamp,
+  });
+};

@@ -1,5 +1,6 @@
-import {Transport} from '@synclets';
-import type {MemoryTransport as MemoryTransportDecl} from '@synclets/@types/transport/memory';
+import {createTransport} from '@synclets';
+import type {Transport} from '@synclets/@types';
+import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/transport/memory';
 import {
   getUniqueId,
   mapDel,
@@ -10,37 +11,33 @@ import {
   mapSet,
 } from '@synclets/utils';
 
-const clientPools: Map<string, Map<string, MemoryTransport>> = mapNew();
+const clientPools: Map<
+  string,
+  Map<string, (message: string) => Promise<void>>
+> = mapNew();
 
-export class MemoryTransport extends Transport implements MemoryTransportDecl {
-  #id: string;
-  #poolId: string;
+export const createMemoryTransport: typeof createMemoryTransportDecl = (
+  poolId = 'default',
+): Transport => {
+  const id = getUniqueId();
 
-  constructor(private poolId: string = 'default') {
-    super();
-    this.#id = getUniqueId();
-    this.#poolId = poolId;
-  }
+  const connect = async (
+    receive: (message: string) => Promise<void>,
+  ): Promise<void> => {
+    mapSet(mapEnsure(clientPools, poolId, mapNew), id, receive);
+  };
 
-  async connect(): Promise<void> {
-    mapSet(mapEnsure(clientPools, this.#poolId, mapNew), this.#id, this);
-  }
+  const disconnect = async (): Promise<void> => {
+    mapDel(mapEnsure(clientPools, poolId, mapNew), id);
+  };
 
-  async disconnect(): Promise<void> {
-    mapDel(mapEnsure(clientPools, this.#poolId, mapNew), this.#id);
-  }
-
-  async send(message: string): Promise<void> {
-    // eslint-disable-next-line no-console
-    console.log(this.#id, 'sent', message);
-    mapForEach(mapGet(clientPools, this.#poolId), (id, transport) => {
-      if (id !== this.#id) {
-        transport.receive(message);
+  const send = async (message: string): Promise<void> => {
+    mapForEach(mapGet(clientPools, poolId), (clientId, receive) => {
+      if (clientId !== id) {
+        receive(message);
       }
     });
-  }
+  };
 
-  getClientId(): string {
-    return this.#id;
-  }
-}
+  return createTransport({connect, disconnect, send});
+};

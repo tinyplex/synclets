@@ -1,3 +1,3 @@
-export {Connector} from './connector.ts';
-export {Synclet} from './synclet.ts';
-export {Transport} from './transport.ts';
+export * from './connector.ts';
+export * from './synclet.ts';
+export * from './transport.ts';
