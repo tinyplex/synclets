@@ -1,10 +1,10 @@
-import type {Synclet, Transport as TransportDecl} from '@synclets/@types';
+import type {Transport as TransportDecl} from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
-import type {ProtectedTransport} from './protected.d.ts';
+import type {ProtectedSynclet, ProtectedTransport} from './protected.d.ts';
 
 export class Transport implements ProtectedTransport<TransportDecl> {
   #connected: boolean = false;
-  #synclet: Synclet | undefined;
+  #synclet: ProtectedSynclet | undefined;
 
   getConnected(): boolean {
     return this.#connected;
@@ -18,13 +18,15 @@ export class Transport implements ProtectedTransport<TransportDecl> {
     this.#connected = false;
   }
 
-  async send(): Promise<void> {}
+  async send(_message: string): Promise<void> {}
 
-  async receive(): Promise<any> {}
+  async receive(message: string): Promise<any> {
+    await this.#synclet?.receive(message);
+  }
 
   // ---
 
-  attachToSynclet(synclet: Synclet) {
+  attachToSynclet(synclet: ProtectedSynclet) {
     if (this.#synclet) {
       errorNew('Transport is already attached to a Synclet');
     }

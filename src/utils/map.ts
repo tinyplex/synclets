@@ -29,3 +29,8 @@ export const mapEnsure = <Key, Value>(
   }
   return mapGet(map, key) as Value;
 };
+
+export const mapForEach = <Key, Value>(
+  map: Map<Key, Value> | undefined,
+  cb: (key: Key, value: Value) => void,
+): void => map?.forEach((value, key) => cb(key, value));

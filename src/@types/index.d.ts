@@ -6,12 +6,24 @@ export type Timestamp = string;
 
 export type Value = string | number | boolean | null | DeletedValue;
 
+export type Address = string[];
+
 export class Connector {
   getConnected(): boolean;
 
   connect(): Promise<void>;
 
   disconnect(): Promise<void>;
+
+  nodeChanged(address: Address): Promise<void>;
+
+  getNode(address: Address): Promise<Value>;
+
+  getNodeTimestamp(address: Address): Promise<Timestamp>;
+
+  setNode(address: Address, value: Value): Promise<void>;
+
+  setNodeTimestamp(address: Address, timestamp: Timestamp): Promise<void>;
 }
 type BaseConnector = Connector;
 
@@ -22,9 +34,9 @@ export class Transport {
 
   disconnect(): Promise<void>;
 
-  send(data: any): Promise<void>;
+  send(message: any): Promise<void>;
 
-  receive(): Promise<any>;
+  receive(message: string): Promise<any>;
 }
 type BaseTransport = Transport;
 

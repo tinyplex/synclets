@@ -1,14 +1,18 @@
 import type {
+  Address,
   Connector as BaseConnector,
   Transport as BaseTransport,
-  Synclet as SyncletDecl,
 } from '@synclets/@types';
-import type {ProtectedConnector, ProtectedTransport} from './protected.d.ts';
+import type {
+  ProtectedConnector,
+  ProtectedSynclet,
+  ProtectedTransport,
+} from './protected.d.ts';
 
 export class Synclet<
   Connector extends BaseConnector = BaseConnector,
   Transport extends BaseTransport = BaseTransport,
-> implements SyncletDecl<Connector, Transport>
+> implements ProtectedSynclet<Connector, Transport>
 {
   #connector: ProtectedConnector<Connector>;
   #transport: ProtectedTransport<Transport>;
@@ -35,14 +39,40 @@ export class Synclet<
   }
 
   async start() {
-    await this.#connector.connect();
     await this.#transport.connect();
+    await this.#connector.connect();
     this.#started = true;
+
+    await this.sync([]);
   }
 
   async stop() {
     await this.#connector.disconnect();
     await this.#transport.disconnect();
     this.#started = false;
+  }
+
+  // ---
+
+  async sync(address: Address): Promise<void> {
+    if (!this.#started) {
+      return;
+    }
+    await this.#transport.send(
+      JSON.stringify({
+        address,
+        node: await this.#connector.getNode(address),
+      }),
+    );
+  }
+
+  async receive(message: string): Promise<void> {
+    if (!this.#started) {
+      return;
+    }
+    const {address, node} = JSON.parse(message);
+    if (address && node) {
+      await this.#connector.setNode(address, node);
+    }
   }
 }
