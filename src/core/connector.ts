@@ -35,8 +35,8 @@ export const createConnector: typeof createConnectorDecl = ({
     attachedSynclet = synclet;
   };
 
-  const connect = async (change: (address: Address) => Promise<void>) =>
-    await connectImpl?.(change);
+  const connect = async (sync: (address: Address) => Promise<void>) =>
+    await connectImpl?.(sync);
 
   const disconnect = async () => await disconnectImpl?.();
 

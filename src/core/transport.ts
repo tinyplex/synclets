@@ -1,15 +1,19 @@
 import type {createTransport as createTransportDecl} from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
-import type {ProtectedSynclet, ProtectedTransport} from './protected.d.ts';
+import type {
+  Message,
+  ProtectedSynclet,
+  ProtectedTransport,
+} from './protected.d.ts';
 
 export const createTransport: typeof createTransportDecl = ({
   connect: connectImpl,
   disconnect: disconnectImpl,
-  send: sendImpl,
+  sendPacket,
 }: {
-  connect?: (receive: (message: string) => Promise<void>) => Promise<void>;
+  connect?: (receivePacket: (packet: string) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  send?: (message: string) => Promise<void>;
+  sendPacket?: (packet: string) => Promise<void>;
 } = {}): ProtectedTransport => {
   let attachedSynclet: ProtectedSynclet | undefined;
 
@@ -22,12 +26,13 @@ export const createTransport: typeof createTransportDecl = ({
     attachedSynclet = synclet;
   };
 
-  const connect = async (receive: (message: string) => Promise<void>) =>
-    await connectImpl?.(receive);
+  const connect = async (receiveMessage: (message: Message) => Promise<void>) =>
+    await connectImpl?.((packet) => receiveMessage(JSON.parse(packet)));
 
   const disconnect = async () => await disconnectImpl?.();
 
-  const send = async (message: string) => await sendImpl?.(message);
+  const sendMessage = async (message: Message) =>
+    await sendPacket?.(JSON.stringify(message));
 
   // #endregion
 
@@ -43,7 +48,7 @@ export const createTransport: typeof createTransportDecl = ({
     attachToSynclet,
     connect,
     disconnect,
-    send,
+    sendMessage,
 
     getSyncletId,
   };

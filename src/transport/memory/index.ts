@@ -19,12 +19,12 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = (
   poolId = 'default',
 ): Transport => {
   const connect = async (
-    receive: (message: string) => Promise<void>,
+    receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
     mapSet(
       mapEnsure(clientPools, poolId, mapNew),
       transport.getSyncletId(),
-      receive,
+      receivePacket,
     );
   };
 
@@ -32,14 +32,13 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = (
     mapDel(mapEnsure(clientPools, poolId, mapNew), transport.getSyncletId());
   };
 
-  const send = async (message: string): Promise<void> => {
+  const sendPacket = async (packet: string): Promise<void> =>
     mapForEach(mapGet(clientPools, poolId), (clientId, receive) => {
       if (clientId !== transport.getSyncletId()) {
-        receive(message);
+        receive(packet);
       }
     });
-  };
 
-  const transport = createTransport({connect, disconnect, send});
+  const transport = createTransport({connect, disconnect, sendPacket});
   return transport;
 };

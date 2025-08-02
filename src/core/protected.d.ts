@@ -7,6 +7,12 @@ import type {
   Value,
 } from '@synclets/@types';
 
+export interface Message {
+  toId?: string;
+  address: Address;
+  node: Value;
+}
+
 export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: ProtectedSynclet): void;
   connect(change: (address: Address) => Promise<void>): Promise<void>;
@@ -19,14 +25,12 @@ export interface ProtectedConnector extends Connector {
 
 export interface ProtectedTransport extends Transport {
   attachToSynclet(synclet: ProtectedSynclet): void;
-  connect(receive: (message: string) => Promise<void>): Promise<void>;
+  connect(receiveMessage: (message: Message) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
-  send(message: string): Promise<void>;
+  sendMessage(message: Message): Promise<void>;
 }
 
 export interface ProtectedSynclet extends Synclet {
   log(message: string): void;
-  changed(address: Address): Promise<void>;
-  send(message: string): Promise<void>;
-  receive(message: string): Promise<void>;
+  sync(address: Address): Promise<void>;
 }

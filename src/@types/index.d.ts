@@ -53,7 +53,7 @@ export function createConnector(implementations?: {
 }): Connector;
 
 export function createTransport(implementations?: {
-  connect?: (receive: (message: string) => Promise<void>) => Promise<void>;
+  connect?: (receivePacket: (string: string) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  send?: (message: string) => Promise<void>;
+  sendPacket?: (string: string) => Promise<void>;
 }): Transport;

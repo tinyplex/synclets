@@ -5,6 +5,7 @@ import type {
 } from '@synclets/@types';
 import {getUniqueId} from '@synclets/utils';
 import type {
+  Message,
   ProtectedConnector,
   ProtectedSynclet,
   ProtectedTransport,
@@ -17,41 +18,41 @@ export const createSynclet: typeof createSyncletDecl = ((
 ): ProtectedSynclet => {
   let started = false;
   const id = options.id ?? getUniqueId();
-  const logger = options.logger ?? (() => {});
+  const logger = options.logger;
 
-  const ifStarted = async (actions: () => Promise<void>, logString: string) => {
+  const ifStarted = async (
+    actions: () => Promise<(() => string) | undefined>,
+  ) => {
     if (started) {
-      log(logString);
-      await actions();
+      const getLog = await actions();
+      if (getLog && logger) {
+        log(getLog());
+      }
     }
   };
 
+  const receiveMessage = async (message: Message) =>
+    ifStarted(async () => {
+      const {address, node} = message;
+      await connector.setNode(address, node);
+      return () => `receive: ${JSON.stringify(message)}`;
+    });
+
+  const sendMessage = async (message: Message) =>
+    ifStarted(async () => {
+      await transport.sendMessage(message);
+      return () => `send: ${JSON.stringify(message)}`;
+    });
+
   // #region protected
 
-  const log = (message: string) => logger(`[${id}] ${message}`);
+  const log = (message: string) => logger?.(`[${id}] ${message}`);
 
-  const changed = async (address: Address) =>
-    ifStarted(
-      async () =>
-        await send(
-          JSON.stringify({
-            address,
-            node: await connector.getNode(address),
-          }),
-        ),
-      `changed: ${address}`,
-    );
-
-  const send = async (message: string) =>
-    ifStarted(() => transport.send(message), `send: ${message}`);
-
-  const receive = async (message: string) =>
+  const sync = async (address: Address) =>
     ifStarted(async () => {
-      const {address, node} = JSON.parse(message);
-      if (address && node) {
-        await connector.setNode(address, node);
-      }
-    }, `receive: ${message}`);
+      await sendMessage({address, node: await connector.getNode(address)});
+      return () => `sync: ${JSON.stringify(address)}`;
+    });
 
   // #endregion
 
@@ -63,10 +64,10 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   const start = async () => {
     log('start');
-    await connector.connect(changed);
-    await transport.connect(receive);
+    await connector.connect(sync);
+    await transport.connect(receiveMessage);
     started = true;
-    await changed([]);
+    await sync([]);
   };
 
   const stop = async () => {
@@ -82,9 +83,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     __brand: 'Synclet',
 
     log,
-    changed,
-    send,
-    receive,
+    sync,
 
     getId,
     getStarted,
