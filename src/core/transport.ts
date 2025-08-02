@@ -1,5 +1,10 @@
 import type {createTransport as createTransportDecl} from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
+import {
+  getMessageFromPackets,
+  getPacketsFromMessage,
+  newFragmentsBuffer,
+} from './message.ts';
 import type {
   Message,
   ProtectedSynclet,
@@ -16,6 +21,7 @@ export const createTransport: typeof createTransportDecl = ({
   sendPacket?: (packet: string) => Promise<void>;
 } = {}): ProtectedTransport => {
   let attachedSynclet: ProtectedSynclet | undefined;
+  const fragmentsBuffer = newFragmentsBuffer();
 
   // #region protected
 
@@ -27,12 +33,14 @@ export const createTransport: typeof createTransportDecl = ({
   };
 
   const connect = async (receiveMessage: (message: Message) => Promise<void>) =>
-    await connectImpl?.((packet) => receiveMessage(JSON.parse(packet)));
+    await connectImpl?.((packet) =>
+      getMessageFromPackets(packet, fragmentsBuffer, receiveMessage),
+    );
 
   const disconnect = async () => await disconnectImpl?.();
 
   const sendMessage = async (message: Message) =>
-    await sendPacket?.(JSON.stringify(message));
+    getPacketsFromMessage(message).forEach((packet) => sendPacket?.(packet));
 
   // #endregion
 

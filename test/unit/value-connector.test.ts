@@ -52,10 +52,14 @@ test('value sync', async () => {
   const connector1 = createTestValueConnector();
   const connector2 = createTestValueConnector();
 
-  const synclet1 = createSynclet(connector1, createMemoryTransport());
+  const synclet1 = createSynclet(connector1, createMemoryTransport(), {
+    id: 'synclet1',
+  });
   await synclet1.start();
 
-  const synclet2 = createSynclet(connector2, createMemoryTransport());
+  const synclet2 = createSynclet(connector2, createMemoryTransport(), {
+    id: 'synclet2',
+  });
   await synclet2.start();
 
   expect(connector1.getUnderlyingValue()).toEqual(
