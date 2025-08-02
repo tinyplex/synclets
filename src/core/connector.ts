@@ -22,27 +22,23 @@ export const createConnector: typeof createConnectorDecl = ({
   setNode?: (address: Address, value: Value) => Promise<void>;
   setNodeTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
 } = {}): ProtectedConnector => {
-  let connected = false;
   let attachedSynclet: ProtectedSynclet | undefined;
+
+  // #region protected
 
   const attachToSynclet = (synclet: ProtectedSynclet) => {
     if (attachedSynclet) {
-      errorNew('Connector is already attached to a Synclet');
+      errorNew(
+        'Connector is already attached to Synclet ' + attachedSynclet.getId(),
+      );
     }
     attachedSynclet = synclet;
   };
 
-  const connect = async (change: (address: Address) => Promise<void>) => {
+  const connect = async (change: (address: Address) => Promise<void>) =>
     await connectImpl?.(change);
-    connected = true;
-  };
 
-  const disconnect = async () => {
-    await disconnectImpl?.();
-    connected = false;
-  };
-
-  const getConnected = () => connected;
+  const disconnect = async () => await disconnectImpl?.();
 
   const getNode = async (address: Address) =>
     (await getNodeImpl?.(address)) ?? null;
@@ -56,15 +52,25 @@ export const createConnector: typeof createConnectorDecl = ({
   const setNodeTimestamp = async (address: Address, timestamp: Timestamp) =>
     await setNodeTimestampImpl?.(address, timestamp);
 
+  // #endregion
+
+  // #region public
+
+  const getSyncletId = () => attachedSynclet?.getId();
+
+  // #endregion
+
   return {
     __brand: 'Connector',
+
     attachToSynclet,
     connect,
     disconnect,
-    getConnected,
     getNode,
     getNodeTimestamp,
     setNode,
     setNodeTimestamp,
+
+    getSyncletId,
   };
 };

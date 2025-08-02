@@ -19,18 +19,28 @@ test('createSynclet', () => {
   expect(synclet).toBeDefined();
 });
 
+test('log', () => {
+  const logger = jest.fn();
+  const synclet = createSynclet(connector, transport, {id: 'synclet', logger});
+  expect(logger).toHaveBeenCalledWith('[synclet] createSynclet');
+  synclet.start();
+  expect(logger).toHaveBeenCalledWith('[synclet] start');
+  synclet.stop();
+  expect(logger).toHaveBeenCalledWith('[synclet] stop');
+});
+
 test('error on reassigning connector', () => {
-  createSynclet(connector, transport);
+  createSynclet(connector, transport, {id: 'synclet1'});
   expect(() => {
     createSynclet(connector, createTransport());
-  }).toThrow('Connector is already attached to a Synclet');
+  }).toThrow('Connector is already attached to Synclet synclet1');
 });
 
 test('error on reassigning transport', () => {
-  createSynclet(connector, transport);
+  createSynclet(connector, transport, {id: 'synclet1'});
   expect(() => {
     createSynclet(createConnector(), transport);
-  }).toThrow('Transport is already attached to a Synclet');
+  }).toThrow('Transport is already attached to Synclet synclet1');
 });
 
 test('start & stop', async () => {

@@ -8,8 +8,15 @@ export type Value = string | number | boolean | null | DeletedValue;
 
 export type Address = string[];
 
+export type SyncletOptions = {
+  id?: string;
+  logger?: (message: string) => void;
+};
+
 export interface Synclet {
   __brand: 'Synclet';
+
+  getId(): string;
 
   getStarted(): boolean;
 
@@ -20,15 +27,20 @@ export interface Synclet {
 
 export interface Connector {
   __brand: 'Connector';
+
+  getSyncletId(): string | undefined;
 }
 
 export interface Transport {
   __brand: 'Transport';
+
+  getSyncletId(): string | undefined;
 }
 
 export function createSynclet(
   connector: Connector,
   transport: Transport,
+  options?: SyncletOptions,
 ): Synclet;
 
 export function createConnector(implementations?: {

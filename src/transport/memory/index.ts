@@ -2,7 +2,6 @@ import {createTransport} from '@synclets';
 import type {Transport} from '@synclets/@types';
 import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/transport/memory';
 import {
-  getUniqueId,
   mapDel,
   mapEnsure,
   mapForEach,
@@ -19,25 +18,28 @@ const clientPools: Map<
 export const createMemoryTransport: typeof createMemoryTransportDecl = (
   poolId = 'default',
 ): Transport => {
-  const id = getUniqueId();
-
   const connect = async (
     receive: (message: string) => Promise<void>,
   ): Promise<void> => {
-    mapSet(mapEnsure(clientPools, poolId, mapNew), id, receive);
+    mapSet(
+      mapEnsure(clientPools, poolId, mapNew),
+      transport.getSyncletId(),
+      receive,
+    );
   };
 
   const disconnect = async (): Promise<void> => {
-    mapDel(mapEnsure(clientPools, poolId, mapNew), id);
+    mapDel(mapEnsure(clientPools, poolId, mapNew), transport.getSyncletId());
   };
 
   const send = async (message: string): Promise<void> => {
     mapForEach(mapGet(clientPools, poolId), (clientId, receive) => {
-      if (clientId !== id) {
+      if (clientId !== transport.getSyncletId()) {
         receive(message);
       }
     });
   };
 
-  return createTransport({connect, disconnect, send});
+  const transport = createTransport({connect, disconnect, send});
+  return transport;
 };

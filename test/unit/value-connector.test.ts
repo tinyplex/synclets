@@ -5,16 +5,24 @@ import {createMemoryTransport} from 'synclets/transport/memory';
 const createTestValueConnector = () => {
   let underlyingValue: Value = 'V1';
   let underlyingTimestamp: Timestamp = '';
+  let valueChange: (() => Promise<void>) | undefined;
+
+  const connect = async (change: () => Promise<void>) => {
+    valueChange = change;
+  };
 
   const getValue = async () => {
     return underlyingValue;
   };
+
   const setValue = async (value: Value) => {
     underlyingValue = value;
   };
+
   const getValueTimestamp = async () => {
     return underlyingTimestamp;
   };
+
   const setValueTimestamp = async (timestamp: Timestamp) => {
     underlyingTimestamp = timestamp;
   };
@@ -23,15 +31,18 @@ const createTestValueConnector = () => {
 
   const setUnderlyingValue = async (value: Value) => {
     underlyingValue = value;
+    await valueChange?.();
   };
 
+  const connector = createValueConnector({
+    connect,
+    getValue,
+    getValueTimestamp,
+    setValue,
+    setValueTimestamp,
+  });
   return {
-    ...createValueConnector({
-      getValue,
-      setValue,
-      getValueTimestamp,
-      setValueTimestamp,
-    }),
+    ...connector,
     getUnderlyingValue,
     setUnderlyingValue,
   };
@@ -51,6 +62,6 @@ test('value sync', async () => {
     connector2.getUnderlyingValue(),
   );
 
-  // await connector1.setUnderlyingValue('V2');
-  // expect(connector2.getUnderlyingValue()).toEqual('V2');
+  await connector1.setUnderlyingValue('V2');
+  expect(connector2.getUnderlyingValue()).toEqual('V2');
 });
