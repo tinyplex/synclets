@@ -5,7 +5,7 @@ import type {
   createConnector as createConnectorDecl,
 } from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
-import type {ProtectedConnector, ProtectedSynclet} from './protected.d.ts';
+import type {ProtectedConnector, ProtectedSynclet} from '../protected.d.ts';
 
 export const createConnector: typeof createConnectorDecl = ({
   connect: connectImpl,

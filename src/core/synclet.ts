@@ -3,7 +3,7 @@ import type {
   createSynclet as createSyncletDecl,
   SyncletOptions,
 } from '@synclets/@types';
-import {getUniqueId} from '@synclets/utils';
+import {getUniqueId, jsonStringify} from '@synclets/utils';
 import type {
   Message,
   ProtectedConnector,
@@ -35,13 +35,13 @@ export const createSynclet: typeof createSyncletDecl = ((
     ifStarted(async () => {
       const {address, node} = message;
       await connector.setNode(address, node);
-      return () => `receive: ${JSON.stringify(message)}`;
+      return () => `receive: ${jsonStringify(message)}`;
     });
 
   const sendMessage = async (message: Message) =>
     ifStarted(async () => {
       await transport.sendMessage(message);
-      return () => `send: ${JSON.stringify(message)}`;
+      return () => `send: ${jsonStringify(message)}`;
     });
 
   // #region protected
@@ -51,7 +51,7 @@ export const createSynclet: typeof createSyncletDecl = ((
   const sync = async (address: Address) =>
     ifStarted(async () => {
       await sendMessage({address, node: await connector.getNode(address)});
-      return () => `sync: ${JSON.stringify(address)}`;
+      return () => `sync: ${jsonStringify(address)}`;
     });
 
   // #endregion

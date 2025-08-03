@@ -1,15 +1,12 @@
 import type {createTransport as createTransportDecl} from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
-import {
-  getMessageFromPackets,
-  getPacketsFromMessage,
-  newFragmentsBuffer,
-} from './message.ts';
 import type {
   Message,
   ProtectedSynclet,
   ProtectedTransport,
-} from './protected.d.ts';
+  ReceiveMessage,
+} from '../protected.d.ts';
+import {getPacketFunctions} from './packets.ts';
 
 export const createTransport: typeof createTransportDecl = ({
   connect: connectImpl,
@@ -21,7 +18,9 @@ export const createTransport: typeof createTransportDecl = ({
   sendPacket?: (packet: string) => Promise<void>;
 } = {}): ProtectedTransport => {
   let attachedSynclet: ProtectedSynclet | undefined;
-  const fragmentsBuffer = newFragmentsBuffer();
+
+  const [startBuffer, stopBuffer, receivePacket, sendPackets] =
+    getPacketFunctions(sendPacket);
 
   // #region protected
 
@@ -32,15 +31,17 @@ export const createTransport: typeof createTransportDecl = ({
     attachedSynclet = synclet;
   };
 
-  const connect = async (receiveMessage: (message: Message) => Promise<void>) =>
-    await connectImpl?.((packet) =>
-      getMessageFromPackets(packet, fragmentsBuffer, receiveMessage),
-    );
+  const connect = async (receiveMessage: ReceiveMessage) => {
+    startBuffer(receiveMessage);
+    await connectImpl?.(receivePacket);
+  };
 
-  const disconnect = async () => await disconnectImpl?.();
+  const disconnect = async () => {
+    stopBuffer();
+    await disconnectImpl?.();
+  };
 
-  const sendMessage = async (message: Message) =>
-    getPacketsFromMessage(message).forEach((packet) => sendPacket?.(packet));
+  const sendMessage = (message: Message) => sendPackets(message);
 
   // #endregion
 
