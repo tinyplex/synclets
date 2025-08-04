@@ -4,18 +4,16 @@ import {
   jsonStringify,
   mapEnsure,
   mapNew,
-  mathMax,
 } from '@synclets/utils';
 import type {Message, ReceiveMessage} from '../protected.d.ts';
 
 type Pending = [fragments: string[], due: number];
 
 const PACKET = /^(.+) (\d+) (\d+) (.+)$/;
-const HEADER_SIZE = 32;
 
 export const getPacketFunctions = (
   sendPacket?: (packet: string) => Promise<void>,
-  maxPacketSize: number = 50,
+  fragmentSize: number = 1000,
 ): [
   startBuffer: (receiveMessage: ReceiveMessage) => Promise<void>,
   stopBuffer: () => void,
@@ -24,10 +22,7 @@ export const getPacketFunctions = (
 ] => {
   let receiveFinalMessage: ReceiveMessage | undefined;
 
-  const messageSplit = new RegExp(
-    `(.{1,${mathMax(maxPacketSize - HEADER_SIZE, HEADER_SIZE)}})`,
-    'g',
-  );
+  const messageSplit = new RegExp(`(.{1,${fragmentSize}})`, 'g');
 
   const buffer: Map<string, Pending> = mapNew();
 

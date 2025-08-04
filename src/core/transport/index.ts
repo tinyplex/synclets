@@ -12,15 +12,17 @@ export const createTransport: typeof createTransportDecl = ({
   connect: connectImpl,
   disconnect: disconnectImpl,
   sendPacket,
+  fragmentSize,
 }: {
   connect?: (receivePacket: (packet: string) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
   sendPacket?: (packet: string) => Promise<void>;
+  fragmentSize?: number;
 } = {}): ProtectedTransport => {
   let attachedSynclet: ProtectedSynclet | undefined;
 
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
-    getPacketFunctions(sendPacket);
+    getPacketFunctions(sendPacket, fragmentSize);
 
   // #region protected
 

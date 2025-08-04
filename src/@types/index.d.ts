@@ -60,4 +60,5 @@ export function createTransport(implementations?: {
   connect?: (receivePacket: (string: string) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
   sendPacket?: (string: string) => Promise<void>;
+  fragmentSize?: number;
 }): Transport;
