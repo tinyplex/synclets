@@ -3,9 +3,11 @@
 import type {Connector, Timestamp, Value} from '../../index.d.ts';
 
 export function createValueConnector(implementations?: {
-  connect?: (change: () => Promise<void>) => Promise<void>;
+  connect?: (valueSync: () => Promise<void>) => Promise<void>;
   getValue?: () => Promise<Value>;
+  getValueHash?: () => Promise<number>;
   getValueTimestamp?: () => Promise<Timestamp>;
   setValue?: (value: Value) => Promise<void>;
+  setValueHash?: (hash: number) => Promise<void>;
   setValueTimestamp?: (timestamp: Timestamp) => Promise<void>;
 }): Connector;

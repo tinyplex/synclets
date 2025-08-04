@@ -6,6 +6,8 @@ export type Timestamp = string;
 
 export type Value = string | number | boolean | null | DeletedValue;
 
+export type Hash = number;
+
 export type Address = string[];
 
 export type SyncletOptions = {
@@ -46,10 +48,12 @@ export function createSynclet(
 export function createConnector(implementations?: {
   connect?: (change: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  getNode?: (address: Address) => Promise<Value>;
-  getNodeTimestamp?: (address: Address) => Promise<Timestamp>;
-  setNode?: (address: Address, value: Value) => Promise<void>;
-  setNodeTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
+  get?: (address: Address) => Promise<Value>;
+  getHash?: (address: Address) => Promise<Hash>;
+  getTimestamp?: (address: Address) => Promise<Timestamp>;
+  set?: (address: Address, value: Value) => Promise<void>;
+  setHash?: (address: Address, hash: Hash) => Promise<void>;
+  setTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
 }): Connector;
 
 export function createTransport(implementations?: {

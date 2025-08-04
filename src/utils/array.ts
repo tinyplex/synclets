@@ -8,3 +8,8 @@ export const arrayReduce = <Value, Result>(
   cb: (previous: Result, current: Value) => Result,
   initial: Result,
 ): Result => array.reduce(cb, initial);
+
+export const arrayForEach = <Value>(
+  array: {forEach: (cb: (value: Value, index: number) => void) => void},
+  cb: (value: Value, index: number) => void,
+): void => array.forEach(cb);

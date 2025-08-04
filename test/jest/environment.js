@@ -8,6 +8,7 @@ export default class SyncletsEnvironment extends TestEnvironment {
   async setup() {
     Object.assign(this.global, {
       Uint8Array,
+      TextEncoder,
       env: this.constructor,
     });
     await super.setup();

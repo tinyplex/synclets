@@ -34,3 +34,9 @@ export const mapForEach = <Key, Value>(
   map: Map<Key, Value> | undefined,
   cb: (key: Key, value: Value) => void,
 ): void => map?.forEach((value, key) => cb(key, value));
+
+export const mapMap = <Key, Value, Value2>(
+  map: Map<Key, Value> | undefined,
+  cb: (key: Key, value: Value) => Value2,
+): Value2[] =>
+  [...(map?.entries() ?? [])].map(([key, value]) => cb(key, value));

@@ -1,5 +1,6 @@
 import type {
   Address,
+  Hash,
   Timestamp,
   Value,
   createConnector as createConnectorDecl,
@@ -10,17 +11,21 @@ import type {ProtectedConnector, ProtectedSynclet} from '../protected.d.ts';
 export const createConnector: typeof createConnectorDecl = ({
   connect: connectImpl,
   disconnect: disconnectImpl,
-  getNode: getNodeImpl,
-  getNodeTimestamp: getNodeTimestampImpl,
-  setNode: setNodeImpl,
-  setNodeTimestamp: setNodeTimestampImpl,
+  get: getImpl,
+  getHash: getHashImpl,
+  getTimestamp: getTimestampImpl,
+  set: setImpl,
+  setHash: setHashImpl,
+  setTimestamp: setTimestampImpl,
 }: {
-  connect?: (change: (address: Address) => Promise<void>) => Promise<void>;
+  connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  getNode?: (address: Address) => Promise<Value>;
-  getNodeTimestamp?: (address: Address) => Promise<Timestamp>;
-  setNode?: (address: Address, value: Value) => Promise<void>;
-  setNodeTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
+  get?: (address: Address) => Promise<Value>;
+  getTimestamp?: (address: Address) => Promise<Timestamp>;
+  getHash?: (address: Address) => Promise<Hash>;
+  set?: (address: Address, value: Value) => Promise<void>;
+  setTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
+  setHash?: (address: Address, hash: Hash) => Promise<void>;
 } = {}): ProtectedConnector => {
   let attachedSynclet: ProtectedSynclet | undefined;
 
@@ -40,17 +45,22 @@ export const createConnector: typeof createConnectorDecl = ({
 
   const disconnect = async () => await disconnectImpl?.();
 
-  const getNode = async (address: Address) =>
-    (await getNodeImpl?.(address)) ?? null;
+  const get = async (address: Address) => (await getImpl?.(address)) ?? null;
 
-  const getNodeTimestamp = async (address: Address) =>
-    (await getNodeTimestampImpl?.(address)) ?? '';
+  const getTimestamp = async (address: Address) =>
+    (await getTimestampImpl?.(address)) ?? '';
 
-  const setNode = async (address: Address, value: Value) =>
-    await setNodeImpl?.(address, value);
+  const getHash = async (address: Address) =>
+    (await getHashImpl?.(address)) ?? 0;
 
-  const setNodeTimestamp = async (address: Address, timestamp: Timestamp) =>
-    await setNodeTimestampImpl?.(address, timestamp);
+  const set = async (address: Address, value: Value) =>
+    await setImpl?.(address, value);
+
+  const setTimestamp = async (address: Address, timestamp: Timestamp) =>
+    await setTimestampImpl?.(address, timestamp);
+
+  const setHash = async (address: Address, hash: Hash) =>
+    await setHashImpl?.(address, hash);
 
   // #endregion
 
@@ -66,10 +76,12 @@ export const createConnector: typeof createConnectorDecl = ({
     attachToSynclet,
     connect,
     disconnect,
-    getNode,
-    getNodeTimestamp,
-    setNode,
-    setNodeTimestamp,
+    get,
+    getTimestamp,
+    getHash,
+    set,
+    setTimestamp,
+    setHash,
 
     getSyncletId,
   };

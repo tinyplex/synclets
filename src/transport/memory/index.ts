@@ -4,8 +4,8 @@ import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets
 import {
   mapDel,
   mapEnsure,
-  mapForEach,
   mapGet,
+  mapMap,
   mapNew,
   mapSet,
 } from '@synclets/utils';
@@ -32,12 +32,15 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = (
     mapDel(mapEnsure(clientPools, poolId, mapNew), transport.getSyncletId());
   };
 
-  const sendPacket = async (packet: string): Promise<void> =>
-    mapForEach(mapGet(clientPools, poolId), (toClientId, receive) => {
-      if (toClientId !== transport.getSyncletId()) {
-        receive(packet);
-      }
-    });
+  const sendPacket = async (packet: string): Promise<void> => {
+    await Promise.all(
+      mapMap(mapGet(clientPools, poolId), async (toClientId, receive) => {
+        if (toClientId !== transport.getSyncletId()) {
+          await receive(packet);
+        }
+      }),
+    );
+  };
 
   const transport = createTransport({connect, disconnect, sendPacket});
   return transport;
