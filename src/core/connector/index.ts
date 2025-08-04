@@ -1,12 +1,14 @@
 import type {
   Address,
   Hash,
+  LogLevel,
+  Synclet,
   Timestamp,
   Value,
   createConnector as createConnectorDecl,
 } from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
-import type {ProtectedConnector, ProtectedSynclet} from '../protected.d.ts';
+import type {ProtectedConnector} from '../protected.d.ts';
 
 export const createConnector: typeof createConnectorDecl = ({
   connect: connectImpl,
@@ -27,11 +29,11 @@ export const createConnector: typeof createConnectorDecl = ({
   setTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
   setHash?: (address: Address, hash: Hash) => Promise<void>;
 } = {}): ProtectedConnector => {
-  let attachedSynclet: ProtectedSynclet | undefined;
+  let attachedSynclet: Synclet | undefined;
 
   // #region protected
 
-  const attachToSynclet = (synclet: ProtectedSynclet) => {
+  const attachToSynclet = (synclet: Synclet) => {
     if (attachedSynclet) {
       errorNew(
         'Connector is already attached to Synclet ' + attachedSynclet.getId(),
@@ -68,6 +70,9 @@ export const createConnector: typeof createConnectorDecl = ({
 
   const getSyncletId = () => attachedSynclet?.getId();
 
+  const log = (string: string, level: LogLevel = 'info') =>
+    attachedSynclet?.log('[connector] ' + string, level);
+
   // #endregion
 
   return {
@@ -84,5 +89,6 @@ export const createConnector: typeof createConnectorDecl = ({
     setHash,
 
     getSyncletId,
+    log,
   };
 };

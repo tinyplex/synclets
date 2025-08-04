@@ -70,13 +70,13 @@ test('value sync', async () => {
 
   const synclet1 = createSynclet(connector1, createMemoryTransport(), {
     id: 'synclet1',
-    logger: console.log,
+    logger: console,
   });
   await synclet1.start();
 
   const synclet2 = createSynclet(connector2, createMemoryTransport(), {
     id: 'synclet2',
-    logger: console.log,
+    logger: console,
   });
   await synclet2.start();
 

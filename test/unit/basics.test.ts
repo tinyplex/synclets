@@ -20,13 +20,13 @@ test('createSynclet', () => {
 });
 
 test('log', () => {
-  const logger = jest.fn();
+  const logger = {info: jest.fn()};
   const synclet = createSynclet(connector, transport, {id: 'synclet', logger});
-  expect(logger).toHaveBeenCalledWith('[synclet] createSynclet');
+  expect(logger.info).toHaveBeenCalledWith('[synclet] createSynclet');
   synclet.start();
-  expect(logger).toHaveBeenCalledWith('[synclet] start');
+  expect(logger.info).toHaveBeenCalledWith('[synclet] start');
   synclet.stop();
-  expect(logger).toHaveBeenCalledWith('[synclet] stop');
+  expect(logger.info).toHaveBeenCalledWith('[synclet] stop');
 });
 
 test('error on reassigning connector', () => {

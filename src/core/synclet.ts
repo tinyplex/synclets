@@ -1,6 +1,8 @@
 import type {
   Address,
   createSynclet as createSyncletDecl,
+  LogLevel,
+  Synclet,
   SyncletOptions,
 } from '@synclets/@types';
 import {getUniqueId, jsonStringify} from '@synclets/utils';
@@ -8,7 +10,6 @@ import {buildGiveMessage, buildHaveMessage, MessageType} from './message.ts';
 import type {
   Message,
   ProtectedConnector,
-  ProtectedSynclet,
   ProtectedTransport,
 } from './protected.d.ts';
 
@@ -16,10 +17,10 @@ export const createSynclet: typeof createSyncletDecl = ((
   connector: ProtectedConnector,
   transport: ProtectedTransport,
   options: SyncletOptions = {},
-): ProtectedSynclet => {
+): Synclet => {
   let started = false;
   const id = options.id ?? getUniqueId();
-  const logger = options.logger;
+  const logger = options.logger ?? {};
 
   const ifStarted = async (actions: () => Promise<void>) => {
     if (started) {
@@ -62,10 +63,6 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   // #region protected
 
-  const log = (message: string) => logger?.(`[${id}] ${message}`);
-
-  const logSlow = (message: () => string) => (logger ? log(message()) : 0);
-
   const sync = async (address: Address) =>
     ifStarted(async () => {
       logSlow(() => `sync: ${jsonStringify(address)}`);
@@ -77,6 +74,9 @@ export const createSynclet: typeof createSyncletDecl = ((
         ),
       );
     });
+
+  const logSlow = (getString: () => string, level: LogLevel = 'info') =>
+    logger ? log(getString(), level) : 0;
 
   // #endregion
 
@@ -101,18 +101,19 @@ export const createSynclet: typeof createSyncletDecl = ((
     started = false;
   };
 
+  const log = (string: string, level: LogLevel = 'info') =>
+    logger?.[level]?.(`[${id}] ${string}`);
+
   // #endregion
 
-  const synclet: ProtectedSynclet = {
+  const synclet: Synclet = {
     __brand: 'Synclet',
-
-    log,
-    sync,
 
     getId,
     getStarted,
     start,
     stop,
+    log,
   };
 
   log('createSynclet');

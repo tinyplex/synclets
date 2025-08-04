@@ -12,8 +12,16 @@ export type Address = string[];
 
 export type SyncletOptions = {
   id?: string;
-  logger?: (message: string) => void;
+  logger?: Logger;
 };
+
+export type Logger = {
+  error?: (string: string) => void;
+  warn?: (string: string) => void;
+  info?: (string: string) => void;
+  debug?: (string: string) => void;
+};
+export type LogLevel = keyof Logger;
 
 export interface Synclet {
   __brand: 'Synclet';
@@ -25,18 +33,24 @@ export interface Synclet {
   start(): Promise<void>;
 
   stop(): Promise<void>;
+
+  log(message: string, level?: LogLevel): void;
 }
 
 export interface Connector {
   __brand: 'Connector';
 
   getSyncletId(): string | undefined;
+
+  log(message: string, level?: LogLevel): void;
 }
 
 export interface Transport {
   __brand: 'Transport';
 
   getSyncletId(): string | undefined;
+
+  log(message: string, level?: LogLevel): void;
 }
 
 export function createSynclet(

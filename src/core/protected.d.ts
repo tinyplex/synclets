@@ -30,7 +30,7 @@ export type Message = {to?: string; from?: string} & (
 export type ReceiveMessage = (message: Message) => Promise<void>;
 
 export interface ProtectedConnector extends Connector {
-  attachToSynclet(synclet: ProtectedSynclet): void;
+  attachToSynclet(synclet: Synclet): void;
   connect(change: (address: Address) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
   get(address: Address): Promise<Node>;
@@ -42,13 +42,8 @@ export interface ProtectedConnector extends Connector {
 }
 
 export interface ProtectedTransport extends Transport {
-  attachToSynclet(synclet: ProtectedSynclet): void;
+  attachToSynclet(synclet: Synclet): void;
   connect(receiveMessage: ReceiveMessage): Promise<void>;
   disconnect(): Promise<void>;
   sendMessage(message: Message): Promise<void>;
-}
-
-export interface ProtectedSynclet extends Synclet {
-  log(message: string): void;
-  sync(address: Address): Promise<void>;
 }

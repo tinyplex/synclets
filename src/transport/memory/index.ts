@@ -36,6 +36,7 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = (
     await Promise.all(
       mapMap(mapGet(clientPools, poolId), async (toClientId, receive) => {
         if (toClientId !== transport.getSyncletId()) {
+          transport.log('forward packet to ' + toClientId, 'debug');
           await receive(packet);
         }
       }),

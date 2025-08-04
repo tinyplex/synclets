@@ -1,8 +1,11 @@
-import type {createTransport as createTransportDecl} from '@synclets/@types';
+import type {
+  createTransport as createTransportDecl,
+  LogLevel,
+  Synclet,
+} from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
 import type {
   Message,
-  ProtectedSynclet,
   ProtectedTransport,
   ReceiveMessage,
 } from '../protected.d.ts';
@@ -19,14 +22,14 @@ export const createTransport: typeof createTransportDecl = ({
   sendPacket?: (packet: string) => Promise<void>;
   fragmentSize?: number;
 } = {}): ProtectedTransport => {
-  let attachedSynclet: ProtectedSynclet | undefined;
+  let attachedSynclet: Synclet | undefined;
 
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
     getPacketFunctions(sendPacket, fragmentSize);
 
   // #region protected
 
-  const attachToSynclet = (synclet: ProtectedSynclet) => {
+  const attachToSynclet = (synclet: Synclet) => {
     if (attachedSynclet) {
       errorNew('Transport is already attached to Synclet ' + getSyncletId());
     }
@@ -51,6 +54,9 @@ export const createTransport: typeof createTransportDecl = ({
 
   const getSyncletId = () => attachedSynclet?.getId();
 
+  const log = (string: string, level: LogLevel = 'info') =>
+    attachedSynclet?.log('[transport] ' + string, level);
+
   // #endregion
 
   return {
@@ -62,5 +68,6 @@ export const createTransport: typeof createTransportDecl = ({
     sendMessage,
 
     getSyncletId,
+    log,
   };
 };
