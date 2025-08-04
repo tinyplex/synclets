@@ -11,13 +11,11 @@ export const buildHaveMessage = (
   address: Address,
   timestamp: Timestamp,
   hash: Hash,
-  to?: string,
 ): Message => ({
   type: MessageType.Have,
   address,
   timestamp,
   hash,
-  ...(to ? {to} : {}),
 });
 
 export const buildGiveMessage = (
@@ -25,12 +23,10 @@ export const buildGiveMessage = (
   value: Value,
   timestamp: Timestamp,
   hash: Hash,
-  to?: string,
 ): Message => ({
   type: MessageType.Give,
   address,
   value,
   timestamp,
   hash,
-  ...(to ? {to} : {}),
 });

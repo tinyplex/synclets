@@ -1,3 +1,7 @@
+import type {
+  getPacketFromParts as getPacketFromPartsDecl,
+  getPartsFromPacket as getPartsFromPacketDecl,
+} from '@synclets/@types';
 import {
   getUniqueId,
   jsonParse,
@@ -9,7 +13,7 @@ import type {Message, ReceiveMessage} from '../protected.d.ts';
 
 type Pending = [fragments: string[], due: number];
 
-const PACKET = /^(.+) (\d+) (\d+) (.+)$/;
+const PACKET = /^(.+) (.+) (\d+) (\d+) (.+)$/;
 
 export const getPacketFunctions = (
   sendPacket?: (packet: string) => Promise<void>,
@@ -18,7 +22,7 @@ export const getPacketFunctions = (
   startBuffer: (receiveMessage: ReceiveMessage) => Promise<void>,
   stopBuffer: () => void,
   receivePacket: (packet: string) => Promise<void>,
-  sendPackets: (message: Message) => Promise<void>,
+  sendPackets: (message: Message, to?: string) => Promise<void>,
 ] => {
   let receiveFinalMessage: ReceiveMessage | undefined;
 
@@ -34,13 +38,17 @@ export const getPacketFunctions = (
   const stopBuffer = () => buffer.clear();
 
   const receivePacket = async (packet: string) => {
-    const [, messageId, indexStr, totalStr, fragment] =
+    const [, from, messageId, indexStr, totalStr, fragment] =
       packet.match(PACKET) ?? [];
     if (messageId) {
       const index = parseInt(indexStr);
       const total = parseInt(totalStr);
 
-      const pending = mapEnsure(buffer, messageId, (): Pending => [[], total]);
+      const pending = mapEnsure(
+        buffer,
+        from + ' ' + messageId,
+        (): Pending => [[], total],
+      );
       const [fragments] = pending;
 
       if (fragments[index] == null) {
@@ -50,19 +58,22 @@ export const getPacketFunctions = (
 
       if (pending[1] === 0) {
         buffer.delete(messageId);
-        await receiveFinalMessage?.(jsonParse(fragments.join('')));
+        await receiveFinalMessage?.(jsonParse(fragments.join('')), from);
       }
     }
   };
 
-  const sendPackets = async (message: Message): Promise<void> => {
+  const sendPackets = async (
+    message: Message,
+    to: string = '*',
+  ): Promise<void> => {
     if (sendPacket) {
       const messageId = getUniqueId();
       const fragments = jsonStringify(message).match(messageSplit) ?? [];
       const total = fragments.length;
       await Promise.all(
         fragments.map((fragment, index) =>
-          sendPacket([messageId, index, total, fragment].join(' ')),
+          sendPacket([to, messageId, index, total, fragment].join(' ')),
         ),
       );
     }
@@ -70,3 +81,13 @@ export const getPacketFunctions = (
 
   return [startBuffer, stopBuffer, receivePacket, sendPackets];
 };
+
+export const getPartsFromPacket: typeof getPartsFromPacketDecl = (
+  packet: string,
+): [to: string, body: string] =>
+  (packet.match(/^(.+?) (.+)/) ?? []).slice(1, 3) as [string, string];
+
+export const getPacketFromParts: typeof getPacketFromPartsDecl = (
+  to: string,
+  body: string,
+): string => `${to} ${body}`;

@@ -11,7 +11,7 @@ import type {MessageType} from './message.ts';
 
 type Node = Value;
 
-export type Message = {to?: string; from?: string} & (
+export type Message =
   | {
       type: MessageType.Have;
       address: Address;
@@ -24,10 +24,9 @@ export type Message = {to?: string; from?: string} & (
       value: Value;
       timestamp: Timestamp;
       hash: Hash;
-    }
-);
+    };
 
-export type ReceiveMessage = (message: Message) => Promise<void>;
+export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
 export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: Synclet): void;
@@ -45,5 +44,5 @@ export interface ProtectedTransport extends Transport {
   attachToSynclet(synclet: Synclet): void;
   connect(receiveMessage: ReceiveMessage): Promise<void>;
   disconnect(): Promise<void>;
-  sendMessage(message: Message): Promise<void>;
+  sendMessage(message: Message, to?: string): Promise<void>;
 }

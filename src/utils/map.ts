@@ -6,9 +6,9 @@ export const mapHas = <Key, Value>(map: Map<Key, Value>, key: Key): boolean =>
   map.has(key);
 
 export const mapGet = <Key, Value>(
-  map: Map<Key, Value>,
+  map: Map<Key, Value> | undefined,
   key: Key,
-): Value | undefined => map.get(key);
+): Value | undefined => map?.get(key);
 
 export const mapSet = <Key, Value>(
   map: Map<Key, Value>,

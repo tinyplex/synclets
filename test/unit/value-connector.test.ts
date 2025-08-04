@@ -1,3 +1,4 @@
+import console from 'console';
 import {createSynclet, Hash, Timestamp, Value} from 'synclets';
 import {createValueConnector} from 'synclets/connector/value';
 import {createMemoryTransport} from 'synclets/transport/memory';
@@ -67,15 +68,16 @@ const createTestValueConnector = () => {
 test('value sync', async () => {
   const connector1 = createTestValueConnector();
   const connector2 = createTestValueConnector();
+  const connector3 = createTestValueConnector();
 
   const synclet1 = createSynclet(connector1, createMemoryTransport(), {
-    id: 'synclet1',
+    id: '1',
     logger: console,
   });
   await synclet1.start();
 
   const synclet2 = createSynclet(connector2, createMemoryTransport(), {
-    id: 'synclet2',
+    id: '2',
     logger: console,
   });
   await synclet2.start();
@@ -86,4 +88,12 @@ test('value sync', async () => {
 
   await connector1.setUnderlyingValue('V2');
   expect(connector2.getUnderlyingValue()).toEqual('V2');
+
+  const synclet3 = createSynclet(connector3, createMemoryTransport(), {
+    id: '3',
+    logger: console,
+  });
+  await synclet3.start();
+
+  expect(connector3.getUnderlyingValue()).toEqual('V2');
 });

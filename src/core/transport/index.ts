@@ -4,12 +4,10 @@ import type {
   Synclet,
 } from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
-import type {
-  Message,
-  ProtectedTransport,
-  ReceiveMessage,
-} from '../protected.d.ts';
+import type {ProtectedTransport, ReceiveMessage} from '../protected.d.ts';
 import {getPacketFunctions} from './packets.ts';
+
+export {getPacketFromParts, getPartsFromPacket} from './packets.ts';
 
 export const createTransport: typeof createTransportDecl = ({
   connect: connectImpl,
@@ -46,7 +44,7 @@ export const createTransport: typeof createTransportDecl = ({
     await disconnectImpl?.();
   };
 
-  const sendMessage = (message: Message) => sendPackets(message);
+  const sendMessage = sendPackets;
 
   // #endregion
 

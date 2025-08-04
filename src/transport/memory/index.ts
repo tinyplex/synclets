@@ -1,4 +1,8 @@
-import {createTransport} from '@synclets';
+import {
+  createTransport,
+  getPacketFromParts,
+  getPartsFromPacket,
+} from '@synclets';
 import type {Transport} from '@synclets/@types';
 import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/transport/memory';
 import {
@@ -10,37 +14,44 @@ import {
   mapSet,
 } from '@synclets/utils';
 
-const clientPools: Map<
-  string,
-  Map<string, (message: string) => Promise<void>>
-> = mapNew();
+type Pool = Map<string, (packet: string) => Promise<void>>;
+
+const pools: Map<string, Pool> = mapNew();
 
 export const createMemoryTransport: typeof createMemoryTransportDecl = (
   poolId = 'default',
 ): Transport => {
+  const pool = mapEnsure(pools, poolId, mapNew) as Pool;
+
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
-    mapSet(
-      mapEnsure(clientPools, poolId, mapNew),
-      transport.getSyncletId(),
-      receivePacket,
-    );
+    mapSet(pool, transport.getSyncletId(), receivePacket);
   };
 
   const disconnect = async (): Promise<void> => {
-    mapDel(mapEnsure(clientPools, poolId, mapNew), transport.getSyncletId());
+    mapDel(pool, transport.getSyncletId());
   };
 
   const sendPacket = async (packet: string): Promise<void> => {
-    await Promise.all(
-      mapMap(mapGet(clientPools, poolId), async (toClientId, receive) => {
-        if (toClientId !== transport.getSyncletId()) {
-          transport.log('forward packet to ' + toClientId, 'debug');
-          await receive(packet);
-        }
-      }),
-    );
+    const [to, body] = getPartsFromPacket(packet);
+    const newPacket = getPacketFromParts(transport.getSyncletId() ?? '*', body);
+    if (to === '*') {
+      await Promise.all(
+        mapMap(pool, async (other, receive) => {
+          if (other !== transport.getSyncletId()) {
+            transport.log(`broadcast '${packet}' to ${other}`, 'debug');
+            await receive(newPacket);
+          }
+        }),
+      );
+    } else {
+      const receive = mapGet(pool, to);
+      if (receive) {
+        transport.log(`forward '${packet}' to ${to}`, 'debug');
+        await receive(newPacket);
+      }
+    }
   };
 
   const transport = createTransport({connect, disconnect, sendPacket});

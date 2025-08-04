@@ -28,22 +28,24 @@ export const createSynclet: typeof createSyncletDecl = ((
     }
   };
 
-  const receiveMessage = async (message: Message) =>
+  const receiveMessage = (message: Message, from: string) =>
     ifStarted(async () => {
-      logSlow(() => `receive: ${jsonStringify(message)}`);
-      const {type, address, timestamp, hash, from} = message;
+      logSlow(() => `receive: '${jsonStringify(message)}' from ${from}`);
+      const {type, address, timestamp, hash} = message;
       const myHash = await connector.getHash(address);
-      if (myHash !== hash) {
+      if (myHash !== hash && from && from !== '*' && from !== id) {
         if (type === MessageType.Have) {
           const myTimestamp = await connector.getTimestamp(address);
           if (timestamp > myTimestamp) {
             await sendMessage(
-              buildHaveMessage(address, myTimestamp, myHash, from),
+              buildHaveMessage(address, myTimestamp, myHash),
+              from,
             );
           } else if (timestamp < myTimestamp) {
             const myValue = await connector.get(address);
             await sendMessage(
-              buildGiveMessage(address, myValue, myTimestamp, myHash, from),
+              buildGiveMessage(address, myValue, myTimestamp, myHash),
+              from,
             );
           }
         } else if (type === MessageType.Give) {
@@ -55,15 +57,15 @@ export const createSynclet: typeof createSyncletDecl = ((
       }
     });
 
-  const sendMessage = async (message: Message) =>
+  const sendMessage = (message: Message, to?: string) =>
     ifStarted(async () => {
-      logSlow(() => `send: ${jsonStringify(message)}`);
-      await transport.sendMessage(message);
+      logSlow(() => `send: '${jsonStringify(message)}' to ${to ?? '*'}`);
+      await transport.sendMessage(message, to);
     });
 
   // #region protected
 
-  const sync = async (address: Address) =>
+  const sync = (address: Address) =>
     ifStarted(async () => {
       logSlow(() => `sync: ${jsonStringify(address)}`);
       await sendMessage(
