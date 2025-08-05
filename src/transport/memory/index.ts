@@ -3,7 +3,7 @@ import {
   getPacketFromParts,
   getPartsFromPacket,
 } from '@synclets';
-import type {Transport} from '@synclets/@types';
+import type {Transport, TransportOptions} from '@synclets/@types';
 import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/transport/memory';
 import {
   mapDel,
@@ -19,9 +19,9 @@ type Pool = Map<string, (packet: string) => Promise<void>>;
 const pools: Map<string, Pool> = mapNew();
 
 export const createMemoryTransport: typeof createMemoryTransportDecl = (
-  poolId = 'default',
+  options: TransportOptions & {poolId?: string} = {},
 ): Transport => {
-  const pool = mapEnsure(pools, poolId, mapNew) as Pool;
+  const pool = mapEnsure(pools, options.poolId ?? 'default', mapNew) as Pool;
 
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,
@@ -40,7 +40,6 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = (
       await Promise.all(
         mapMap(pool, async (other, receive) => {
           if (other !== transport.getSyncletId()) {
-            transport.log(`broadcast '${packet}' to ${other}`, 'debug');
             await receive(newPacket);
           }
         }),
@@ -48,12 +47,11 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = (
     } else {
       const receive = mapGet(pool, to);
       if (receive) {
-        transport.log(`forward '${packet}' to ${to}`, 'debug');
         await receive(newPacket);
       }
     }
   };
 
-  const transport = createTransport({connect, disconnect, sendPacket});
+  const transport = createTransport({connect, disconnect, sendPacket}, options);
   return transport;
 };

@@ -1,5 +1,7 @@
 /// transport/memory
 
-import type {Transport} from '../../index.d.ts';
+import type {Transport, TransportOptions} from '../../index.d.ts';
 
-export function createMemoryTransport(poolId?: string): Transport;
+export function createMemoryTransport(
+  options?: TransportOptions & {poolId?: string},
+): Transport;

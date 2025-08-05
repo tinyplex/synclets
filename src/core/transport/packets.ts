@@ -1,6 +1,7 @@
 import type {
   getPacketFromParts as getPacketFromPartsDecl,
   getPartsFromPacket as getPartsFromPacketDecl,
+  LogLevel,
 } from '@synclets/@types';
 import {
   getUniqueId,
@@ -16,6 +17,7 @@ type Pending = [fragments: string[], due: number];
 const PACKET = /^(.+) (.+) (\d+) (\d+) (.+)$/;
 
 export const getPacketFunctions = (
+  log: (string: string, level?: LogLevel) => void,
   sendPacket?: (packet: string) => Promise<void>,
   fragmentSize: number = 1000,
 ): [
@@ -58,7 +60,12 @@ export const getPacketFunctions = (
 
       if (pending[1] === 0) {
         buffer.delete(messageId);
-        await receiveFinalMessage?.(jsonParse(fragments.join('')), from);
+        const allFragments = fragments.join('');
+        log(
+          `recv: ${messageId} '${allFragments}', ${total} packets from ${from}`,
+          'debug',
+        );
+        await receiveFinalMessage?.(jsonParse(allFragments), from);
       }
     }
   };
@@ -69,8 +76,13 @@ export const getPacketFunctions = (
   ): Promise<void> => {
     if (sendPacket) {
       const messageId = getUniqueId();
-      const fragments = jsonStringify(message).match(messageSplit) ?? [];
+      const allFragments = jsonStringify(message);
+      const fragments = allFragments.match(messageSplit) ?? [];
       const total = fragments.length;
+      log(
+        `send: ${messageId} '${allFragments}', ${total} packets to ${to}`,
+        'debug',
+      );
       await Promise.all(
         fragments.map((fragment, index) =>
           sendPacket([to, messageId, index, total, fragment].join(' ')),

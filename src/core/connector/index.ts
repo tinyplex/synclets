@@ -1,5 +1,7 @@
 import type {
   Address,
+  ConnectorImplementations,
+  ConnectorOptions,
   Hash,
   LogLevel,
   Synclet,
@@ -10,26 +12,21 @@ import type {
 import {errorNew} from '@synclets/utils';
 import type {ProtectedConnector} from '../protected.d.ts';
 
-export const createConnector: typeof createConnectorDecl = ({
-  connect: connectImpl,
-  disconnect: disconnectImpl,
-  get: getImpl,
-  getHash: getHashImpl,
-  getTimestamp: getTimestampImpl,
-  set: setImpl,
-  setHash: setHashImpl,
-  setTimestamp: setTimestampImpl,
-}: {
-  connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
-  disconnect?: () => Promise<void>;
-  get?: (address: Address) => Promise<Value>;
-  getTimestamp?: (address: Address) => Promise<Timestamp>;
-  getHash?: (address: Address) => Promise<Hash>;
-  set?: (address: Address, value: Value) => Promise<void>;
-  setTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
-  setHash?: (address: Address, hash: Hash) => Promise<void>;
-} = {}): ProtectedConnector => {
+export const createConnector: typeof createConnectorDecl = (
+  {
+    connect: connectImpl,
+    disconnect: disconnectImpl,
+    get: getImpl,
+    getHash: getHashImpl,
+    getTimestamp: getTimestampImpl,
+    set: setImpl,
+    setHash: setHashImpl,
+    setTimestamp: setTimestampImpl,
+  }: ConnectorImplementations = {},
+  options: ConnectorOptions = {},
+): ProtectedConnector => {
   let attachedSynclet: Synclet | undefined;
+  const logger = options.logger ?? {};
 
   // #region protected
 
@@ -71,7 +68,7 @@ export const createConnector: typeof createConnectorDecl = ({
   const getSyncletId = () => attachedSynclet?.getId();
 
   const log = (string: string, level: LogLevel = 'info') =>
-    attachedSynclet?.log('[connector] ' + string, level);
+    logger?.[level]?.(`[${getSyncletId()}/C] ${string}`);
 
   // #endregion
 

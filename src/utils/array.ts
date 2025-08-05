@@ -13,3 +13,10 @@ export const arrayForEach = <Value>(
   array: {forEach: (cb: (value: Value, index: number) => void) => void},
   cb: (value: Value, index: number) => void,
 ): void => array.forEach(cb);
+
+export const arrayPush = <Value>(array: Value[], ...values: Value[]): void => {
+  array.push(...values);
+};
+
+export const arrayShift = <Value>(array: Value[]): Value | undefined =>
+  array.shift();
