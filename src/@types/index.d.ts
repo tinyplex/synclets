@@ -8,7 +8,7 @@ export type Value = string | number | boolean | null | DeletedValue;
 
 export type Hash = number;
 
-export type Address = string[];
+export type Address = string;
 
 export type Logger = {
   error?: (string: string) => void;

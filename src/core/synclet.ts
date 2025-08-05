@@ -5,7 +5,7 @@ import type {
   Synclet,
   SyncletOptions,
 } from '@synclets/@types';
-import {getUniqueId, jsonStringify} from '@synclets/utils';
+import {getUniqueId} from '@synclets/utils';
 import {buildGiveMessage, buildHaveMessage, MessageType} from './message.ts';
 import type {
   Message,
@@ -37,18 +37,18 @@ export const createSynclet: typeof createSyncletDecl = ((
       const myHash = await connector.getHash(address);
       if (myHash !== hash && from && from !== '*' && from !== id) {
         if (type === MessageType.Have) {
-          logSlow(() => `recv HAVE ${jsonStringify(address)} from ${from}`);
+          log(`recv HAVE '${address}' from ${from}`);
           const myTimestamp = await connector.getTimestamp(address);
 
           if (timestamp > myTimestamp) {
-            logSlow(() => `send HAVE ${jsonStringify(address)} to ${from}`);
+            log(`send HAVE '${address}' to ${from}`);
 
             await sendMessage(
               buildHaveMessage(address, myTimestamp, myHash),
               from,
             );
           } else {
-            logSlow(() => `send GIVE ${jsonStringify(address)} to ${from}`);
+            log(`send GIVE '${address}' to ${from}`);
 
             const myValue = await connector.get(address);
             await sendMessage(
@@ -57,10 +57,10 @@ export const createSynclet: typeof createSyncletDecl = ((
             );
           }
         } else if (type === MessageType.Give) {
-          logSlow(() => `recv GIVE ${jsonStringify(address)} from ${from}`);
+          log(`recv GIVE '${address}' from ${from}`);
 
           if (timestamp > (await connector.getTimestamp(address))) {
-            logSlow(() => `set ${jsonStringify(address)} from ${from}`);
+            log(`set '${address}' from ${from}`);
             await connector.setTimestamp(address, timestamp);
             await connector.set(address, message.value);
             await connector.setHash(address, hash);
@@ -78,7 +78,7 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   const sync = (address: Address) =>
     queueIfStarted(async () => {
-      logSlow(() => `sync: ${jsonStringify(address)}`);
+      log(`sync: '${address}'`);
 
       await sendMessage(
         buildHaveMessage(
@@ -88,9 +88,6 @@ export const createSynclet: typeof createSyncletDecl = ((
         ),
       );
     });
-
-  const logSlow = (getString: () => string, level: LogLevel = 'info') =>
-    logger ? log(getString(), level) : 0;
 
   // #endregion
 
@@ -105,7 +102,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     await connector.connect(sync);
     await transport.connect(receiveMessage);
     started = true;
-    await sync([]);
+    await sync('');
   };
 
   const stop = async () => {
