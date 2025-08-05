@@ -10,7 +10,7 @@ import {createValueConnector} from 'synclets/connector/value';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getHash} from 'synclets/utils';
 
-const createTestValueConnector = (options: ConnectorOptions) => {
+const createTestValueConnector = (options?: ConnectorOptions) => {
   let underlyingValue: Value = 'V1';
   let underlyingHash: Hash = 0;
   let underlyingTimestamp: Timestamp = '';
@@ -75,28 +75,20 @@ const createTestValueConnector = (options: ConnectorOptions) => {
 };
 
 test('value sync', async () => {
-  const connector1 = createTestValueConnector({logger: console});
-  const connector2 = createTestValueConnector({logger: console});
-  const connector3 = createTestValueConnector({logger: console});
+  const connector1 = createTestValueConnector();
+  const connector2 = createTestValueConnector();
+  const connector3 = createTestValueConnector();
 
-  const synclet1 = createSynclet(
-    connector1,
-    createMemoryTransport({logger: console}),
-    {
-      id: '1',
-      logger: console,
-    },
-  );
+  const synclet1 = createSynclet(connector1, createMemoryTransport(), {
+    id: '1',
+    logger: console,
+  });
   await synclet1.start();
 
-  const synclet2 = createSynclet(
-    connector2,
-    createMemoryTransport({logger: console}),
-    {
-      id: '2',
-      logger: console,
-    },
-  );
+  const synclet2 = createSynclet(connector2, createMemoryTransport(), {
+    id: '2',
+    logger: console,
+  });
   await synclet2.start();
 
   expect(connector1.getUnderlyingValue()).toEqual(
@@ -106,14 +98,10 @@ test('value sync', async () => {
   await connector1.setUnderlyingValue('V2');
   expect(connector2.getUnderlyingValue()).toEqual('V2');
 
-  const synclet3 = createSynclet(
-    connector3,
-    createMemoryTransport({logger: console}),
-    {
-      id: '3',
-      logger: console,
-    },
-  );
+  const synclet3 = createSynclet(connector3, createMemoryTransport(), {
+    id: '3',
+    logger: console,
+  });
   await synclet3.start();
 
   expect(connector3.getUnderlyingValue()).toEqual('V2');

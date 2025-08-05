@@ -5,20 +5,14 @@ import type {
   Synclet,
   SyncletOptions,
 } from '@synclets/@types';
-import {
-  arrayPush,
-  arrayShift,
-  getUniqueId,
-  jsonStringify,
-} from '@synclets/utils';
+import {getUniqueId, jsonStringify} from '@synclets/utils';
 import {buildGiveMessage, buildHaveMessage, MessageType} from './message.ts';
 import type {
   Message,
   ProtectedConnector,
   ProtectedTransport,
 } from './protected.d.ts';
-
-type QueueTask = () => Promise<any>;
+import {getQueue} from './queue.ts';
 
 export const createSynclet: typeof createSyncletDecl = ((
   connector: ProtectedConnector,
@@ -27,50 +21,35 @@ export const createSynclet: typeof createSyncletDecl = ((
 ): Synclet => {
   let started = false;
 
-  let queueRunning = false;
-  const queueTasks: QueueTask[] = [];
-
   const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};
+  const queue = getQueue();
 
-  const queue = async (task: QueueTask): Promise<void> => {
-    arrayPush(queueTasks, task);
-    await run();
-  };
-
-  const run = async (): Promise<void> => {
-    if (!queueRunning) {
-      queueRunning = true;
-      let action;
-      while ((action = arrayShift(queueTasks)) != null) {
-        await action();
-      }
-      queueRunning = false;
-    }
-  };
-
-  const ifStarted = async (actions: () => Promise<void>) => {
+  const queueIfStarted = async (actions: () => Promise<void>) => {
     if (started) {
-      await actions();
+      await queue(actions);
     }
   };
 
   const receiveMessage = (message: Message, from: string) =>
-    ifStarted(async () => {
+    queueIfStarted(async () => {
       const {type, address, timestamp, hash} = message;
       const myHash = await connector.getHash(address);
       if (myHash !== hash && from && from !== '*' && from !== id) {
         if (type === MessageType.Have) {
-          const myTimestamp = await connector.getTimestamp(address);
           logSlow(() => `recv HAVE ${jsonStringify(address)} from ${from}`);
+          const myTimestamp = await connector.getTimestamp(address);
+
           if (timestamp > myTimestamp) {
             logSlow(() => `send HAVE ${jsonStringify(address)} to ${from}`);
+
             await sendMessage(
               buildHaveMessage(address, myTimestamp, myHash),
               from,
             );
-          } else if (timestamp < myTimestamp) {
+          } else {
             logSlow(() => `send GIVE ${jsonStringify(address)} to ${from}`);
+
             const myValue = await connector.get(address);
             await sendMessage(
               buildGiveMessage(address, myValue, myTimestamp, myHash),
@@ -79,29 +58,28 @@ export const createSynclet: typeof createSyncletDecl = ((
           }
         } else if (type === MessageType.Give) {
           logSlow(() => `recv GIVE ${jsonStringify(address)} from ${from}`);
-          queue(async () => {
-            const myTimestamp = await connector.getTimestamp(address);
-            if (timestamp > myTimestamp) {
-              logSlow(() => `set ${jsonStringify(address)} from ${from}`);
-              await connector.setTimestamp(address, timestamp);
-              await connector.set(address, message.value);
-              await connector.setHash(address, hash);
-            }
-          });
+
+          if (timestamp > (await connector.getTimestamp(address))) {
+            logSlow(() => `set ${jsonStringify(address)} from ${from}`);
+            await connector.setTimestamp(address, timestamp);
+            await connector.set(address, message.value);
+            await connector.setHash(address, hash);
+          }
         }
       }
     });
 
   const sendMessage = (message: Message, to?: string) =>
-    ifStarted(async () => {
+    queueIfStarted(async () => {
       await transport.sendMessage(message, to);
     });
 
   // #region protected
 
   const sync = (address: Address) =>
-    ifStarted(async () => {
+    queueIfStarted(async () => {
       logSlow(() => `sync: ${jsonStringify(address)}`);
+
       await sendMessage(
         buildHaveMessage(
           address,
