@@ -24,7 +24,7 @@ export const createValueConnector: typeof createValueConnectorDecl = (
   options?: ConnectorOptions,
 ): Connector => {
   const connect = async (sync: (address: Address) => Promise<void>) =>
-    await connectImpl?.(() => sync(''));
+    await connectImpl?.(() => sync([]));
 
   const get = async (): Promise<Value> => (await getValue?.()) ?? null;
 

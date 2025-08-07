@@ -15,13 +15,8 @@ type HaveNodes = Hash | [Hash, {[id: string]: HaveNodes}];
 type GiveNodes = [Hash, {[id: string]: [Timestamp, Value] | GiveNodes}];
 
 export type Message =
-  | [type: MessageType.HaveNode, address: Address, timestamp: Timestamp]
-  | [
-      type: MessageType.GiveNode,
-      address: Address,
-      timestamp: Timestamp,
-      value: Value,
-    ];
+  | [type: MessageType.HaveNode, timestamp: Timestamp]
+  | [type: MessageType.GiveNode, timestamp: Timestamp, value: Value];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
