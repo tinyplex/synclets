@@ -20,31 +20,22 @@ export type LogLevel = keyof Logger;
 
 export interface Synclet {
   __brand: 'Synclet';
-
   getId(): string;
-
   getStarted(): boolean;
-
   start(): Promise<void>;
-
   stop(): Promise<void>;
-
   log(message: string, level?: LogLevel): void;
 }
 
 export interface Connector {
   __brand: 'Connector';
-
   getSyncletId(): string | undefined;
-
   log(message: string, level?: LogLevel): void;
 }
 
 export interface Transport {
   __brand: 'Transport';
-
   getSyncletId(): string | undefined;
-
   log(message: string, level?: LogLevel): void;
 }
 

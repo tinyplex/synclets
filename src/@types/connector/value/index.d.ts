@@ -7,15 +7,17 @@ import type {
   Value,
 } from '../../index.d.ts';
 
+export type ValueConnectorImplementations = {
+  connect?: (valueSync: () => Promise<void>) => Promise<void>;
+  getValue?: () => Promise<Value>;
+  getValueHash?: () => Promise<number>;
+  getValueTimestamp?: () => Promise<Timestamp>;
+  setValue?: (value: Value) => Promise<void>;
+  setValueHash?: (hash: number) => Promise<void>;
+  setValueTimestamp?: (timestamp: Timestamp) => Promise<void>;
+};
+
 export function createValueConnector(
-  implementations?: {
-    connect?: (valueSync: () => Promise<void>) => Promise<void>;
-    getValue?: () => Promise<Value>;
-    getValueHash?: () => Promise<number>;
-    getValueTimestamp?: () => Promise<Timestamp>;
-    setValue?: (value: Value) => Promise<void>;
-    setValueHash?: (hash: number) => Promise<void>;
-    setValueTimestamp?: (timestamp: Timestamp) => Promise<void>;
-  },
+  implementations?: ValueConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;

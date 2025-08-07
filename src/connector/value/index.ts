@@ -6,7 +6,10 @@ import type {
   Timestamp,
   Value,
 } from '@synclets/@types';
-import type {createValueConnector as createValueConnectorDecl} from '@synclets/@types/connector/value';
+import type {
+  createValueConnector as createValueConnectorDecl,
+  ValueConnectorImplementations,
+} from '@synclets/@types/connector/value';
 
 export const createValueConnector: typeof createValueConnectorDecl = (
   {
@@ -17,15 +20,7 @@ export const createValueConnector: typeof createValueConnectorDecl = (
     setValue,
     setValueTimestamp,
     setValueHash,
-  }: {
-    connect?: (valueSync: () => Promise<void>) => Promise<void>;
-    getValue?: () => Promise<Value>;
-    getValueTimestamp?: () => Promise<Timestamp>;
-    getValueHash?: () => Promise<number>;
-    setValue?: (value: Value) => Promise<void>;
-    setValueTimestamp?: (timestamp: Timestamp) => Promise<void>;
-    setValueHash?: (hash: number) => Promise<void>;
-  } = {},
+  }: ValueConnectorImplementations = {},
   options?: ConnectorOptions,
 ): Connector => {
   const connect = async (sync: (address: Address) => Promise<void>) =>
