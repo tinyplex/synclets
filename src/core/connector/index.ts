@@ -22,6 +22,7 @@ export const createConnector: typeof createConnectorDecl = (
     set: setImpl,
     setHash: setHashImpl,
     setTimestamp: setTimestampImpl,
+    hasChildren: hasChildrenImpl,
   }: ConnectorImplementations = {},
   options: ConnectorOptions = {},
 ): ProtectedConnector => {
@@ -61,6 +62,9 @@ export const createConnector: typeof createConnectorDecl = (
   const setHash = async (address: Address, hash: Hash) =>
     await setHashImpl?.(address, hash);
 
+  const hasChildren = async (address: Address) =>
+    (await hasChildrenImpl?.(address)) ?? false;
+
   // #endregion
 
   // #region public
@@ -84,6 +88,7 @@ export const createConnector: typeof createConnectorDecl = (
     set,
     setTimestamp,
     setHash,
+    hasChildren,
 
     getSyncletId,
     log,

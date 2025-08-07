@@ -1,32 +1,20 @@
-import {Address, Hash, Timestamp, Value} from '@synclets/@types';
+import {Address, Timestamp, Value} from '@synclets/@types';
 import type {Message} from './protected.d.ts';
 
 export enum MessageType {
-  Response = 0,
-  Have = 1,
-  Give = 2,
+  HaveNode = 1,
+  HaveNodes = 2,
+  GiveNode = 3,
+  GiveNodes = 4,
 }
 
-export const buildHaveMessage = (
+export const encodeHaveNode = (
   address: Address,
   timestamp: Timestamp,
-  hash: Hash,
-): Message => ({
-  type: MessageType.Have,
-  address,
-  timestamp,
-  hash,
-});
+): Message => [MessageType.HaveNode, address, timestamp];
 
-export const buildGiveMessage = (
+export const encodeGiveNode = (
   address: Address,
-  value: Value,
   timestamp: Timestamp,
-  hash: Hash,
-): Message => ({
-  type: MessageType.Give,
-  address,
-  value,
-  timestamp,
-  hash,
-});
+  value: Value,
+): Message => [MessageType.GiveNode, address, timestamp, value];

@@ -6,7 +6,7 @@ import type {
   SyncletOptions,
 } from '@synclets/@types';
 import {getUniqueId} from '@synclets/utils';
-import {buildGiveMessage, buildHaveMessage, MessageType} from './message.ts';
+import {encodeGiveNode, encodeHaveNode, MessageType} from './message.ts';
 import type {
   Message,
   ProtectedConnector,
@@ -33,37 +33,35 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   const receiveMessage = (message: Message, from: string) =>
     queueIfStarted(async () => {
-      const {type, address, timestamp, hash} = message;
-      const myHash = await connector.getHash(address);
-      if (myHash !== hash && from && from !== '*' && from !== id) {
-        if (type === MessageType.Have) {
-          log(`recv HAVE '${address}' from ${from}`);
-          const myTimestamp = await connector.getTimestamp(address);
-
-          if (timestamp > myTimestamp) {
-            log(`send HAVE '${address}' to ${from}`);
-
-            await sendMessage(
-              buildHaveMessage(address, myTimestamp, myHash),
-              from,
-            );
-          } else {
-            log(`send GIVE '${address}' to ${from}`);
-
-            const myValue = await connector.get(address);
-            await sendMessage(
-              buildGiveMessage(address, myValue, myTimestamp, myHash),
-              from,
-            );
+      if (from !== '*' && from !== id) {
+        const [type, address] = message;
+        switch (type) {
+          case MessageType.HaveNode: {
+            log(`recv HaveNode '${address}' from ${from}`);
+            const [, , timestamp] = message;
+            const myTimestamp = await connector.getTimestamp(address);
+            if (timestamp > myTimestamp) {
+              log(`send HaveNode '${address}' to ${from}`);
+              await sendMessage(encodeHaveNode(address, myTimestamp), from);
+            } else if (timestamp < myTimestamp) {
+              log(`send GiveNode '${address}' to ${from}`);
+              const myValue = await connector.get(address);
+              await sendMessage(
+                encodeGiveNode(address, myTimestamp, myValue),
+                from,
+              );
+            }
+            break;
           }
-        } else if (type === MessageType.Give) {
-          log(`recv GIVE '${address}' from ${from}`);
-
-          if (timestamp > (await connector.getTimestamp(address))) {
-            log(`set '${address}' from ${from}`);
-            await connector.setTimestamp(address, timestamp);
-            await connector.set(address, message.value);
-            await connector.setHash(address, hash);
+          case MessageType.GiveNode: {
+            const [, , timestamp, value] = message;
+            log(`recv GiveNode '${address}' from ${from}`);
+            if (timestamp > (await connector.getTimestamp(address))) {
+              log(`set '${address}' from ${from}`);
+              await connector.set(address, value);
+              await connector.setTimestamp(address, timestamp);
+            }
+            break;
           }
         }
       }
@@ -79,13 +77,8 @@ export const createSynclet: typeof createSyncletDecl = ((
   const sync = (address: Address) =>
     queueIfStarted(async () => {
       log(`sync: '${address}'`);
-
       await sendMessage(
-        buildHaveMessage(
-          address,
-          await connector.getTimestamp(address),
-          await connector.getHash(address),
-        ),
+        encodeHaveNode(address, await connector.getTimestamp(address)),
       );
     });
 

@@ -63,6 +63,7 @@ export type ConnectorImplementations = {
   set?: (address: Address, value: Value) => Promise<void>;
   setHash?: (address: Address, hash: Hash) => Promise<void>;
   setTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
+  hasChildren?: (address: Address) => Promise<boolean>;
 };
 
 export function createConnector(

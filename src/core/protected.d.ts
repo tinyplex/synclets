@@ -9,22 +9,19 @@ import type {
 } from '@synclets/@types';
 import type {MessageType} from './message.ts';
 
-type Node = Value;
+type NodeValue = Value;
+
+type HaveNodes = Hash | [Hash, {[id: string]: HaveNodes}];
+type GiveNodes = [Hash, {[id: string]: [Timestamp, Value] | GiveNodes}];
 
 export type Message =
-  | {
-      type: MessageType.Have;
-      address: Address;
-      timestamp: Timestamp;
-      hash: Hash;
-    }
-  | {
-      type: MessageType.Give;
-      address: Address;
-      value: Value;
-      timestamp: Timestamp;
-      hash: Hash;
-    };
+  | [type: MessageType.HaveNode, address: Address, timestamp: Timestamp]
+  | [
+      type: MessageType.GiveNode,
+      address: Address,
+      timestamp: Timestamp,
+      value: Value,
+    ];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
@@ -32,12 +29,13 @@ export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: Synclet): void;
   connect(change: (address: Address) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
-  get(address: Address): Promise<Node>;
+  get(address: Address): Promise<NodeValue>;
   getHash(address: Address): Promise<Hash>;
   getTimestamp(address: Address): Promise<Timestamp>;
-  set(address: Address, value: Node): Promise<void>;
+  set(address: Address, value: NodeValue): Promise<void>;
   setHash(address: Address, hash: Hash): Promise<void>;
   setTimestamp(address: Address, timestamp: Timestamp): Promise<void>;
+  hasChildren(address: Address): Promise<boolean>;
 }
 
 export interface ProtectedTransport extends Transport {
