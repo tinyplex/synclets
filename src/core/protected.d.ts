@@ -11,12 +11,16 @@ import type {MessageType} from './message.ts';
 
 type NodeValue = Value;
 
-type HaveNodes = Hash | [Hash, {[id: string]: HaveNodes}];
-type GiveNodes = [Hash, {[id: string]: [Timestamp, Value] | GiveNodes}];
-
 export type Message =
-  | [type: MessageType.HaveNode, timestamp: Timestamp]
-  | [type: MessageType.GiveNode, timestamp: Timestamp, value: Value];
+  | [type: MessageType.Timestamp, timestamp: Timestamp]
+  | [type: MessageType.TimestampAndValue, timestamp: Timestamp, value: Value]
+  | [type: MessageType.Hash, hash: Hash]
+  | [type: MessageType.Timestamps, timestamps: {[id: string]: Timestamp}]
+  | [
+      type: MessageType.TimestampsAndValues,
+      timestampsAndValues: {[id: string]: [timestamp: Timestamp, value: Value]},
+      needIds: string[],
+    ];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
@@ -31,6 +35,7 @@ export interface ProtectedConnector extends Connector {
   setHash(address: Address, hash: Hash): Promise<void>;
   setTimestamp(address: Address, timestamp: Timestamp): Promise<void>;
   hasChildren(address: Address): Promise<boolean>;
+  getChildren(address: Address): Promise<string[]>;
 }
 
 export interface ProtectedTransport extends Transport {

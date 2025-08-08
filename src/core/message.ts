@@ -1,6 +1,10 @@
 export enum MessageType {
-  HaveNode = 1,
-  HaveNodes = 2,
-  GiveNode = 3,
-  GiveNodes = 4,
+  // value
+  Timestamp = 1,
+  TimestampAndValue = 2,
+
+  // values
+  Hash = 3,
+  Timestamps = 4,
+  TimestampsAndValues = 5,
 }

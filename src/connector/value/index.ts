@@ -16,10 +16,8 @@ export const createValueConnector: typeof createValueConnectorDecl = (
     connect: connectImpl,
     getValue,
     getValueTimestamp,
-    getValueHash,
     setValue,
     setValueTimestamp,
-    setValueHash,
   }: ValueConnectorImplementations = {},
   options?: ConnectorOptions,
 ): Connector => {
@@ -31,8 +29,6 @@ export const createValueConnector: typeof createValueConnectorDecl = (
   const getTimestamp = async (): Promise<Timestamp> =>
     (await getValueTimestamp?.()) ?? '';
 
-  const getHash = async (): Promise<number> => (await getValueHash?.()) ?? 0;
-
   const set = async (_address: Address, value: Value): Promise<void> =>
     await setValue?.(value);
 
@@ -41,19 +37,8 @@ export const createValueConnector: typeof createValueConnectorDecl = (
     timestamp: Timestamp,
   ): Promise<void> => await setValueTimestamp?.(timestamp);
 
-  const setHash = async (_address: Address, hash: number): Promise<void> =>
-    await setValueHash?.(hash);
-
   return createConnector(
-    {
-      connect,
-      get,
-      getTimestamp,
-      getHash,
-      set,
-      setTimestamp,
-      setHash,
-    },
+    {connect, get, getTimestamp, set, setTimestamp},
     options,
   );
 };
