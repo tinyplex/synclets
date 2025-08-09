@@ -1,17 +1,11 @@
-import console from 'console';
-import {
-  ConnectorOptions,
-  createSynclet,
-  Hash,
-  Timestamp,
-  Value,
-} from 'synclets';
+import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
 import {createValuesConnector} from 'synclets/connector/values';
-import {createMemoryTransport} from 'synclets/transport/memory';
+import {getHash} from 'synclets/utils';
+import {getTestSyncletsAndConnectors} from './common.ts';
 
 const createTestValuesConnector = (options?: ConnectorOptions) => {
-  const underlyingValues: {[id: string]: Value} = {v1: 'V1'};
-  const underlyingTimestamps: {[id: string]: Timestamp} = {v1: ''};
+  const underlyingValues: {[id: string]: Value} = {};
+  const underlyingTimestamps: {[id: string]: Timestamp} = {};
   let underlyingHash: Hash = 0;
   let underlyingValuesSync: (() => Promise<void>) | undefined;
 
@@ -46,9 +40,10 @@ const createTestValuesConnector = (options?: ConnectorOptions) => {
   const getUnderlyingValues = () => underlyingValues;
 
   const setUnderlyingValue = async (id: string, value: Value) => {
+    const timestamp = connector.getNextTimestamp();
     underlyingValues[id] = value;
-    underlyingTimestamps[id] = new Date().toISOString();
-    underlyingHash++;
+    underlyingTimestamps[id] = timestamp;
+    underlyingHash ^= getHash(timestamp);
     await underlyingValuesSync?.();
   };
 
@@ -72,47 +67,172 @@ const createTestValuesConnector = (options?: ConnectorOptions) => {
   };
 };
 
-test('values sync', async () => {
-  const connector1 = createTestValuesConnector();
-  const connector2 = createTestValuesConnector();
-  const connector3 = createTestValuesConnector();
+describe('values sync, basics', () => {
+  test('connected, initial', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
 
-  const synclet1 = createSynclet(
-    connector1,
-    createMemoryTransport({logger: console}),
-    {
-      id: '1',
-      logger: console,
-    },
-  );
-  await synclet1.start();
+    await synclet1.start();
+    await synclet2.start();
 
-  const synclet2 = createSynclet(
-    connector2,
-    createMemoryTransport({logger: console}),
-    {
-      id: '2',
-      logger: console,
-    },
-  );
-  await synclet2.start();
+    expect(connector1.getUnderlyingValues()).toEqual(
+      connector2.getUnderlyingValues(),
+    );
+  });
 
-  expect(connector1.getUnderlyingValues()).toEqual(
-    connector2.getUnderlyingValues(),
-  );
+  test('connected', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
 
-  await connector1.setUnderlyingValue('v1', 'V2');
-  expect(connector2.getUnderlyingValues()).toEqual({v1: 'V2'});
+    await synclet1.start();
+    await synclet2.start();
 
-  const synclet3 = createSynclet(
-    connector3,
-    createMemoryTransport({logger: console}),
-    {
-      id: '3',
-      logger: console,
-    },
-  );
-  await synclet3.start();
+    await connector1.setUnderlyingValue('v1', 'V1');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V1'});
 
-  expect(connector3.getUnderlyingValues()).toEqual({v1: 'V2'});
+    await connector2.setUnderlyingValue('v1', 'V2');
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V2'});
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V2'});
+  });
+
+  test('start 1, set 1, start 2', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await synclet1.start();
+
+    await connector1.setUnderlyingValue('v1', 'V1');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({});
+
+    await synclet2.start();
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V1'});
+  });
+
+  test('start 2, set 1, start 1', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await synclet2.start();
+    await connector1.setUnderlyingValue('v1', 'V1');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({});
+
+    await synclet1.start();
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V1'});
+  });
+
+  test('stop 1, set 1, start 1', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await synclet1.start();
+    await synclet2.start();
+
+    await connector1.setUnderlyingValue('v1', 'V1');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V1'});
+
+    await synclet1.stop();
+    await connector1.setUnderlyingValue('v1', 'V2');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V2'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V1'});
+
+    await synclet1.start();
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V2'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V2'});
+  });
+
+  test('stop 1, set 2, start 1', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await synclet1.start();
+    await synclet2.start();
+
+    await connector1.setUnderlyingValue('v1', 'V1');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V1'});
+
+    await synclet1.stop();
+    await connector2.setUnderlyingValue('v1', 'V2');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V2'});
+
+    await synclet1.start();
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V2'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V2'});
+  });
+
+  test('set 1, set 2, start 2, start 1', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await connector1.setUnderlyingValue('v1', 'V1');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({});
+
+    await connector2.setUnderlyingValue('v1', 'V2');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V2'});
+
+    await synclet2.start();
+    await synclet1.start();
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V2'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V2'});
+  });
+});
+
+describe('values sync, multiple values', () => {
+  test('connected, different values', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await synclet1.start();
+    await synclet2.start();
+
+    await connector1.setUnderlyingValue('v1', 'V1');
+    await connector2.setUnderlyingValue('v2', 'V2');
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1', v2: 'V2'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V1', v2: 'V2'});
+  });
+
+  test('disconnected, different values', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await connector1.setUnderlyingValue('v1', 'V1');
+    await connector2.setUnderlyingValue('v2', 'V2');
+
+    await synclet1.start();
+    await synclet2.start();
+    expect(connector1.getUnderlyingValues()).toEqual({v1: 'V1', v2: 'V2'});
+    expect(connector2.getUnderlyingValues()).toEqual({v1: 'V1', v2: 'V2'});
+  });
+
+  test('disconnected, conflicting values', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await connector1.setUnderlyingValue('v1', 'V1');
+    await connector2.setUnderlyingValue('v2', 'V2');
+    await connector1.setUnderlyingValue('v2', 'V3');
+    await connector2.setUnderlyingValue('v3', 'V3');
+
+    await synclet1.start();
+    await synclet2.start();
+    expect(connector1.getUnderlyingValues()).toEqual({
+      v1: 'V1',
+      v2: 'V3',
+      v3: 'V3',
+    });
+    expect(connector2.getUnderlyingValues()).toEqual({
+      v1: 'V1',
+      v2: 'V3',
+      v3: 'V3',
+    });
+  });
 });

@@ -30,6 +30,7 @@ export const getHlcFunctions: typeof getHlcFunctionsDecl = (
 ): [
   getNextHlc: () => Hlc,
   seenHlc: (remoteHlc: Hlc) => void,
+  setUniqueId: (uniqueId: string) => void,
   encodeHlc: (logicalTime: number, counter: number, clientId?: string) => Hlc,
   decodeHlc: (
     hlc: Hlc,
@@ -41,7 +42,7 @@ export const getHlcFunctions: typeof getHlcFunctionsDecl = (
   let lastLogicalTime = 0;
   let lastCounter = -1;
 
-  const thisClientId = ifNotUndefined(uniqueId, getClientIdFromUniqueId, () =>
+  let thisClientId = ifNotUndefined(uniqueId, getClientIdFromUniqueId, () =>
     getUniqueId(5),
   ) as string;
 
@@ -65,10 +66,14 @@ export const getHlcFunctions: typeof getHlcFunctionsDecl = (
           : -1;
   };
 
+  const setUniqueId = (uniqueId: string) => {
+    thisClientId = getClientIdFromUniqueId(uniqueId);
+  };
+
   const encodeHlc = (
     logicalTime42: number,
     counter24: number,
-    clientId?: string,
+    uniqueId?: string,
   ) =>
     encode(logicalTime42 / SHIFT36) +
     encode(logicalTime42 / SHIFT30) +
@@ -81,7 +86,7 @@ export const getHlcFunctions: typeof getHlcFunctionsDecl = (
     encode(counter24 / SHIFT12) +
     encode(counter24 / SHIFT6) +
     encode(counter24) +
-    (isUndefined(clientId) ? thisClientId : getClientIdFromUniqueId(clientId));
+    (isUndefined(uniqueId) ? thisClientId : getClientIdFromUniqueId(uniqueId));
 
   const decodeHlc = (
     hlc16: Hlc,
@@ -109,6 +114,7 @@ export const getHlcFunctions: typeof getHlcFunctionsDecl = (
   return [
     getNextHlc,
     seenHlc,
+    setUniqueId,
     encodeHlc,
     decodeHlc,
     getLastLogicalTime,

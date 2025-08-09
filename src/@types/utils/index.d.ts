@@ -16,7 +16,8 @@ export function getHlcFunctions(
 ): [
   getNextHlc: () => Hlc,
   seenHlc: (remoteHlc: Hlc) => void,
-  encodeHlc: (logicalTime: number, counter: number, clientId?: string) => Hlc,
+  setUniqueId: (uniqueId: string) => void,
+  encodeHlc: (logicalTime: number, counter: number, uniqueId?: string) => Hlc,
   decodeHlc: (
     hlc: Hlc,
   ) => [logicalTime: number, counter: number, clientId: string],

@@ -9,7 +9,7 @@ import type {
   Value,
   createConnector as createConnectorDecl,
 } from '@synclets/@types';
-import {errorNew} from '@synclets/utils';
+import {errorNew, getHlcFunctions} from '@synclets/utils';
 import type {ProtectedConnector} from '../protected.d.ts';
 export const createConnector: typeof createConnectorDecl = (
   {
@@ -28,6 +28,7 @@ export const createConnector: typeof createConnectorDecl = (
 ): ProtectedConnector => {
   let attachedSynclet: Synclet | undefined;
   const logger = options.logger ?? {};
+  const [getNextTimestamp, seenTimestamp, setUniqueId] = getHlcFunctions();
 
   // #region protected
 
@@ -36,6 +37,7 @@ export const createConnector: typeof createConnectorDecl = (
       errorNew('Connector is already attached to Synclet ' + getSyncletId());
     }
     attachedSynclet = synclet;
+    setUniqueId(getSyncletId()!);
   };
 
   const connect = async (sync: (address: Address) => Promise<void>) =>
@@ -54,8 +56,10 @@ export const createConnector: typeof createConnectorDecl = (
   const set = async (address: Address, value: Value) =>
     await setImpl?.(address, value);
 
-  const setTimestamp = async (address: Address, timestamp: Timestamp) =>
+  const setTimestamp = async (address: Address, timestamp: Timestamp) => {
+    seenTimestamp(timestamp);
     await setTimestampImpl?.(address, timestamp);
+  };
 
   const setHash = async (address: Address, hash: Hash) =>
     await setHashImpl?.(address, hash);
@@ -93,6 +97,7 @@ export const createConnector: typeof createConnectorDecl = (
     getChildren,
 
     getSyncletId,
+    getNextTimestamp,
     log,
   };
 };

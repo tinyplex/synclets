@@ -31,6 +31,7 @@ export interface Synclet {
 export interface Connector {
   __brand: 'Connector';
   getSyncletId(): string | undefined;
+  getNextTimestamp(): Timestamp;
   log(message: string, level?: LogLevel): void;
 }
 
