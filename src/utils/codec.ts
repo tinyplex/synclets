@@ -1,5 +1,6 @@
 import {Hash} from '@synclets/@types';
 import {arrayForEach, arrayMap, arrayReduce} from './array.ts';
+import {mapGet, mapNew} from './map.ts';
 import {GLOBAL, math, mathFloor} from './other.ts';
 import {EMPTY_STRING, strSplit} from './string.ts';
 
@@ -9,14 +10,20 @@ const MASK6 = 63;
 const ENCODE = /* @__PURE__ */ strSplit(
   '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz',
 );
-
-const encode = (num: number): string => ENCODE[num & MASK6];
+const DECODE = /* @__PURE__ */ mapNew(
+  /* @__PURE__ */ arrayMap(ENCODE, (char, index) => [char, index]),
+) as any;
 
 const getRandomValues = GLOBAL.crypto
   ? (array: Uint8Array): Uint8Array => GLOBAL.crypto.getRandomValues(array)
   : /*! istanbul ignore next */
     (array: Uint8Array): Uint8Array =>
       arrayMap(array as any, () => mathFloor(math.random() * 256)) as any;
+
+export const encode = (num: number): string => ENCODE[num & MASK6];
+
+export const decode = (str: string, pos: number): number =>
+  mapGet(DECODE, str[pos]) ?? 0;
 
 export const getUniqueId = (length = 16): string =>
   arrayReduce<number, string>(
