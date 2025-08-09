@@ -11,7 +11,6 @@ import type {
 } from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
 import type {ProtectedConnector} from '../protected.d.ts';
-
 export const createConnector: typeof createConnectorDecl = (
   {
     connect: connectImpl,
@@ -34,9 +33,7 @@ export const createConnector: typeof createConnectorDecl = (
 
   const attachToSynclet = (synclet: Synclet) => {
     if (attachedSynclet) {
-      errorNew(
-        'Connector is already attached to Synclet ' + attachedSynclet.getId(),
-      );
+      errorNew('Connector is already attached to Synclet ' + getSyncletId());
     }
     attachedSynclet = synclet;
   };

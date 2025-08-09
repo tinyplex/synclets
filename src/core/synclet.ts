@@ -15,7 +15,7 @@ import type {
   ProtectedConnector,
   ProtectedTransport,
 } from './protected.d.ts';
-import {getQueue} from './queue.ts';
+import {getQueueFunctions} from './queue.ts';
 
 export const createSynclet: typeof createSyncletDecl = ((
   connector: ProtectedConnector,
@@ -26,7 +26,7 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};
-  const queue = getQueue();
+  const [queue, getQueueState] = getQueueFunctions();
 
   const queueIfStarted = async (actions: () => Promise<void>) => {
     if (started) {
@@ -123,9 +123,9 @@ export const createSynclet: typeof createSyncletDecl = ((
     log(`recv Timestamp from ${from}`);
     const myTimestamp = await connector.getTimestamp([]);
     if (otherTimestamp > myTimestamp) {
-      sendTimestamp(myTimestamp, from);
+      await sendTimestamp(myTimestamp, from);
     } else if (otherTimestamp < myTimestamp) {
-      sendTimestampAndValue(myTimestamp, await connector.get([]), from);
+      await sendTimestampAndValue(myTimestamp, await connector.get([]), from);
     }
   };
 
@@ -136,8 +136,9 @@ export const createSynclet: typeof createSyncletDecl = ((
   ) => {
     log(`recv TimestampAndValue from ${from}`);
     if (timestamp > (await connector.getTimestamp([]))) {
-      log(`set from ${from}`);
+      log(`set ${value} from ${from}`);
       await connector.set([], value);
+      await connector.setTimestamp([], timestamp);
     }
   };
 
@@ -151,7 +152,7 @@ export const createSynclet: typeof createSyncletDecl = ((
           timestamps[id] = await connector.getTimestamp([id]);
         }),
       );
-      sendTimestamps(timestamps, from);
+      await sendTimestamps(timestamps, from);
     }
   };
 
@@ -205,6 +206,7 @@ export const createSynclet: typeof createSyncletDecl = ((
         if (timestamp > (await connector.getTimestamp([id]))) {
           log(`set ${value} from ${from}`);
           await connector.set([id], value);
+          await connector.setTimestamp([id], timestamp);
         }
       }),
     );
@@ -256,6 +258,7 @@ export const createSynclet: typeof createSyncletDecl = ((
 
     getId,
     getStarted,
+    getQueueState,
     start,
     stop,
     log,

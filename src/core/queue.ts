@@ -2,23 +2,25 @@ import {arrayPush, arrayShift} from '@synclets/utils';
 
 type Task = () => Promise<any>;
 
-export const getQueue = (): ((task: Task) => Promise<void>) => {
+export const getQueueFunctions = (): [
+  queue: (task: Task) => Promise<void>,
+  getQueueState: () => [number, boolean],
+] => {
   let queueRunning = false;
   const queueTasks: Task[] = [];
 
-  const run = async (): Promise<void> => {
-    if (!queueRunning) {
-      queueRunning = true;
-      let action;
-      while ((action = arrayShift(queueTasks)) != null) {
-        await action();
+  return [
+    async (task: Task): Promise<void> => {
+      arrayPush(queueTasks, task);
+      if (!queueRunning) {
+        queueRunning = true;
+        let action;
+        while ((action = arrayShift(queueTasks)) != null) {
+          await action();
+        }
+        queueRunning = false;
       }
-      queueRunning = false;
-    }
-  };
-
-  return async (task: Task): Promise<void> => {
-    arrayPush(queueTasks, task);
-    await run();
-  };
+    },
+    () => [queueTasks.length, queueRunning],
+  ];
 };

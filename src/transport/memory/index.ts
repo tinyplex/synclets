@@ -6,6 +6,7 @@ import {
 import type {Transport, TransportOptions} from '@synclets/@types';
 import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/transport/memory';
 import {
+  getUniqueId,
   mapDel,
   mapEnsure,
   mapGet,
@@ -21,25 +22,26 @@ const pools: Map<string, Pool> = mapNew();
 export const createMemoryTransport: typeof createMemoryTransportDecl = (
   options: TransportOptions & {poolId?: string} = {},
 ): Transport => {
+  const id = getUniqueId();
   const pool = mapEnsure(pools, options.poolId ?? 'default', mapNew) as Pool;
 
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
-    mapSet(pool, transport.getSyncletId(), receivePacket);
+    mapSet(pool, id, receivePacket);
   };
 
   const disconnect = async (): Promise<void> => {
-    mapDel(pool, transport.getSyncletId());
+    mapDel(pool, id);
   };
 
   const sendPacket = async (packet: string): Promise<void> => {
     const [to, body] = getPartsFromPacket(packet);
-    const newPacket = getPacketFromParts(transport.getSyncletId() ?? '*', body);
+    const newPacket = getPacketFromParts(id ?? '*', body);
     if (to === '*') {
       await Promise.all(
-        mapMap(pool, async (other, receive) => {
-          if (other !== transport.getSyncletId()) {
+        mapMap(pool, async (otherId, receive) => {
+          if (otherId !== id) {
             await receive(newPacket);
           }
         }),

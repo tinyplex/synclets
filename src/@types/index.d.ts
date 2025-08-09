@@ -22,6 +22,7 @@ export interface Synclet {
   __brand: 'Synclet';
   getId(): string;
   getStarted(): boolean;
+  getQueueState(): [number, boolean];
   start(): Promise<void>;
   stop(): Promise<void>;
   log(message: string, level?: LogLevel): void;
