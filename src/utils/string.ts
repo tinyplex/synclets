@@ -1,4 +1,5 @@
 export const EMPTY_STRING = '';
+export const ASTERISK = '*';
 
 export const strSplit = (
   str: string,

@@ -4,11 +4,13 @@ import type {
   LogLevel,
 } from '@synclets/@types';
 import {
+  ASTERISK,
   getUniqueId,
   jsonParse,
   jsonStringify,
   mapEnsure,
   mapNew,
+  promiseAll,
 } from '@synclets/utils';
 import type {Message, ReceiveMessage} from '../protected.d.ts';
 
@@ -72,7 +74,7 @@ export const getPacketFunctions = (
 
   const sendPackets = async (
     message: Message,
-    to: string = '*',
+    to: string = ASTERISK,
   ): Promise<void> => {
     if (sendPacket) {
       const messageId = getUniqueId();
@@ -83,7 +85,7 @@ export const getPacketFunctions = (
         `send: ${messageId} '${allFragments}', ${total} packets to ${to}`,
         'debug',
       );
-      await Promise.all(
+      await promiseAll(
         fragments.map((fragment, index) =>
           sendPacket([to, messageId, index, total, fragment].join(' ')),
         ),

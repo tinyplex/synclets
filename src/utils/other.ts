@@ -1,5 +1,8 @@
 export const GLOBAL = globalThis;
 
+export const promiseAll = (promises: Promise<any>[]) => Promise.all(promises);
+export const promiseResolve = Promise.resolve;
+
 export const math = Math;
 export const mathFloor = math.floor;
 export const mathMax = math.max;
