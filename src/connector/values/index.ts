@@ -25,7 +25,7 @@ export const createValuesConnector: typeof createValuesConnectorDecl = (
   options?: ConnectorOptions,
 ): Connector => {
   const connect = async (sync: (address: Address) => Promise<void>) =>
-    await connectImpl?.(() => sync([]));
+    await connectImpl?.(sync);
 
   const get = async ([id]: Address): Promise<Value> =>
     (await getValue?.(id)) ?? null;
@@ -46,7 +46,8 @@ export const createValuesConnector: typeof createValuesConnectorDecl = (
   const setHash = async (_address: Address, hash: number): Promise<void> =>
     await setValuesHash?.(hash);
 
-  const hasChildren = async (): Promise<boolean> => true;
+  const hasChildren = async (address: Address): Promise<boolean> =>
+    address.length == 0;
 
   const getChildren = async (): Promise<string[]> =>
     (await getValueIds?.()) ?? [];

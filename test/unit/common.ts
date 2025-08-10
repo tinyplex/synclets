@@ -1,3 +1,4 @@
+import console from 'console';
 import {Connector, createSynclet, Synclet} from 'synclets';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';

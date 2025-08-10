@@ -1,6 +1,7 @@
 /// connector/values
 
 import type {
+  Address,
   Connector,
   ConnectorOptions,
   Timestamp,
@@ -8,7 +9,7 @@ import type {
 } from '../../index.d.ts';
 
 export type ValuesConnectorImplementations = {
-  connect?: (valueSync: () => Promise<void>) => Promise<void>;
+  connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
   getValuesHash?: () => Promise<number>;
   getValueIds?: () => Promise<string[]>;
   getValue?: (id: string) => Promise<Value>;

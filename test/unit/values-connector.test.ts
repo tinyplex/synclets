@@ -1,4 +1,4 @@
-import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
+import {Address, ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
 import {createValuesConnector} from 'synclets/connector/values';
 import {getHash} from 'synclets/utils';
 import {getTestSyncletsAndConnectors} from './common.ts';
@@ -7,10 +7,10 @@ const createTestValuesConnector = (options?: ConnectorOptions) => {
   const underlyingValues: {[id: string]: Value} = {};
   const underlyingTimestamps: {[id: string]: Timestamp} = {};
   let underlyingHash: Hash = 0;
-  let underlyingValuesSync: (() => Promise<void>) | undefined;
+  let underlyingSync: ((id: string) => Promise<void>) | undefined;
 
-  const connect = async (valuesSync: () => Promise<void>) => {
-    underlyingValuesSync = valuesSync;
+  const connect = async (sync: (address: Address) => Promise<void>) => {
+    underlyingSync = (id: string) => sync([id]);
   };
 
   const getValuesHash = async () => underlyingHash;
@@ -43,8 +43,8 @@ const createTestValuesConnector = (options?: ConnectorOptions) => {
     const timestamp = connector.getNextTimestamp();
     underlyingValues[id] = value;
     underlyingTimestamps[id] = timestamp;
-    underlyingHash ^= getHash(timestamp);
-    await underlyingValuesSync?.();
+    underlyingHash ^= getHash(timestamp) >>> 0;
+    await underlyingSync?.(id);
   };
 
   const connector = createValuesConnector(
@@ -127,7 +127,7 @@ describe('values sync, basics', () => {
 
   test('stop 1, set 1, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2, true);
 
     await synclet1.start();
     await synclet2.start();
