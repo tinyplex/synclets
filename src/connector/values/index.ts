@@ -10,6 +10,7 @@ import type {
   createValuesConnector as createValuesConnectorDecl,
   ValuesConnectorImplementations,
 } from '@synclets/@types/connector/values';
+import {isEmpty} from '@synclets/utils';
 
 export const createValuesConnector: typeof createValuesConnectorDecl = (
   {
@@ -47,7 +48,7 @@ export const createValuesConnector: typeof createValuesConnectorDecl = (
     await setValuesHash?.(hash);
 
   const hasChildren = async (address: Address): Promise<boolean> =>
-    address.length == 0;
+    isEmpty(address);
 
   const getChildren = async (): Promise<string[]> =>
     (await getValueIds?.()) ?? [];

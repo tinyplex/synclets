@@ -1,3 +1,5 @@
+import {arrayMap} from './array.ts';
+
 export const mapNew = /* @__PURE__ */ <Key, Value>(
   entries?: [Key, Value][],
 ): Map<Key, Value> => new Map(entries);
@@ -39,4 +41,4 @@ export const mapMap = <Key, Value, Value2>(
   map: Map<Key, Value> | undefined,
   cb: (key: Key, value: Value) => Value2,
 ): Value2[] =>
-  [...(map?.entries() ?? [])].map(([key, value]) => cb(key, value));
+  arrayMap([...(map?.entries() ?? [])], ([key, value]) => cb(key, value));

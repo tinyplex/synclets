@@ -13,7 +13,10 @@ import {
   arrayPush,
   ASTERISK,
   getUniqueId,
+  objKeys,
+  objNotEmpty,
   promiseAll,
+  setNew,
 } from '@synclets/utils';
 import {MessageType} from './message.ts';
 import type {
@@ -209,8 +212,8 @@ export const createSynclet: typeof createSyncletDecl = ((
     from: string,
   ) => {
     log(`recv Timestamps(${address}) from ${from}`);
-    const otherIds = new Set(Object.keys(otherTimestamps));
-    const myIds = new Set(await connector.getChildren(address));
+    const otherIds = setNew(objKeys(otherTimestamps));
+    const myIds = setNew(await connector.getChildren(address));
 
     const bothIds = [...myIds.intersection(otherIds)];
     const onlyMyIds = [...myIds.difference(otherIds)];
@@ -219,7 +222,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     const timestampsAndValues: {[id: string]: [Timestamp, Value]} = {};
 
     await promiseAll(
-      onlyMyIds.map(async (id) => {
+      arrayMap(onlyMyIds, async (id) => {
         timestampsAndValues[id] = [
           await connector.getTimestamp([...address, id]),
           await connector.get([...address, id]),
@@ -228,7 +231,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     );
 
     await promiseAll(
-      bothIds.map(async (id) => {
+      arrayMap(bothIds, async (id) => {
         await compareTimestamps(
           otherTimestamps[id],
           await connector.getTimestamp([...address, id]),
@@ -256,7 +259,8 @@ export const createSynclet: typeof createSyncletDecl = ((
     const neededTimestampsAndValues: {[id: string]: [Timestamp, Value]} = {};
 
     await promiseAll(
-      Object.keys(otherTimestampsAndValues).map(
+      arrayMap(
+        objKeys(otherTimestampsAndValues),
         async (id) =>
           await compareTimestamps(
             otherTimestampsAndValues[id][0],
@@ -280,14 +284,14 @@ export const createSynclet: typeof createSyncletDecl = ((
     );
 
     await promiseAll(
-      needIds.map(async (id) => {
+      arrayMap(needIds, async (id) => {
         neededTimestampsAndValues[id] = [
           await connector.getTimestamp([...address, id]),
           await connector.get([...address, id]),
         ];
       }),
     );
-    if (Object.keys(neededTimestampsAndValues).length > 0) {
+    if (objNotEmpty(neededTimestampsAndValues)) {
       await sendTimestampsAndValues(
         address,
         neededTimestampsAndValues,

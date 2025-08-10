@@ -1,4 +1,4 @@
-import {arrayPush, arrayShift} from '@synclets/utils';
+import {arrayPush, arrayShift, size} from '@synclets/utils';
 
 type Task = () => Promise<any>;
 
@@ -21,6 +21,6 @@ export const getQueueFunctions = (): [
         queueRunning = false;
       }
     },
-    () => [queueTasks.length, queueRunning],
+    () => [size(queueTasks), queueRunning],
   ];
 };
