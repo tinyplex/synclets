@@ -127,7 +127,7 @@ describe('values sync, basics', () => {
 
   test('stop 1, set 1, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValuesConnector, 2, true);
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
 
     await synclet1.start();
     await synclet2.start();
