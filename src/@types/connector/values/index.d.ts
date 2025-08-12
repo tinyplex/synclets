@@ -1,22 +1,22 @@
 /// connector/values
 
 import type {
-  Address,
   Connector,
   ConnectorOptions,
+  Hash,
   Timestamp,
   Value,
 } from '../../index.d.ts';
 
 export type ValuesConnectorImplementations = {
-  connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
-  getValuesHash?: () => Promise<number>;
+  connect?: (sync: (valueId?: string) => Promise<void>) => Promise<void>;
+  getValuesHash?: () => Promise<Hash>;
   getValueIds?: () => Promise<string[]>;
-  getValue?: (id: string) => Promise<Value>;
-  getValueTimestamp?: (id: string) => Promise<Timestamp>;
-  setValuesHash?: (hash: number) => Promise<void>;
-  setValue?: (id: string, value: Value) => Promise<void>;
-  setValueTimestamp?: (id: string, timestamp: Timestamp) => Promise<void>;
+  getValue?: (valueId: string) => Promise<Value>;
+  getValueTimestamp?: (valueId: string) => Promise<Timestamp>;
+  setValuesHash?: (hash: Hash) => Promise<void>;
+  setValue?: (valueId: string, value: Value) => Promise<void>;
+  setValueTimestamp?: (valueId: string, timestamp: Timestamp) => Promise<void>;
 };
 
 export function createValuesConnector(

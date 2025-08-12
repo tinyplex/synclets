@@ -1,50 +1,50 @@
-import {Address, ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
+import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
 import {createValuesConnector} from 'synclets/connector/values';
 import {getHash} from 'synclets/utils';
 import {getTestSyncletsAndConnectors} from './common.ts';
 
 const createTestValuesConnector = (options?: ConnectorOptions) => {
-  const underlyingValues: {[id: string]: Value} = {};
-  const underlyingTimestamps: {[id: string]: Timestamp} = {};
-  let underlyingHash: Hash = 0;
-  let underlyingSync: ((id: string) => Promise<void>) | undefined;
+  const underlyingValues: {[valueId: string]: Value} = {};
+  const underlyingTimestamps: {[valueId: string]: Timestamp} = {};
+  let underlyingValuesHash: Hash = 0;
+  let underlyingSync: ((valueId?: string) => Promise<void>) | undefined;
 
-  const connect = async (sync: (address: Address) => Promise<void>) => {
-    underlyingSync = (id: string) => sync([id]);
+  const connect = async (sync: (valueId?: string) => Promise<void>) => {
+    underlyingSync = sync;
   };
 
-  const getValuesHash = async () => underlyingHash;
+  const getValuesHash = async () => underlyingValuesHash;
 
   const getValueIds = async () => Object.keys(underlyingValues);
 
-  const getValue = async (id: string) => {
-    return underlyingValues[id];
+  const getValue = async (valueId: string) => {
+    return underlyingValues[valueId];
   };
 
-  const getValueTimestamp = async (id: string) => {
-    return underlyingTimestamps[id];
+  const getValueTimestamp = async (valueId: string) => {
+    return underlyingTimestamps[valueId] ?? '';
   };
 
   const setValuesHash = async (hash: Hash) => {
-    underlyingHash = hash;
+    underlyingValuesHash = hash;
   };
 
-  const setValue = async (id: string, value: Value) => {
-    underlyingValues[id] = value;
+  const setValue = async (valueId: string, value: Value) => {
+    underlyingValues[valueId] = value;
   };
 
-  const setValueTimestamp = async (id: string, timestamp: Timestamp) => {
-    underlyingTimestamps[id] = timestamp;
+  const setValueTimestamp = async (valueId: string, timestamp: Timestamp) => {
+    underlyingTimestamps[valueId] = timestamp;
   };
 
   const getUnderlyingValues = () => underlyingValues;
 
-  const setUnderlyingValue = async (id: string, value: Value) => {
+  const setUnderlyingValue = async (valueId: string, value: Value) => {
     const timestamp = connector.getNextTimestamp();
-    underlyingValues[id] = value;
-    underlyingTimestamps[id] = timestamp;
-    underlyingHash ^= getHash(timestamp) >>> 0;
-    await underlyingSync?.(id);
+    underlyingValues[valueId] = value;
+    underlyingTimestamps[valueId] = timestamp;
+    underlyingValuesHash ^= getHash(timestamp) >>> 0;
+    await underlyingSync?.(valueId);
   };
 
   const connector = createValuesConnector(

@@ -26,23 +26,25 @@ export const createValuesConnector: typeof createValuesConnectorDecl = (
   options?: ConnectorOptions,
 ): Connector => {
   const connect = async (sync: (address: Address) => Promise<void>) =>
-    await connectImpl?.(sync);
+    await connectImpl?.((valueId?: string) =>
+      valueId != null ? sync([valueId]) : sync([]),
+    );
 
-  const get = async ([id]: Address): Promise<Value> =>
-    (await getValue?.(id)) ?? null;
+  const get = async ([valueId]: Address): Promise<Value> =>
+    (await getValue?.(valueId)) ?? null;
 
-  const getTimestamp = async ([id]: Address): Promise<Timestamp> =>
-    (await getValueTimestamp?.(id)) ?? '';
+  const getTimestamp = async ([valueId]: Address): Promise<Timestamp> =>
+    (await getValueTimestamp?.(valueId)) ?? '';
 
   const getHash = async (): Promise<number> => (await getValuesHash?.()) ?? 0;
 
-  const set = async ([id]: Address, value: Value): Promise<void> =>
-    await setValue?.(id, value);
+  const set = async ([valueId]: Address, value: Value): Promise<void> =>
+    await setValue?.(valueId, value);
 
   const setTimestamp = async (
-    [id]: Address,
+    [valueId]: Address,
     timestamp: Timestamp,
-  ): Promise<void> => await setValueTimestamp?.(id, timestamp);
+  ): Promise<void> => await setValueTimestamp?.(valueId, timestamp);
 
   const setHash = async (_address: Address, hash: number): Promise<void> =>
     await setValuesHash?.(hash);

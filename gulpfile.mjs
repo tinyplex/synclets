@@ -16,6 +16,7 @@ const TEST_MODULES = [
   'utils',
   'connector/value',
   'connector/values',
+  'connector/table',
   'transport/memory',
 ];
 const ALL_MODULES = [...TEST_MODULES];
