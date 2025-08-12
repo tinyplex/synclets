@@ -11,19 +11,22 @@ import type {MessageType} from './message.ts';
 
 type NodeValue = Value;
 
+export type Node = Timestamp | TimestampAndValue | Hash | SubNodes;
+export type TimestampAndValue = [Timestamp, Value];
+export type SubNodes = {[id: string]: Node};
+
 export type Message =
-  | [type: MessageType.Timestamp, address: Address, timestamp: Timestamp]
-  | [
-      type: MessageType.TimestampAndValue,
-      address: Address,
-      timestamp: Timestamp,
-      value: Value,
-    ]
-  | [type: MessageType.Hash, address: Address, hash: Hash]
+  | [type: MessageType.Node, address: Address, node: Node]
   | [
       type: MessageType.Timestamps,
       address: Address,
       timestamps: {[id: string]: Timestamp},
+    ]
+  | [
+      type: MessageType.TimestampsAndValues,
+      address: Address,
+      timestampsAndValues: {[id: string]: [timestamp: Timestamp, value: Value]},
+      needIds: string[],
     ]
   | [
       type: MessageType.TimestampsAndValues,

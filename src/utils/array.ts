@@ -20,3 +20,8 @@ export const arrayPush = <Value>(array: Value[], ...values: Value[]): void => {
 
 export const arrayShift = <Value>(array: Value[]): Value | undefined =>
   array.shift();
+
+export const arrayEvery = <Value>(
+  array: Value[],
+  test: (value: Value, index: number, array: Value[]) => boolean,
+): boolean => array.every(test);
