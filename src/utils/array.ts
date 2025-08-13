@@ -1,3 +1,5 @@
+import {setHas, setNew} from './set.ts';
+
 export const arrayMap = <Value, Return>(
   array: Value[],
   cb: (value: Value, index: number, array: Value[]) => Return,
@@ -25,3 +27,8 @@ export const arrayEvery = <Value>(
   array: Value[],
   test: (value: Value, index: number, array: Value[]) => boolean,
 ): boolean => array.every(test);
+
+export const arrayDifference = (array1: string[], array2: string[]) => {
+  const exclude = setNew(array2);
+  return array1.filter((value) => !setHas(exclude, value));
+};
