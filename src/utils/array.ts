@@ -1,5 +1,7 @@
 import {setHas, setNew} from './set.ts';
 
+export const isArray = Array.isArray;
+
 export const arrayMap = <Value, Return>(
   array: Value[],
   cb: (value: Value, index: number, array: Value[]) => Return,

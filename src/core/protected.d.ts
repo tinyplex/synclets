@@ -10,7 +10,7 @@ import type {
   Value,
 } from '@synclets/@types';
 
-export type Message = [address: Address, node: Node, partial: 0 | 1];
+export type Message = [address: Address, node: Node];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 

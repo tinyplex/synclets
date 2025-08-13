@@ -12,9 +12,9 @@ export type Address = string[];
 
 export type Node = Timestamp | TimestampAndValue | Hash | SubNodes;
 
-export type TimestampAndValue = [Timestamp, Value];
+export type TimestampAndValue = [timestamp: Timestamp, value: Value];
 
-export type SubNodes = {[id: string]: Node};
+export type SubNodes = [subNodes: {[id: string]: Node}, partial?: 1];
 
 export type Logger = {
   error?: (string: string) => void;

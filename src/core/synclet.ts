@@ -19,7 +19,6 @@ import {
   isSubNodes,
   isTimestamp,
   isTimestampAndValue,
-  jsonStringify,
   objKeys,
   objNotEmpty,
   promiseAll,
@@ -60,12 +59,8 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   // #region send
 
-  const sendMessage = async (
-    address: Address,
-    node: Node,
-    to?: string,
-    partial: 0 | 1 = 0,
-  ) => await transport.sendMessage([address, node, partial], to);
+  const sendMessage = async (address: Address, node: Node, to?: string) =>
+    await transport.sendMessage([address, node], to);
 
   // #endregion
 
@@ -74,7 +69,7 @@ export const createSynclet: typeof createSyncletDecl = ((
   const receiveMessage = (message: Message, from: string) =>
     queueIfStarted(async () => {
       if (from !== ASTERISK && from !== id) {
-        const [address, node, partial = 0] = message;
+        const [address, node] = message;
         if (await connector.hasChildren(address)) {
           if (isHash(node)) {
             log(`recv Hash(${address}) from ${from}`);
@@ -82,7 +77,7 @@ export const createSynclet: typeof createSyncletDecl = ((
           }
           if (isSubNodes(node)) {
             log(`recv SubNodes(${address}) from ${from}`);
-            return receiveSubNodes(address, node, partial, from);
+            return receiveSubNodes(address, node, from);
           }
         } else {
           const myTimestamp = await connector.getTimestamp(address);
@@ -141,21 +136,20 @@ export const createSynclet: typeof createSyncletDecl = ((
     from: string,
   ) => {
     if (otherHash !== (await connector.getHash(address))) {
-      await sendMessage(address, await buildSubNodes(address), from);
+      await sendMessage(address, await buildSubNodesForHash(address), from);
     }
   };
 
-  const buildSubNodes = async (address: Address) => {
-    const subNodes: {[id: string]: Timestamp | Hash} = {};
+  const buildSubNodesForHash = async (address: Address) => {
+    const subNodes: SubNodes = [{}];
     await promiseAll(
       arrayMap(await connector.getChildren(address), async (id) => {
         const subAddress = [...address, id];
-        subNodes[id] =
-          await connector[
-            (await connector.hasChildren(subAddress))
-              ? 'getHash'
-              : 'getTimestamp'
-          ](subAddress);
+        subNodes[0][id] = await (
+          (await connector.hasChildren(subAddress))
+            ? connector.getHash
+            : connector.getTimestamp
+        )(subAddress);
       }),
     );
     return subNodes;
@@ -164,41 +158,60 @@ export const createSynclet: typeof createSyncletDecl = ((
   const receiveSubNodes = async (
     address: Address,
     otherSubNodes: SubNodes,
-    partial: 0 | 1,
     from: string,
   ) => {
-    const subNodes: SubNodes = {};
-    const otherIds = objKeys(otherSubNodes);
-
-    if (!partial) {
-      await promiseAll(
-        arrayMap(
-          arrayDifference(await connector.getChildren(address), otherIds),
-          async (id) => {
-            subNodes[id] = await connector.getTimestampAndValue([
-              ...address,
-              id,
-            ]);
-          },
-        ),
-      );
+    const mySubNodes = await processSubNodesForSubNodes(address, otherSubNodes);
+    if (objNotEmpty(mySubNodes[0])) {
+      await sendMessage(address, mySubNodes, from);
     }
+  };
 
-    partial = 0;
+  const processMySubNodes = async (
+    address: Address,
+    otherIds: string[] = [],
+  ) => {
+    const mySubNodes: SubNodes = [{}];
+    await promiseAll(
+      arrayMap(
+        arrayDifference(await connector.getChildren(address), otherIds),
+        async (id) => {
+          const subAddress = [...address, id];
+          mySubNodes[0][id] = await (
+            (await connector.hasChildren(subAddress))
+              ? processMySubNodes
+              : connector.getTimestampAndValue
+          )(subAddress);
+        },
+      ),
+    );
+    return mySubNodes;
+  };
+
+  const processSubNodesForSubNodes = async (
+    address: Address,
+    [otherSubNodesById, partial]: SubNodes,
+  ) => {
+    const otherIds = objKeys(otherSubNodesById);
+    const mySubNodes: SubNodes = partial
+      ? [{}]
+      : await processMySubNodes(address, otherIds);
+
     await promiseAll(
       arrayMap(otherIds, async (id) => {
-        const otherSubNode = otherSubNodes[id] as
-          | Timestamp
-          | TimestampAndValue
-          | Hash;
+        const otherSubNode = otherSubNodesById[id];
         const subAddress = [...address, id];
 
         if (isHash(otherSubNode)) {
-          log('isHash(otherSubNode)');
           if ((await connector.getHash(subAddress)) != otherSubNode) {
-            subNodes[id] = await buildSubNodes(subAddress);
-          } else {
-            partial = 1;
+            mySubNodes[0][id] = await buildSubNodesForHash(subAddress);
+          }
+        } else if (isSubNodes(otherSubNode)) {
+          const mySubSubNodes = await processSubNodesForSubNodes(
+            subAddress,
+            otherSubNode,
+          );
+          if (objNotEmpty(mySubSubNodes[0])) {
+            mySubNodes[0][id] = mySubSubNodes;
           }
         } else {
           const otherIsTimestamp = isTimestamp(otherSubNode);
@@ -210,28 +223,24 @@ export const createSynclet: typeof createSyncletDecl = ((
 
           if (otherTimestamp > myTimestamp) {
             if (otherIsTimestamp) {
-              subNodes[id] = myTimestamp;
+              mySubNodes[0][id] = myTimestamp;
             } else {
               await connector.setTimestampAndValue(subAddress, ...otherSubNode);
             }
           } else if (otherTimestamp < myTimestamp) {
-            subNodes[id] = await connector.getTimestampAndValue(
+            mySubNodes[0][id] = await connector.getTimestampAndValue(
               subAddress,
               myTimestamp,
             );
           }
 
-          if (subNodes[id] === undefined) {
-            partial = 1;
+          if (mySubNodes[0][id] === undefined) {
+            mySubNodes[1] = 1;
           }
         }
       }),
     );
-
-    log(jsonStringify(subNodes));
-    if (objNotEmpty(subNodes)) {
-      await sendMessage(address, subNodes, from, partial);
-    }
+    return mySubNodes;
   };
 
   // #endregion

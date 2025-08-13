@@ -43,7 +43,7 @@ const createTestValuesConnector = (options?: ConnectorOptions) => {
     const timestamp = connector.getNextTimestamp();
     underlyingValues[valueId] = value;
     underlyingTimestamps[valueId] = timestamp;
-    underlyingValuesHash ^= getHash(timestamp) >>> 0;
+    underlyingValuesHash = (underlyingValuesHash ^ getHash(timestamp)) >>> 0;
     await underlyingSync?.(valueId);
   };
 
