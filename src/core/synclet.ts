@@ -1,51 +1,33 @@
 import type {
   Address,
   createSynclet as createSyncletDecl,
-  Hash,
   LogLevel,
+  Node,
+  SubNodes,
   Synclet,
   SyncletOptions,
   Timestamp,
-  Value,
+  TimestampAndValue,
 } from '@synclets/@types';
 import {
   arrayMap,
   ASTERISK,
   getUniqueId,
-  isObject,
-  objEvery,
+  isHash,
+  isSubNodes,
+  isTimestamp,
+  isTimestampAndValue,
   objKeys,
   objNotEmpty,
   promiseAll,
   setNew,
-  size,
 } from '@synclets/utils';
-import {MessageType} from './message.ts';
 import type {
   Message,
-  Node,
   ProtectedConnector,
   ProtectedTransport,
-  SubNodes,
-  TimestampAndValue,
 } from './protected.d.ts';
 import {getQueueFunctions} from './queue.ts';
-
-const compareTimestamps = (
-  otherTimestamp: Timestamp,
-  myTimestamp: Timestamp,
-  ifOtherNewer: (
-    otherTimestamp: Timestamp,
-    myTimestamp: Timestamp,
-  ) => void | Promise<void>,
-  ifMineNewer?: (myTimestamp: Timestamp) => void | Promise<void>,
-  ifEqual?: (timestamp: Timestamp) => void | Promise<void>,
-): void | Promise<void> | 0 =>
-  otherTimestamp > myTimestamp
-    ? ifOtherNewer(otherTimestamp, myTimestamp)
-    : otherTimestamp < myTimestamp
-      ? ifMineNewer?.(myTimestamp)
-      : ifEqual?.(myTimestamp);
 
 export const createSynclet: typeof createSyncletDecl = ((
   connector: ProtectedConnector,
@@ -61,24 +43,6 @@ export const createSynclet: typeof createSyncletDecl = ((
     if (started) {
       await queue(actions);
     }
-  };
-
-  const getTimestampAndValue = async (
-    address: Address,
-    timestamp?: Timestamp,
-  ): Promise<TimestampAndValue> => [
-    timestamp ?? (await connector.getTimestamp(address)),
-    await connector.get(address),
-  ];
-
-  const setTimestampAndValue = async (
-    address: Address,
-    timestamp: Timestamp,
-    value: Value,
-  ): Promise<void> => {
-    log(`set(${address})`);
-    await connector.set(address, value);
-    await connector.setTimestamp(address, timestamp);
   };
 
   const sync = (address: Address) =>
@@ -103,7 +67,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     partial: 0 | 1 = 0,
   ) => {
     log(`send Node(${address}) to ${to}`);
-    await sendMessage([MessageType.Node, address, node, partial], to);
+    await sendMessage([address, node, partial], to);
   };
 
   // #endregion
@@ -113,40 +77,10 @@ export const createSynclet: typeof createSyncletDecl = ((
   const receiveMessage = (message: Message, from: string) =>
     queueIfStarted(async () => {
       if (from !== ASTERISK && from !== id) {
-        const [type, address, arg1, arg2 = 0] = message;
-        switch (type) {
-          case MessageType.Node: {
-            return await receiveNode(address, arg1, arg2, from);
-          }
-        }
+        const [address, node, partial = 0] = message;
+        return await receiveNode(address, node, partial, from);
       }
     });
-
-  const isNode = (node: any): node is Node =>
-    isTimestamp(node) ||
-    isTimestampAndValue(node) ||
-    isHash(node) ||
-    isSubNodes(node);
-
-  const isTimestamp = (node: Node): node is Timestamp =>
-    typeof node === 'string';
-
-  const isValue = (value: Value): value is Value =>
-    value === null ||
-    typeof value === 'number' ||
-    typeof value === 'string' ||
-    typeof value === 'boolean';
-
-  const isTimestampAndValue = (node: Node): node is TimestampAndValue =>
-    Array.isArray(node) &&
-    size(node) == 2 &&
-    isTimestamp(node[0]) &&
-    isValue(node[1]);
-
-  const isHash = (node: Node): node is Hash => typeof node === 'number';
-
-  const isSubNodes = (node: Node): node is {[id: string]: Node} =>
-    isObject(node) && objEvery(node, isNode);
 
   const receiveNode = async (
     address: Address,
@@ -183,7 +117,11 @@ export const createSynclet: typeof createSyncletDecl = ((
         const myTimestamp = await connector.getTimestamp(address);
 
         if (otherTimestamp > myTimestamp) {
-          await setTimestampAndValue(address, otherTimestamp, otherValue);
+          await connector.setTimestampAndValue(
+            address,
+            otherTimestamp,
+            otherValue,
+          );
         } else if (myTimestamp > otherTimestamp) {
           await sendNode(
             address,
@@ -226,7 +164,10 @@ export const createSynclet: typeof createSyncletDecl = ((
                 ),
               ],
               async (id) => {
-                subNodes[id] = await getTimestampAndValue([...address, id]);
+                subNodes[id] = await connector.getTimestampAndValue([
+                  ...address,
+                  id,
+                ]);
               },
             ),
           );
@@ -249,10 +190,13 @@ export const createSynclet: typeof createSyncletDecl = ((
               if (otherIsTimestamp) {
                 subNodes[id] = myTimestamp;
               } else {
-                await setTimestampAndValue(subAddress, ...otherSubNode);
+                await connector.setTimestampAndValue(
+                  subAddress,
+                  ...otherSubNode,
+                );
               }
             } else if (otherTimestamp < myTimestamp) {
-              subNodes[id] = await getTimestampAndValue(
+              subNodes[id] = await connector.getTimestampAndValue(
                 subAddress,
                 myTimestamp,
               );

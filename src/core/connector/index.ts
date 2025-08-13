@@ -6,6 +6,7 @@ import type {
   LogLevel,
   Synclet,
   Timestamp,
+  TimestampAndValue,
   Value,
   createConnector as createConnectorDecl,
 } from '@synclets/@types';
@@ -70,6 +71,26 @@ export const createConnector: typeof createConnectorDecl = (
   const getChildren = async (address: Address) =>
     (await getChildrenImpl?.(address)) ?? [];
 
+  // --
+
+  const getTimestampAndValue = async (
+    address: Address,
+    timestamp?: Timestamp,
+  ): Promise<TimestampAndValue> => [
+    timestamp ?? (await getTimestamp(address)),
+    await get(address),
+  ];
+
+  const setTimestampAndValue = async (
+    address: Address,
+    timestamp: Timestamp,
+    value: Value,
+  ): Promise<void> => {
+    log(`set(${address})`);
+    await set(address, value);
+    await setTimestamp(address, timestamp);
+  };
+
   // #endregion
 
   // #region public
@@ -95,6 +116,9 @@ export const createConnector: typeof createConnectorDecl = (
     setHash,
     hasChildren,
     getChildren,
+
+    getTimestampAndValue,
+    setTimestampAndValue,
 
     getSyncletId,
     getNextTimestamp,

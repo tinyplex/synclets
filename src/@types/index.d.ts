@@ -10,6 +10,12 @@ export type Hash = number;
 
 export type Address = string[];
 
+export type Node = Timestamp | TimestampAndValue | Hash | SubNodes;
+
+export type TimestampAndValue = [Timestamp, Value];
+
+export type SubNodes = {[id: string]: Node};
+
 export type Logger = {
   error?: (string: string) => void;
   warn?: (string: string) => void;
