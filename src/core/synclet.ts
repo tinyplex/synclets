@@ -19,6 +19,7 @@ import {
   isSubNodes,
   isTimestamp,
   isTimestampAndValue,
+  jsonStringify,
   objKeys,
   objNotEmpty,
   promiseAll,
@@ -140,14 +141,24 @@ export const createSynclet: typeof createSyncletDecl = ((
     from: string,
   ) => {
     if (otherHash !== (await connector.getHash(address))) {
-      const timestamps: {[id: string]: Timestamp} = {};
-      await promiseAll(
-        arrayMap(await connector.getChildren(address), async (id) => {
-          timestamps[id] = await connector.getTimestamp([...address, id]);
-        }),
-      );
-      await sendMessage(address, timestamps, from);
+      await sendMessage(address, await buildSubNodes(address), from);
     }
+  };
+
+  const buildSubNodes = async (address: Address) => {
+    const subNodes: {[id: string]: Timestamp | Hash} = {};
+    await promiseAll(
+      arrayMap(await connector.getChildren(address), async (id) => {
+        const subAddress = [...address, id];
+        subNodes[id] =
+          await connector[
+            (await connector.hasChildren(subAddress))
+              ? 'getHash'
+              : 'getTimestamp'
+          ](subAddress);
+      }),
+    );
+    return subNodes;
   };
 
   const receiveSubNodes = async (
@@ -176,35 +187,48 @@ export const createSynclet: typeof createSyncletDecl = ((
     partial = 0;
     await promiseAll(
       arrayMap(otherIds, async (id) => {
-        const otherSubNode = otherSubNodes[id] as Timestamp | TimestampAndValue;
-
-        const otherIsTimestamp = isTimestamp(otherSubNode);
-        const otherTimestamp = otherIsTimestamp
-          ? otherSubNode
-          : otherSubNode[0];
-
+        const otherSubNode = otherSubNodes[id] as
+          | Timestamp
+          | TimestampAndValue
+          | Hash;
         const subAddress = [...address, id];
-        const myTimestamp = await connector.getTimestamp(subAddress);
 
-        if (otherTimestamp > myTimestamp) {
-          if (otherIsTimestamp) {
-            subNodes[id] = myTimestamp;
+        if (isHash(otherSubNode)) {
+          log('isHash(otherSubNode)');
+          if ((await connector.getHash(subAddress)) != otherSubNode) {
+            subNodes[id] = await buildSubNodes(subAddress);
           } else {
-            await connector.setTimestampAndValue(subAddress, ...otherSubNode);
+            partial = 1;
           }
-        } else if (otherTimestamp < myTimestamp) {
-          subNodes[id] = await connector.getTimestampAndValue(
-            subAddress,
-            myTimestamp,
-          );
-        }
+        } else {
+          const otherIsTimestamp = isTimestamp(otherSubNode);
+          const otherTimestamp = otherIsTimestamp
+            ? otherSubNode
+            : otherSubNode[0];
 
-        if (subNodes[id] === undefined) {
-          partial = 1;
+          const myTimestamp = await connector.getTimestamp(subAddress);
+
+          if (otherTimestamp > myTimestamp) {
+            if (otherIsTimestamp) {
+              subNodes[id] = myTimestamp;
+            } else {
+              await connector.setTimestampAndValue(subAddress, ...otherSubNode);
+            }
+          } else if (otherTimestamp < myTimestamp) {
+            subNodes[id] = await connector.getTimestampAndValue(
+              subAddress,
+              myTimestamp,
+            );
+          }
+
+          if (subNodes[id] === undefined) {
+            partial = 1;
+          }
         }
       }),
     );
 
+    log(jsonStringify(subNodes));
     if (objNotEmpty(subNodes)) {
       await sendMessage(address, subNodes, from, partial);
     }

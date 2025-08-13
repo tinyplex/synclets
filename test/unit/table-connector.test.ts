@@ -131,20 +131,20 @@ describe('table sync, basics', () => {
     expect(connector1.getUnderlyingTable()).toEqual({r1: {c1: 'C2'}});
   });
 
-  // test('start 1, set 1, start 2', async () => {
-  //   const [[synclet1, connector1], [synclet2, connector2]] =
-  //     getTestSyncletsAndConnectors(createTestTableConnector, 2);
+  test('start 1, set 1, start 2', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestTableConnector, 2, true);
 
-  //   await synclet1.start();
+    await synclet1.start();
 
-  //   await connector1.setUnderlyingValue('v1', 'V1');
-  //   expect(connector1.getUnderlyingTable()).toEqual({v1: 'V1'});
-  //   expect(connector2.getUnderlyingTable()).toEqual({});
+    await connector1.setUnderlyingCell('r1', 'c1', 'C1');
+    expect(connector1.getUnderlyingTable()).toEqual({r1: {c1: 'C1'}});
+    expect(connector2.getUnderlyingTable()).toEqual({});
 
-  //   await synclet2.start();
-  //   expect(connector1.getUnderlyingTable()).toEqual({v1: 'V1'});
-  //   expect(connector2.getUnderlyingTable()).toEqual({v1: 'V1'});
-  // });
+    await synclet2.start();
+    expect(connector1.getUnderlyingTable()).toEqual({r1: {c1: 'C1'}});
+    expect(connector2.getUnderlyingTable()).toEqual({r1: {c1: 'C1'}});
+  });
 
   // test('start 2, set 1, start 1', async () => {
   //   const [[synclet1, connector1], [synclet2, connector2]] =
