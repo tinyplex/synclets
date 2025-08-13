@@ -15,6 +15,7 @@ import {
   isObject,
   objEvery,
   objKeys,
+  objNotEmpty,
   promiseAll,
   setNew,
   size,
@@ -38,12 +39,13 @@ const compareTimestamps = (
     myTimestamp: Timestamp,
   ) => void | Promise<void>,
   ifMineNewer?: (myTimestamp: Timestamp) => void | Promise<void>,
+  ifEqual?: (timestamp: Timestamp) => void | Promise<void>,
 ): void | Promise<void> | 0 =>
   otherTimestamp > myTimestamp
     ? ifOtherNewer(otherTimestamp, myTimestamp)
     : otherTimestamp < myTimestamp
       ? ifMineNewer?.(myTimestamp)
-      : 0;
+      : ifEqual?.(myTimestamp);
 
 export const createSynclet: typeof createSyncletDecl = ((
   connector: ProtectedConnector,
@@ -61,6 +63,24 @@ export const createSynclet: typeof createSyncletDecl = ((
     }
   };
 
+  const getTimestampAndValue = async (
+    address: Address,
+    timestamp?: Timestamp,
+  ): Promise<TimestampAndValue> => [
+    timestamp ?? (await connector.getTimestamp(address)),
+    await connector.get(address),
+  ];
+
+  const setTimestampAndValue = async (
+    address: Address,
+    timestamp: Timestamp,
+    value: Value,
+  ): Promise<void> => {
+    log(`set(${address})`);
+    await connector.set(address, value);
+    await connector.setTimestamp(address, timestamp);
+  };
+
   const sync = (address: Address) =>
     queueIfStarted(async () => {
       log(`sync: ${address}`);
@@ -76,9 +96,14 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   const sendMessage = transport.sendMessage;
 
-  const sendNode = async (address: Address, node: Node, to?: string) => {
+  const sendNode = async (
+    address: Address,
+    node: Node,
+    to?: string,
+    partial: 0 | 1 = 0,
+  ) => {
     log(`send Node(${address}) to ${to}`);
-    await sendMessage([MessageType.Node, address, node], to);
+    await sendMessage([MessageType.Node, address, node, partial], to);
   };
 
   // #endregion
@@ -88,10 +113,10 @@ export const createSynclet: typeof createSyncletDecl = ((
   const receiveMessage = (message: Message, from: string) =>
     queueIfStarted(async () => {
       if (from !== ASTERISK && from !== id) {
-        const [type, address, arg1] = message;
+        const [type, address, arg1, arg2 = 0] = message;
         switch (type) {
           case MessageType.Node: {
-            return await receiveNode(address, arg1, from);
+            return await receiveNode(address, arg1, arg2, from);
           }
         }
       }
@@ -126,6 +151,7 @@ export const createSynclet: typeof createSyncletDecl = ((
   const receiveNode = async (
     address: Address,
     otherNode: Node,
+    partial: 0 | 1,
     from: string,
   ) => {
     log(`recv Node(${address}) from ${from}`);
@@ -135,17 +161,17 @@ export const createSynclet: typeof createSyncletDecl = ((
       if (hasChildren) {
         log(`structure mismatch: ${address}`, 'warn');
       } else {
-        await compareTimestamps(
-          otherNode,
-          await connector.getTimestamp(address),
-          (_, myTimestamp) => sendNode(address, myTimestamp, from),
-          async (myTimestamp) =>
-            await sendNode(
-              address,
-              [myTimestamp, await connector.get(address)],
-              from,
-            ),
-        );
+        const myTimestamp = await connector.getTimestamp(address);
+
+        if (otherNode > myTimestamp) {
+          await sendNode(address, myTimestamp, from);
+        } else if (otherNode < myTimestamp) {
+          await sendNode(
+            address,
+            [myTimestamp, await connector.get(address)],
+            from,
+          );
+        }
       }
     }
 
@@ -153,21 +179,18 @@ export const createSynclet: typeof createSyncletDecl = ((
       if (hasChildren) {
         log(`structure mismatch: ${address}`, 'warn');
       } else {
-        await compareTimestamps(
-          otherNode[0],
-          await connector.getTimestamp(address),
-          async (otherTimestamp) => {
-            log(`set(${address}) from ${from}`);
-            await connector.set(address, otherNode[1]);
-            await connector.setTimestamp(address, otherTimestamp);
-          },
-          async (myTimestamp) =>
-            await sendNode(
-              address,
-              [myTimestamp, await connector.get(address)],
-              from,
-            ),
-        );
+        const [otherTimestamp, otherValue] = otherNode;
+        const myTimestamp = await connector.getTimestamp(address);
+
+        if (otherTimestamp > myTimestamp) {
+          await setTimestampAndValue(address, otherTimestamp, otherValue);
+        } else if (myTimestamp > otherTimestamp) {
+          await sendNode(
+            address,
+            [myTimestamp, await connector.get(address)],
+            from,
+          );
+        }
       }
     }
 
@@ -191,76 +214,58 @@ export const createSynclet: typeof createSyncletDecl = ((
       if (!hasChildren) {
         log(`structure mismatch: ${address}`, 'warn');
       } else {
-        let send = false;
         const subNodes: SubNodes = {};
-
         const otherIds = setNew(objKeys(otherNode));
-        const myIds = setNew(await connector.getChildren(address));
-        const onlyMyIds = myIds.difference(otherIds);
 
-        await promiseAll(
-          arrayMap([...onlyMyIds], async (id) => {
-            subNodes[id] = [
-              await connector.getTimestamp([...address, id]),
-              await connector.get([...address, id]),
-            ];
-            send = true;
-          }),
-        );
+        if (!partial) {
+          await promiseAll(
+            arrayMap(
+              [
+                ...setNew(await connector.getChildren(address)).difference(
+                  otherIds,
+                ),
+              ],
+              async (id) => {
+                subNodes[id] = await getTimestampAndValue([...address, id]);
+              },
+            ),
+          );
+        }
 
+        partial = 0;
         await promiseAll(
           arrayMap([...otherIds], async (id) => {
-            const otherTimestampOrTimestampAndValue = otherNode[id] as
-              | Timestamp
-              | TimestampAndValue;
+            const otherSubNode = otherNode[id] as Timestamp | TimestampAndValue;
 
-            const myTimestamp = await connector.getTimestamp([...address, id]);
-            subNodes[id] = myTimestamp;
+            const otherIsTimestamp = isTimestamp(otherSubNode);
+            const otherTimestamp = otherIsTimestamp
+              ? otherSubNode
+              : otherSubNode[0];
 
-            if (isTimestamp(otherTimestampOrTimestampAndValue)) {
-              await compareTimestamps(
-                otherTimestampOrTimestampAndValue,
+            const subAddress = [...address, id];
+            const myTimestamp = await connector.getTimestamp(subAddress);
+
+            if (otherTimestamp > myTimestamp) {
+              if (otherIsTimestamp) {
+                subNodes[id] = myTimestamp;
+              } else {
+                await setTimestampAndValue(subAddress, ...otherSubNode);
+              }
+            } else if (otherTimestamp < myTimestamp) {
+              subNodes[id] = await getTimestampAndValue(
+                subAddress,
                 myTimestamp,
-                () => {
-                  send = true;
-                },
-                async () => {
-                  subNodes[id] = [
-                    myTimestamp,
-                    await connector.get([...address, id]),
-                  ];
-                  send = true;
-                },
               );
-            } else {
-              await compareTimestamps(
-                otherTimestampOrTimestampAndValue[0],
-                myTimestamp,
-                async (otherTimestamp) => {
-                  log(`set(${address}) from ${from}`);
-                  await connector.set(
-                    [...address, id],
-                    otherTimestampOrTimestampAndValue[1],
-                  );
-                  await connector.setTimestamp(
-                    [...address, id],
-                    otherTimestamp,
-                  );
-                },
-                async () => {
-                  subNodes[id] = [
-                    myTimestamp,
-                    await connector.get([...address, id]),
-                  ];
-                  send = true;
-                },
-              );
+            }
+
+            if (subNodes[id] === undefined) {
+              partial = 1;
             }
           }),
         );
 
-        if (send) {
-          await sendNode(address, subNodes, from);
+        if (objNotEmpty(subNodes)) {
+          await sendNode(address, subNodes, from, partial);
         }
       }
     }
