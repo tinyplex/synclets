@@ -10,13 +10,11 @@ import type {
 } from '@synclets/@types';
 import {
   arrayMap,
-  arrayPush,
   ASTERISK,
   getUniqueId,
   isObject,
   objEvery,
   objKeys,
-  objNotEmpty,
   promiseAll,
   setNew,
   size,
@@ -53,7 +51,6 @@ export const createSynclet: typeof createSyncletDecl = ((
   options: SyncletOptions = {},
 ): Synclet => {
   let started = false;
-
   const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};
   const [queue, getQueueState] = getQueueFunctions();
@@ -84,28 +81,6 @@ export const createSynclet: typeof createSyncletDecl = ((
     await sendMessage([MessageType.Node, address, node], to);
   };
 
-  const sendTimestamps = async (
-    address: Address,
-    timestamps: {[id: string]: Timestamp},
-    to?: string,
-  ) => {
-    log(`send Timestamps(${address}) to ${to}`);
-    await sendMessage([MessageType.Timestamps, address, timestamps], to);
-  };
-
-  const sendTimestampsAndValues = async (
-    address: Address,
-    timestampsAndValues: {[id: string]: [Timestamp, Value]},
-    needIds: string[],
-    to?: string,
-  ) => {
-    log(`send TimestampsAndValues(${address}) to ${to}`);
-    await sendMessage(
-      [MessageType.TimestampsAndValues, address, timestampsAndValues, needIds],
-      to,
-    );
-  };
-
   // #endregion
 
   // #region receive
@@ -113,16 +88,10 @@ export const createSynclet: typeof createSyncletDecl = ((
   const receiveMessage = (message: Message, from: string) =>
     queueIfStarted(async () => {
       if (from !== ASTERISK && from !== id) {
-        const [type, address, arg1, arg2] = message;
+        const [type, address, arg1] = message;
         switch (type) {
           case MessageType.Node: {
             return await receiveNode(address, arg1, from);
-          }
-          case MessageType.Timestamps: {
-            return await receiveTimestamps(address, arg1, from);
-          }
-          case MessageType.TimestampsAndValues: {
-            return await receiveTimestampsAndValues(address, arg1, arg2, from);
           }
         }
       }
@@ -213,7 +182,7 @@ export const createSynclet: typeof createSyncletDecl = ((
               timestamps[id] = await connector.getTimestamp([...address, id]);
             }),
           );
-          await sendTimestamps(address, timestamps, from);
+          await sendNode(address, timestamps, from);
         }
       }
     }
@@ -222,144 +191,78 @@ export const createSynclet: typeof createSyncletDecl = ((
       if (!hasChildren) {
         log(`structure mismatch: ${address}`, 'warn');
       } else {
-        const myChildrenIds = setNew(await connector.getChildren(address));
-        const otherChildrenIds = setNew(objKeys(otherNode));
-        const nextNode: SubNodes = {};
+        let send = false;
+        const subNodes: SubNodes = {};
 
-        const bothIds = [...myChildrenIds.intersection(otherChildrenIds)];
-        const onlyThisIds = [...myChildrenIds.difference(otherChildrenIds)];
-        const onlyOtherIds = [...otherChildrenIds.difference(myChildrenIds)];
+        const otherIds = setNew(objKeys(otherNode));
+        const myIds = setNew(await connector.getChildren(address));
+        const onlyMyIds = myIds.difference(otherIds);
 
         await promiseAll(
-          arrayMap(onlyThisIds, async (id) => {
-            nextNode[id] = [
+          arrayMap([...onlyMyIds], async (id) => {
+            subNodes[id] = [
               await connector.getTimestamp([...address, id]),
               await connector.get([...address, id]),
             ];
+            send = true;
           }),
         );
 
         await promiseAll(
-          arrayMap(bothIds, async (id) => {
-            await compareTimestamps(
-              otherNode[id] as Timestamp,
-              await connector.getTimestamp([...address, id]),
-              (_, myTimestamp) => {
-                nextNode[id] = myTimestamp;
-              },
-              async (myTimestamp) => {
-                nextNode[id] = [
-                  myTimestamp,
-                  await connector.get([...address, id]),
-                ];
-              },
-            );
-          }),
-        );
+          arrayMap([...otherIds], async (id) => {
+            const otherTimestampOrTimestampAndValue = otherNode[id] as
+              | Timestamp
+              | TimestampAndValue;
 
-        await promiseAll(
-          arrayMap(onlyOtherIds, async (id) => {
-            nextNode[id] = 0;
-          }),
-        );
+            const myTimestamp = await connector.getTimestamp([...address, id]);
+            subNodes[id] = myTimestamp;
 
-        await sendNode(address, nextNode, from);
-      }
-    }
-  };
-
-  const receiveTimestamps = async (
-    address: Address,
-    otherTimestamps: {[id: string]: Timestamp},
-    from: string,
-  ) => {
-    log(`recv Timestamps(${address}) from ${from}`);
-    const otherIds = setNew(objKeys(otherTimestamps));
-    const myIds = setNew(await connector.getChildren(address));
-
-    const bothIds = [...myIds.intersection(otherIds)];
-    const onlyMyIds = [...myIds.difference(otherIds)];
-    const needIds = [...otherIds.difference(myIds)];
-
-    const timestampsAndValues: {[id: string]: [Timestamp, Value]} = {};
-
-    await promiseAll(
-      arrayMap(onlyMyIds, async (id) => {
-        timestampsAndValues[id] = [
-          await connector.getTimestamp([...address, id]),
-          await connector.get([...address, id]),
-        ];
-      }),
-    );
-
-    await promiseAll(
-      arrayMap(bothIds, async (id) => {
-        await compareTimestamps(
-          otherTimestamps[id],
-          await connector.getTimestamp([...address, id]),
-          () => arrayPush(needIds, id),
-          async (myTimestamp) => {
-            timestampsAndValues[id] = [
-              myTimestamp,
-              await connector.get([...address, id]),
-            ];
-          },
-        );
-      }),
-    );
-
-    await sendTimestampsAndValues(address, timestampsAndValues, needIds, from);
-  };
-
-  const receiveTimestampsAndValues = async (
-    address: Address,
-    otherTimestampsAndValues: {[id: string]: [Timestamp, Value]},
-    needIds: string[],
-    from: string,
-  ) => {
-    log(`recv TimestampsAndValues(${address}) from ${from}`);
-    const neededTimestampsAndValues: {[id: string]: [Timestamp, Value]} = {};
-
-    await promiseAll(
-      arrayMap(
-        objKeys(otherTimestampsAndValues),
-        async (id) =>
-          await compareTimestamps(
-            otherTimestampsAndValues[id][0],
-            await connector.getTimestamp([...address, id]),
-            async (otherTimestamp) => {
-              log(`set(${address}) from ${from}`);
-              await connector.set(
-                [...address, id],
-                otherTimestampsAndValues[id][1],
-              );
-              await connector.setTimestamp([...address, id], otherTimestamp);
-            },
-            async (myTimestamp) => {
-              neededTimestampsAndValues[id] = [
+            if (isTimestamp(otherTimestampOrTimestampAndValue)) {
+              await compareTimestamps(
+                otherTimestampOrTimestampAndValue,
                 myTimestamp,
-                await connector.get([...address, id]),
-              ];
-            },
-          ),
-      ),
-    );
+                () => {
+                  send = true;
+                },
+                async () => {
+                  subNodes[id] = [
+                    myTimestamp,
+                    await connector.get([...address, id]),
+                  ];
+                  send = true;
+                },
+              );
+            } else {
+              await compareTimestamps(
+                otherTimestampOrTimestampAndValue[0],
+                myTimestamp,
+                async (otherTimestamp) => {
+                  log(`set(${address}) from ${from}`);
+                  await connector.set(
+                    [...address, id],
+                    otherTimestampOrTimestampAndValue[1],
+                  );
+                  await connector.setTimestamp(
+                    [...address, id],
+                    otherTimestamp,
+                  );
+                },
+                async () => {
+                  subNodes[id] = [
+                    myTimestamp,
+                    await connector.get([...address, id]),
+                  ];
+                  send = true;
+                },
+              );
+            }
+          }),
+        );
 
-    await promiseAll(
-      arrayMap(needIds, async (id) => {
-        neededTimestampsAndValues[id] = [
-          await connector.getTimestamp([...address, id]),
-          await connector.get([...address, id]),
-        ];
-      }),
-    );
-    if (objNotEmpty(neededTimestampsAndValues)) {
-      await sendTimestampsAndValues(
-        address,
-        neededTimestampsAndValues,
-        [],
-        from,
-      );
+        if (send) {
+          await sendNode(address, subNodes, from);
+        }
+      }
     }
   };
 
