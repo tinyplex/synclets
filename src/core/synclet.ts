@@ -213,20 +213,22 @@ export const createSynclet: typeof createSyncletDecl = ((
           if (objNotEmpty(mySubSubNodes[0])) {
             mySubNodes[0][id] = mySubSubNodes;
           }
-        } else {
-          const otherIsTimestamp = isTimestamp(otherSubNode);
-          const otherTimestamp = otherIsTimestamp
-            ? otherSubNode
-            : otherSubNode[0];
-
+        } else if (isTimestamp(otherSubNode)) {
+          const otherTimestamp = otherSubNode;
           const myTimestamp = await connector.getTimestamp(subAddress);
-
           if (otherTimestamp > myTimestamp) {
-            if (otherIsTimestamp) {
-              mySubNodes[0][id] = myTimestamp;
-            } else {
-              await connector.setTimestampAndValue(subAddress, ...otherSubNode);
-            }
+            mySubNodes[0][id] = myTimestamp;
+          } else if (otherTimestamp < myTimestamp) {
+            mySubNodes[0][id] = await connector.getTimestampAndValue(
+              subAddress,
+              myTimestamp,
+            );
+          }
+        } else if (isTimestampAndValue(otherSubNode)) {
+          const otherTimestamp = otherSubNode[0];
+          const myTimestamp = await connector.getTimestamp(subAddress);
+          if (otherTimestamp > myTimestamp) {
+            await connector.setTimestampAndValue(subAddress, ...otherSubNode);
           } else if (otherTimestamp < myTimestamp) {
             mySubNodes[0][id] = await connector.getTimestampAndValue(
               subAddress,
@@ -234,6 +236,7 @@ export const createSynclet: typeof createSyncletDecl = ((
             );
           }
         }
+
         if (mySubNodes[0][id] === undefined) {
           mySubNodes[1] = 1;
         }
