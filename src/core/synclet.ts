@@ -70,100 +70,81 @@ export const createSynclet: typeof createSyncletDecl = ((
     queueIfStarted(async () => {
       if (from !== ASTERISK && from !== id) {
         const [address, node] = message;
-        if (await connector.hasChildren(address)) {
-          if (isHash(node)) {
-            log(`recv Hash(${address}) from ${from}`);
-            return receiveHash(address, node, from);
-          }
-          if (isSubNodes(node)) {
-            log(`recv SubNodes(${address}) from ${from}`);
-            return receiveSubNodes(address, node, from);
-          }
-        } else {
-          const myTimestamp = await connector.getTimestamp(address);
-          if (isTimestamp(node)) {
-            log(`recv Timestamp(${address}) from ${from}`);
-            return receiveTimestamp(address, myTimestamp, node, from);
-          }
-          if (isTimestampAndValue(node)) {
-            log(`recv TimestampAndValue(${address}) from ${from}`);
-            return receiveTimestampAndValue(address, myTimestamp, node, from);
-          }
+        const transform: any = isTimestamp(node)
+          ? transformTimestamp
+          : isTimestampAndValue(node)
+            ? transformTimestampAndValue
+            : isHash(node)
+              ? transformHash
+              : isSubNodes(node)
+                ? transformSubNodes
+                : undefined;
+        const newNode = await transform?.(address, node);
+        if (newNode !== undefined) {
+          return await sendMessage(address, newNode, from);
         }
-        log(`structure mismatch: ${address}`, 'warn');
       }
-      log(`invalid from: ${from}`, 'warn');
+      log(`invalid message: ${from}`, 'warn');
     });
 
-  const receiveTimestamp = async (
+  const transformTimestamp = async (
     address: Address,
-    myTimestamp: Timestamp,
     otherTimestamp: Timestamp,
-    from: string,
-  ) => {
-    if (otherTimestamp > myTimestamp) {
-      await sendMessage(address, myTimestamp, from);
-    } else if (otherTimestamp < myTimestamp) {
-      await sendMessage(
-        address,
-        [myTimestamp, await connector.get(address)],
-        from,
-      );
+  ): Promise<Node | undefined> => {
+    if (!(await connector.hasChildren(address))) {
+      const myTimestamp = await connector.getTimestamp(address);
+      if (otherTimestamp > myTimestamp) {
+        return myTimestamp;
+      } else if (otherTimestamp < myTimestamp) {
+        return [myTimestamp, await connector.get(address)];
+      }
     }
+    log(`mismatch; Timestamp vs SubNodes: ${address}`, 'warn');
   };
 
-  const receiveTimestampAndValue = async (
+  const transformTimestampAndValue = async (
     address: Address,
-    myTimestamp: Timestamp,
     otherTimestampAndValue: TimestampAndValue,
-    from: string,
-  ) => {
-    const [otherTimestamp, otherValue] = otherTimestampAndValue;
-    if (otherTimestamp > myTimestamp) {
-      await connector.setTimestampAndValue(address, otherTimestamp, otherValue);
-    } else if (myTimestamp > otherTimestamp) {
-      await sendMessage(
-        address,
-        [myTimestamp, await connector.get(address)],
-        from,
-      );
+  ): Promise<Node | undefined> => {
+    if (!(await connector.hasChildren(address))) {
+      const myTimestamp = await connector.getTimestamp(address);
+      const [otherTimestamp, otherValue] = otherTimestampAndValue;
+      if (otherTimestamp > myTimestamp) {
+        await connector.setTimestampAndValue(
+          address,
+          otherTimestamp,
+          otherValue,
+        );
+      } else if (myTimestamp > otherTimestamp) {
+        return [myTimestamp, await connector.get(address)];
+      }
     }
+    log(`mismatch; TimestampValue vs SubNodes: ${address}`, 'warn');
   };
 
-  const receiveHash = async (
-    address: Address,
-    otherHash: Hash,
-    from: string,
-  ) => {
-    if (otherHash !== (await connector.getHash(address))) {
-      await sendMessage(address, await buildSubNodesForHash(address), from);
+  const transformHash = async (address: Address, otherHash: Hash) => {
+    if (await connector.hasChildren(address)) {
+      if (otherHash !== (await connector.getHash(address))) {
+        return await buildSubNodesForHash(address);
+      }
     }
+    log(`mismatch; Hash vs no SubNodes: ${address}`, 'warn');
   };
 
-  const buildSubNodesForHash = async (address: Address) => {
-    const subNodes: SubNodes = [{}];
-    await promiseAll(
-      arrayMap(await connector.getChildren(address), async (id) => {
-        const subAddress = [...address, id];
-        subNodes[0][id] = await (
-          (await connector.hasChildren(subAddress))
-            ? connector.getHash
-            : connector.getTimestamp
-        )(subAddress);
-      }),
-    );
-    return subNodes;
-  };
-
-  const receiveSubNodes = async (
+  const transformSubNodes = async (
     address: Address,
     otherSubNodes: SubNodes,
-    from: string,
   ) => {
-    const mySubNodes = await processSubNodesForSubNodes(address, otherSubNodes);
-    if (objNotEmpty(mySubNodes[0])) {
-      await sendMessage(address, mySubNodes, from);
+    if (await connector.hasChildren(address)) {
+      const mySubNodes = await processSubNodesForSubNodes(
+        address,
+        otherSubNodes,
+      );
+      if (objNotEmpty(mySubNodes[0])) {
+        return mySubNodes;
+      }
     }
+    log(`mismatch; SubNodes vs no SubNodes: ${address}`, 'warn');
   };
 
   const processMySubNodes = async (
@@ -185,6 +166,21 @@ export const createSynclet: typeof createSyncletDecl = ((
       ),
     );
     return mySubNodes;
+  };
+
+  const buildSubNodesForHash = async (address: Address) => {
+    const subNodes: SubNodes = [{}];
+    await promiseAll(
+      arrayMap(await connector.getChildren(address), async (id) => {
+        const subAddress = [...address, id];
+        subNodes[0][id] = await (
+          (await connector.hasChildren(subAddress))
+            ? connector.getHash
+            : connector.getTimestamp
+        )(subAddress);
+      }),
+    );
+    return subNodes;
   };
 
   const processSubNodesForSubNodes = async (
