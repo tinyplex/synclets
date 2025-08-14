@@ -19,6 +19,7 @@ import {
   isSubNodes,
   isTimestamp,
   isTimestampAndValue,
+  objFromEntries,
   objKeys,
   objNotEmpty,
   promiseAll,
@@ -122,10 +123,22 @@ export const createSynclet: typeof createSyncletDecl = ((
     log(`mismatch; TimestampValue vs SubNodes: ${address}`, 'warn');
   };
 
-  const transformHash = async (address: Address, otherHash: Hash) => {
+  const transformHash = async (
+    address: Address,
+    otherHash: Hash,
+  ): Promise<Node | undefined> => {
     if (await connector.hasChildren(address)) {
       if (otherHash !== (await connector.getHash(address))) {
-        return await buildSubNodesForHash(address);
+        return [
+          objFromEntries(
+            await promiseAll(
+              arrayMap(await connector.getChildren(address), async (id) => [
+                id,
+                await connector.getHashOrTimestamp([...address, id]),
+              ]),
+            ),
+          ),
+        ];
       }
     }
     log(`mismatch; Hash vs no SubNodes: ${address}`, 'warn');
@@ -134,7 +147,7 @@ export const createSynclet: typeof createSyncletDecl = ((
   const transformSubNodes = async (
     address: Address,
     otherSubNodes: SubNodes,
-  ) => {
+  ): Promise<Node | undefined> => {
     if (await connector.hasChildren(address)) {
       const mySubNodes = await processSubNodesForSubNodes(
         address,
@@ -147,41 +160,26 @@ export const createSynclet: typeof createSyncletDecl = ((
     log(`mismatch; SubNodes vs no SubNodes: ${address}`, 'warn');
   };
 
-  const processMySubNodes = async (
+  const getFullNodes = async (
     address: Address,
-    otherIds: string[] = [],
-  ) => {
-    const mySubNodes: SubNodes = [{}];
-    await promiseAll(
-      arrayMap(
-        arrayDifference(await connector.getChildren(address), otherIds),
-        async (id) => {
-          const subAddress = [...address, id];
-          mySubNodes[0][id] = await (
-            (await connector.hasChildren(subAddress))
-              ? processMySubNodes
-              : connector.getTimestampAndValue
-          )(subAddress);
-        },
+    except: string[] = [],
+  ): Promise<SubNodes> => [
+    objFromEntries(
+      await promiseAll(
+        arrayMap(
+          arrayDifference(await connector.getChildren(address), except),
+          async (id) => [
+            id,
+            await (
+              (await connector.hasChildren([...address, id]))
+                ? getFullNodes
+                : connector.getTimestampAndValue
+            )([...address, id]),
+          ],
+        ),
       ),
-    );
-    return mySubNodes;
-  };
-
-  const buildSubNodesForHash = async (address: Address) => {
-    const subNodes: SubNodes = [{}];
-    await promiseAll(
-      arrayMap(await connector.getChildren(address), async (id) => {
-        const subAddress = [...address, id];
-        subNodes[0][id] = await (
-          (await connector.hasChildren(subAddress))
-            ? connector.getHash
-            : connector.getTimestamp
-        )(subAddress);
-      }),
-    );
-    return subNodes;
-  };
+    ),
+  ];
 
   const processSubNodesForSubNodes = async (
     address: Address,
@@ -190,7 +188,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     const otherIds = objKeys(otherSubNodesById);
     const mySubNodes: SubNodes = partial
       ? [{}]
-      : await processMySubNodes(address, otherIds);
+      : await getFullNodes(address, otherIds);
 
     await promiseAll(
       arrayMap(otherIds, async (id) => {

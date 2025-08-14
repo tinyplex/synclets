@@ -8,6 +8,8 @@ export const objKeys = object.keys;
 
 export const objValues = object.values;
 
+export const objFromEntries = object.fromEntries;
+
 export const isObject = (obj: unknown): obj is {[id: string]: unknown} =>
   !isUndefined(obj) &&
   (ifNotUndefined(

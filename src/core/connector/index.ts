@@ -81,6 +81,11 @@ export const createConnector: typeof createConnectorDecl = (
     await get(address),
   ];
 
+  const getHashOrTimestamp = async (
+    address: Address,
+  ): Promise<Hash | Timestamp> =>
+    await ((await hasChildren(address)) ? getHash : getTimestamp)(address);
+
   const setTimestampAndValue = async (
     address: Address,
     timestamp: Timestamp,
@@ -118,6 +123,7 @@ export const createConnector: typeof createConnectorDecl = (
     getChildren,
 
     getTimestampAndValue,
+    getHashOrTimestamp,
     setTimestampAndValue,
 
     getSyncletId,

@@ -1,6 +1,7 @@
 export const GLOBAL = globalThis;
 
-export const promiseAll = (promises: Promise<any>[]) => Promise.all(promises);
+export const promiseAll = <Return>(promises: Promise<Return>[]) =>
+  Promise.all(promises);
 export const promiseResolve = Promise.resolve;
 
 export const math = Math;

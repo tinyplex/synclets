@@ -30,6 +30,7 @@ export interface ProtectedConnector extends Connector {
     address: Address,
     timestamp?: Timestamp,
   ): Promise<TimestampAndValue>;
+  getHashOrTimestamp(address: Address): Promise<Hash | Timestamp>;
   setTimestampAndValue(
     address: Address,
     timestamp: Timestamp,
