@@ -197,43 +197,20 @@ export const createSynclet: typeof createSyncletDecl = ((
         const otherSubNode = otherSubNodesById[id];
         const subAddress = [...address, id];
 
-        if (isHash(otherSubNode)) {
-          if ((await connector.getHash(subAddress)) != otherSubNode) {
-            mySubNodes[0][id] = await buildSubNodesForHash(subAddress);
-          }
-        } else if (isSubNodes(otherSubNode)) {
-          const mySubSubNodes = await processSubNodesForSubNodes(
-            subAddress,
-            otherSubNode,
-          );
-          if (objNotEmpty(mySubSubNodes[0])) {
-            mySubNodes[0][id] = mySubSubNodes;
-          }
-        } else if (isTimestamp(otherSubNode)) {
-          const otherTimestamp = otherSubNode;
-          const myTimestamp = await connector.getTimestamp(subAddress);
-          if (otherTimestamp > myTimestamp) {
-            mySubNodes[0][id] = myTimestamp;
-          } else if (otherTimestamp < myTimestamp) {
-            mySubNodes[0][id] = await connector.getTimestampAndValue(
-              subAddress,
-              myTimestamp,
-            );
-          }
-        } else if (isTimestampAndValue(otherSubNode)) {
-          const otherTimestamp = otherSubNode[0];
-          const myTimestamp = await connector.getTimestamp(subAddress);
-          if (otherTimestamp > myTimestamp) {
-            await connector.setTimestampAndValue(subAddress, ...otherSubNode);
-          } else if (otherTimestamp < myTimestamp) {
-            mySubNodes[0][id] = await connector.getTimestampAndValue(
-              subAddress,
-              myTimestamp,
-            );
-          }
-        }
+        const transform: any = isTimestamp(otherSubNode)
+          ? transformTimestamp
+          : isTimestampAndValue(otherSubNode)
+            ? transformTimestampAndValue
+            : isHash(otherSubNode)
+              ? transformHash
+              : isSubNodes(otherSubNode)
+                ? transformSubNodes
+                : undefined;
 
-        if (mySubNodes[0][id] === undefined) {
+        const newNode = await transform?.(subAddress, otherSubNode);
+        if (newNode !== undefined) {
+          mySubNodes[0][id] = newNode;
+        } else {
           mySubNodes[1] = 1;
         }
       }),
