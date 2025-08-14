@@ -28,3 +28,8 @@ export const objEvery = <Value>(
   obj: {[id: string]: Value},
   test: (value: Value) => boolean,
 ): boolean => arrayEvery(objValues(obj), test);
+
+export const objMap = <Value, Return>(
+  obj: {[id: string]: Value},
+  cb: (id: string, value: Value) => Return,
+): Return[] => object.entries(obj).map((args) => cb(...args));

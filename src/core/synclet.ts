@@ -15,12 +15,14 @@ import {
   arrayMap,
   ASTERISK,
   getUniqueId,
+  ifNotUndefined,
   isHash,
   isSubNodes,
   isTimestamp,
   isTimestampAndValue,
   objFromEntries,
   objKeys,
+  objMap,
   objNotEmpty,
   promiseAll,
 } from '@synclets/utils';
@@ -30,6 +32,8 @@ import type {
   ProtectedTransport,
 } from './protected.d.ts';
 import {getQueueFunctions} from './queue.ts';
+
+const INVALID_NODE = 'invalid node';
 
 export const createSynclet: typeof createSyncletDecl = ((
   connector: ProtectedConnector,
@@ -58,20 +62,39 @@ export const createSynclet: typeof createSyncletDecl = ((
       }
     });
 
-  // #region send
+  // #region send/receive
 
   const sendMessage = async (address: Address, node: Node, to?: string) =>
     await transport.sendMessage([address, node], to);
-
-  // #endregion
-
-  // #region receive
 
   const receiveMessage = (message: Message, from: string) =>
     queueIfStarted(async () => {
       if (from !== ASTERISK && from !== id) {
         const [address, node] = message;
-        const transform: any = isTimestamp(node)
+        await transformNode(
+          address,
+          node,
+          (newNode) => sendMessage(address, newNode, from),
+          () => log(`${INVALID_NODE}: ${address}`, 'warn'),
+        );
+      } else {
+        log(`invalid message: ${from}`, 'warn');
+      }
+    });
+
+  // #endregion
+
+  // #region transform
+
+  const transformNode = async (
+    address: Address,
+    node: Node,
+    ifDefined: (newNode: Node) => Promise<void> | void,
+    ifUndefined?: () => void,
+  ) =>
+    await ifNotUndefined(
+      await (
+        (isTimestamp(node)
           ? transformTimestamp
           : isTimestampAndValue(node)
             ? transformTimestampAndValue
@@ -79,14 +102,11 @@ export const createSynclet: typeof createSyncletDecl = ((
               ? transformHash
               : isSubNodes(node)
                 ? transformSubNodes
-                : undefined;
-        const newNode = await transform?.(address, node);
-        if (newNode !== undefined) {
-          return await sendMessage(address, newNode, from);
-        }
-      }
-      log(`invalid message: ${from}`, 'warn');
-    });
+                : undefined) as any
+      )?.(address, node),
+      ifDefined,
+      ifUndefined,
+    );
 
   const transformTimestamp = async (
     address: Address,
@@ -99,8 +119,9 @@ export const createSynclet: typeof createSyncletDecl = ((
       } else if (otherTimestamp < myTimestamp) {
         return [myTimestamp, await connector.get(address)];
       }
+    } else {
+      log(`${INVALID_NODE}; Timestamp vs SubNodes: ${address}`, 'warn');
     }
-    log(`mismatch; Timestamp vs SubNodes: ${address}`, 'warn');
   };
 
   const transformTimestampAndValue = async (
@@ -119,8 +140,9 @@ export const createSynclet: typeof createSyncletDecl = ((
       } else if (myTimestamp > otherTimestamp) {
         return [myTimestamp, await connector.get(address)];
       }
+    } else {
+      log(`${INVALID_NODE}; TimestampValue vs SubNodes: ${address}`, 'warn');
     }
-    log(`mismatch; TimestampValue vs SubNodes: ${address}`, 'warn');
   };
 
   const transformHash = async (
@@ -140,24 +162,39 @@ export const createSynclet: typeof createSyncletDecl = ((
           ),
         ];
       }
+    } else {
+      log(`${INVALID_NODE}; Hash vs no SubNodes: ${address}`, 'warn');
     }
-    log(`mismatch; Hash vs no SubNodes: ${address}`, 'warn');
   };
 
   const transformSubNodes = async (
     address: Address,
-    otherSubNodes: SubNodes,
+    [otherSubNodeObj, partial]: SubNodes,
   ): Promise<Node | undefined> => {
     if (await connector.hasChildren(address)) {
-      const mySubNodes = await processSubNodesForSubNodes(
-        address,
-        otherSubNodes,
+      const mySubNodes: SubNodes = partial
+        ? [{}]
+        : await getFullNodes(address, objKeys(otherSubNodeObj));
+      await promiseAll(
+        objMap(otherSubNodeObj, (id, otherSubNode) =>
+          transformNode(
+            [...address, id],
+            otherSubNode,
+            (newNode) => {
+              mySubNodes[0][id] = newNode;
+            },
+            () => {
+              mySubNodes[1] = 1;
+            },
+          ),
+        ),
       );
       if (objNotEmpty(mySubNodes[0])) {
         return mySubNodes;
       }
+    } else {
+      log(`${INVALID_NODE}; SubNodes vs no SubNodes: ${address}`, 'warn');
     }
-    log(`mismatch; SubNodes vs no SubNodes: ${address}`, 'warn');
   };
 
   const getFullNodes = async (
@@ -180,41 +217,6 @@ export const createSynclet: typeof createSyncletDecl = ((
       ),
     ),
   ];
-
-  const processSubNodesForSubNodes = async (
-    address: Address,
-    [otherSubNodesById, partial]: SubNodes,
-  ) => {
-    const otherIds = objKeys(otherSubNodesById);
-    const mySubNodes: SubNodes = partial
-      ? [{}]
-      : await getFullNodes(address, otherIds);
-
-    await promiseAll(
-      arrayMap(otherIds, async (id) => {
-        const otherSubNode = otherSubNodesById[id];
-        const subAddress = [...address, id];
-
-        const transform: any = isTimestamp(otherSubNode)
-          ? transformTimestamp
-          : isTimestampAndValue(otherSubNode)
-            ? transformTimestampAndValue
-            : isHash(otherSubNode)
-              ? transformHash
-              : isSubNodes(otherSubNode)
-                ? transformSubNodes
-                : undefined;
-
-        const newNode = await transform?.(subAddress, otherSubNode);
-        if (newNode !== undefined) {
-          mySubNodes[0][id] = newNode;
-        } else {
-          mySubNodes[1] = 1;
-        }
-      }),
-    );
-    return mySubNodes;
-  };
 
   // #endregion
 
