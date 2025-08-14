@@ -224,7 +224,7 @@ describe('table sync, basics', () => {
 });
 
 describe('table sync, multiple values', () => {
-  test('connected, different values', async () => {
+  test('connected, different values 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       getTestSyncletsAndConnectors(createTestTableConnector, 2);
     await synclet1.start();
@@ -234,7 +234,23 @@ describe('table sync, multiple values', () => {
     expect(connector1.getUnderlyingTable()).toEqual({r1: {c1: 'C1', c2: 'C2'}});
     expect(connector2.getUnderlyingTable()).toEqual({r1: {c1: 'C1', c2: 'C2'}});
   });
-  test('disconnected, different values', async () => {
+  test('connected, different values 2', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestTableConnector, 2);
+    await synclet1.start();
+    await synclet2.start();
+    await connector1.setUnderlyingCell('r1', 'c1', 'C1');
+    await connector2.setUnderlyingCell('r2', 'c2', 'C2');
+    expect(connector1.getUnderlyingTable()).toEqual({
+      r1: {c1: 'C1'},
+      r2: {c2: 'C2'},
+    });
+    expect(connector2.getUnderlyingTable()).toEqual({
+      r1: {c1: 'C1'},
+      r2: {c2: 'C2'},
+    });
+  });
+  test('disconnected, different values 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       getTestSyncletsAndConnectors(createTestTableConnector, 2);
     await connector1.setUnderlyingCell('r1', 'c1', 'C1');
@@ -243,6 +259,22 @@ describe('table sync, multiple values', () => {
     await synclet2.start();
     expect(connector1.getUnderlyingTable()).toEqual({r1: {c1: 'C1', c2: 'C2'}});
     expect(connector2.getUnderlyingTable()).toEqual({r1: {c1: 'C1', c2: 'C2'}});
+  });
+  test('disconnected, different values 2', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestTableConnector, 2);
+    await connector1.setUnderlyingCell('r1', 'c1', 'C1');
+    await connector2.setUnderlyingCell('r2', 'c2', 'C2');
+    await synclet1.start();
+    await synclet2.start();
+    expect(connector1.getUnderlyingTable()).toEqual({
+      r1: {c1: 'C1'},
+      r2: {c2: 'C2'},
+    });
+    expect(connector2.getUnderlyingTable()).toEqual({
+      r1: {c1: 'C1'},
+      r2: {c2: 'C2'},
+    });
   });
   test('disconnected, conflicting values', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =

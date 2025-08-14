@@ -233,10 +233,9 @@ export const createSynclet: typeof createSyncletDecl = ((
               myTimestamp,
             );
           }
-
-          if (mySubNodes[0][id] === undefined) {
-            mySubNodes[1] = 1;
-          }
+        }
+        if (mySubNodes[0][id] === undefined) {
+          mySubNodes[1] = 1;
         }
       }),
     );
