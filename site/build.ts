@@ -66,6 +66,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/connector/value/index.d.ts')
     .addApiFile('dist/@types/connector/values/index.d.ts')
     .addApiFile('dist/@types/connector/table/index.d.ts')
+    .addApiFile('dist/@types/connector/tables/index.d.ts')
     .addApiFile('dist/@types/transport/index.d.ts')
     .addApiFile('dist/@types/transport/memory/index.d.ts');
 

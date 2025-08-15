@@ -7,7 +7,7 @@ const createTestTableConnector = (options?: ConnectorOptions) => {
   const underlyingTable: {[rowId: string]: {[cellId: string]: Value}} = {};
   const underlyingTimestamps: {[rowId: string]: {[cellId: string]: Timestamp}} =
     {};
-  const underlyingRowHash: {[rowId: string]: Hash} = {};
+  const underlyingRowHashes: {[rowId: string]: Hash} = {};
   let underlyingTableHash: Hash = 0;
   let underlyingSync:
     | ((rowId?: string, cellId?: string) => Promise<void>)
@@ -24,7 +24,7 @@ const createTestTableConnector = (options?: ConnectorOptions) => {
   const getRowIds = async () => Object.keys(underlyingTable);
 
   const getRowHash = async (rowId: string) => {
-    return underlyingRowHash[rowId] ?? 0;
+    return underlyingRowHashes[rowId] ?? 0;
   };
 
   const getCellIds = async (rowId: string) => {
@@ -44,7 +44,7 @@ const createTestTableConnector = (options?: ConnectorOptions) => {
   };
 
   const setRowHash = async (rowId: string, hash: Hash) => {
-    underlyingRowHash[rowId] = hash;
+    underlyingRowHashes[rowId] = hash;
   };
 
   const setCell = async (rowId: string, cellId: string, value: Value) => {
@@ -69,15 +69,17 @@ const createTestTableConnector = (options?: ConnectorOptions) => {
     value: Value,
   ) => {
     const timestamp = connector.getNextTimestamp();
+
     underlyingTable[rowId] = underlyingTable[rowId] || {};
     underlyingTable[rowId][cellId] = value;
+
     underlyingTimestamps[rowId] = underlyingTimestamps[rowId] || {};
     underlyingTimestamps[rowId][cellId] = timestamp;
 
-    underlyingRowHash[rowId] =
-      (underlyingRowHash[rowId] ^ getHash(timestamp)) >>> 0;
+    underlyingRowHashes[rowId] =
+      (underlyingRowHashes[rowId] ^ getHash(timestamp)) >>> 0;
     underlyingTableHash =
-      (underlyingTableHash ^ underlyingRowHash[rowId]) >>> 0;
+      (underlyingTableHash ^ underlyingRowHashes[rowId]) >>> 0;
     await underlyingSync?.(rowId, cellId);
   };
 

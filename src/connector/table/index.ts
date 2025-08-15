@@ -44,7 +44,7 @@ export const createTableConnector: typeof createTableConnectorDecl = (
     (await getCellTimestamp?.(rowId, cellId)) ?? '';
 
   const getHash = async ([rowId]: Address): Promise<number> =>
-    (rowId != null ? await getRowHash?.(rowId) : getTableHash?.()) ?? 0;
+    (await (rowId != null ? getRowHash?.(rowId) : getTableHash?.())) ?? 0;
 
   const set = async ([rowId, cellId]: Address, value: Value): Promise<void> =>
     await setCell?.(rowId, cellId, value);
@@ -55,15 +55,13 @@ export const createTableConnector: typeof createTableConnectorDecl = (
   ): Promise<void> => await setCellTimestamp?.(rowId, cellId, timestamp);
 
   const setHash = async ([rowId]: Address, hash: number): Promise<void> =>
-    rowId != null
-      ? await setRowHash?.(rowId, hash)
-      : await setTableHash?.(hash);
+    await (rowId != null ? setRowHash?.(rowId, hash) : setTableHash?.(hash));
 
   const hasChildren = async (address: Address): Promise<boolean> =>
     size(address) < 2;
 
   const getChildren = async ([rowId]: Address): Promise<string[]> =>
-    (rowId != null ? await getCellIds?.(rowId) : await getRowIds?.()) ?? [];
+    (await (rowId != null ? getCellIds?.(rowId) : getRowIds?.())) ?? [];
 
   return createConnector(
     {
