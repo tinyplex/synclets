@@ -63,7 +63,7 @@ export type ConnectorOptions = {
 };
 
 export type ConnectorImplementations = {
-  connect?: (change: (address: Address) => Promise<void>) => Promise<void>;
+  connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
   get?: (address: Address) => Promise<Value>;
   getHash?: (address: Address) => Promise<Hash>;

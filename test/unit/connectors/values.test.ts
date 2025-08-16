@@ -1,7 +1,7 @@
 import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
 import {createValuesConnector} from 'synclets/connector/values';
 import {getHash} from 'synclets/utils';
-import {getTestSyncletsAndConnectors} from './common.ts';
+import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestValuesConnector = (options?: ConnectorOptions) => {
   const underlyingValues: {[valueId: string]: Value} = {};

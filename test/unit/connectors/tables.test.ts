@@ -1,7 +1,7 @@
 import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
 import {createTablesConnector} from 'synclets/connector/tables';
 import {getHash} from 'synclets/utils';
-import {getTestSyncletsAndConnectors} from './common.ts';
+import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestTablesConnector = (options?: ConnectorOptions) => {
   const underlyingTables: {
@@ -109,14 +109,13 @@ const createTestTablesConnector = (options?: ConnectorOptions) => {
       underlyingTimestamps[tableId][rowId] || {};
     underlyingTimestamps[tableId][rowId][cellId] = timestamp;
 
+    const hash = getHash(timestamp);
     underlyingRowHashes[tableId] = underlyingRowHashes[tableId] || {};
     underlyingRowHashes[tableId][rowId] =
-      (underlyingRowHashes[tableId][rowId] ^ getHash(timestamp)) >>> 0;
+      (underlyingRowHashes[tableId][rowId] ^ hash) >>> 0;
     underlyingTableHashes[tableId] =
-      (underlyingTableHashes[tableId] ^ underlyingRowHashes[tableId][rowId]) >>>
-      0;
-    underlyingTablesHash =
-      (underlyingTablesHash ^ underlyingTableHashes[tableId]) >>> 0;
+      (underlyingTableHashes[tableId] ^ hash) >>> 0;
+    underlyingTablesHash = (underlyingTablesHash ^ hash) >>> 0;
     await underlyingSync?.(tableId, rowId, cellId);
   };
 
