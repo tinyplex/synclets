@@ -38,19 +38,6 @@ export interface Synclet {
   log(message: string, level?: LogLevel): void;
 }
 
-export interface Connector {
-  __brand: 'Connector';
-  getSyncletId(): string | undefined;
-  getNextTimestamp(): Timestamp;
-  log(message: string, level?: LogLevel): void;
-}
-
-export interface Transport {
-  __brand: 'Transport';
-  getSyncletId(): string | undefined;
-  log(message: string, level?: LogLevel): void;
-}
-
 export type SyncletOptions = {
   id?: string;
   logger?: Logger;
@@ -61,8 +48,14 @@ export type SyncletImplementations = {
     type: MessageType,
     address: Address,
     node: Node,
-    extraData: Context,
+    context: Context,
   ) => Promise<boolean>;
+  getSendContext?: (
+    type: MessageType,
+    address: Address,
+    node: Node,
+    receivedContext?: Context,
+  ) => Promise<Context>;
 };
 
 export function createSynclet(
@@ -71,6 +64,13 @@ export function createSynclet(
   implementations?: SyncletImplementations,
   options?: SyncletOptions,
 ): Synclet;
+
+export interface Connector {
+  __brand: 'Connector';
+  getSyncletId(): string | undefined;
+  getNextTimestamp(): Timestamp;
+  log(message: string, level?: LogLevel): void;
+}
 
 export type ConnectorOptions = {
   logger?: Logger;
@@ -104,6 +104,12 @@ export type TransportImplementations = {
   sendPacket?: (string: string) => Promise<void>;
   fragmentSize?: number;
 };
+
+export interface Transport {
+  __brand: 'Transport';
+  getSyncletId(): string | undefined;
+  log(message: string, level?: LogLevel): void;
+}
 
 export type TransportOptions = {
   logger?: Logger;

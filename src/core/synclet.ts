@@ -42,7 +42,7 @@ const INVALID_NODE = 'invalid node';
 export const createSynclet: typeof createSyncletDecl = ((
   connector: ProtectedConnector,
   transport: ProtectedTransport,
-  {canReceiveMessage}: SyncletImplementations = {},
+  {canReceiveMessage, getSendContext}: SyncletImplementations = {},
   options: SyncletOptions = {},
 ): Synclet => {
   let started = false;
@@ -71,13 +71,31 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   // #region send/receive
 
-  const sendNodeMessage = async (address: Address, node: Node, to?: string) =>
-    await transport.sendMessage([MessageType.Node, address, node], to);
+  const sendNodeMessage = async (
+    address: Address,
+    node: Node,
+    receivedContext: Context = {},
+    to?: string,
+  ) =>
+    await transport.sendMessage(
+      [
+        MessageType.Node,
+        address,
+        node,
+        (await getSendContext?.(
+          MessageType.Node,
+          address,
+          node,
+          receivedContext,
+        )) ?? {},
+      ],
+      to,
+    );
 
   const receiveMessage = (message: Message, from: string) =>
     queueIfStarted(async () => {
       if (from !== ASTERISK && from !== id) {
-        const [type, address, node, context = {}] = message;
+        const [type, address, node, context] = message;
         if (
           isUndefined(canReceiveMessage) ||
           (await canReceiveMessage(type, address, node, context))
@@ -87,7 +105,7 @@ export const createSynclet: typeof createSyncletDecl = ((
               address,
               node,
               context,
-              (newNode) => sendNodeMessage(address, newNode, from),
+              (newNode) => sendNodeMessage(address, newNode, context, from),
               () => log(`${INVALID_NODE}: ${address}`, 'warn'),
             );
           }

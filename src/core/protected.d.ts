@@ -16,7 +16,7 @@ export type Message = [
   type: MessageType,
   address: Address,
   node: Node,
-  context?: Context,
+  context: Context,
 ];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;

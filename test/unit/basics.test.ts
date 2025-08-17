@@ -5,6 +5,7 @@ import {
   createTransport,
   Transport,
 } from 'synclets';
+import {createMemoryTransport} from 'synclets/transport/memory';
 
 let connector: Connector;
 let transport: Transport;
@@ -57,4 +58,56 @@ test('start & stop', async () => {
 
   await synclet1.stop();
   expect(synclet1.getStarted()).toEqual(false);
+});
+
+describe('context', () => {
+  test('send message', async () => {
+    const getSendContext = jest.fn();
+    const canReceiveMessage = jest.fn();
+
+    const synclet1 = createSynclet(
+      createConnector(),
+      createMemoryTransport({poolId: 'pool1'}),
+      {
+        getSendContext,
+      },
+    );
+    const synclet2 = createSynclet(
+      createConnector(),
+      createMemoryTransport({poolId: 'pool1'}),
+      {
+        canReceiveMessage,
+      },
+    );
+    await synclet2.start();
+    await synclet1.start();
+
+    expect(getSendContext).toHaveBeenCalledWith(0, [], '', {});
+    expect(canReceiveMessage).toHaveBeenCalledWith(0, [], '', {});
+  });
+
+  test('add context', async () => {
+    const getSendContext = jest.fn();
+    const canReceiveMessage = jest.fn();
+
+    const synclet1 = createSynclet(
+      createConnector(),
+      createMemoryTransport({poolId: 'pool1'}),
+      {
+        getSendContext,
+      },
+    );
+    const synclet2 = createSynclet(
+      createConnector(),
+      createMemoryTransport({poolId: 'pool1'}),
+      {
+        canReceiveMessage,
+      },
+    );
+    await synclet2.start();
+    await synclet1.start();
+
+    expect(getSendContext).toHaveBeenCalledWith(0, [], '', {});
+    expect(canReceiveMessage).toHaveBeenCalledWith(0, [], '', {});
+  });
 });
