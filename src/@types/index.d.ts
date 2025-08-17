@@ -1,5 +1,7 @@
 /// synclets
 
+import {MessageType} from '../core/message.ts';
+
 export type DeletedValue = '\uFFFC';
 
 export type Timestamp = string;
@@ -15,6 +17,8 @@ export type Node = Timestamp | TimestampAndValue | Hash | SubNodes;
 export type TimestampAndValue = [timestamp: Timestamp, value: Value];
 
 export type SubNodes = [subNodes: {[id: string]: Node}, partial?: 1];
+
+export type Context = {[key: string]: Value};
 
 export type Logger = {
   error?: (string: string) => void;
@@ -52,9 +56,19 @@ export type SyncletOptions = {
   logger?: Logger;
 };
 
+export type SyncletImplementations = {
+  canReceiveMessage?: (
+    type: MessageType,
+    address: Address,
+    node: Node,
+    extraData: Context,
+  ) => Promise<boolean>;
+};
+
 export function createSynclet(
   connector: Connector,
   transport: Transport,
+  implementations?: SyncletImplementations,
   options?: SyncletOptions,
 ): Synclet;
 
@@ -65,14 +79,18 @@ export type ConnectorOptions = {
 export type ConnectorImplementations = {
   connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  get?: (address: Address) => Promise<Value>;
-  getHash?: (address: Address) => Promise<Hash>;
-  getTimestamp?: (address: Address) => Promise<Timestamp>;
-  set?: (address: Address, value: Value) => Promise<void>;
-  setHash?: (address: Address, hash: Hash) => Promise<void>;
-  setTimestamp?: (address: Address, timestamp: Timestamp) => Promise<void>;
-  hasChildren?: (address: Address) => Promise<boolean>;
-  getChildren?: (address: Address) => Promise<string[]>;
+  get?: (address: Address, context: Context) => Promise<Value>;
+  getHash?: (address: Address, context: Context) => Promise<Hash>;
+  getTimestamp?: (address: Address, context: Context) => Promise<Timestamp>;
+  set?: (address: Address, value: Value, context: Context) => Promise<void>;
+  setHash?: (address: Address, hash: Hash, context: Context) => Promise<void>;
+  setTimestamp?: (
+    address: Address,
+    timestamp: Timestamp,
+    context: Context,
+  ) => Promise<void>;
+  hasChildren?: (address: Address, context: Context) => Promise<boolean>;
+  getChildren?: (address: Address, context: Context) => Promise<string[]>;
 };
 
 export function createConnector(

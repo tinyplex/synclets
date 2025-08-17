@@ -1,6 +1,7 @@
 import type {
   Address,
   Connector,
+  Context,
   Hash,
   Node,
   Synclet,
@@ -9,8 +10,14 @@ import type {
   Transport,
   Value,
 } from '@synclets/@types';
+import {MessageType} from './message.ts';
 
-export type Message = [address: Address, node: Node];
+export type Message = [
+  type: MessageType,
+  address: Address,
+  node: Node,
+  context?: Context,
+];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
@@ -18,23 +25,32 @@ export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: Synclet): void;
   connect(change: (address: Address) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
-  get(address: Address): Promise<Value>;
-  getHash(address: Address): Promise<Hash>;
-  getTimestamp(address: Address): Promise<Timestamp>;
-  set(address: Address, value: Value): Promise<void>;
-  setHash(address: Address, hash: Hash): Promise<void>;
-  setTimestamp(address: Address, timestamp: Timestamp): Promise<void>;
-  hasChildren(address: Address): Promise<boolean>;
-  getChildren(address: Address): Promise<string[]>;
+  get(address: Address, context: Context): Promise<Value>;
+  getHash(address: Address, context: Context): Promise<Hash>;
+  getTimestamp(address: Address, context: Context): Promise<Timestamp>;
+  set(address: Address, value: Value, context: Context): Promise<void>;
+  setHash(address: Address, hash: Hash, context: Context): Promise<void>;
+  setTimestamp(
+    address: Address,
+    timestamp: Timestamp,
+    context: Context,
+  ): Promise<void>;
+  hasChildren(address: Address, context: Context): Promise<boolean>;
+  getChildren(address: Address, context: Context): Promise<string[]>;
   getTimestampAndValue(
     address: Address,
+    context: Context,
     timestamp?: Timestamp,
   ): Promise<TimestampAndValue>;
-  getHashOrTimestamp(address: Address): Promise<Hash | Timestamp>;
+  getHashOrTimestamp(
+    address: Address,
+    context: Context,
+  ): Promise<Hash | Timestamp>;
   setTimestampAndValue(
     address: Address,
     timestamp: Timestamp,
     value: Value,
+    context: Context,
   ): Promise<void>;
 }
 

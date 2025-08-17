@@ -128,7 +128,7 @@ const createTestCustomConnector = (options?: ConnectorOptions) => {
     }
   };
 
-  const hasChildren = (address: Address) => {
+  const hasChildren = async (address: Address) => {
     switch (JSON.stringify(address)) {
       case '[]':
       case '["two"]':
@@ -140,7 +140,7 @@ const createTestCustomConnector = (options?: ConnectorOptions) => {
     }
   };
 
-  const getChildren = (address: Address) => {
+  const getChildren = async (address: Address) => {
     switch (JSON.stringify(address)) {
       case '[]':
         return ['one', 'two', 'three'];

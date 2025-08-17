@@ -30,6 +30,7 @@ export const getTestSyncletAndConnector = <TestConnector extends Connector>(
   const synclet = createSynclet(
     connector,
     createMemoryTransport({poolId, logger}),
+    {},
     {id, logger},
   );
   return [synclet, connector];

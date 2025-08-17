@@ -2,6 +2,7 @@ import type {
   Address,
   ConnectorImplementations,
   ConnectorOptions,
+  Context,
   Hash,
   LogLevel,
   Synclet,
@@ -46,54 +47,65 @@ export const createConnector: typeof createConnectorDecl = (
 
   const disconnect = async () => await disconnectImpl?.();
 
-  const get = async (address: Address) => (await getImpl?.(address)) ?? null;
+  const get = async (address: Address, context: Context) =>
+    (await getImpl?.(address, context)) ?? null;
 
-  const getTimestamp = async (address: Address) =>
-    (await getTimestampImpl?.(address)) ?? '';
+  const getTimestamp = async (address: Address, context: Context) =>
+    (await getTimestampImpl?.(address, context)) ?? '';
 
-  const getHash = async (address: Address) =>
-    (await getHashImpl?.(address)) ?? 0;
+  const getHash = async (address: Address, context: Context) =>
+    (await getHashImpl?.(address, context)) ?? 0;
 
-  const set = async (address: Address, value: Value) =>
-    await setImpl?.(address, value);
+  const set = async (address: Address, value: Value, context: Context) =>
+    await setImpl?.(address, value, context);
 
-  const setTimestamp = async (address: Address, timestamp: Timestamp) => {
+  const setTimestamp = async (
+    address: Address,
+    timestamp: Timestamp,
+    context: Context,
+  ) => {
     seenTimestamp(timestamp);
-    await setTimestampImpl?.(address, timestamp);
+    await setTimestampImpl?.(address, timestamp, context);
   };
 
-  const setHash = async (address: Address, hash: Hash) =>
-    await setHashImpl?.(address, hash);
+  const setHash = async (address: Address, hash: Hash, context: Context) =>
+    await setHashImpl?.(address, hash, context);
 
-  const hasChildren = async (address: Address) =>
-    (await hasChildrenImpl?.(address)) ?? false;
+  const hasChildren = async (address: Address, context: Context) =>
+    (await hasChildrenImpl?.(address, context)) ?? false;
 
-  const getChildren = async (address: Address) =>
-    (await getChildrenImpl?.(address)) ?? [];
+  const getChildren = async (address: Address, context: Context) =>
+    (await getChildrenImpl?.(address, context)) ?? [];
 
   // --
 
   const getTimestampAndValue = async (
     address: Address,
+    context: Context,
     timestamp?: Timestamp,
   ): Promise<TimestampAndValue> => [
-    timestamp ?? (await getTimestamp(address)),
-    await get(address),
+    timestamp ?? (await getTimestamp(address, context)),
+    await get(address, context),
   ];
 
   const getHashOrTimestamp = async (
     address: Address,
+    context: Context,
   ): Promise<Hash | Timestamp> =>
-    await ((await hasChildren(address)) ? getHash : getTimestamp)(address);
+    await ((await hasChildren(address, context)) ? getHash : getTimestamp)(
+      address,
+      context,
+    );
 
   const setTimestampAndValue = async (
     address: Address,
     timestamp: Timestamp,
     value: Value,
+    context: Context,
   ): Promise<void> => {
     log(`set(${address})`);
-    await set(address, value);
-    await setTimestamp(address, timestamp);
+    await set(address, value, context);
+    await setTimestamp(address, timestamp, context);
   };
 
   // #endregion
