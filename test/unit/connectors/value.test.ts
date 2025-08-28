@@ -1,5 +1,5 @@
 import {ConnectorOptions, Timestamp, Value} from 'synclets';
-import {createValueConnector} from 'synclets/connector/value';
+import {createValueConnector} from 'synclets/connector/base';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestValueConnector = (options?: ConnectorOptions) => {

@@ -1,5 +1,5 @@
 import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
-import {createTablesConnector} from 'synclets/connector/tables';
+import {createTablesConnector} from 'synclets/connector/base';
 import {getHash} from 'synclets/utils';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 

@@ -9,7 +9,7 @@ import type {
 import type {
   createValueConnector as createValueConnectorDecl,
   ValueConnectorImplementations,
-} from '@synclets/@types/connector/value';
+} from '@synclets/@types/connector/base';
 
 export const createValueConnector: typeof createValueConnectorDecl = (
   {

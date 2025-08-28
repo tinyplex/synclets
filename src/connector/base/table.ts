@@ -9,7 +9,7 @@ import type {
 import type {
   createTableConnector as createTableConnectorDecl,
   TableConnectorImplementations,
-} from '@synclets/@types/connector/table';
+} from '@synclets/@types/connector/base';
 import {size} from '@synclets/utils';
 
 export const createTableConnector: typeof createTableConnectorDecl = (
