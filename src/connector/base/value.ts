@@ -7,7 +7,7 @@ import type {
   Value,
 } from '@synclets/@types';
 import type {
-  ValueConnectorImplementations,
+  BaseValueConnectorImplementations,
   createBaseValueConnector as createBaseValueConnectorDecl,
 } from '@synclets/@types/connector/base';
 
@@ -18,7 +18,7 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
     getValueTimestamp,
     setValue,
     setValueTimestamp,
-  }: ValueConnectorImplementations = {},
+  }: BaseValueConnectorImplementations = {},
   options?: ConnectorOptions,
 ): Connector => {
   const connect = async (sync: (address: Address) => Promise<void>) =>

@@ -7,7 +7,7 @@ import type {
   Value,
 } from '@synclets/@types';
 import type {
-  TableConnectorImplementations,
+  BaseTableConnectorImplementations,
   createBaseTableConnector as createBaseTableConnectorDecl,
 } from '@synclets/@types/connector/base';
 import {size} from '@synclets/utils';
@@ -25,7 +25,7 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     setRowHash,
     setCell,
     setCellTimestamp,
-  }: TableConnectorImplementations = {},
+  }: BaseTableConnectorImplementations = {},
   options?: ConnectorOptions,
 ): Connector => {
   const connect = async (sync: (address: Address) => Promise<void>) =>

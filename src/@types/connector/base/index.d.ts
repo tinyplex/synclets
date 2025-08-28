@@ -8,7 +8,7 @@ import type {
   Value,
 } from '../../index.d.ts';
 
-export type ValueConnectorImplementations = {
+export type BaseValueConnectorImplementations = {
   connect?: (sync: () => Promise<void>) => Promise<void>;
   getValue?: () => Promise<Value>;
   getValueTimestamp?: () => Promise<Timestamp>;
@@ -16,7 +16,7 @@ export type ValueConnectorImplementations = {
   setValueTimestamp?: (timestamp: Timestamp) => Promise<void>;
 };
 
-export type ValuesConnectorImplementations = {
+export type BaseValuesConnectorImplementations = {
   connect?: (sync: (valueId?: string) => Promise<void>) => Promise<void>;
   getValuesHash?: () => Promise<Hash>;
   getValueIds?: () => Promise<string[]>;
@@ -27,7 +27,7 @@ export type ValuesConnectorImplementations = {
   setValueTimestamp?: (valueId: string, timestamp: Timestamp) => Promise<void>;
 };
 
-export type TableConnectorImplementations = {
+export type BaseTableConnectorImplementations = {
   connect?: (
     sync: (rowId?: string, cellId?: string) => Promise<void>,
   ) => Promise<void>;
@@ -48,7 +48,7 @@ export type TableConnectorImplementations = {
   ) => Promise<void>;
 };
 
-export type TablesConnectorImplementations = {
+export type BaseTablesConnectorImplementations = {
   connect?: (
     sync: (tableId?: string, rowId?: string, cellId?: string) => Promise<void>,
   ) => Promise<void>;
@@ -83,21 +83,21 @@ export type TablesConnectorImplementations = {
 };
 
 export function createBaseValueConnector(
-  implementations?: ValueConnectorImplementations,
+  implementations?: BaseValueConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
 
 export function createBaseValuesConnector(
-  implementations?: ValuesConnectorImplementations,
+  implementations?: BaseValuesConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
 
 export function createBaseTableConnector(
-  implementations?: TableConnectorImplementations,
+  implementations?: BaseTableConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
 
 export function createBaseTablesConnector(
-  implementations?: TablesConnectorImplementations,
+  implementations?: BaseTablesConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
