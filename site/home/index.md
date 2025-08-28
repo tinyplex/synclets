@@ -20,7 +20,7 @@
 
 <section id="family">
   <h2>Meet the family</h2>
-  <p>The Synclets framework is part of a group of small libraries designed to help make rich client and local-first apps easier to build. Check out the others:</p>
+  <p>The Synclets framework is part of a group of libraries designed to help make rich client and local-first apps easier to build. Check out the others:</p>
 
   <p>
     <a href='https://tinybase.org' target='_blank'>
