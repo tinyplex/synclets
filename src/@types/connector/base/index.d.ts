@@ -8,12 +8,17 @@ import type {
   Value,
 } from '../../index.d.ts';
 
+export type BaseValueConnector = Connector & {
+  getValue: () => Promise<Value>;
+  setValue: (value: Value) => Promise<void>;
+};
+
 export type BaseValueConnectorImplementations = {
   connect?: (sync: () => Promise<void>) => Promise<void>;
-  getValue?: () => Promise<Value>;
-  getValueTimestamp?: () => Promise<Timestamp>;
-  setValue?: (value: Value) => Promise<void>;
-  setValueTimestamp?: (timestamp: Timestamp) => Promise<void>;
+  getUnderlyingValue: () => Promise<Value>;
+  getUnderlyingValueTimestamp: () => Promise<Timestamp>;
+  setUnderlyingValue: (value: Value) => Promise<void>;
+  setUnderlyingValueTimestamp: (timestamp: Timestamp) => Promise<void>;
 };
 
 export type BaseValuesConnectorImplementations = {
@@ -83,9 +88,9 @@ export type BaseTablesConnectorImplementations = {
 };
 
 export function createBaseValueConnector(
-  implementations?: BaseValueConnectorImplementations,
+  implementations: BaseValueConnectorImplementations,
   options?: ConnectorOptions,
-): Connector;
+): BaseValueConnector;
 
 export function createBaseValuesConnector(
   implementations?: BaseValuesConnectorImplementations,

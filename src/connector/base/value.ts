@@ -1,12 +1,12 @@
 import {createConnector} from '@synclets';
 import type {
   Address,
-  Connector,
   ConnectorOptions,
   Timestamp,
   Value,
 } from '@synclets/@types';
 import type {
+  BaseValueConnector,
   BaseValueConnectorImplementations,
   createBaseValueConnector as createBaseValueConnectorDecl,
 } from '@synclets/@types/connector/base';
@@ -14,31 +14,46 @@ import type {
 export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   {
     connect: connectImpl,
-    getValue,
-    getValueTimestamp,
-    setValue,
-    setValueTimestamp,
-  }: BaseValueConnectorImplementations = {},
+    getUnderlyingValue,
+    getUnderlyingValueTimestamp,
+    setUnderlyingValue,
+    setUnderlyingValueTimestamp,
+  }: BaseValueConnectorImplementations,
   options?: ConnectorOptions,
-): Connector => {
-  const connect = async (sync: (address: Address) => Promise<void>) =>
-    await connectImpl?.(() => sync([]));
+): BaseValueConnector => {
+  let underlyingSync: (() => Promise<void>) | undefined;
 
-  const get = async (): Promise<Value> => (await getValue?.()) ?? null;
+  const connect = async (sync: (address: Address) => Promise<void>) => {
+    underlyingSync = () => sync([]);
+    await connectImpl?.(underlyingSync);
+  };
 
-  const getTimestamp = async (): Promise<Timestamp> =>
-    (await getValueTimestamp?.()) ?? '';
+  const get = getUnderlyingValue;
+
+  const getTimestamp = getUnderlyingValueTimestamp;
 
   const set = async (_address: Address, value: Value): Promise<void> =>
-    await setValue?.(value);
+    await setUnderlyingValue(value);
 
   const setTimestamp = async (
     _address: Address,
     timestamp: Timestamp,
-  ): Promise<void> => await setValueTimestamp?.(timestamp);
+  ): Promise<void> => await setUnderlyingValueTimestamp(timestamp);
 
-  return createConnector(
+  const connector = createConnector(
     {connect, get, getTimestamp, set, setTimestamp},
     options,
   );
+
+  // --
+
+  const getValue = getUnderlyingValue;
+
+  const setValue = async (value: Value): Promise<void> => {
+    await setUnderlyingValue?.(value);
+    await setUnderlyingValueTimestamp(connector.getNextTimestamp());
+    await underlyingSync?.();
+  };
+
+  return {...connector, getValue, setValue};
 };
