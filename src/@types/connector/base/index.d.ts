@@ -82,22 +82,22 @@ export type TablesConnectorImplementations = {
   ) => Promise<void>;
 };
 
-export function createValueConnector(
+export function createBaseValueConnector(
   implementations?: ValueConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
 
-export function createValuesConnector(
+export function createBaseValuesConnector(
   implementations?: ValuesConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
 
-export function createTableConnector(
+export function createBaseTableConnector(
   implementations?: TableConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
 
-export function createTablesConnector(
+export function createBaseTablesConnector(
   implementations?: TablesConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;

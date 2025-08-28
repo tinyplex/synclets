@@ -7,12 +7,12 @@ import type {
   Value,
 } from '@synclets/@types';
 import type {
-  createTableConnector as createTableConnectorDecl,
   TableConnectorImplementations,
+  createBaseTableConnector as createBaseTableConnectorDecl,
 } from '@synclets/@types/connector/base';
 import {size} from '@synclets/utils';
 
-export const createTableConnector: typeof createTableConnectorDecl = (
+export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   {
     connect: connectImpl,
     getTableHash,

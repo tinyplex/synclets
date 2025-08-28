@@ -1,5 +1,5 @@
 import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
-import {createTableConnector} from 'synclets/connector/base';
+import {createBaseTableConnector} from 'synclets/connector/base';
 import {getHash} from 'synclets/utils';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
@@ -82,7 +82,7 @@ const createTestTableConnector = (options?: ConnectorOptions) => {
     await underlyingSync?.(rowId, cellId);
   };
 
-  const connector = createTableConnector(
+  const connector = createBaseTableConnector(
     {
       connect,
       getTableHash,

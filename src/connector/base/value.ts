@@ -7,11 +7,11 @@ import type {
   Value,
 } from '@synclets/@types';
 import type {
-  createValueConnector as createValueConnectorDecl,
   ValueConnectorImplementations,
+  createBaseValueConnector as createBaseValueConnectorDecl,
 } from '@synclets/@types/connector/base';
 
-export const createValueConnector: typeof createValueConnectorDecl = (
+export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   {
     connect: connectImpl,
     getValue,
