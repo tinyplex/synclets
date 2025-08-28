@@ -46,26 +46,49 @@ export type BaseValuesConnectorImplementations = {
   ) => Promise<void>;
 };
 
+export function createBaseValuesConnector(
+  implementations: BaseValuesConnectorImplementations,
+  options?: ConnectorOptions,
+): BaseValuesConnector;
+
+export type BaseTableConnector = Connector & {
+  getRowIds: () => Promise<string[]>;
+  getCellIds: (rowId: string) => Promise<string[]>;
+  getCell: (rowId: string, cellId: string) => Promise<Value>;
+  setCell: (rowId: string, cellId: string, cell: Value) => Promise<void>;
+};
+
 export type BaseTableConnectorImplementations = {
   connect?: (
-    sync: (rowId?: string, cellId?: string) => Promise<void>,
+    sync: (rowId: string, cellId: string) => Promise<void>,
   ) => Promise<void>;
-  getTableHash?: () => Promise<Hash>;
-  getRowIds?: () => Promise<string[]>;
-  getRowHash?: (rowId: string) => Promise<Hash>;
-  getCellIds?: (rowId: string) => Promise<string[]>;
-  getCell?: (rowId: string, cellId: string) => Promise<Value>;
-  getCellTimestamp?: (rowId: string, cellId: string) => Promise<Timestamp>;
-
-  setTableHash?: (hash: Hash) => Promise<void>;
-  setRowHash?: (rowId: string, hash: Hash) => Promise<void>;
-  setCell?: (rowId: string, cellId: string, value: Value) => Promise<void>;
-  setCellTimestamp?: (
+  getUnderlyingTableHash: () => Promise<Hash>;
+  getUnderlyingRowIds: () => Promise<string[]>;
+  getUnderlyingRowHash: (rowId: string) => Promise<Hash>;
+  getUnderlyingCellIds: (rowId: string) => Promise<string[]>;
+  getUnderlyingCell: (rowId: string, cellId: string) => Promise<Value>;
+  getUnderlyingCellTimestamp: (
+    rowId: string,
+    cellId: string,
+  ) => Promise<Timestamp>;
+  setUnderlyingTableHash: (hash: Hash) => Promise<void>;
+  setUnderlyingRowHash: (rowId: string, hash: Hash) => Promise<void>;
+  setUnderlyingCell: (
+    rowId: string,
+    cellId: string,
+    value: Value,
+  ) => Promise<void>;
+  setUnderlyingCellTimestamp: (
     rowId: string,
     cellId: string,
     timestamp: Timestamp,
   ) => Promise<void>;
 };
+
+export function createBaseTableConnector(
+  implementations: BaseTableConnectorImplementations,
+  options?: ConnectorOptions,
+): BaseTableConnector;
 
 export type BaseTablesConnectorImplementations = {
   connect?: (
@@ -100,16 +123,6 @@ export type BaseTablesConnectorImplementations = {
     timestamp: Timestamp,
   ) => Promise<void>;
 };
-
-export function createBaseValuesConnector(
-  implementations: BaseValuesConnectorImplementations,
-  options?: ConnectorOptions,
-): BaseValuesConnector;
-
-export function createBaseTableConnector(
-  implementations?: BaseTableConnectorImplementations,
-  options?: ConnectorOptions,
-): Connector;
 
 export function createBaseTablesConnector(
   implementations?: BaseTablesConnectorImplementations,

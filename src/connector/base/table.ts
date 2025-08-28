@@ -1,69 +1,81 @@
 import {createConnector} from '@synclets';
 import type {
   Address,
-  Connector,
   ConnectorOptions,
   Timestamp,
   Value,
 } from '@synclets/@types';
 import type {
+  BaseTableConnector,
   BaseTableConnectorImplementations,
   createBaseTableConnector as createBaseTableConnectorDecl,
 } from '@synclets/@types/connector/base';
-import {size} from '@synclets/utils';
+import {getTimestampHash, isUndefined, size} from '@synclets/utils';
 
 export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   {
     connect: connectImpl,
-    getTableHash,
-    getRowIds,
-    getRowHash,
-    getCellIds,
-    getCell,
-    getCellTimestamp,
-    setTableHash,
-    setRowHash,
-    setCell,
-    setCellTimestamp,
-  }: BaseTableConnectorImplementations = {},
+    getUnderlyingTableHash,
+    getUnderlyingRowIds,
+    getUnderlyingRowHash,
+    getUnderlyingCellIds,
+    getUnderlyingCell,
+    getUnderlyingCellTimestamp,
+    setUnderlyingTableHash,
+    setUnderlyingRowHash,
+    setUnderlyingCell,
+    setUnderlyingCellTimestamp,
+  }: BaseTableConnectorImplementations,
   options?: ConnectorOptions,
-): Connector => {
-  const connect = async (sync: (address: Address) => Promise<void>) =>
-    await connectImpl?.((rowId, cellId) =>
-      rowId != null
-        ? cellId != null
-          ? sync([rowId, cellId])
-          : sync([rowId])
-        : sync([]),
-    );
+): BaseTableConnector => {
+  let underlyingSync:
+    | ((rowId: string, cellId: string) => Promise<void>)
+    | undefined;
+
+  const connect = async (sync: (address: Address) => Promise<void>) => {
+    underlyingSync = (rowId, cellId) =>
+      isUndefined(rowId)
+        ? sync([])
+        : isUndefined(cellId)
+          ? sync([rowId])
+          : sync([rowId, cellId]);
+    await connectImpl?.(underlyingSync);
+  };
 
   const get = async ([rowId, cellId]: Address): Promise<Value> =>
-    (await getCell?.(rowId, cellId)) ?? null;
+    await getUnderlyingCell(rowId, cellId);
 
   const getTimestamp = async ([rowId, cellId]: Address): Promise<Timestamp> =>
-    (await getCellTimestamp?.(rowId, cellId)) ?? '';
+    await getUnderlyingCellTimestamp(rowId, cellId);
 
   const getHash = async ([rowId]: Address): Promise<number> =>
-    (await (rowId != null ? getRowHash?.(rowId) : getTableHash?.())) ?? 0;
+    await (isUndefined(rowId)
+      ? getUnderlyingTableHash()
+      : getUnderlyingRowHash?.(rowId));
 
   const set = async ([rowId, cellId]: Address, value: Value): Promise<void> =>
-    await setCell?.(rowId, cellId, value);
+    await setUnderlyingCell(rowId, cellId, value);
 
   const setTimestamp = async (
     [rowId, cellId]: Address,
     timestamp: Timestamp,
-  ): Promise<void> => await setCellTimestamp?.(rowId, cellId, timestamp);
+  ): Promise<void> =>
+    await setUnderlyingCellTimestamp(rowId, cellId, timestamp);
 
   const setHash = async ([rowId]: Address, hash: number): Promise<void> =>
-    await (rowId != null ? setRowHash?.(rowId, hash) : setTableHash?.(hash));
+    await (isUndefined(rowId)
+      ? setUnderlyingTableHash(hash)
+      : setUnderlyingRowHash(rowId, hash));
 
   const hasChildren = async (address: Address): Promise<boolean> =>
     size(address) < 2;
 
   const getChildren = async ([rowId]: Address): Promise<string[]> =>
-    (await (rowId != null ? getCellIds?.(rowId) : getRowIds?.())) ?? [];
+    await (isUndefined(rowId)
+      ? getUnderlyingRowIds()
+      : getUnderlyingCellIds(rowId));
 
-  return createConnector(
+  const connector = createConnector(
     {
       connect,
       get,
@@ -77,4 +89,30 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     },
     options,
   );
+
+  // --
+
+  const getRowIds = getUnderlyingRowIds;
+  const getCellIds = getUnderlyingCellIds;
+  const getCell = getUnderlyingCell;
+
+  const setCell = async (rowId: string, cellId: string, cell: Value) => {
+    const timestamp = connector.getNextTimestamp();
+    const hashChange =
+      getTimestampHash(await getUnderlyingCellTimestamp(rowId, cellId)) ^
+      getTimestampHash(timestamp);
+
+    await setUnderlyingCell(rowId, cellId, cell);
+    await setUnderlyingCellTimestamp(rowId, cellId, timestamp);
+    await setUnderlyingRowHash(
+      rowId,
+      ((await getUnderlyingRowHash(rowId)) ^ hashChange) >>> 0,
+    );
+    await setUnderlyingTableHash(
+      ((await getUnderlyingTableHash()) ^ hashChange) >>> 0,
+    );
+    await underlyingSync?.(rowId, cellId);
+  };
+
+  return {...connector, getRowIds, getCellIds, getCell, setCell};
 };
