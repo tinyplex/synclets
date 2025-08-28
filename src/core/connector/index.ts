@@ -30,16 +30,26 @@ export const createConnector: typeof createConnectorDecl = (
 ): ProtectedConnector => {
   let attachedSynclet: Synclet | undefined;
   const logger = options.logger ?? {};
+
+  // #region public
+
+  const log = (string: string, level: LogLevel = 'info') =>
+    logger?.[level]?.(`[${attachedSynclet?.getId() ?? ''}/C] ${string}`);
+
   const [getNextTimestamp, seenTimestamp, setUniqueId] = getHlcFunctions();
+
+  // #endregion
 
   // #region protected
 
   const attachToSynclet = (synclet: Synclet) => {
     if (attachedSynclet) {
-      errorNew('Connector is already attached to Synclet ' + getSyncletId());
+      errorNew(
+        'Connector is already attached to Synclet ' + attachedSynclet.getId(),
+      );
     }
     attachedSynclet = synclet;
-    setUniqueId(getSyncletId()!);
+    setUniqueId(attachedSynclet.getId());
   };
 
   const connect = async (sync: (address: Address) => Promise<void>) =>
@@ -110,17 +120,11 @@ export const createConnector: typeof createConnectorDecl = (
 
   // #endregion
 
-  // #region public
-
-  const getSyncletId = () => attachedSynclet?.getId();
-
-  const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[${getSyncletId()}/C] ${string}`);
-
-  // #endregion
-
   return {
     __brand: 'Connector',
+
+    getNextTimestamp,
+    log,
 
     attachToSynclet,
     connect,
@@ -137,9 +141,5 @@ export const createConnector: typeof createConnectorDecl = (
     getTimestampAndValue,
     getHashOrTimestamp,
     setTimestampAndValue,
-
-    getSyncletId,
-    getNextTimestamp,
-    log,
   };
 };

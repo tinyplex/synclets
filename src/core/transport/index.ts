@@ -23,17 +23,23 @@ export const createTransport: typeof createTransportDecl = (
   let attachedSynclet: Synclet | undefined;
   const logger = options.logger ?? {};
 
+  // #region public
+
   const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[${getSyncletId()}/T] ${string}`);
+    logger?.[level]?.(`[${attachedSynclet?.getId() ?? ''}/T] ${string}`);
 
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
     getPacketFunctions(log, sendPacket, fragmentSize);
+
+  // #endregion
 
   // #region protected
 
   const attachToSynclet = (synclet: Synclet) => {
     if (attachedSynclet) {
-      errorNew('Transport is already attached to Synclet ' + getSyncletId());
+      errorNew(
+        'Transport is already attached to Synclet ' + attachedSynclet.getId(),
+      );
     }
     attachedSynclet = synclet;
   };
@@ -51,22 +57,14 @@ export const createTransport: typeof createTransportDecl = (
   const sendMessage = sendPackets;
 
   // #endregion
-
-  // #region public
-
-  const getSyncletId = () => attachedSynclet?.getId();
-
-  // #endregion
-
   return {
     __brand: 'Transport',
+
+    log,
 
     attachToSynclet,
     connect,
     disconnect,
     sendMessage,
-
-    getSyncletId,
-    log,
   };
 };

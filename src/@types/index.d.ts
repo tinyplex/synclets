@@ -67,7 +67,6 @@ export function createSynclet(
 
 export interface Connector {
   __brand: 'Connector';
-  getSyncletId(): string | undefined;
   getNextTimestamp(): Timestamp;
   log(message: string, level?: LogLevel): void;
 }
@@ -107,7 +106,6 @@ export type TransportImplementations = {
 
 export interface Transport {
   __brand: 'Transport';
-  getSyncletId(): string | undefined;
   log(message: string, level?: LogLevel): void;
 }
 
