@@ -8,7 +8,7 @@ export type Hlc = string;
 
 export function getUniqueId(length?: number): string;
 
-export function getHash(string: string): Hash;
+export function getTimestampHash(string: string): Hash;
 
 export function getHlcFunctions(
   uniqueId?: string,

@@ -21,15 +21,29 @@ export type BaseValueConnectorImplementations = {
   setUnderlyingValueTimestamp: (timestamp: Timestamp) => Promise<void>;
 };
 
+export function createBaseValueConnector(
+  implementations: BaseValueConnectorImplementations,
+  options?: ConnectorOptions,
+): BaseValueConnector;
+
+export type BaseValuesConnector = Connector & {
+  getValueIds: (valueId: string) => Promise<string[]>;
+  getValue: (valueId: string) => Promise<Value>;
+  setValue: (valueId: string, value: Value) => Promise<void>;
+};
+
 export type BaseValuesConnectorImplementations = {
-  connect?: (sync: (valueId?: string) => Promise<void>) => Promise<void>;
-  getValuesHash?: () => Promise<Hash>;
-  getValueIds?: () => Promise<string[]>;
-  getValue?: (valueId: string) => Promise<Value>;
-  getValueTimestamp?: (valueId: string) => Promise<Timestamp>;
-  setValuesHash?: (hash: Hash) => Promise<void>;
-  setValue?: (valueId: string, value: Value) => Promise<void>;
-  setValueTimestamp?: (valueId: string, timestamp: Timestamp) => Promise<void>;
+  connect?: (sync: (valueId: string) => Promise<void>) => Promise<void>;
+  getUnderlyingValuesHash: () => Promise<Hash>;
+  getUnderlyingValueIds: () => Promise<string[]>;
+  getUnderlyingValue: (valueId: string) => Promise<Value>;
+  getUnderlyingValueTimestamp: (valueId: string) => Promise<Timestamp>;
+  setUnderlyingValuesHash: (hash: Hash) => Promise<void>;
+  setUnderlyingValue: (valueId: string, value: Value) => Promise<void>;
+  setUnderlyingValueTimestamp: (
+    valueId: string,
+    timestamp: Timestamp,
+  ) => Promise<void>;
 };
 
 export type BaseTableConnectorImplementations = {
@@ -87,15 +101,10 @@ export type BaseTablesConnectorImplementations = {
   ) => Promise<void>;
 };
 
-export function createBaseValueConnector(
-  implementations: BaseValueConnectorImplementations,
-  options?: ConnectorOptions,
-): BaseValueConnector;
-
 export function createBaseValuesConnector(
-  implementations?: BaseValuesConnectorImplementations,
+  implementations: BaseValuesConnectorImplementations,
   options?: ConnectorOptions,
-): Connector;
+): BaseValuesConnector;
 
 export function createBaseTableConnector(
   implementations?: BaseTableConnectorImplementations,
