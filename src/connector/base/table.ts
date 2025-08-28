@@ -29,7 +29,7 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   options?: ConnectorOptions,
 ): BaseTableConnector => {
   let underlyingSync:
-    | ((rowId: string, cellId: string) => Promise<void>)
+    | ((rowId?: string, cellId?: string) => Promise<void>)
     | undefined;
 
   const connect = async (sync: (address: Address) => Promise<void>) => {
@@ -42,38 +42,37 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     await connectImpl?.(underlyingSync);
   };
 
-  const get = async ([rowId, cellId]: Address): Promise<Value> =>
-    await getUnderlyingCell(rowId, cellId);
+  const get = ([rowId, cellId]: Address): Promise<Value> =>
+    getUnderlyingCell(rowId, cellId);
 
-  const getTimestamp = async ([rowId, cellId]: Address): Promise<Timestamp> =>
-    await getUnderlyingCellTimestamp(rowId, cellId);
+  const getTimestamp = ([rowId, cellId]: Address): Promise<Timestamp> =>
+    getUnderlyingCellTimestamp(rowId, cellId);
 
-  const getHash = async ([rowId]: Address): Promise<number> =>
-    await (isUndefined(rowId)
-      ? getUnderlyingTableHash()
-      : getUnderlyingRowHash?.(rowId));
+  const getHash = ([rowId]: Address): Promise<number> =>
+    isUndefined(rowId) ? getUnderlyingTableHash() : getUnderlyingRowHash(rowId);
 
-  const set = async ([rowId, cellId]: Address, value: Value): Promise<void> =>
-    await setUnderlyingCell(rowId, cellId, value);
+  const set = ([rowId, cellId]: Address, value: Value): Promise<void> =>
+    setUnderlyingCell(rowId, cellId, value);
 
-  const setTimestamp = async (
+  const setTimestamp = (
     [rowId, cellId]: Address,
     timestamp: Timestamp,
-  ): Promise<void> =>
-    await setUnderlyingCellTimestamp(rowId, cellId, timestamp);
+  ): Promise<void> => setUnderlyingCellTimestamp(rowId, cellId, timestamp);
 
-  const setHash = async ([rowId]: Address, hash: number): Promise<void> =>
-    await (isUndefined(rowId)
+  const setHash = ([rowId]: Address, hash: number): Promise<void> =>
+    isUndefined(rowId)
       ? setUnderlyingTableHash(hash)
-      : setUnderlyingRowHash(rowId, hash));
+      : setUnderlyingRowHash(rowId, hash);
 
   const hasChildren = async (address: Address): Promise<boolean> =>
     size(address) < 2;
 
-  const getChildren = async ([rowId]: Address): Promise<string[]> =>
+  const getChildren = async ([rowId, more]: Address): Promise<string[]> =>
     await (isUndefined(rowId)
       ? getUnderlyingRowIds()
-      : getUnderlyingCellIds(rowId));
+      : isUndefined(more)
+        ? getUnderlyingCellIds(rowId)
+        : []);
 
   const connector = createConnector(
     {

@@ -33,30 +33,30 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
     await connectImpl?.(underlyingSync);
   };
 
-  const get = async ([valueId]: Address): Promise<Value> =>
-    await getUnderlyingValue(valueId);
+  const get = ([valueId]: Address): Promise<Value> =>
+    getUnderlyingValue(valueId);
 
-  const getTimestamp = async ([valueId]: Address): Promise<Timestamp> =>
-    await getUnderlyingValueTimestamp(valueId);
+  const getTimestamp = ([valueId]: Address): Promise<Timestamp> =>
+    getUnderlyingValueTimestamp(valueId);
 
   const getHash = getUnderlyingValuesHash;
 
-  const set = async ([valueId]: Address, value: Value): Promise<void> =>
-    await setUnderlyingValue(valueId, value);
+  const set = ([valueId]: Address, value: Value): Promise<void> =>
+    setUnderlyingValue(valueId, value);
 
-  const setTimestamp = async (
+  const setTimestamp = (
     [valueId]: Address,
     timestamp: Timestamp,
-  ): Promise<void> => await setUnderlyingValueTimestamp(valueId, timestamp);
+  ): Promise<void> => setUnderlyingValueTimestamp(valueId, timestamp);
 
-  const setHash = async (_address: Address, hash: number): Promise<void> =>
-    await setUnderlyingValuesHash(hash);
+  const setHash = (_address: Address, hash: number): Promise<void> =>
+    setUnderlyingValuesHash(hash);
 
   const hasChildren = async (address: Address): Promise<boolean> =>
     isEmpty(address);
 
-  const getChildren = async (): Promise<string[]> =>
-    (await getValueIds?.()) ?? [];
+  const getChildren = async (address: Address): Promise<string[]> =>
+    isEmpty(address) ? await getValueIds() : [];
 
   const connector = createConnector(
     {

@@ -32,13 +32,13 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
   const getTimestamp = getUnderlyingValueTimestamp;
 
-  const set = async (_address: Address, value: Value): Promise<void> =>
-    await setUnderlyingValue(value);
+  const set = (_address: Address, value: Value): Promise<void> =>
+    setUnderlyingValue(value);
 
-  const setTimestamp = async (
+  const setTimestamp = (
     _address: Address,
     timestamp: Timestamp,
-  ): Promise<void> => await setUnderlyingValueTimestamp(timestamp);
+  ): Promise<void> => setUnderlyingValueTimestamp(timestamp);
 
   const connector = createConnector(
     {connect, get, getTimestamp, set, setTimestamp},

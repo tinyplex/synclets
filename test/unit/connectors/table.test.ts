@@ -40,10 +40,10 @@ const createTestTableConnector = (options?: ConnectorOptions) => {
   const setUnderlyingCell = async (
     rowId: string,
     cellId: string,
-    value: Value,
+    cell: Value,
   ) => {
     underlyingTable[rowId] = underlyingTable[rowId] || {};
-    underlyingTable[rowId][cellId] = value;
+    underlyingTable[rowId][cellId] = cell;
   };
 
   const setUnderlyingCellTimestamp = async (
