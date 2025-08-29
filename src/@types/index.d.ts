@@ -78,22 +78,22 @@ export type ConnectorOptions = {
 export type ConnectorImplementations = {
   connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  get?: (address: Address, context: Context) => Promise<Value>;
-  getHash?: (address: Address, context: Context) => Promise<Hash>;
-  getTimestamp?: (address: Address, context: Context) => Promise<Timestamp>;
-  set?: (address: Address, value: Value, context: Context) => Promise<void>;
-  setHash?: (address: Address, hash: Hash, context: Context) => Promise<void>;
-  setTimestamp?: (
+  get: (address: Address, context: Context) => Promise<Value>;
+  getTimestamp: (address: Address, context: Context) => Promise<Timestamp>;
+  getHash: (address: Address, context: Context) => Promise<Hash>;
+  set: (address: Address, value: Value, context: Context) => Promise<void>;
+  setTimestamp: (
     address: Address,
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
-  hasChildren?: (address: Address, context: Context) => Promise<boolean>;
-  getChildren?: (address: Address, context: Context) => Promise<string[]>;
+  setHash: (address: Address, hash: Hash, context: Context) => Promise<void>;
+  hasChildren: (address: Address, context: Context) => Promise<boolean>;
+  getChildren: (address: Address, context: Context) => Promise<string[]>;
 };
 
 export function createConnector(
-  implementations?: ConnectorImplementations,
+  implementations: ConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
 

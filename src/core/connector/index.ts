@@ -25,7 +25,7 @@ export const createConnector: typeof createConnectorDecl = (
     setTimestamp: setTimestampImpl,
     hasChildren: hasChildrenImpl,
     getChildren: getChildrenImpl,
-  }: ConnectorImplementations = {},
+  }: ConnectorImplementations,
   options: ConnectorOptions = {},
 ): ProtectedConnector => {
   let attachedSynclet: Synclet | undefined;

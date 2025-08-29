@@ -19,7 +19,8 @@ import {
 
 export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   {
-    connect: connectImpl,
+    underlyingConnect,
+    underlyingDisconnect,
     getUnderlyingTableHash,
     getUnderlyingRowIds,
     getUnderlyingRowHash,
@@ -44,7 +45,12 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
         : isUndefined(cellId)
           ? sync([rowId])
           : sync([rowId, cellId]);
-    await connectImpl?.(underlyingSync);
+    await underlyingConnect?.(underlyingSync);
+  };
+
+  const disconnect = async () => {
+    underlyingSync = undefined;
+    await underlyingDisconnect?.();
   };
 
   const get = ([rowId, cellId]: Address): Promise<Value> =>
@@ -82,6 +88,7 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   const connector = createConnector(
     {
       connect,
+      disconnect,
       get,
       getTimestamp,
       getHash,

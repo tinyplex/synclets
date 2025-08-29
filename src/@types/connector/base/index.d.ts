@@ -15,7 +15,8 @@ export type BaseValueConnector = Connector & {
 };
 
 export type BaseValueConnectorImplementations = {
-  connect?: (sync: () => Promise<void>) => Promise<void>;
+  underlyingConnect?: (sync: () => Promise<void>) => Promise<void>;
+  underlyingDisconnect?: () => Promise<void>;
   getUnderlyingValue: () => Promise<Value>;
   getUnderlyingValueTimestamp: () => Promise<Timestamp>;
   setUnderlyingValue: (value: Value) => Promise<void>;
@@ -35,7 +36,10 @@ export type BaseValuesConnector = Connector & {
 };
 
 export type BaseValuesConnectorImplementations = {
-  connect?: (sync: (valueId: string) => Promise<void>) => Promise<void>;
+  underlyingConnect?: (
+    sync: (valueId: string) => Promise<void>,
+  ) => Promise<void>;
+  underlyingDisconnect?: () => Promise<void>;
   getUnderlyingValuesHash: () => Promise<Hash>;
   getUnderlyingValueIds: () => Promise<string[]>;
   getUnderlyingValue: (valueId: string) => Promise<Value>;
@@ -62,9 +66,10 @@ export type BaseTableConnector = Connector & {
 };
 
 export type BaseTableConnectorImplementations = {
-  connect?: (
+  underlyingConnect?: (
     sync: (rowId: string, cellId: string) => Promise<void>,
   ) => Promise<void>;
+  underlyingDisconnect?: () => Promise<void>;
   getUnderlyingTableHash: () => Promise<Hash>;
   getUnderlyingRowIds: () => Promise<string[]>;
   getUnderlyingRowHash: (rowId: string) => Promise<Hash>;
@@ -112,9 +117,10 @@ export type BaseTablesConnector = Connector & {
 };
 
 export type BaseTablesConnectorImplementations = {
-  connect?: (
+  underlyingConnect?: (
     sync: (tableId?: string, rowId?: string, cellId?: string) => Promise<void>,
   ) => Promise<void>;
+  underlyingDisconnect?: () => Promise<void>;
   getUnderlyingTablesHash: () => Promise<Hash>;
   getUnderlyingTableIds: () => Promise<string[]>;
   getUnderlyingTableHash: (tableId: string) => Promise<Hash>;

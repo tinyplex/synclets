@@ -14,7 +14,8 @@ import {DELETED_VALUE} from '@synclets/utils';
 
 export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   {
-    connect: connectImpl,
+    underlyingConnect,
+    underlyingDisconnect,
     getUnderlyingValue,
     getUnderlyingValueTimestamp,
     setUnderlyingValue,
@@ -26,12 +27,19 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
   const connect = async (sync: (address: Address) => Promise<void>) => {
     underlyingSync = () => sync([]);
-    await connectImpl?.(underlyingSync);
+    await underlyingConnect?.(underlyingSync);
+  };
+
+  const disconnect = async () => {
+    underlyingSync = undefined;
+    await underlyingDisconnect?.();
   };
 
   const get = getUnderlyingValue;
 
   const getTimestamp = getUnderlyingValueTimestamp;
+
+  const getHash = async () => 0;
 
   const set = (_address: Address, value: Value): Promise<void> =>
     setUnderlyingValue(value);
@@ -41,8 +49,25 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
     timestamp: Timestamp,
   ): Promise<void> => setUnderlyingValueTimestamp(timestamp);
 
+  const setHash = async () => {};
+
+  const hasChildren = async () => false;
+
+  const getChildren = async () => [];
+
   const connector = createConnector(
-    {connect, get, getTimestamp, set, setTimestamp},
+    {
+      connect,
+      disconnect,
+      get,
+      getTimestamp,
+      getHash,
+      set,
+      setTimestamp,
+      setHash,
+      hasChildren,
+      getChildren,
+    },
     options,
   );
 
