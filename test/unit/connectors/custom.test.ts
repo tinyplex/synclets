@@ -6,7 +6,7 @@ import {
   Timestamp,
   Value,
 } from 'synclets';
-import {getHash as getTimestampHash} from 'synclets/utils';
+import {getTimestampHash} from 'synclets/utils';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestCustomConnector = (options?: ConnectorOptions) => {
