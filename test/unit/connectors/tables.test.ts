@@ -1,6 +1,5 @@
 import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
 import {createBaseTablesConnector} from 'synclets/connector/base';
-import {getHash} from 'synclets/utils';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestTablesConnector = (options?: ConnectorOptions) => {
@@ -13,40 +12,35 @@ const createTestTablesConnector = (options?: ConnectorOptions) => {
   const underlyingTableHashes: {[tableId: string]: Hash} = {};
   const underlyingRowHashes: {[tableId: string]: {[rowId: string]: Hash}} = {};
   let underlyingTablesHash: Hash = 0;
-  let underlyingSync:
-    | ((tableId?: string, rowId?: string, cellId?: string) => Promise<void>)
-    | undefined;
 
-  const connect = async (
-    sync: (tableId?: string, rowId?: string, cellId?: string) => Promise<void>,
-  ) => {
-    underlyingSync = sync;
-  };
+  const getUnderlyingTablesHash = async () => underlyingTablesHash;
 
-  const getTablesHash = async () => underlyingTablesHash;
+  const getUnderlyingTableIds = async () => Object.keys(underlyingTables);
 
-  const getTableIds = async () => Object.keys(underlyingTables);
-
-  const getTableHash = async (tableId: string) => {
+  const getUnderlyingTableHash = async (tableId: string) => {
     return underlyingTableHashes[tableId] ?? 0;
   };
 
-  const getRowIds = async (tableId: string) =>
+  const getUnderlyingRowIds = async (tableId: string) =>
     Object.keys(underlyingTables[tableId] ?? {});
 
-  const getRowHash = async (tableId: string, rowId: string) => {
+  const getUnderlyingRowHash = async (tableId: string, rowId: string) => {
     return underlyingRowHashes[tableId]?.[rowId] ?? 0;
   };
 
-  const getCellIds = async (tableId: string, rowId: string) => {
+  const getUnderlyingCellIds = async (tableId: string, rowId: string) => {
     return Object.keys(underlyingTables[tableId]?.[rowId] ?? {});
   };
 
-  const getCell = async (tableId: string, rowId: string, cellId: string) => {
+  const getUnderlyingCell = async (
+    tableId: string,
+    rowId: string,
+    cellId: string,
+  ) => {
     return underlyingTables[tableId]?.[rowId]?.[cellId];
   };
 
-  const getCellTimestamp = async (
+  const getUnderlyingCellTimestamp = async (
     tableId: string,
     rowId: string,
     cellId: string,
@@ -54,31 +48,35 @@ const createTestTablesConnector = (options?: ConnectorOptions) => {
     return underlyingTimestamps[tableId]?.[rowId]?.[cellId] ?? '';
   };
 
-  const setTablesHash = async (hash: Hash) => {
+  const setUnderlyingTablesHash = async (hash: Hash) => {
     underlyingTablesHash = hash;
   };
 
-  const setTableHash = async (tableId: string, hash: Hash) => {
+  const setUnderlyingTableHash = async (tableId: string, hash: Hash) => {
     underlyingTableHashes[tableId] = hash;
   };
 
-  const setRowHash = async (tableId: string, rowId: string, hash: Hash) => {
+  const setUnderlyingRowHash = async (
+    tableId: string,
+    rowId: string,
+    hash: Hash,
+  ) => {
     underlyingRowHashes[tableId] = underlyingRowHashes[tableId] || {};
     underlyingRowHashes[tableId][rowId] = hash;
   };
 
-  const setCell = async (
+  const setUnderlyingCell = async (
     tableId: string,
     rowId: string,
     cellId: string,
-    value: Value,
+    cell: Value,
   ) => {
     underlyingTables[tableId] = underlyingTables[tableId] || {};
     underlyingTables[tableId][rowId] = underlyingTables[tableId][rowId] || {};
-    underlyingTables[tableId][rowId][cellId] = value;
+    underlyingTables[tableId][rowId][cellId] = cell;
   };
 
-  const setCellTimestamp = async (
+  const setUnderlyingCellTimestamp = async (
     tableId: string,
     rowId: string,
     cellId: string,
@@ -90,58 +88,30 @@ const createTestTablesConnector = (options?: ConnectorOptions) => {
     underlyingTimestamps[tableId][rowId][cellId] = timestamp;
   };
 
-  const getUnderlyingTables = () => underlyingTables;
-
-  const setUnderlyingCell = async (
-    tableId: string,
-    rowId: string,
-    cellId: string,
-    value: Value,
-  ) => {
-    const timestamp = connector.getNextTimestamp();
-
-    underlyingTables[tableId] = underlyingTables[tableId] || {};
-    underlyingTables[tableId][rowId] = underlyingTables[tableId][rowId] || {};
-    underlyingTables[tableId][rowId][cellId] = value;
-
-    underlyingTimestamps[tableId] = underlyingTimestamps[tableId] || {};
-    underlyingTimestamps[tableId][rowId] =
-      underlyingTimestamps[tableId][rowId] || {};
-    underlyingTimestamps[tableId][rowId][cellId] = timestamp;
-
-    const hash = getHash(timestamp);
-    underlyingRowHashes[tableId] = underlyingRowHashes[tableId] || {};
-    underlyingRowHashes[tableId][rowId] =
-      (underlyingRowHashes[tableId][rowId] ^ hash) >>> 0;
-    underlyingTableHashes[tableId] =
-      (underlyingTableHashes[tableId] ^ hash) >>> 0;
-    underlyingTablesHash = (underlyingTablesHash ^ hash) >>> 0;
-    await underlyingSync?.(tableId, rowId, cellId);
-  };
+  const getTables = () => underlyingTables;
 
   const connector = createBaseTablesConnector(
     {
-      connect,
-      getTablesHash,
-      getTableIds,
-      getTableHash,
-      getRowIds,
-      getRowHash,
-      getCellIds,
-      getCell,
-      getCellTimestamp,
-      setTablesHash,
-      setTableHash,
-      setRowHash,
-      setCell,
-      setCellTimestamp,
+      getUnderlyingTablesHash,
+      getUnderlyingTableIds,
+      getUnderlyingTableHash,
+      getUnderlyingRowIds,
+      getUnderlyingRowHash,
+      getUnderlyingCellIds,
+      getUnderlyingCell,
+      getUnderlyingCellTimestamp,
+      setUnderlyingTablesHash,
+      setUnderlyingTableHash,
+      setUnderlyingRowHash,
+      setUnderlyingCell,
+      setUnderlyingCellTimestamp,
     },
     options,
   );
+
   return {
     ...connector,
-    getUnderlyingTables,
-    setUnderlyingCell,
+    getTables,
   };
 };
 
@@ -153,9 +123,7 @@ describe('table sync, basics', () => {
     await synclet1.start();
     await synclet2.start();
 
-    expect(connector1.getUnderlyingTables()).toEqual(
-      connector2.getUnderlyingTables(),
-    );
+    expect(connector1.getTables()).toEqual(connector2.getTables());
   });
 
   test('connected', async () => {
@@ -165,13 +133,13 @@ describe('table sync, basics', () => {
     await synclet1.start();
     await synclet2.start();
 
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
 
-    await connector2.setUnderlyingCell('t1', 'r1', 'c1', 'C2');
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    await connector2.setCell('t1', 'r1', 'c1', 'C2');
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
   });
 
   test('start 1, set 1, start 2', async () => {
@@ -180,13 +148,13 @@ describe('table sync, basics', () => {
 
     await synclet1.start();
 
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({});
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({});
 
     await synclet2.start();
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
   });
 
   test('start 2, set 1, start 1', async () => {
@@ -194,13 +162,13 @@ describe('table sync, basics', () => {
       getTestSyncletsAndConnectors(createTestTablesConnector, 2);
 
     await synclet2.start();
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({});
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({});
 
     await synclet1.start();
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
   });
 
   test('stop 1, set 1, start 1', async () => {
@@ -210,18 +178,18 @@ describe('table sync, basics', () => {
     await synclet1.start();
     await synclet2.start();
 
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
 
     await synclet1.stop();
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C2');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    await connector1.setCell('t1', 'r1', 'c1', 'C2');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
 
     await synclet1.start();
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
   });
 
   test('stop 1, set 2, start 1', async () => {
@@ -231,36 +199,36 @@ describe('table sync, basics', () => {
     await synclet1.start();
     await synclet2.start();
 
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
 
     await synclet1.stop();
-    await connector2.setUnderlyingCell('t1', 'r1', 'c1', 'C2');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    await connector2.setCell('t1', 'r1', 'c1', 'C2');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
 
     await synclet1.start();
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
   });
 
   test('set 1, set 2, start 2, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       getTestSyncletsAndConnectors(createTestTablesConnector, 2);
 
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({});
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({});
 
-    await connector2.setUnderlyingCell('t1', 'r1', 'c1', 'C2');
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C1'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    await connector2.setCell('t1', 'r1', 'c1', 'C2');
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C1'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
 
     await synclet2.start();
     await synclet1.start();
-    expect(connector1.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
-    expect(connector2.getUnderlyingTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    expect(connector1.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
+    expect(connector2.getTables()).toEqual({t1: {r1: {c1: 'C2'}}});
   });
 });
 
@@ -270,12 +238,12 @@ describe('table sync, multiple values', () => {
       getTestSyncletsAndConnectors(createTestTablesConnector, 2);
     await synclet1.start();
     await synclet2.start();
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    await connector2.setUnderlyingCell('t1', 'r1', 'c2', 'C2');
-    expect(connector1.getUnderlyingTables()).toEqual({
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t1', 'r1', 'c2', 'C2');
+    expect(connector1.getTables()).toEqual({
       t1: {r1: {c1: 'C1', c2: 'C2'}},
     });
-    expect(connector2.getUnderlyingTables()).toEqual({
+    expect(connector2.getTables()).toEqual({
       t1: {r1: {c1: 'C1', c2: 'C2'}},
     });
   });
@@ -284,13 +252,13 @@ describe('table sync, multiple values', () => {
       getTestSyncletsAndConnectors(createTestTablesConnector, 2);
     await synclet1.start();
     await synclet2.start();
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    await connector2.setUnderlyingCell('t2', 'r2', 'c2', 'C2');
-    expect(connector1.getUnderlyingTables()).toEqual({
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t2', 'r2', 'c2', 'C2');
+    expect(connector1.getTables()).toEqual({
       t1: {r1: {c1: 'C1'}},
       t2: {r2: {c2: 'C2'}},
     });
-    expect(connector2.getUnderlyingTables()).toEqual({
+    expect(connector2.getTables()).toEqual({
       t1: {r1: {c1: 'C1'}},
       t2: {r2: {c2: 'C2'}},
     });
@@ -298,29 +266,29 @@ describe('table sync, multiple values', () => {
   test('disconnected, different values 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       getTestSyncletsAndConnectors(createTestTablesConnector, 2);
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    await connector2.setUnderlyingCell('t1', 'r1', 'c2', 'C2');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t1', 'r1', 'c2', 'C2');
     await synclet1.start();
     await synclet2.start();
-    expect(connector1.getUnderlyingTables()).toEqual({
+    expect(connector1.getTables()).toEqual({
       t1: {r1: {c1: 'C1', c2: 'C2'}},
     });
-    expect(connector2.getUnderlyingTables()).toEqual({
+    expect(connector2.getTables()).toEqual({
       t1: {r1: {c1: 'C1', c2: 'C2'}},
     });
   });
   test('disconnected, different values 2', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       getTestSyncletsAndConnectors(createTestTablesConnector, 2);
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    await connector2.setUnderlyingCell('t2', 'r2', 'c2', 'C2');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t2', 'r2', 'c2', 'C2');
     await synclet1.start();
     await synclet2.start();
-    expect(connector1.getUnderlyingTables()).toEqual({
+    expect(connector1.getTables()).toEqual({
       t1: {r1: {c1: 'C1'}},
       t2: {r2: {c2: 'C2'}},
     });
-    expect(connector2.getUnderlyingTables()).toEqual({
+    expect(connector2.getTables()).toEqual({
       t1: {r1: {c1: 'C1'}},
       t2: {r2: {c2: 'C2'}},
     });
@@ -328,16 +296,16 @@ describe('table sync, multiple values', () => {
   test('disconnected, conflicting values', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       getTestSyncletsAndConnectors(createTestTablesConnector, 2);
-    await connector1.setUnderlyingCell('t1', 'r1', 'c1', 'C1');
-    await connector2.setUnderlyingCell('t1', 'r1', 'c2', 'C2');
-    await connector1.setUnderlyingCell('t1', 'r1', 'c2', 'C3');
-    await connector2.setUnderlyingCell('t1', 'r1', 'c3', 'C3');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t1', 'r1', 'c2', 'C2');
+    await connector1.setCell('t1', 'r1', 'c2', 'C3');
+    await connector2.setCell('t1', 'r1', 'c3', 'C3');
     await synclet1.start();
     await synclet2.start();
-    expect(connector1.getUnderlyingTables()).toEqual({
+    expect(connector1.getTables()).toEqual({
       t1: {r1: {c1: 'C1', c2: 'C3', c3: 'C3'}},
     });
-    expect(connector2.getUnderlyingTables()).toEqual({
+    expect(connector2.getTables()).toEqual({
       t1: {r1: {c1: 'C1', c2: 'C3', c3: 'C3'}},
     });
   });

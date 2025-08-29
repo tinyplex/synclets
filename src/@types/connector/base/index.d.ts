@@ -90,33 +90,53 @@ export function createBaseTableConnector(
   options?: ConnectorOptions,
 ): BaseTableConnector;
 
+export type BaseTablesConnector = Connector & {
+  getTableIds: () => Promise<string[]>;
+  getRowIds: (tableId: string) => Promise<string[]>;
+  getCellIds: (tableId: string, rowId: string) => Promise<string[]>;
+  getCell: (tableId: string, rowId: string, cellId: string) => Promise<Value>;
+  setCell: (
+    tableId: string,
+    rowId: string,
+    cellId: string,
+    cell: Value,
+  ) => Promise<void>;
+};
+
 export type BaseTablesConnectorImplementations = {
   connect?: (
     sync: (tableId?: string, rowId?: string, cellId?: string) => Promise<void>,
   ) => Promise<void>;
-  getTablesHash?: () => Promise<Hash>;
-  getTableIds?: () => Promise<string[]>;
-  getTableHash?: (tableId: string) => Promise<Hash>;
-  getRowIds?: (tableId: string) => Promise<string[]>;
-  getRowHash?: (tableId: string, rowId: string) => Promise<Hash>;
-  getCellIds?: (tableId: string, rowId: string) => Promise<string[]>;
-  getCell?: (tableId: string, rowId: string, cellId: string) => Promise<Value>;
-  getCellTimestamp?: (
+  getUnderlyingTablesHash: () => Promise<Hash>;
+  getUnderlyingTableIds: () => Promise<string[]>;
+  getUnderlyingTableHash: (tableId: string) => Promise<Hash>;
+  getUnderlyingRowIds: (tableId: string) => Promise<string[]>;
+  getUnderlyingRowHash: (tableId: string, rowId: string) => Promise<Hash>;
+  getUnderlyingCellIds: (tableId: string, rowId: string) => Promise<string[]>;
+  getUnderlyingCell: (
+    tableId: string,
+    rowId: string,
+    cellId: string,
+  ) => Promise<Value>;
+  getUnderlyingCellTimestamp: (
     tableId: string,
     rowId: string,
     cellId: string,
   ) => Promise<Timestamp>;
-
-  setTablesHash?: (hash: Hash) => Promise<void>;
-  setTableHash?: (tableId: string, hash: Hash) => Promise<void>;
-  setRowHash?: (tableId: string, rowId: string, hash: Hash) => Promise<void>;
-  setCell?: (
+  setUnderlyingTablesHash: (hash: Hash) => Promise<void>;
+  setUnderlyingTableHash: (tableId: string, hash: Hash) => Promise<void>;
+  setUnderlyingRowHash: (
+    tableId: string,
+    rowId: string,
+    hash: Hash,
+  ) => Promise<void>;
+  setUnderlyingCell: (
     tableId: string,
     rowId: string,
     cellId: string,
     value: Value,
   ) => Promise<void>;
-  setCellTimestamp?: (
+  setUnderlyingCellTimestamp: (
     tableId: string,
     rowId: string,
     cellId: string,
@@ -125,6 +145,6 @@ export type BaseTablesConnectorImplementations = {
 };
 
 export function createBaseTablesConnector(
-  implementations?: BaseTablesConnectorImplementations,
+  implementations: BaseTablesConnectorImplementations,
   options?: ConnectorOptions,
-): Connector;
+): BaseTablesConnector;
