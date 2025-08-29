@@ -10,7 +10,12 @@ import type {
   BaseTableConnectorImplementations,
   createBaseTableConnector as createBaseTableConnectorDecl,
 } from '@synclets/@types/connector/base';
-import {getTimestampHash, isUndefined, size} from '@synclets/utils';
+import {
+  DELETED_VALUE,
+  getTimestampHash,
+  isUndefined,
+  size,
+} from '@synclets/utils';
 
 export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   {
@@ -113,5 +118,8 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     await underlyingSync?.(rowId, cellId);
   };
 
-  return {...connector, getRowIds, getCellIds, getCell, setCell};
+  const delCell = (rowId: string, cellId: string): Promise<void> =>
+    setUnderlyingCell(rowId, cellId, DELETED_VALUE);
+
+  return {...connector, getRowIds, getCellIds, getCell, setCell, delCell};
 };

@@ -10,6 +10,7 @@ import type {
   BaseValueConnectorImplementations,
   createBaseValueConnector as createBaseValueConnectorDecl,
 } from '@synclets/@types/connector/base';
+import {DELETED_VALUE} from '@synclets/utils';
 
 export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   {
@@ -55,5 +56,7 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
     await underlyingSync?.();
   };
 
-  return {...connector, getValue, setValue};
+  const delValue = (): Promise<void> => setValue(DELETED_VALUE);
+
+  return {...connector, getValue, setValue, delValue};
 };

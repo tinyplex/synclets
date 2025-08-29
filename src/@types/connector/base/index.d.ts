@@ -11,6 +11,7 @@ import type {
 export type BaseValueConnector = Connector & {
   getValue: () => Promise<Value>;
   setValue: (value: Value) => Promise<void>;
+  delValue: () => Promise<void>;
 };
 
 export type BaseValueConnectorImplementations = {
@@ -30,6 +31,7 @@ export type BaseValuesConnector = Connector & {
   getValueIds: (valueId: string) => Promise<string[]>;
   getValue: (valueId: string) => Promise<Value>;
   setValue: (valueId: string, value: Value) => Promise<void>;
+  delValue: (valueId: string) => Promise<void>;
 };
 
 export type BaseValuesConnectorImplementations = {
@@ -56,6 +58,7 @@ export type BaseTableConnector = Connector & {
   getCellIds: (rowId: string) => Promise<string[]>;
   getCell: (rowId: string, cellId: string) => Promise<Value>;
   setCell: (rowId: string, cellId: string, cell: Value) => Promise<void>;
+  delCell: (rowId: string, cellId: string) => Promise<void>;
 };
 
 export type BaseTableConnectorImplementations = {
@@ -101,6 +104,7 @@ export type BaseTablesConnector = Connector & {
     cellId: string,
     cell: Value,
   ) => Promise<void>;
+  delCell: (tableId: string, rowId: string, cellId: string) => Promise<void>;
 };
 
 export type BaseTablesConnectorImplementations = {
