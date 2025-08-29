@@ -13,6 +13,7 @@ import type {
 } from '@synclets/@types';
 import {errorNew, getHlcFunctions} from '@synclets/utils';
 import type {ProtectedConnector} from '../protected.d.ts';
+
 export const createConnector: typeof createConnectorDecl = (
   {
     connect: connectImpl,
@@ -58,7 +59,7 @@ export const createConnector: typeof createConnectorDecl = (
   const disconnect = async () => await disconnectImpl?.();
 
   const get = async (address: Address, context: Context) =>
-    (await getImpl?.(address, context)) ?? null;
+    (await getImpl?.(address, context)) ?? undefined;
 
   const getTimestamp = async (address: Address, context: Context) =>
     (await getTimestampImpl?.(address, context)) ?? '';
