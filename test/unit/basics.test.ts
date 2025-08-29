@@ -22,9 +22,14 @@ const createMockConnector = () =>
     getChildren: async () => [],
   });
 
+const createMockTransport = () =>
+  createTransport({
+    sendPacket: async () => {},
+  });
+
 beforeEach(() => {
   connector = createMockConnector();
-  transport = createTransport();
+  transport = createMockTransport();
 });
 
 test('createSynclet', () => {
@@ -50,7 +55,7 @@ test('log', () => {
 test('error on reassigning connector', () => {
   createSynclet(connector, transport, {}, {id: 'synclet1'});
   expect(() => {
-    createSynclet(connector, createTransport());
+    createSynclet(connector, createMockTransport());
   }).toThrow('Connector is already attached to Synclet synclet1');
 });
 

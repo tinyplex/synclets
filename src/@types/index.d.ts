@@ -38,11 +38,6 @@ export interface Synclet {
   log(message: string, level?: LogLevel): void;
 }
 
-export type SyncletOptions = {
-  id?: string;
-  logger?: Logger;
-};
-
 export type SyncletImplementations = {
   canReceiveMessage?: (
     type: MessageType,
@@ -58,6 +53,11 @@ export type SyncletImplementations = {
   ) => Promise<Context>;
 };
 
+export type SyncletOptions = {
+  id?: string;
+  logger?: Logger;
+};
+
 export function createSynclet(
   connector: Connector,
   transport: Transport,
@@ -65,15 +65,13 @@ export function createSynclet(
   options?: SyncletOptions,
 ): Synclet;
 
+// --
+
 export interface Connector {
   __brand: 'Connector';
   getNextTimestamp(): Timestamp;
   log(message: string, level?: LogLevel): void;
 }
-
-export type ConnectorOptions = {
-  logger?: Logger;
-};
 
 export type ConnectorImplementations = {
   connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
@@ -92,29 +90,35 @@ export type ConnectorImplementations = {
   getChildren: (address: Address, context: Context) => Promise<string[]>;
 };
 
+export type ConnectorOptions = {
+  logger?: Logger;
+};
+
 export function createConnector(
   implementations: ConnectorImplementations,
   options?: ConnectorOptions,
 ): Connector;
 
-export type TransportImplementations = {
-  connect?: (receivePacket: (string: string) => Promise<void>) => Promise<void>;
-  disconnect?: () => Promise<void>;
-  sendPacket?: (string: string) => Promise<void>;
-  fragmentSize?: number;
-};
+// --
 
 export interface Transport {
   __brand: 'Transport';
   log(message: string, level?: LogLevel): void;
 }
 
+export type TransportImplementations = {
+  connect?: (receivePacket: (string: string) => Promise<void>) => Promise<void>;
+  disconnect?: () => Promise<void>;
+  sendPacket: (string: string) => Promise<void>;
+};
+
 export type TransportOptions = {
   logger?: Logger;
+  fragmentSize?: number;
 };
 
 export function createTransport(
-  implementations?: TransportImplementations,
+  implementations: TransportImplementations,
   options?: TransportOptions,
 ): Transport;
 

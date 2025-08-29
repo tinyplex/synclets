@@ -16,8 +16,7 @@ export const createTransport: typeof createTransportDecl = (
     connect: connectImpl,
     disconnect: disconnectImpl,
     sendPacket,
-    fragmentSize,
-  }: TransportImplementations = {},
+  }: TransportImplementations,
   options: TransportOptions = {},
 ): ProtectedTransport => {
   let attachedSynclet: Synclet | undefined;
@@ -29,7 +28,7 @@ export const createTransport: typeof createTransportDecl = (
     logger?.[level]?.(`[${attachedSynclet?.getId() ?? ''}/T] ${string}`);
 
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
-    getPacketFunctions(log, sendPacket, fragmentSize);
+    getPacketFunctions(log, sendPacket, options.fragmentSize ?? 4096);
 
   // #endregion
 

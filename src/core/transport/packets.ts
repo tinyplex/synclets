@@ -22,8 +22,8 @@ const PACKET = /^(.+) (.+) (\d+) (\d+) (.+)$/;
 
 export const getPacketFunctions = (
   log: (string: string, level?: LogLevel) => void,
-  sendPacket?: (packet: string) => Promise<void>,
-  fragmentSize: number = 1000,
+  sendPacket: (packet: string) => Promise<void>,
+  fragmentSize: number,
 ): [
   startBuffer: (receiveMessage: ReceiveMessage) => Promise<void>,
   stopBuffer: () => void,
