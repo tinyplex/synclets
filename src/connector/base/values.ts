@@ -44,7 +44,7 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
     await underlyingDisconnect?.();
   };
 
-  const get = ([valueId]: Address): Promise<Value> =>
+  const get = ([valueId]: Address): Promise<Value | undefined> =>
     getUnderlyingValue(valueId);
 
   const getTimestamp = ([valueId]: Address): Promise<Timestamp> =>

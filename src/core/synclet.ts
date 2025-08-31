@@ -151,7 +151,10 @@ export const createSynclet: typeof createSyncletDecl = ((
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
-        return [myTimestamp, await connector.get(address, context)];
+        const value = await connector.get(address, context);
+        if (value !== undefined) {
+          return [myTimestamp, value];
+        }
       }
     } else {
       log(`${INVALID_NODE}; Timestamp vs SubNodes: ${address}`, 'warn');
@@ -174,7 +177,10 @@ export const createSynclet: typeof createSyncletDecl = ((
           context,
         );
       } else if (myTimestamp > otherTimestamp) {
-        return [myTimestamp, await connector.get(address, context)];
+        const value = await connector.get(address, context);
+        if (value !== undefined) {
+          return [myTimestamp, value];
+        }
       }
     } else {
       log(`${INVALID_NODE}; TimestampValue vs SubNodes: ${address}`, 'warn');
@@ -245,22 +251,24 @@ export const createSynclet: typeof createSyncletDecl = ((
     except: string[] = [],
   ): Promise<SubNodes> => [
     objFromEntries(
-      await promiseAll(
-        arrayMap(
-          arrayDifference(
-            await connector.getChildren(address, context),
-            except,
+      (
+        await promiseAll(
+          arrayMap(
+            arrayDifference(
+              await connector.getChildren(address, context),
+              except,
+            ),
+            async (id) => [
+              id,
+              await (
+                (await connector.hasChildren([...address, id], context))
+                  ? getFullNodes
+                  : connector.getTimestampAndValue
+              )([...address, id], context),
+            ],
           ),
-          async (id) => [
-            id,
-            await (
-              (await connector.hasChildren([...address, id], context))
-                ? getFullNodes
-                : connector.getTimestampAndValue
-            )([...address, id], context),
-          ],
-        ),
-      ),
+        )
+      ).filter(([, node]) => node !== undefined),
     ),
   ];
 

@@ -7,7 +7,6 @@ import type {
   LogLevel,
   Synclet,
   Timestamp,
-  TimestampAndValue,
   Value,
   createConnector as createConnectorDecl,
 } from '@synclets/@types';
@@ -94,7 +93,7 @@ export const createConnector: typeof createConnectorDecl = (
     address: Address,
     context: Context,
     timestamp?: Timestamp,
-  ): Promise<TimestampAndValue> => [
+  ): Promise<[Timestamp, Value | undefined]> => [
     timestamp ?? (await getTimestamp(address, context)),
     await get(address, context),
   ];

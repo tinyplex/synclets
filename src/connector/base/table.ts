@@ -53,7 +53,7 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     await underlyingDisconnect?.();
   };
 
-  const get = ([rowId, cellId]: Address): Promise<Value> =>
+  const get = ([rowId, cellId]: Address): Promise<Value | undefined> =>
     getUnderlyingCell(rowId, cellId);
 
   const getTimestamp = ([rowId, cellId]: Address): Promise<Timestamp> =>

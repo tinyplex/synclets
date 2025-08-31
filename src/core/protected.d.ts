@@ -6,7 +6,6 @@ import type {
   Node,
   Synclet,
   Timestamp,
-  TimestampAndValue,
   Transport,
   Value,
 } from '@synclets/@types';
@@ -25,7 +24,7 @@ export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: Synclet): void;
   connect(change: (address: Address) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
-  get(address: Address, context: Context): Promise<Value>;
+  get(address: Address, context: Context): Promise<Value | undefined>;
   getHash(address: Address, context: Context): Promise<Hash>;
   getTimestamp(address: Address, context: Context): Promise<Timestamp>;
   set(address: Address, value: Value, context: Context): Promise<void>;
@@ -41,7 +40,7 @@ export interface ProtectedConnector extends Connector {
     address: Address,
     context: Context,
     timestamp?: Timestamp,
-  ): Promise<TimestampAndValue>;
+  ): Promise<[Timestamp, Value | undefined]>;
   getHashOrTimestamp(
     address: Address,
     context: Context,

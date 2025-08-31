@@ -76,7 +76,7 @@ export interface Connector {
 export type ConnectorImplementations = {
   connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  get: (address: Address, context: Context) => Promise<Value>;
+  get: (address: Address, context: Context) => Promise<Value | undefined>;
   getTimestamp: (address: Address, context: Context) => Promise<Timestamp>;
   getHash: (address: Address, context: Context) => Promise<Hash>;
   set: (address: Address, value: Value, context: Context) => Promise<void>;
