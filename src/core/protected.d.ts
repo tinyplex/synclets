@@ -22,12 +22,12 @@ export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
 export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: Synclet): void;
-  connect(change: (address: Address) => Promise<void>): Promise<void>;
+  connect(sync: (address: Address) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
-  get(address: Address, context: Context): Promise<Value | undefined>;
+  getValue(address: Address, context: Context): Promise<Value | undefined>;
   getHash(address: Address, context: Context): Promise<Hash>;
   getTimestamp(address: Address, context: Context): Promise<Timestamp>;
-  set(address: Address, value: Value, context: Context): Promise<void>;
+  setValue(address: Address, value: Value, context: Context): Promise<void>;
   setHash(address: Address, hash: Hash, context: Context): Promise<void>;
   setTimestamp(
     address: Address,

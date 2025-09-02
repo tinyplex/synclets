@@ -13,21 +13,17 @@ const createTestTableConnector = (options?: ConnectorOptions) => {
 
   const getUnderlyingRowIds = async () => Object.keys(underlyingTable);
 
-  const getUnderlyingRowHash = async (rowId: string) => {
-    return underlyingRowHashes[rowId] ?? 0;
-  };
+  const getUnderlyingRowHash = async (rowId: string) =>
+    underlyingRowHashes[rowId];
 
-  const getUnderlyingCellIds = async (rowId: string) => {
-    return Object.keys(underlyingTable[rowId] ?? {});
-  };
+  const getUnderlyingCellIds = async (rowId: string) =>
+    Object.keys(underlyingTable[rowId] ?? {});
 
-  const getUnderlyingCell = async (rowId: string, cellId: string) => {
-    return underlyingTable[rowId]?.[cellId];
-  };
+  const getUnderlyingCell = async (rowId: string, cellId: string) =>
+    underlyingTable[rowId]?.[cellId];
 
-  const getUnderlyingCellTimestamp = async (rowId: string, cellId: string) => {
-    return underlyingTimestamps[rowId]?.[cellId] ?? '';
-  };
+  const getUnderlyingCellTimestamp = async (rowId: string, cellId: string) =>
+    underlyingTimestamps[rowId]?.[cellId];
 
   const setUnderlyingTableHash = async (hash: Hash) => {
     underlyingTableHash = hash;

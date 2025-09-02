@@ -25,48 +25,34 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 ): BaseValueConnector => {
   let underlyingSync: (() => Promise<void>) | undefined;
 
-  const connect = async (sync: (address: Address) => Promise<void>) => {
-    underlyingSync = () => sync([]);
-    await underlyingConnect?.(underlyingSync);
-  };
-
-  const disconnect = async () => {
-    underlyingSync = undefined;
-    await underlyingDisconnect?.();
-  };
-
-  const get = getUnderlyingValue;
-
-  const getTimestamp = getUnderlyingValueTimestamp;
-
-  const getHash = async () => 0;
-
-  const set = (_address: Address, value: Value): Promise<void> =>
-    setUnderlyingValue(value);
-
-  const setTimestamp = (
-    _address: Address,
-    timestamp: Timestamp,
-  ): Promise<void> => setUnderlyingValueTimestamp(timestamp);
-
-  const setHash = async () => {};
-
-  const hasChildren = async () => false;
-
-  const getChildren = async () => [];
-
   const connector = createConnector(
     {
-      connect,
-      disconnect,
-      get,
-      getTimestamp,
-      getHash,
-      set,
-      setTimestamp,
-      setHash,
-      hasChildren,
-      getChildren,
+      connect: async (sync: (address: Address) => Promise<void>) => {
+        underlyingSync = () => sync([]);
+        await underlyingConnect?.(underlyingSync);
+      },
+
+      disconnect: async () => {
+        underlyingSync = undefined;
+        await underlyingDisconnect?.();
+      },
+
+      getValue: getUnderlyingValue,
+
+      getTimestamp: getUnderlyingValueTimestamp,
+
+      getHash: async () => undefined,
+
+      setValue: (_address: Address, value: Value) => setUnderlyingValue(value),
+
+      setTimestamp: (_address: Address, timestamp: Timestamp) =>
+        setUnderlyingValueTimestamp(timestamp),
+
+      setHash: async () => {},
+
+      hasChildren: async () => false,
+
+      getChildren: async () => [],
     },
     options,
   );

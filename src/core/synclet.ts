@@ -148,10 +148,11 @@ export const createSynclet: typeof createSyncletDecl = ((
   ): Promise<Node | undefined> => {
     if (!(await connector.hasChildren(address, context))) {
       const myTimestamp = await connector.getTimestamp(address, context);
+      log(JSON.stringify({otherTimestamp, myTimestamp}));
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
-        const value = await connector.get(address, context);
+        const value = await connector.getValue(address, context);
         if (value !== undefined) {
           return [myTimestamp, value];
         }
@@ -177,7 +178,7 @@ export const createSynclet: typeof createSyncletDecl = ((
           context,
         );
       } else if (myTimestamp > otherTimestamp) {
-        const value = await connector.get(address, context);
+        const value = await connector.getValue(address, context);
         if (value !== undefined) {
           return [myTimestamp, value];
         }

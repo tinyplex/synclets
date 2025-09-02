@@ -17,36 +17,29 @@ const createTestTablesConnector = (options?: ConnectorOptions) => {
 
   const getUnderlyingTableIds = async () => Object.keys(underlyingTables);
 
-  const getUnderlyingTableHash = async (tableId: string) => {
-    return underlyingTableHashes[tableId] ?? 0;
-  };
+  const getUnderlyingTableHash = async (tableId: string) =>
+    underlyingTableHashes[tableId];
 
   const getUnderlyingRowIds = async (tableId: string) =>
     Object.keys(underlyingTables[tableId] ?? {});
 
-  const getUnderlyingRowHash = async (tableId: string, rowId: string) => {
-    return underlyingRowHashes[tableId]?.[rowId] ?? 0;
-  };
+  const getUnderlyingRowHash = async (tableId: string, rowId: string) =>
+    underlyingRowHashes[tableId]?.[rowId];
 
-  const getUnderlyingCellIds = async (tableId: string, rowId: string) => {
-    return Object.keys(underlyingTables[tableId]?.[rowId] ?? {});
-  };
+  const getUnderlyingCellIds = async (tableId: string, rowId: string) =>
+    Object.keys(underlyingTables[tableId]?.[rowId] ?? {});
 
   const getUnderlyingCell = async (
     tableId: string,
     rowId: string,
     cellId: string,
-  ) => {
-    return underlyingTables[tableId]?.[rowId]?.[cellId];
-  };
+  ) => underlyingTables[tableId]?.[rowId]?.[cellId];
 
   const getUnderlyingCellTimestamp = async (
     tableId: string,
     rowId: string,
     cellId: string,
-  ) => {
-    return underlyingTimestamps[tableId]?.[rowId]?.[cellId] ?? '';
-  };
+  ) => underlyingTimestamps[tableId]?.[rowId]?.[cellId];
 
   const setUnderlyingTablesHash = async (hash: Hash) => {
     underlyingTablesHash = hash;

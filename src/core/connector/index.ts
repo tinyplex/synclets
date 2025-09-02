@@ -17,10 +17,10 @@ export const createConnector: typeof createConnectorDecl = (
   {
     connect: connectImpl,
     disconnect: disconnectImpl,
-    get: getImpl,
+    getValue: getValueImpl,
     getHash: getHashImpl,
     getTimestamp: getTimestampImpl,
-    set: setImpl,
+    setValue: setValueImpl,
     setHash: setHashImpl,
     setTimestamp: setTimestampImpl,
     hasChildren: hasChildrenImpl,
@@ -57,17 +57,17 @@ export const createConnector: typeof createConnectorDecl = (
 
   const disconnect = async () => await disconnectImpl?.();
 
-  const get = async (address: Address, context: Context) =>
-    (await getImpl?.(address, context)) ?? undefined;
+  const getValue = async (address: Address, context: Context) =>
+    await getValueImpl(address, context);
 
   const getTimestamp = async (address: Address, context: Context) =>
-    (await getTimestampImpl?.(address, context)) ?? '';
+    (await getTimestampImpl(address, context)) ?? '';
 
   const getHash = async (address: Address, context: Context) =>
-    (await getHashImpl?.(address, context)) ?? 0;
+    (await getHashImpl(address, context)) ?? 0;
 
-  const set = async (address: Address, value: Value, context: Context) =>
-    await setImpl?.(address, value, context);
+  const setValue = async (address: Address, value: Value, context: Context) =>
+    await setValueImpl(address, value, context);
 
   const setTimestamp = async (
     address: Address,
@@ -75,17 +75,17 @@ export const createConnector: typeof createConnectorDecl = (
     context: Context,
   ) => {
     seenTimestamp(timestamp);
-    await setTimestampImpl?.(address, timestamp, context);
+    await setTimestampImpl(address, timestamp, context);
   };
 
   const setHash = async (address: Address, hash: Hash, context: Context) =>
-    await setHashImpl?.(address, hash, context);
+    await setHashImpl(address, hash, context);
 
   const hasChildren = async (address: Address, context: Context) =>
-    (await hasChildrenImpl?.(address, context)) ?? false;
+    (await hasChildrenImpl(address, context)) ?? false;
 
   const getChildren = async (address: Address, context: Context) =>
-    (await getChildrenImpl?.(address, context)) ?? [];
+    (await getChildrenImpl(address, context)) ?? [];
 
   // --
 
@@ -95,7 +95,7 @@ export const createConnector: typeof createConnectorDecl = (
     timestamp?: Timestamp,
   ): Promise<[Timestamp, Value | undefined]> => [
     timestamp ?? (await getTimestamp(address, context)),
-    await get(address, context),
+    await getValue(address, context),
   ];
 
   const getHashOrTimestamp = async (
@@ -114,7 +114,7 @@ export const createConnector: typeof createConnectorDecl = (
     context: Context,
   ): Promise<void> => {
     log(`set(${address})`);
-    await set(address, value, context);
+    await setValue(address, value, context);
     await setTimestamp(address, timestamp, context);
   };
 
@@ -129,10 +129,10 @@ export const createConnector: typeof createConnectorDecl = (
     attachToSynclet,
     connect,
     disconnect,
-    get,
+    getValue,
     getTimestamp,
     getHash,
-    set,
+    setValue,
     setTimestamp,
     setHash,
     hasChildren,

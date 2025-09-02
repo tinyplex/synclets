@@ -76,18 +76,27 @@ export interface Connector {
 export type ConnectorImplementations = {
   connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  get: (address: Address, context: Context) => Promise<Value | undefined>;
-  getTimestamp: (address: Address, context: Context) => Promise<Timestamp>;
-  getHash: (address: Address, context: Context) => Promise<Hash>;
-  set: (address: Address, value: Value, context: Context) => Promise<void>;
+  getValue: (address: Address, context: Context) => Promise<Value | undefined>;
+  getTimestamp: (
+    address: Address,
+    context: Context,
+  ) => Promise<Timestamp | undefined>;
+  getHash: (address: Address, context: Context) => Promise<Hash | undefined>;
+  setValue: (address: Address, value: Value, context: Context) => Promise<void>;
   setTimestamp: (
     address: Address,
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
   setHash: (address: Address, hash: Hash, context: Context) => Promise<void>;
-  hasChildren: (address: Address, context: Context) => Promise<boolean>;
-  getChildren: (address: Address, context: Context) => Promise<string[]>;
+  hasChildren: (
+    address: Address,
+    context: Context,
+  ) => Promise<boolean | undefined>;
+  getChildren: (
+    address: Address,
+    context: Context,
+  ) => Promise<string[] | undefined>;
 };
 
 export type ConnectorOptions = {

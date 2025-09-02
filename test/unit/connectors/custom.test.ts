@@ -32,7 +32,7 @@ const createTestCustomConnector = (options?: ConnectorOptions) => {
     underlyingSync = sync;
   };
 
-  const get = async (address: Address) => {
+  const getValue = async (address: Address) => {
     switch (JSON.stringify(address)) {
       case '["one"]':
         return underlyingValues.one;
@@ -77,7 +77,7 @@ const createTestCustomConnector = (options?: ConnectorOptions) => {
     }
   };
 
-  const set = async (address: Address, value: Value) => {
+  const setValue = async (address: Address, value: Value) => {
     switch (JSON.stringify(address)) {
       case '["one"]':
         underlyingValues.one = value;
@@ -163,7 +163,7 @@ const createTestCustomConnector = (options?: ConnectorOptions) => {
     sync: boolean = true,
   ) => {
     const timestamp = connector.getNextTimestamp();
-    set(address, value);
+    setValue(address, value);
     setTimestamp(address, timestamp);
     const hash = getTimestampHash(timestamp);
     switch (JSON.stringify(address)) {
@@ -197,10 +197,10 @@ const createTestCustomConnector = (options?: ConnectorOptions) => {
   const connector = createConnector(
     {
       connect,
-      get,
+      getValue,
       getHash,
       getTimestamp,
-      set,
+      setValue,
       setHash,
       setTimestamp,
       hasChildren,

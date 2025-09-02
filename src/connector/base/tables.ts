@@ -41,84 +41,61 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
     | ((tableId?: string, rowId?: string, cellId?: string) => Promise<void>)
     | undefined;
 
-  const connect = async (sync: (address: Address) => Promise<void>) => {
-    underlyingSync = (tableId, rowId, cellId) =>
-      isUndefined(tableId)
-        ? sync([])
-        : isUndefined(rowId)
-          ? sync([tableId])
-          : isUndefined(cellId)
-            ? sync([tableId, rowId])
-            : sync([tableId, rowId, cellId]);
-    await underlyingConnect?.(underlyingSync);
-  };
-
-  const disconnect = async () => {
-    underlyingSync = undefined;
-    await underlyingDisconnect?.();
-  };
-
-  const get = ([tableId, rowId, cellId]: Address): Promise<Value | undefined> =>
-    getUnderlyingCell(tableId, rowId, cellId);
-
-  const getTimestamp = ([
-    tableId,
-    rowId,
-    cellId,
-  ]: Address): Promise<Timestamp> =>
-    getUnderlyingCellTimestamp(tableId, rowId, cellId);
-
-  const getHash = ([tableId, rowId]: Address): Promise<number> =>
-    isUndefined(tableId)
-      ? getUnderlyingTablesHash()
-      : isUndefined(rowId)
-        ? getUnderlyingTableHash(tableId)
-        : getUnderlyingRowHash(tableId, rowId);
-
-  const set = (
-    [tableId, rowId, cellId]: Address,
-    value: Value,
-  ): Promise<void> => setUnderlyingCell(tableId, rowId, cellId, value);
-
-  const setTimestamp = (
-    [tableId, rowId, cellId]: Address,
-    timestamp: Timestamp,
-  ): Promise<void> =>
-    setUnderlyingCellTimestamp(tableId, rowId, cellId, timestamp);
-
-  const setHash = ([tableId, rowId]: Address, hash: number): Promise<void> =>
-    isUndefined(tableId)
-      ? setUnderlyingTablesHash(hash)
-      : isUndefined(rowId)
-        ? setUnderlyingTableHash(tableId, hash)
-        : setUnderlyingRowHash(tableId, rowId, hash);
-
-  const hasChildren = async (address: Address): Promise<boolean> =>
-    size(address) < 3;
-
-  const getChildren = async ([tableId, rowId, more]: Address): Promise<
-    string[]
-  > =>
-    await (isUndefined(tableId)
-      ? getUnderlyingTableIds()
-      : isUndefined(rowId)
-        ? getUnderlyingRowIds(tableId)
-        : isUndefined(more)
-          ? getUnderlyingCellIds(tableId, rowId)
-          : []);
-
   const connector = createConnector(
     {
-      connect,
-      disconnect,
-      get,
-      getTimestamp,
-      getHash,
-      set,
-      setTimestamp,
-      setHash,
-      hasChildren,
-      getChildren,
+      connect: async (sync: (address: Address) => Promise<void>) => {
+        underlyingSync = (tableId, rowId, cellId) =>
+          isUndefined(tableId)
+            ? sync([])
+            : isUndefined(rowId)
+              ? sync([tableId])
+              : isUndefined(cellId)
+                ? sync([tableId, rowId])
+                : sync([tableId, rowId, cellId]);
+        await underlyingConnect?.(underlyingSync);
+      },
+
+      disconnect: async () => {
+        underlyingSync = undefined;
+        await underlyingDisconnect?.();
+      },
+
+      getValue: ([tableId, rowId, cellId]: Address) =>
+        getUnderlyingCell(tableId, rowId, cellId),
+
+      getTimestamp: ([tableId, rowId, cellId]: Address) =>
+        getUnderlyingCellTimestamp(tableId, rowId, cellId),
+
+      getHash: ([tableId, rowId]: Address) =>
+        isUndefined(tableId)
+          ? getUnderlyingTablesHash()
+          : isUndefined(rowId)
+            ? getUnderlyingTableHash(tableId)
+            : getUnderlyingRowHash(tableId, rowId),
+
+      setValue: ([tableId, rowId, cellId]: Address, value: Value) =>
+        setUnderlyingCell(tableId, rowId, cellId, value),
+
+      setTimestamp: ([tableId, rowId, cellId]: Address, timestamp: Timestamp) =>
+        setUnderlyingCellTimestamp(tableId, rowId, cellId, timestamp),
+
+      setHash: ([tableId, rowId]: Address, hash: number) =>
+        isUndefined(tableId)
+          ? setUnderlyingTablesHash(hash)
+          : isUndefined(rowId)
+            ? setUnderlyingTableHash(tableId, hash)
+            : setUnderlyingRowHash(tableId, rowId, hash),
+
+      hasChildren: async (address: Address) => size(address) < 3,
+
+      getChildren: async ([tableId, rowId, more]: Address) =>
+        await (isUndefined(tableId)
+          ? getUnderlyingTableIds()
+          : isUndefined(rowId)
+            ? getUnderlyingRowIds(tableId)
+            : isUndefined(more)
+              ? getUnderlyingCellIds(tableId, rowId)
+              : []),
     },
     options,
   );

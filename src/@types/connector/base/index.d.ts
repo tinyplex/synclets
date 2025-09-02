@@ -21,7 +21,6 @@ export type BaseValueConnectorImplementations = {
   getUnderlyingValueTimestamp: () => Promise<Timestamp>;
   setUnderlyingValue: (value: Value) => Promise<void>;
   setUnderlyingValueTimestamp: (timestamp: Timestamp) => Promise<void>;
-  delUnderlyingValue: () => Promise<void>;
 };
 
 export function createBaseValueConnector(

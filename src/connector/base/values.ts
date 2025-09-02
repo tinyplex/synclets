@@ -33,54 +33,39 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 ): BaseValuesConnector => {
   let underlyingSync: ((valueId?: string) => Promise<void>) | undefined;
 
-  const connect = async (sync: (address: Address) => Promise<void>) => {
-    underlyingSync = (valueId) =>
-      isUndefined(valueId) ? sync([]) : sync([valueId]);
-    await underlyingConnect?.(underlyingSync);
-  };
-
-  const disconnect = async () => {
-    underlyingSync = undefined;
-    await underlyingDisconnect?.();
-  };
-
-  const get = ([valueId]: Address): Promise<Value | undefined> =>
-    getUnderlyingValue(valueId);
-
-  const getTimestamp = ([valueId]: Address): Promise<Timestamp> =>
-    getUnderlyingValueTimestamp(valueId);
-
-  const getHash = getUnderlyingValuesHash;
-
-  const set = ([valueId]: Address, value: Value): Promise<void> =>
-    setUnderlyingValue(valueId, value);
-
-  const setTimestamp = (
-    [valueId]: Address,
-    timestamp: Timestamp,
-  ): Promise<void> => setUnderlyingValueTimestamp(valueId, timestamp);
-
-  const setHash = (_address: Address, hash: number): Promise<void> =>
-    setUnderlyingValuesHash(hash);
-
-  const hasChildren = async (address: Address): Promise<boolean> =>
-    isEmpty(address);
-
-  const getChildren = async (address: Address): Promise<string[]> =>
-    isEmpty(address) ? await getValueIds() : [];
-
   const connector = createConnector(
     {
-      connect,
-      disconnect,
-      get,
-      getTimestamp,
-      getHash,
-      set,
-      setTimestamp,
-      setHash,
-      hasChildren,
-      getChildren,
+      connect: async (sync: (address: Address) => Promise<void>) => {
+        underlyingSync = (valueId) =>
+          isUndefined(valueId) ? sync([]) : sync([valueId]);
+        await underlyingConnect?.(underlyingSync);
+      },
+
+      disconnect: async () => {
+        underlyingSync = undefined;
+        await underlyingDisconnect?.();
+      },
+
+      getValue: ([valueId]: Address) => getUnderlyingValue(valueId),
+
+      getTimestamp: ([valueId]: Address) =>
+        getUnderlyingValueTimestamp(valueId),
+
+      getHash: getUnderlyingValuesHash,
+
+      setValue: ([valueId]: Address, value: Value) =>
+        setUnderlyingValue(valueId, value),
+
+      setTimestamp: ([valueId]: Address, timestamp: Timestamp) =>
+        setUnderlyingValueTimestamp(valueId, timestamp),
+
+      setHash: (_address: Address, hash: number) =>
+        setUnderlyingValuesHash(hash),
+
+      hasChildren: async (address: Address) => isEmpty(address),
+
+      getChildren: async (address: Address) =>
+        isEmpty(address) ? await getValueIds() : [],
     },
     options,
   );
