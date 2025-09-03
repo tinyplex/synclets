@@ -19,8 +19,8 @@ import {
 
 export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
   {
-    underlyingConnect,
-    underlyingDisconnect,
+    connect,
+    disconnect,
     getValuesHash,
     getValueIds,
     getValueAtom,
@@ -38,12 +38,12 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
       connect: async (sync: (address: Address) => Promise<void>) => {
         underlyingSync = (valueId) =>
           isUndefined(valueId) ? sync([]) : sync([valueId]);
-        await underlyingConnect?.(underlyingSync);
+        await connect?.(underlyingSync);
       },
 
       disconnect: async () => {
         underlyingSync = undefined;
-        await underlyingDisconnect?.();
+        await disconnect?.();
       },
 
       getAtom: ([valueId]: Address) => getValueAtom(valueId),

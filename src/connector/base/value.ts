@@ -14,8 +14,8 @@ import {DELETED_VALUE} from '@synclets/utils';
 
 export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   {
-    underlyingConnect,
-    underlyingDisconnect,
+    connect,
+    disconnect,
     getValueAtom,
     getValueTimestamp,
     setValueAtom,
@@ -29,12 +29,12 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
     {
       connect: async (sync: (address: Address) => Promise<void>) => {
         underlyingSync = () => sync([]);
-        await underlyingConnect?.(underlyingSync);
+        await connect?.(underlyingSync);
       },
 
       disconnect: async () => {
         underlyingSync = undefined;
-        await underlyingDisconnect?.();
+        await disconnect?.();
       },
 
       getAtom: getValueAtom,
