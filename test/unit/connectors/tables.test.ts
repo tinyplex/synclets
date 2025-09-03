@@ -1,106 +1,82 @@
-import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
+import {Atom, ConnectorOptions, Hash, Timestamp} from 'synclets';
 import {createBaseTablesConnector} from 'synclets/connector/base';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestTablesConnector = (options?: ConnectorOptions) => {
-  const underlyingTables: {
-    [tableId: string]: {[rowId: string]: {[cellId: string]: Value}};
+  const tables: {
+    [tableId: string]: {[rowId: string]: {[cellId: string]: Atom}};
   } = {};
-  const underlyingTimestamps: {
+  const timestamps: {
     [tableId: string]: {[rowId: string]: {[cellId: string]: Timestamp}};
   } = {};
-  const underlyingTableHashes: {[tableId: string]: Hash} = {};
-  const underlyingRowHashes: {[tableId: string]: {[rowId: string]: Hash}} = {};
-  let underlyingTablesHash: Hash = 0;
-
-  const getUnderlyingTablesHash = async () => underlyingTablesHash;
-
-  const getUnderlyingTableIds = async () => Object.keys(underlyingTables);
-
-  const getUnderlyingTableHash = async (tableId: string) =>
-    underlyingTableHashes[tableId];
-
-  const getUnderlyingRowIds = async (tableId: string) =>
-    Object.keys(underlyingTables[tableId] ?? {});
-
-  const getUnderlyingRowHash = async (tableId: string, rowId: string) =>
-    underlyingRowHashes[tableId]?.[rowId];
-
-  const getUnderlyingCellIds = async (tableId: string, rowId: string) =>
-    Object.keys(underlyingTables[tableId]?.[rowId] ?? {});
-
-  const getUnderlyingCell = async (
-    tableId: string,
-    rowId: string,
-    cellId: string,
-  ) => underlyingTables[tableId]?.[rowId]?.[cellId];
-
-  const getUnderlyingCellTimestamp = async (
-    tableId: string,
-    rowId: string,
-    cellId: string,
-  ) => underlyingTimestamps[tableId]?.[rowId]?.[cellId];
-
-  const setUnderlyingTablesHash = async (hash: Hash) => {
-    underlyingTablesHash = hash;
-  };
-
-  const setUnderlyingTableHash = async (tableId: string, hash: Hash) => {
-    underlyingTableHashes[tableId] = hash;
-  };
-
-  const setUnderlyingRowHash = async (
-    tableId: string,
-    rowId: string,
-    hash: Hash,
-  ) => {
-    underlyingRowHashes[tableId] = underlyingRowHashes[tableId] || {};
-    underlyingRowHashes[tableId][rowId] = hash;
-  };
-
-  const setUnderlyingCell = async (
-    tableId: string,
-    rowId: string,
-    cellId: string,
-    cell: Value,
-  ) => {
-    underlyingTables[tableId] = underlyingTables[tableId] || {};
-    underlyingTables[tableId][rowId] = underlyingTables[tableId][rowId] || {};
-    underlyingTables[tableId][rowId][cellId] = cell;
-  };
-
-  const setUnderlyingCellTimestamp = async (
-    tableId: string,
-    rowId: string,
-    cellId: string,
-    timestamp: Timestamp,
-  ) => {
-    underlyingTimestamps[tableId] = underlyingTimestamps[tableId] || {};
-    underlyingTimestamps[tableId][rowId] =
-      underlyingTimestamps[tableId][rowId] || {};
-    underlyingTimestamps[tableId][rowId][cellId] = timestamp;
-  };
-
-  const getTables = () => underlyingTables;
+  const tableHashes: {[tableId: string]: Hash} = {};
+  const rowHashes: {[tableId: string]: {[rowId: string]: Hash}} = {};
+  let tablesHash: Hash = 0;
 
   const connector = createBaseTablesConnector(
     {
-      getUnderlyingTablesHash,
-      getUnderlyingTableIds,
-      getUnderlyingTableHash,
-      getUnderlyingRowIds,
-      getUnderlyingRowHash,
-      getUnderlyingCellIds,
-      getUnderlyingCell,
-      getUnderlyingCellTimestamp,
-      setUnderlyingTablesHash,
-      setUnderlyingTableHash,
-      setUnderlyingRowHash,
-      setUnderlyingCell,
-      setUnderlyingCellTimestamp,
+      getTablesHash: async () => tablesHash,
+
+      getTableIds: async () => Object.keys(tables),
+
+      getTableHash: async (tableId: string) => tableHashes[tableId],
+
+      getRowIds: async (tableId: string) => Object.keys(tables[tableId] ?? {}),
+
+      getRowHash: async (tableId: string, rowId: string) =>
+        rowHashes[tableId]?.[rowId],
+
+      getCellIds: async (tableId: string, rowId: string) =>
+        Object.keys(tables[tableId]?.[rowId] ?? {}),
+
+      getCellAtom: async (tableId: string, rowId: string, cellId: string) =>
+        tables[tableId]?.[rowId]?.[cellId],
+
+      getCellTimestamp: async (
+        tableId: string,
+        rowId: string,
+        cellId: string,
+      ) => timestamps[tableId]?.[rowId]?.[cellId],
+
+      setTablesHash: async (hash: Hash) => {
+        tablesHash = hash;
+      },
+
+      setTableHash: async (tableId: string, hash: Hash) => {
+        tableHashes[tableId] = hash;
+      },
+
+      setRowHash: async (tableId: string, rowId: string, hash: Hash) => {
+        rowHashes[tableId] = rowHashes[tableId] || {};
+        rowHashes[tableId][rowId] = hash;
+      },
+
+      setCellAtom: async (
+        tableId: string,
+        rowId: string,
+        cellId: string,
+        atom: Atom,
+      ) => {
+        tables[tableId] = tables[tableId] || {};
+        tables[tableId][rowId] = tables[tableId][rowId] || {};
+        tables[tableId][rowId][cellId] = atom;
+      },
+
+      setCellTimestamp: async (
+        tableId: string,
+        rowId: string,
+        cellId: string,
+        timestamp: Timestamp,
+      ) => {
+        timestamps[tableId] = timestamps[tableId] || {};
+        timestamps[tableId][rowId] = timestamps[tableId][rowId] || {};
+        timestamps[tableId][rowId][cellId] = timestamp;
+      },
     },
     options,
   );
+
+  const getTables = () => tables;
 
   return {
     ...connector,

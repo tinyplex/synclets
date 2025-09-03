@@ -1,9 +1,9 @@
 import {createConnector} from '@synclets';
 import type {
   Address,
+  Atom,
   ConnectorOptions,
   Timestamp,
-  Value,
 } from '@synclets/@types';
 import type {
   BaseTableConnector,
@@ -21,16 +21,16 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   {
     underlyingConnect,
     underlyingDisconnect,
-    getUnderlyingTableHash,
-    getUnderlyingRowIds,
-    getUnderlyingRowHash,
-    getUnderlyingCellIds,
-    getUnderlyingCell,
-    getUnderlyingCellTimestamp,
-    setUnderlyingTableHash,
-    setUnderlyingRowHash,
-    setUnderlyingCell,
-    setUnderlyingCellTimestamp,
+    getTableHash,
+    getRowIds,
+    getRowHash,
+    getCellIds,
+    getCellAtom,
+    getCellTimestamp,
+    setTableHash,
+    setRowHash,
+    setCellAtom,
+    setCellTimestamp,
   }: BaseTableConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseTableConnector => {
@@ -55,34 +55,30 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
         await underlyingDisconnect?.();
       },
 
-      getValue: ([rowId, cellId]: Address) => getUnderlyingCell(rowId, cellId),
+      getAtom: ([rowId, cellId]: Address) => getCellAtom(rowId, cellId),
 
       getTimestamp: ([rowId, cellId]: Address) =>
-        getUnderlyingCellTimestamp(rowId, cellId),
+        getCellTimestamp(rowId, cellId),
 
       getHash: ([rowId]: Address) =>
-        isUndefined(rowId)
-          ? getUnderlyingTableHash()
-          : getUnderlyingRowHash(rowId),
+        isUndefined(rowId) ? getTableHash() : getRowHash(rowId),
 
-      setValue: ([rowId, cellId]: Address, value: Value) =>
-        setUnderlyingCell(rowId, cellId, value),
+      setAtom: ([rowId, cellId]: Address, value: Atom) =>
+        setCellAtom(rowId, cellId, value),
 
       setTimestamp: ([rowId, cellId]: Address, timestamp: Timestamp) =>
-        setUnderlyingCellTimestamp(rowId, cellId, timestamp),
+        setCellTimestamp(rowId, cellId, timestamp),
 
       setHash: ([rowId]: Address, hash: number): Promise<void> =>
-        isUndefined(rowId)
-          ? setUnderlyingTableHash(hash)
-          : setUnderlyingRowHash(rowId, hash),
+        isUndefined(rowId) ? setTableHash(hash) : setRowHash(rowId, hash),
 
       hasChildren: async (address: Address) => size(address) < 2,
 
       getChildren: async ([rowId, more]: Address) =>
         await (isUndefined(rowId)
-          ? getUnderlyingRowIds()
+          ? getRowIds()
           : isUndefined(more)
-            ? getUnderlyingCellIds(rowId)
+            ? getCellIds(rowId)
             : []),
     },
     options,
@@ -90,30 +86,26 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
 
   // --
 
-  const getRowIds = getUnderlyingRowIds;
-  const getCellIds = getUnderlyingCellIds;
-  const getCell = getUnderlyingCell;
+  const getCell = getCellAtom;
 
-  const setCell = async (rowId: string, cellId: string, cell: Value) => {
+  const setCell = async (rowId: string, cellId: string, cell: Atom) => {
     const timestamp = connector.getNextTimestamp();
     const hashChange =
-      getTimestampHash(await getUnderlyingCellTimestamp(rowId, cellId)) ^
+      getTimestampHash(await getCellTimestamp(rowId, cellId)) ^
       getTimestampHash(timestamp);
 
-    await setUnderlyingCell(rowId, cellId, cell);
-    await setUnderlyingCellTimestamp(rowId, cellId, timestamp);
-    await setUnderlyingRowHash(
+    await setCellAtom(rowId, cellId, cell);
+    await setCellTimestamp(rowId, cellId, timestamp);
+    await setRowHash(
       rowId,
-      ((await getUnderlyingRowHash(rowId)) ^ hashChange) >>> 0,
+      (((await getRowHash(rowId)) ?? 0) ^ hashChange) >>> 0,
     );
-    await setUnderlyingTableHash(
-      ((await getUnderlyingTableHash()) ^ hashChange) >>> 0,
-    );
+    await setTableHash((((await getTableHash()) ?? 0) ^ hashChange) >>> 0);
     await underlyingSync?.(rowId, cellId);
   };
 
   const delCell = (rowId: string, cellId: string): Promise<void> =>
-    setUnderlyingCell(rowId, cellId, DELETED_VALUE);
+    setCellAtom(rowId, cellId, DELETED_VALUE);
 
   return {...connector, getRowIds, getCellIds, getCell, setCell, delCell};
 };

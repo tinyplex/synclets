@@ -2,23 +2,23 @@
 
 import {MessageType} from '../core/message.ts';
 
-export type DeletedValue = '\uFFFC';
+export type DeletedAtom = '\uFFFC';
+
+export type Atom = string | number | boolean | null | DeletedAtom;
 
 export type Timestamp = string;
-
-export type Value = string | number | boolean | null | DeletedValue;
 
 export type Hash = number;
 
 export type Address = string[];
 
-export type Node = Timestamp | TimestampAndValue | Hash | SubNodes;
+export type Node = Timestamp | TimestampAndAtom | Hash | SubNodes;
 
-export type TimestampAndValue = [timestamp: Timestamp, value: Value];
+export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom];
 
 export type SubNodes = [subNodes: {[id: string]: Node}, partial?: 1];
 
-export type Context = {[key: string]: Value};
+export type Context = {[key: string]: Atom};
 
 export type Logger = {
   error?: (string: string) => void;
@@ -76,13 +76,13 @@ export interface Connector {
 export type ConnectorImplementations = {
   connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  getValue: (address: Address, context: Context) => Promise<Value | undefined>;
+  getAtom: (address: Address, context: Context) => Promise<Atom | undefined>;
   getTimestamp: (
     address: Address,
     context: Context,
   ) => Promise<Timestamp | undefined>;
   getHash: (address: Address, context: Context) => Promise<Hash | undefined>;
-  setValue: (address: Address, value: Value, context: Context) => Promise<void>;
+  setAtom: (address: Address, atom: Atom, context: Context) => Promise<void>;
   setTimestamp: (
     address: Address,
     timestamp: Timestamp,

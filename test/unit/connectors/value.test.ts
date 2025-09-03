@@ -1,33 +1,24 @@
-import {ConnectorOptions, Timestamp, Value} from 'synclets';
+import {Atom, ConnectorOptions, Timestamp} from 'synclets';
 import {createBaseValueConnector} from 'synclets/connector/base';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestValueConnector = (options?: ConnectorOptions) => {
-  let underlyingValue: Value = '';
+  let underlyingValue: Atom = '';
   let underlyingTimestamp: Timestamp = '';
-
-  const getUnderlyingValue = async () => {
-    return underlyingValue;
-  };
-
-  const getUnderlyingValueTimestamp = async () => {
-    return underlyingTimestamp;
-  };
-
-  const setUnderlyingValue = async (value: Value) => {
-    underlyingValue = value;
-  };
-
-  const setUnderlyingValueTimestamp = async (timestamp: Timestamp) => {
-    underlyingTimestamp = timestamp;
-  };
 
   return createBaseValueConnector(
     {
-      getUnderlyingValue,
-      getUnderlyingValueTimestamp,
-      setUnderlyingValue,
-      setUnderlyingValueTimestamp,
+      getValueAtom: async () => underlyingValue,
+
+      getValueTimestamp: async () => underlyingTimestamp,
+
+      setValueAtom: async (value: Atom) => {
+        underlyingValue = value;
+      },
+
+      setValueTimestamp: async (timestamp: Timestamp) => {
+        underlyingTimestamp = timestamp;
+      },
     },
     options,
   );

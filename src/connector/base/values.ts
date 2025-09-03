@@ -1,9 +1,9 @@
 import {createConnector} from '@synclets';
 import type {
   Address,
+  Atom,
   ConnectorOptions,
   Timestamp,
-  Value,
 } from '@synclets/@types';
 import type {
   BaseValuesConnector,
@@ -21,13 +21,13 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
   {
     underlyingConnect,
     underlyingDisconnect,
-    getUnderlyingValuesHash,
-    getUnderlyingValueIds,
-    getUnderlyingValue,
-    getUnderlyingValueTimestamp,
-    setUnderlyingValuesHash,
-    setUnderlyingValue,
-    setUnderlyingValueTimestamp,
+    getValuesHash,
+    getValueIds,
+    getValueAtom,
+    getValueTimestamp,
+    setValuesHash,
+    setValueAtom,
+    setValueTimestamp,
   }: BaseValuesConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseValuesConnector => {
@@ -46,21 +46,19 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
         await underlyingDisconnect?.();
       },
 
-      getValue: ([valueId]: Address) => getUnderlyingValue(valueId),
+      getAtom: ([valueId]: Address) => getValueAtom(valueId),
 
-      getTimestamp: ([valueId]: Address) =>
-        getUnderlyingValueTimestamp(valueId),
+      getTimestamp: ([valueId]: Address) => getValueTimestamp(valueId),
 
-      getHash: getUnderlyingValuesHash,
+      getHash: getValuesHash,
 
-      setValue: ([valueId]: Address, value: Value) =>
-        setUnderlyingValue(valueId, value),
+      setAtom: ([valueId]: Address, value: Atom) =>
+        setValueAtom(valueId, value),
 
       setTimestamp: ([valueId]: Address, timestamp: Timestamp) =>
-        setUnderlyingValueTimestamp(valueId, timestamp),
+        setValueTimestamp(valueId, timestamp),
 
-      setHash: (_address: Address, hash: number) =>
-        setUnderlyingValuesHash(hash),
+      setHash: (_address: Address, hash: number) => setValuesHash(hash),
 
       hasChildren: async (address: Address) => isEmpty(address),
 
@@ -72,21 +70,17 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 
   // --
 
-  const getValueIds = getUnderlyingValueIds;
+  const getValue = getValueAtom;
 
-  const getValue = getUnderlyingValue;
-
-  const setValue = async (valueId: string, value: Value): Promise<void> => {
+  const setValue = async (valueId: string, value: Atom): Promise<void> => {
     const timestamp = connector.getNextTimestamp();
     const hashChange =
-      getTimestampHash(await getUnderlyingValueTimestamp(valueId)) ^
+      getTimestampHash(await getValueTimestamp(valueId)) ^
       getTimestampHash(timestamp);
 
-    await setUnderlyingValue(valueId, value);
-    await setUnderlyingValueTimestamp(valueId, timestamp);
-    await setUnderlyingValuesHash(
-      ((await getUnderlyingValuesHash()) ^ hashChange) >>> 0,
-    );
+    await setValueAtom(valueId, value);
+    await setValueTimestamp(valueId, timestamp);
+    await setValuesHash((((await getValuesHash()) ?? 0) ^ hashChange) >>> 0);
     await underlyingSync?.(valueId);
   };
 

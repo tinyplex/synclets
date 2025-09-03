@@ -1,9 +1,9 @@
 import {createConnector} from '@synclets';
 import type {
   Address,
+  Atom,
   ConnectorOptions,
   Timestamp,
-  Value,
 } from '@synclets/@types';
 import type {
   BaseValueConnector,
@@ -16,10 +16,10 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   {
     underlyingConnect,
     underlyingDisconnect,
-    getUnderlyingValue,
-    getUnderlyingValueTimestamp,
-    setUnderlyingValue,
-    setUnderlyingValueTimestamp,
+    getValueAtom,
+    getValueTimestamp,
+    setValueAtom,
+    setValueTimestamp,
   }: BaseValueConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseValueConnector => {
@@ -37,16 +37,16 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
         await underlyingDisconnect?.();
       },
 
-      getValue: getUnderlyingValue,
+      getAtom: getValueAtom,
 
-      getTimestamp: getUnderlyingValueTimestamp,
+      getTimestamp: getValueTimestamp,
 
       getHash: async () => undefined,
 
-      setValue: (_address: Address, value: Value) => setUnderlyingValue(value),
+      setAtom: (_address: Address, atom: Atom) => setValueAtom(atom),
 
       setTimestamp: (_address: Address, timestamp: Timestamp) =>
-        setUnderlyingValueTimestamp(timestamp),
+        setValueTimestamp(timestamp),
 
       setHash: async () => {},
 
@@ -59,11 +59,11 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
   // --
 
-  const getValue = getUnderlyingValue;
+  const getValue = getValueAtom;
 
-  const setValue = async (value: Value): Promise<void> => {
-    await setUnderlyingValue?.(value);
-    await setUnderlyingValueTimestamp(connector.getNextTimestamp());
+  const setValue = async (value: Atom): Promise<void> => {
+    await setValueAtom?.(value);
+    await setValueTimestamp(connector.getNextTimestamp());
     await underlyingSync?.();
   };
 

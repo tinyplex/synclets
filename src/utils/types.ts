@@ -1,10 +1,10 @@
 import {
+  Atom,
   Hash,
   Node,
   SubNodes,
   Timestamp,
-  TimestampAndValue,
-  Value,
+  TimestampAndAtom,
 } from '@synclets/@types';
 import {isArray} from './array.ts';
 import {isObject, objEvery} from './object.ts';
@@ -12,21 +12,21 @@ import {size} from './other.ts';
 
 export const isNode = (node: unknown): node is Node =>
   isTimestamp(node) ||
-  isTimestampAndValue(node) ||
+  isTimestampAndAtom(node) ||
   isHash(node) ||
   isSubNodes(node);
 
 export const isTimestamp = (node: unknown): node is Timestamp =>
   typeof node === 'string';
 
-export const isValue = (value: unknown): value is Value =>
+export const isAtom = (value: unknown): value is Atom =>
   value === null ||
   typeof value === 'number' ||
   typeof value === 'string' ||
   typeof value === 'boolean';
 
-export const isTimestampAndValue = (node: unknown): node is TimestampAndValue =>
-  isArray(node) && size(node) == 2 && isTimestamp(node[0]) && isValue(node[1]);
+export const isTimestampAndAtom = (node: unknown): node is TimestampAndAtom =>
+  isArray(node) && size(node) == 2 && isTimestamp(node[0]) && isAtom(node[1]);
 
 export const isHash = (node: unknown): node is Hash => typeof node === 'number';
 

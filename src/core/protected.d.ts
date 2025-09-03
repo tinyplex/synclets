@@ -1,5 +1,6 @@
 import type {
   Address,
+  Atom,
   Connector,
   Context,
   Hash,
@@ -7,7 +8,6 @@ import type {
   Synclet,
   Timestamp,
   Transport,
-  Value,
 } from '@synclets/@types';
 import {MessageType} from './message.ts';
 
@@ -24,10 +24,10 @@ export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: Synclet): void;
   connect(sync: (address: Address) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
-  getValue(address: Address, context: Context): Promise<Value | undefined>;
+  getAtom(address: Address, context: Context): Promise<Atom | undefined>;
   getHash(address: Address, context: Context): Promise<Hash>;
   getTimestamp(address: Address, context: Context): Promise<Timestamp>;
-  setValue(address: Address, value: Value, context: Context): Promise<void>;
+  setAtom(address: Address, value: Atom, context: Context): Promise<void>;
   setHash(address: Address, hash: Hash, context: Context): Promise<void>;
   setTimestamp(
     address: Address,
@@ -36,19 +36,19 @@ export interface ProtectedConnector extends Connector {
   ): Promise<void>;
   hasChildren(address: Address, context: Context): Promise<boolean>;
   getChildren(address: Address, context: Context): Promise<string[]>;
-  getTimestampAndValue(
+  getTimestampAndAtom(
     address: Address,
     context: Context,
     timestamp?: Timestamp,
-  ): Promise<[Timestamp, Value | undefined]>;
+  ): Promise<[Timestamp, Atom | undefined]>;
   getHashOrTimestamp(
     address: Address,
     context: Context,
   ): Promise<Hash | Timestamp>;
-  setTimestampAndValue(
+  setTimestampAndAtom(
     address: Address,
     timestamp: Timestamp,
-    value: Value,
+    value: Atom,
     context: Context,
   ): Promise<void>;
 }

@@ -1,51 +1,38 @@
-import {ConnectorOptions, Hash, Timestamp, Value} from 'synclets';
+import {Atom, ConnectorOptions, Hash, Timestamp} from 'synclets';
 import {createBaseValuesConnector} from 'synclets/connector/base';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestValuesConnector = (options?: ConnectorOptions) => {
-  const underlyingValues: {[valueId: string]: Value} = {};
-  const underlyingTimestamps: {[valueId: string]: Timestamp} = {};
-  let underlyingValuesHash: Hash = 0;
-
-  const getUnderlyingValuesHash = async () => underlyingValuesHash;
-
-  const getUnderlyingValueIds = async () => Object.keys(underlyingValues);
-
-  const getUnderlyingValue = async (valueId: string) =>
-    underlyingValues[valueId];
-
-  const getUnderlyingValueTimestamp = async (valueId: string) =>
-    underlyingTimestamps[valueId];
-
-  const setUnderlyingValuesHash = async (hash: Hash) => {
-    underlyingValuesHash = hash;
-  };
-
-  const setUnderlyingValue = async (valueId: string, value: Value) => {
-    underlyingValues[valueId] = value;
-  };
-
-  const setUnderlyingValueTimestamp = async (
-    valueId: string,
-    timestamp: Timestamp,
-  ) => {
-    underlyingTimestamps[valueId] = timestamp;
-  };
-
-  const getValues = () => underlyingValues;
+  const values: {[valueId: string]: Atom} = {};
+  const timestamps: {[valueId: string]: Timestamp} = {};
+  let valuesHash: Hash = 0;
 
   const connector = createBaseValuesConnector(
     {
-      getUnderlyingValuesHash,
-      getUnderlyingValueIds,
-      getUnderlyingValue,
-      getUnderlyingValueTimestamp,
-      setUnderlyingValuesHash,
-      setUnderlyingValue,
-      setUnderlyingValueTimestamp,
+      getValuesHash: async () => valuesHash,
+
+      getValueIds: async () => Object.keys(values),
+
+      getValueAtom: async (valueId: string) => values[valueId],
+
+      getValueTimestamp: async (valueId: string) => timestamps[valueId],
+
+      setValuesHash: async (hash: Hash) => {
+        valuesHash = hash;
+      },
+
+      setValueAtom: async (valueId: string, atom: Atom) => {
+        values[valueId] = atom;
+      },
+
+      setValueTimestamp: async (valueId: string, timestamp: Timestamp) => {
+        timestamps[valueId] = timestamp;
+      },
     },
     options,
   );
+
+  const getValues = () => values;
 
   return {
     ...connector,

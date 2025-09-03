@@ -10,7 +10,7 @@ import type {
   SyncletImplementations,
   SyncletOptions,
   Timestamp,
-  TimestampAndValue,
+  TimestampAndAtom,
 } from '@synclets/@types';
 import {
   arrayDifference,
@@ -21,7 +21,7 @@ import {
   isHash,
   isSubNodes,
   isTimestamp,
-  isTimestampAndValue,
+  isTimestampAndAtom,
   isUndefined,
   objFromEntries,
   objKeys,
@@ -129,8 +129,8 @@ export const createSynclet: typeof createSyncletDecl = ((
       await (
         (isTimestamp(node)
           ? transformTimestamp
-          : isTimestampAndValue(node)
-            ? transformTimestampAndValue
+          : isTimestampAndAtom(node)
+            ? transformTimestampAndAtom
             : isHash(node)
               ? transformHash
               : isSubNodes(node)
@@ -152,7 +152,7 @@ export const createSynclet: typeof createSyncletDecl = ((
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
-        const value = await connector.getValue(address, context);
+        const value = await connector.getAtom(address, context);
         if (value !== undefined) {
           return [myTimestamp, value];
         }
@@ -162,29 +162,29 @@ export const createSynclet: typeof createSyncletDecl = ((
     }
   };
 
-  const transformTimestampAndValue = async (
+  const transformTimestampAndAtom = async (
     address: Address,
-    otherTimestampAndValue: TimestampAndValue,
+    otherTimestampAndAtom: TimestampAndAtom,
     context: Context,
   ): Promise<Node | undefined> => {
     if (!(await connector.hasChildren(address, context))) {
       const myTimestamp = await connector.getTimestamp(address, context);
-      const [otherTimestamp, otherValue] = otherTimestampAndValue;
+      const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
       if (otherTimestamp > myTimestamp) {
-        await connector.setTimestampAndValue(
+        await connector.setTimestampAndAtom(
           address,
           otherTimestamp,
-          otherValue,
+          otherAtom,
           context,
         );
       } else if (myTimestamp > otherTimestamp) {
-        const value = await connector.getValue(address, context);
+        const value = await connector.getAtom(address, context);
         if (value !== undefined) {
           return [myTimestamp, value];
         }
       }
     } else {
-      log(`${INVALID_NODE}; TimestampValue vs SubNodes: ${address}`, 'warn');
+      log(`${INVALID_NODE}; TimestampAtom vs SubNodes: ${address}`, 'warn');
     }
   };
 
@@ -264,7 +264,7 @@ export const createSynclet: typeof createSyncletDecl = ((
               await (
                 (await connector.hasChildren([...address, id], context))
                   ? getFullNodes
-                  : connector.getTimestampAndValue
+                  : connector.getTimestampAndAtom
               )([...address, id], context),
             ],
           ),
