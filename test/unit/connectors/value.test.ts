@@ -3,21 +3,21 @@ import {createBaseValueConnector} from 'synclets/connector/base';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
 const createTestValueConnector = (options?: ConnectorOptions) => {
-  let underlyingValue: Atom = '';
-  let underlyingTimestamp: Timestamp = '';
+  let value: Atom = '';
+  let timestamp: Timestamp = '';
 
   return createBaseValueConnector(
     {
-      getValueAtom: async () => underlyingValue,
+      getValueAtom: async () => value,
 
-      getValueTimestamp: async () => underlyingTimestamp,
+      getValueTimestamp: async () => timestamp,
 
-      setValueAtom: async (value: Atom) => {
-        underlyingValue = value;
+      setValueAtom: async (atom: Atom) => {
+        value = atom;
       },
 
-      setValueTimestamp: async (timestamp: Timestamp) => {
-        underlyingTimestamp = timestamp;
+      setValueTimestamp: async (newTimestamp: Timestamp) => {
+        timestamp = newTimestamp;
       },
     },
     options,
