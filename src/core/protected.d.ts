@@ -36,21 +36,6 @@ export interface ProtectedConnector extends Connector {
   ): Promise<void>;
   hasChildren(address: Address, context: Context): Promise<boolean>;
   getChildren(address: Address, context: Context): Promise<string[]>;
-  getTimestampAndAtom(
-    address: Address,
-    context: Context,
-    timestamp?: Timestamp,
-  ): Promise<[Timestamp, Atom | undefined]>;
-  getHashOrTimestamp(
-    address: Address,
-    context: Context,
-  ): Promise<Hash | Timestamp>;
-  setTimestampAndAtom(
-    address: Address,
-    timestamp: Timestamp,
-    value: Atom,
-    context: Context,
-  ): Promise<void>;
 }
 
 export interface ProtectedTransport extends Transport {

@@ -171,12 +171,8 @@ export const createSynclet: typeof createSyncletDecl = ((
       const myTimestamp = await connector.getTimestamp(address, context);
       const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
       if (otherTimestamp > myTimestamp) {
-        await connector.setTimestampAndAtom(
-          address,
-          otherTimestamp,
-          otherAtom,
-          context,
-        );
+        await connector.setAtom(address, otherAtom, context);
+        await connector.setTimestamp(address, otherTimestamp, context);
       } else if (myTimestamp > otherTimestamp) {
         const value = await connector.getAtom(address, context);
         if (value !== undefined) {
@@ -200,10 +196,15 @@ export const createSynclet: typeof createSyncletDecl = ((
             await promiseAll(
               arrayMap(
                 await connector.getChildren(address, context),
-                async (id) => [
-                  id,
-                  await connector.getHashOrTimestamp([...address, id], context),
-                ],
+                async (id) => {
+                  const childAddress = [...address, id];
+                  return [
+                    id,
+                    await ((await connector.hasChildren(childAddress, context))
+                      ? connector.getHash(childAddress, context)
+                      : connector.getTimestamp(childAddress, context)),
+                  ];
+                },
               ),
             ),
           ),
@@ -259,14 +260,18 @@ export const createSynclet: typeof createSyncletDecl = ((
               await connector.getChildren(address, context),
               except,
             ),
-            async (id) => [
-              id,
-              await (
-                (await connector.hasChildren([...address, id], context))
-                  ? getFullNodes
-                  : connector.getTimestampAndAtom
-              )([...address, id], context),
-            ],
+            async (id) => {
+              const childAddress = [...address, id];
+              return [
+                id,
+                (await connector.hasChildren(childAddress, context))
+                  ? await getFullNodes(childAddress, context)
+                  : [
+                      await connector.getTimestamp(childAddress, context),
+                      await connector.getAtom(childAddress, context),
+                    ],
+              ];
+            },
           ),
         )
       ).filter(([, node]) => node !== undefined),

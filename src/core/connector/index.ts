@@ -87,32 +87,5 @@ export const createConnector: typeof createConnectorDecl = (
 
     getChildren: async (address: Address, context: Context) =>
       (await getChildren(address, context)) ?? [],
-
-    // --
-
-    getTimestampAndAtom: async (
-      address: Address,
-      context: Context,
-      timestamp?: Timestamp,
-    ) => [
-      timestamp ?? (await getTimestamp(address, context)) ?? '',
-      await getAtom(address, context),
-    ],
-
-    getHashOrTimestamp: async (address: Address, context: Context) =>
-      (await hasChildren(address, context))
-        ? ((await getHash(address, context)) ?? 0)
-        : ((await getTimestamp(address, context)) ?? ''),
-
-    setTimestampAndAtom: async (
-      address: Address,
-      timestamp: Timestamp,
-      value: Atom,
-      context: Context,
-    ) => {
-      log(`set(${address})`);
-      await setAtom(address, value, context);
-      await setTimestamp(address, timestamp, context);
-    },
   };
 };
