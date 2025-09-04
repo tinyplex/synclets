@@ -17,13 +17,13 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
   {
     connect,
     disconnect,
-    getValuesHash,
-    getValueIds,
-    getValueAtom,
-    getValueTimestamp,
-    setValuesHash,
-    setValueAtom,
-    setValueTimestamp,
+    readValuesHash,
+    readValueIds,
+    readValueAtom,
+    readValueTimestamp,
+    writeValuesHash,
+    writeValueAtom,
+    writeValueTimestamp,
   }: BaseValuesConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseValuesConnector => {
@@ -42,31 +42,31 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
         await disconnect?.();
       },
 
-      readAtom: ([valueId]: Address) => getValueAtom(valueId),
+      readAtom: ([valueId]: Address) => readValueAtom(valueId),
 
-      readTimestamp: ([valueId]: Address) => getValueTimestamp(valueId),
+      readTimestamp: ([valueId]: Address) => readValueTimestamp(valueId),
 
-      readHash: getValuesHash,
+      readHash: readValuesHash,
 
       writeAtom: ([valueId]: Address, value: Atom) =>
-        setValueAtom(valueId, value),
+        writeValueAtom(valueId, value),
 
       writeTimestamp: ([valueId]: Address, timestamp: Timestamp) =>
-        setValueTimestamp(valueId, timestamp),
+        writeValueTimestamp(valueId, timestamp),
 
-      writeHash: (_address: Address, hash: number) => setValuesHash(hash),
+      writeHash: (_address: Address, hash: number) => writeValuesHash(hash),
 
       hasChildren: async (address: Address) => isEmpty(address),
 
       readChildrenIds: async (address: Address) =>
-        isEmpty(address) ? await getValueIds() : [],
+        isEmpty(address) ? await readValueIds() : [],
     },
     options,
   );
 
   // --
 
-  const getValue = getValueAtom;
+  const getValue = readValueAtom;
 
   const setManagedValue = async (
     valueId: string,
@@ -79,5 +79,11 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 
   const delValue = async (_valueId: string): Promise<void> => {};
 
-  return {...connector, getValueIds, getValue, setManagedValue, delValue};
+  return {
+    ...connector,
+    getValueIds: readValueIds,
+    getValue,
+    setManagedValue,
+    delValue,
+  };
 };

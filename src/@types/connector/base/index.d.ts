@@ -18,10 +18,10 @@ export type BaseValueConnector = Connector & {
 export type BaseValueConnectorImplementations = {
   connect?: (sync: () => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  getValueAtom: () => Promise<Atom | undefined>;
-  getValueTimestamp: () => Promise<Timestamp | undefined>;
-  setValueAtom: (atom: Atom) => Promise<void>;
-  setValueTimestamp: (timestamp: Timestamp) => Promise<void>;
+  readValueAtom: () => Promise<Atom | undefined>;
+  readValueTimestamp: () => Promise<Timestamp | undefined>;
+  writeValueAtom: (atom: Atom) => Promise<void>;
+  writeValueTimestamp: (timestamp: Timestamp) => Promise<void>;
 };
 
 export function createBaseValueConnector(
@@ -43,13 +43,13 @@ export type BaseValuesConnector = Connector & {
 export type BaseValuesConnectorImplementations = {
   connect?: (sync: (valueId: string) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  getValuesHash: () => Promise<Hash | undefined>;
-  getValueIds: () => Promise<string[]>;
-  getValueAtom: (valueId: string) => Promise<Atom | undefined>;
-  getValueTimestamp: (valueId: string) => Promise<Timestamp | undefined>;
-  setValuesHash: (hash: Hash) => Promise<void>;
-  setValueAtom: (valueId: string, atom: Atom) => Promise<void>;
-  setValueTimestamp: (valueId: string, timestamp: Timestamp) => Promise<void>;
+  readValuesHash: () => Promise<Hash | undefined>;
+  readValueIds: () => Promise<string[]>;
+  readValueAtom: (valueId: string) => Promise<Atom | undefined>;
+  readValueTimestamp: (valueId: string) => Promise<Timestamp | undefined>;
+  writeValuesHash: (hash: Hash) => Promise<void>;
+  writeValueAtom: (valueId: string, atom: Atom) => Promise<void>;
+  writeValueTimestamp: (valueId: string, timestamp: Timestamp) => Promise<void>;
 };
 
 export function createBaseValuesConnector(
@@ -75,19 +75,19 @@ export type BaseTableConnectorImplementations = {
     sync: (rowId: string, cellId: string) => Promise<void>,
   ) => Promise<void>;
   disconnect?: () => Promise<void>;
-  getTableHash: () => Promise<Hash | undefined>;
-  getRowIds: () => Promise<string[]>;
-  getRowHash: (rowId: string) => Promise<Hash | undefined>;
-  getCellIds: (rowId: string) => Promise<string[] | undefined>;
-  getCellAtom: (rowId: string, cellId: string) => Promise<Atom | undefined>;
-  getCellTimestamp: (
+  readTableHash: () => Promise<Hash | undefined>;
+  readRowIds: () => Promise<string[]>;
+  readRowHash: (rowId: string) => Promise<Hash | undefined>;
+  readCellIds: (rowId: string) => Promise<string[] | undefined>;
+  readCellAtom: (rowId: string, cellId: string) => Promise<Atom | undefined>;
+  readCellTimestamp: (
     rowId: string,
     cellId: string,
   ) => Promise<Timestamp | undefined>;
-  setTableHash: (hash: Hash) => Promise<void>;
-  setRowHash: (rowId: string, hash: Hash) => Promise<void>;
-  setCellAtom: (rowId: string, cellId: string, atom: Atom) => Promise<void>;
-  setCellTimestamp: (
+  writeTableHash: (hash: Hash) => Promise<void>;
+  writeRowHash: (rowId: string, hash: Hash) => Promise<void>;
+  writeCellAtom: (rowId: string, cellId: string, atom: Atom) => Promise<void>;
+  writeCellTimestamp: (
     rowId: string,
     cellId: string,
     timestamp: Timestamp,
@@ -123,32 +123,35 @@ export type BaseTablesConnectorImplementations = {
     sync: (tableId?: string, rowId?: string, cellId?: string) => Promise<void>,
   ) => Promise<void>;
   disconnect?: () => Promise<void>;
-  getTablesHash: () => Promise<Hash | undefined>;
-  getTableIds: () => Promise<string[]>;
-  getTableHash: (tableId: string) => Promise<Hash | undefined>;
-  getRowIds: (tableId: string) => Promise<string[] | undefined>;
-  getRowHash: (tableId: string, rowId: string) => Promise<Hash | undefined>;
-  getCellIds: (tableId: string, rowId: string) => Promise<string[] | undefined>;
-  getCellAtom: (
+  readTablesHash: () => Promise<Hash | undefined>;
+  readTableIds: () => Promise<string[]>;
+  readTableHash: (tableId: string) => Promise<Hash | undefined>;
+  readRowIds: (tableId: string) => Promise<string[] | undefined>;
+  readRowHash: (tableId: string, rowId: string) => Promise<Hash | undefined>;
+  readCellIds: (
+    tableId: string,
+    rowId: string,
+  ) => Promise<string[] | undefined>;
+  readCellAtom: (
     tableId: string,
     rowId: string,
     cellId: string,
   ) => Promise<Atom | undefined>;
-  getCellTimestamp: (
+  readCellTimestamp: (
     tableId: string,
     rowId: string,
     cellId: string,
   ) => Promise<Timestamp | undefined>;
-  setTablesHash: (hash: Hash) => Promise<void>;
-  setTableHash: (tableId: string, hash: Hash) => Promise<void>;
-  setRowHash: (tableId: string, rowId: string, hash: Hash) => Promise<void>;
-  setCellAtom: (
+  writeTablesHash: (hash: Hash) => Promise<void>;
+  writeTableHash: (tableId: string, hash: Hash) => Promise<void>;
+  writeRowHash: (tableId: string, rowId: string, hash: Hash) => Promise<void>;
+  writeCellAtom: (
     tableId: string,
     rowId: string,
     cellId: string,
     atom: Atom,
   ) => Promise<void>;
-  setCellTimestamp: (
+  writeCellTimestamp: (
     tableId: string,
     rowId: string,
     cellId: string,

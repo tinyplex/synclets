@@ -21,23 +21,23 @@ const createTestValuesConnector = (
 
   const connector = createBaseValuesConnector(
     {
-      getValuesHash: async () => valuesHash,
+      readValuesHash: async () => valuesHash,
 
-      getValueIds: async () => Object.keys(values),
+      readValueIds: async () => Object.keys(values),
 
-      getValueAtom: async (valueId: string) => values[valueId],
+      readValueAtom: async (valueId: string) => values[valueId],
 
-      getValueTimestamp: async (valueId: string) => timestamps[valueId],
+      readValueTimestamp: async (valueId: string) => timestamps[valueId],
 
-      setValuesHash: async (hash: Hash) => {
+      writeValuesHash: async (hash: Hash) => {
         valuesHash = hash;
       },
 
-      setValueAtom: async (valueId: string, atom: Atom) => {
+      writeValueAtom: async (valueId: string, atom: Atom) => {
         values[valueId] = atom;
       },
 
-      setValueTimestamp: async (valueId: string, timestamp: Timestamp) => {
+      writeValueTimestamp: async (valueId: string, timestamp: Timestamp) => {
         timestamps[valueId] = timestamp;
       },
     },

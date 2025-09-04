@@ -17,16 +17,16 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   {
     connect,
     disconnect,
-    getTableHash,
-    getRowIds,
-    getRowHash,
-    getCellIds,
-    getCellAtom,
-    getCellTimestamp,
-    setTableHash,
-    setRowHash,
-    setCellAtom,
-    setCellTimestamp,
+    readTableHash,
+    readRowIds,
+    readRowHash,
+    readCellIds,
+    readCellAtom,
+    readCellTimestamp,
+    writeTableHash,
+    writeRowHash,
+    writeCellAtom,
+    writeCellTimestamp,
   }: BaseTableConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseTableConnector => {
@@ -51,30 +51,30 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
         await disconnect?.();
       },
 
-      readAtom: ([rowId, cellId]: Address) => getCellAtom(rowId, cellId),
+      readAtom: ([rowId, cellId]: Address) => readCellAtom(rowId, cellId),
 
       readTimestamp: ([rowId, cellId]: Address) =>
-        getCellTimestamp(rowId, cellId),
+        readCellTimestamp(rowId, cellId),
 
       readHash: ([rowId]: Address) =>
-        isUndefined(rowId) ? getTableHash() : getRowHash(rowId),
+        isUndefined(rowId) ? readTableHash() : readRowHash(rowId),
 
       writeAtom: ([rowId, cellId]: Address, value: Atom) =>
-        setCellAtom(rowId, cellId, value),
+        writeCellAtom(rowId, cellId, value),
 
       writeTimestamp: ([rowId, cellId]: Address, timestamp: Timestamp) =>
-        setCellTimestamp(rowId, cellId, timestamp),
+        writeCellTimestamp(rowId, cellId, timestamp),
 
       writeHash: ([rowId]: Address, hash: number): Promise<void> =>
-        isUndefined(rowId) ? setTableHash(hash) : setRowHash(rowId, hash),
+        isUndefined(rowId) ? writeTableHash(hash) : writeRowHash(rowId, hash),
 
       hasChildren: async (address: Address) => size(address) < 2,
 
       readChildrenIds: async ([rowId, more]: Address) =>
         await (isUndefined(rowId)
-          ? getRowIds()
+          ? readRowIds()
           : isUndefined(more)
-            ? getCellIds(rowId)
+            ? readCellIds(rowId)
             : []),
     },
     options,
@@ -82,7 +82,7 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
 
   // --
 
-  const getCell = getCellAtom;
+  const getCell = readCellAtom;
 
   const setManagedCell = async (
     rowId: string,
@@ -98,8 +98,8 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
 
   return {
     ...connector,
-    getRowIds,
-    getCellIds,
+    getRowIds: readRowIds,
+    getCellIds: readCellIds,
     getCell,
     setManagedCell,
     delCell,

@@ -19,15 +19,15 @@ const createTestValueConnector = (
 
   const connector = createBaseValueConnector(
     {
-      getValueAtom: async () => value,
+      readValueAtom: async () => value,
 
-      getValueTimestamp: async () => timestamp,
+      readValueTimestamp: async () => timestamp,
 
-      setValueAtom: async (atom: Atom) => {
+      writeValueAtom: async (atom: Atom) => {
         value = atom;
       },
 
-      setValueTimestamp: async (newTimestamp: Timestamp) => {
+      writeValueTimestamp: async (newTimestamp: Timestamp) => {
         timestamp = newTimestamp;
       },
 

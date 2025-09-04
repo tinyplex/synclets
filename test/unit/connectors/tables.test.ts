@@ -38,43 +38,43 @@ const createTestTablesConnector = (
 
   const connector = createBaseTablesConnector(
     {
-      getTablesHash: async () => tablesHash,
+      readTablesHash: async () => tablesHash,
 
-      getTableIds: async () => Object.keys(tables),
+      readTableIds: async () => Object.keys(tables),
 
-      getTableHash: async (tableId: string) => tableHashes[tableId],
+      readTableHash: async (tableId: string) => tableHashes[tableId],
 
-      getRowIds: async (tableId: string) => Object.keys(tables[tableId] ?? {}),
+      readRowIds: async (tableId: string) => Object.keys(tables[tableId] ?? {}),
 
-      getRowHash: async (tableId: string, rowId: string) =>
+      readRowHash: async (tableId: string, rowId: string) =>
         rowHashes[tableId]?.[rowId],
 
-      getCellIds: async (tableId: string, rowId: string) =>
+      readCellIds: async (tableId: string, rowId: string) =>
         Object.keys(tables[tableId]?.[rowId] ?? {}),
 
-      getCellAtom: async (tableId: string, rowId: string, cellId: string) =>
+      readCellAtom: async (tableId: string, rowId: string, cellId: string) =>
         tables[tableId]?.[rowId]?.[cellId],
 
-      getCellTimestamp: async (
+      readCellTimestamp: async (
         tableId: string,
         rowId: string,
         cellId: string,
       ) => timestamps[tableId]?.[rowId]?.[cellId],
 
-      setTablesHash: async (hash: Hash) => {
+      writeTablesHash: async (hash: Hash) => {
         tablesHash = hash;
       },
 
-      setTableHash: async (tableId: string, hash: Hash) => {
+      writeTableHash: async (tableId: string, hash: Hash) => {
         tableHashes[tableId] = hash;
       },
 
-      setRowHash: async (tableId: string, rowId: string, hash: Hash) => {
+      writeRowHash: async (tableId: string, rowId: string, hash: Hash) => {
         rowHashes[tableId] = rowHashes[tableId] || {};
         rowHashes[tableId][rowId] = hash;
       },
 
-      setCellAtom: async (
+      writeCellAtom: async (
         tableId: string,
         rowId: string,
         cellId: string,
@@ -85,7 +85,7 @@ const createTestTablesConnector = (
         tables[tableId][rowId][cellId] = atom;
       },
 
-      setCellTimestamp: async (
+      writeCellTimestamp: async (
         tableId: string,
         rowId: string,
         cellId: string,

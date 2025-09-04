@@ -16,10 +16,10 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   {
     connect,
     disconnect,
-    getValueAtom,
-    getValueTimestamp,
-    setValueAtom,
-    setValueTimestamp,
+    readValueAtom,
+    readValueTimestamp,
+    writeValueAtom,
+    writeValueTimestamp,
   }: BaseValueConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseValueConnector => {
@@ -37,16 +37,16 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
         await disconnect?.();
       },
 
-      readAtom: getValueAtom,
+      readAtom: readValueAtom,
 
-      readTimestamp: getValueTimestamp,
+      readTimestamp: readValueTimestamp,
 
       readHash: async () => undefined,
 
-      writeAtom: (_address: Address, atom: Atom) => setValueAtom(atom),
+      writeAtom: (_address: Address, atom: Atom) => writeValueAtom(atom),
 
       writeTimestamp: (_address: Address, timestamp: Timestamp) =>
-        setValueTimestamp(timestamp),
+        writeValueTimestamp(timestamp),
 
       writeHash: async () => {},
 
@@ -59,7 +59,7 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
   // --
 
-  const getValue = getValueAtom;
+  const getValue = readValueAtom;
 
   const setManagedValue = async (
     value: Atom,
