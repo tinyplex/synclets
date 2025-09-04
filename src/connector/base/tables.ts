@@ -3,6 +3,7 @@ import type {
   Address,
   Atom,
   ConnectorOptions,
+  Context,
   Timestamp,
 } from '@synclets/@types';
 import type {
@@ -10,12 +11,7 @@ import type {
   BaseTablesConnectorImplementations,
   createBaseTablesConnector as createBaseTablesConnectorDecl,
 } from '@synclets/@types/connector/base';
-import {
-  DELETED_VALUE,
-  getTimestampHash,
-  isUndefined,
-  size,
-} from '@synclets/utils';
+import {isUndefined, size} from '@synclets/utils';
 
 export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
   {
@@ -104,38 +100,22 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
 
   const getCell = getCellAtom;
 
-  const setCell = async (
+  const setManagedCell = async (
     tableId: string,
     rowId: string,
     cellId: string,
     cell: Atom,
+    context: Context,
   ) => {
-    const timestamp = connector.getNextTimestamp();
-    const hashChange =
-      (getTimestampHash(await getCellTimestamp(tableId, rowId, cellId)) ^
-        getTimestampHash(timestamp)) >>>
-      0;
-
-    await setCellAtom(tableId, rowId, cellId, cell);
-    await setCellTimestamp(tableId, rowId, cellId, timestamp);
-    await setRowHash(
-      tableId,
-      rowId,
-      (((await getRowHash(tableId, rowId)) ?? 0) ^ hashChange) >>> 0,
-    );
-    await setTableHash(
-      tableId,
-      (((await getTableHash(tableId)) ?? 0) ^ hashChange) >>> 0,
-    );
-    await setTablesHash((((await getTablesHash()) ?? 0) ^ hashChange) >>> 0);
+    await connector.setManagedAtom([tableId, rowId, cellId], cell, context);
     await underlyingSync?.(tableId, rowId, cellId);
   };
 
-  const delCell = (
-    tableId: string,
-    rowId: string,
-    cellId: string,
-  ): Promise<void> => setCell(tableId, rowId, cellId, DELETED_VALUE);
+  const delCell = async (
+    _tableId: string,
+    _rowId: string,
+    _cellId: string,
+  ): Promise<void> => {};
 
   return {
     ...connector,
@@ -143,7 +123,7 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
     getRowIds,
     getCellIds,
     getCell,
-    setCell,
+    setManagedCell,
     delCell,
   };
 };

@@ -3,6 +3,7 @@ import type {
   Address,
   Atom,
   ConnectorOptions,
+  Context,
   Timestamp,
 } from '@synclets/@types';
 import type {
@@ -10,7 +11,6 @@ import type {
   BaseValueConnectorImplementations,
   createBaseValueConnector as createBaseValueConnectorDecl,
 } from '@synclets/@types/connector/base';
-import {DELETED_VALUE} from '@synclets/utils';
 
 export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   {
@@ -61,13 +61,15 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
   const getValue = getValueAtom;
 
-  const setValue = async (value: Atom): Promise<void> => {
-    await setValueAtom?.(value);
-    await setValueTimestamp(connector.getNextTimestamp());
+  const setManagedValue = async (
+    value: Atom,
+    context: Context,
+  ): Promise<void> => {
+    await connector.setManagedAtom([], value, context);
     await underlyingSync?.();
   };
 
-  const delValue = (): Promise<void> => setValue(DELETED_VALUE);
+  const delValue = async (): Promise<void> => {};
 
-  return {...connector, getValue, setValue, delValue};
+  return {...connector, getValue, setManagedValue, delValue};
 };

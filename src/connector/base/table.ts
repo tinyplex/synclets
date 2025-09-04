@@ -3,6 +3,7 @@ import type {
   Address,
   Atom,
   ConnectorOptions,
+  Context,
   Timestamp,
 } from '@synclets/@types';
 import type {
@@ -10,12 +11,7 @@ import type {
   BaseTableConnectorImplementations,
   createBaseTableConnector as createBaseTableConnectorDecl,
 } from '@synclets/@types/connector/base';
-import {
-  DELETED_VALUE,
-  getTimestampHash,
-  isUndefined,
-  size,
-} from '@synclets/utils';
+import {isUndefined, size} from '@synclets/utils';
 
 export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   {
@@ -88,24 +84,24 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
 
   const getCell = getCellAtom;
 
-  const setCell = async (rowId: string, cellId: string, cell: Atom) => {
-    const timestamp = connector.getNextTimestamp();
-    const hashChange =
-      getTimestampHash(await getCellTimestamp(rowId, cellId)) ^
-      getTimestampHash(timestamp);
-
-    await setCellAtom(rowId, cellId, cell);
-    await setCellTimestamp(rowId, cellId, timestamp);
-    await setRowHash(
-      rowId,
-      (((await getRowHash(rowId)) ?? 0) ^ hashChange) >>> 0,
-    );
-    await setTableHash((((await getTableHash()) ?? 0) ^ hashChange) >>> 0);
+  const setManagedCell = async (
+    rowId: string,
+    cellId: string,
+    cell: Atom,
+    context: Context,
+  ) => {
+    await connector.setManagedAtom([rowId, cellId], cell, context);
     await underlyingSync?.(rowId, cellId);
   };
 
-  const delCell = (rowId: string, cellId: string): Promise<void> =>
-    setCellAtom(rowId, cellId, DELETED_VALUE);
+  const delCell = async (_rowId: string, _cellId: string): Promise<void> => {};
 
-  return {...connector, getRowIds, getCellIds, getCell, setCell, delCell};
+  return {
+    ...connector,
+    getRowIds,
+    getCellIds,
+    getCell,
+    setManagedCell,
+    delCell,
+  };
 };

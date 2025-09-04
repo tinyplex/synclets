@@ -15,6 +15,7 @@ import {
   getHlcFunctions,
   getTimestampHash,
   isEmpty,
+  isUndefined,
 } from '@synclets/utils';
 import type {ProtectedConnector} from '../protected.d.ts';
 import {getQueueFunctions} from '../queue.ts';
@@ -62,10 +63,14 @@ export const createConnector: typeof createConnectorDecl = (
       address: Address,
       atom: Atom,
       context: Context,
-      newTimestamp: Timestamp,
+      newTimestamp?: Timestamp,
       oldTimestamp?: Timestamp,
     ) => {
-      seenTimestamp(newTimestamp);
+      if (isUndefined(newTimestamp)) {
+        newTimestamp = getNextTimestamp();
+      } else {
+        seenTimestamp(newTimestamp);
+      }
       const tasks = [
         () => setAtom(address, atom, context),
         () => setTimestamp(address, newTimestamp, context),

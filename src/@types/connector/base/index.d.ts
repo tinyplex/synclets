@@ -4,13 +4,14 @@ import type {
   Atom,
   Connector,
   ConnectorOptions,
+  Context,
   Hash,
   Timestamp,
 } from '../../index.d.ts';
 
 export type BaseValueConnector = Connector & {
   getValue: () => Promise<Atom | undefined>;
-  setValue: (atom: Atom) => Promise<void>;
+  setManagedValue: (value: Atom, context: Context) => Promise<void>;
   delValue: () => Promise<void>;
 };
 
@@ -31,7 +32,11 @@ export function createBaseValueConnector(
 export type BaseValuesConnector = Connector & {
   getValueIds: () => Promise<string[]>;
   getValue: (valueId: string) => Promise<Atom | undefined>;
-  setValue: (valueId: string, atom: Atom) => Promise<void>;
+  setManagedValue: (
+    valueId: string,
+    value: Atom,
+    context: Context,
+  ) => Promise<void>;
   delValue: (valueId: string) => Promise<void>;
 };
 
@@ -56,7 +61,12 @@ export type BaseTableConnector = Connector & {
   getRowIds: () => Promise<string[]>;
   getCellIds: (rowId: string) => Promise<string[] | undefined>;
   getCell: (rowId: string, cellId: string) => Promise<Atom | undefined>;
-  setCell: (rowId: string, cellId: string, cell: Atom) => Promise<void>;
+  setManagedCell: (
+    rowId: string,
+    cellId: string,
+    cell: Atom,
+    context: Context,
+  ) => Promise<void>;
   delCell: (rowId: string, cellId: string) => Promise<void>;
 };
 
@@ -98,11 +108,12 @@ export type BaseTablesConnector = Connector & {
     rowId: string,
     cellId: string,
   ) => Promise<Atom | undefined>;
-  setCell: (
+  setManagedCell: (
     tableId: string,
     rowId: string,
     cellId: string,
     cell: Atom,
+    context: Context,
   ) => Promise<void>;
   delCell: (tableId: string, rowId: string, cellId: string) => Promise<void>;
 };

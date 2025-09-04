@@ -3,6 +3,7 @@ import type {
   Address,
   Atom,
   ConnectorOptions,
+  Context,
   Timestamp,
 } from '@synclets/@types';
 import type {
@@ -10,12 +11,7 @@ import type {
   BaseValuesConnectorImplementations,
   createBaseValuesConnector as createBaseValuesConnectorDecl,
 } from '@synclets/@types/connector/base';
-import {
-  DELETED_VALUE,
-  getTimestampHash,
-  isEmpty,
-  isUndefined,
-} from '@synclets/utils';
+import {isEmpty, isUndefined} from '@synclets/utils';
 
 export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
   {
@@ -72,20 +68,16 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 
   const getValue = getValueAtom;
 
-  const setValue = async (valueId: string, value: Atom): Promise<void> => {
-    const timestamp = connector.getNextTimestamp();
-    const hashChange =
-      getTimestampHash(await getValueTimestamp(valueId)) ^
-      getTimestampHash(timestamp);
-
-    await setValueAtom(valueId, value);
-    await setValueTimestamp(valueId, timestamp);
-    await setValuesHash((((await getValuesHash()) ?? 0) ^ hashChange) >>> 0);
+  const setManagedValue = async (
+    valueId: string,
+    value: Atom,
+    context: Context,
+  ): Promise<void> => {
+    await connector.setManagedAtom([valueId], value, context);
     await underlyingSync?.(valueId);
   };
 
-  const delValue = (valueId: string): Promise<void> =>
-    setValue(valueId, DELETED_VALUE);
+  const delValue = async (_valueId: string): Promise<void> => {};
 
-  return {...connector, getValueIds, getValue, setValue, delValue};
+  return {...connector, getValueIds, getValue, setManagedValue, delValue};
 };

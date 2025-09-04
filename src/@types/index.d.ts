@@ -74,7 +74,7 @@ export interface Connector {
     address: Address,
     atom: Atom,
     context: Context,
-    newTimestamp: Timestamp,
+    newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ): Promise<void>;
   log(message: string, level?: LogLevel): void;
