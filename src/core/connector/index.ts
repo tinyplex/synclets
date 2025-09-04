@@ -24,8 +24,8 @@ export const createConnector: typeof createConnectorDecl = (
     connect: connectImpl,
     disconnect: disconnectImpl,
     getAtom,
-    getHash,
-    getTimestamp,
+    getHash: getHashImpl,
+    getTimestamp: getTimestampImpl,
     setAtom,
     setHash,
     setTimestamp,
@@ -46,34 +46,17 @@ export const createConnector: typeof createConnectorDecl = (
 
   // --
 
+  const getTimestamp = async (address: Address, context: Context) =>
+    (await getTimestampImpl(address, context)) ?? '';
+
+  const getHash = async (address: Address, context: Context) =>
+    (await getHashImpl(address, context)) ?? 0;
+
   return {
     __brand: 'Connector',
 
     getNextTimestamp,
     log,
-
-    attachToSynclet: (synclet: Synclet) => {
-      if (attachedSynclet) {
-        errorNew(
-          'Connector is already attached to Synclet ' + attachedSynclet.getId(),
-        );
-      }
-      attachedSynclet = synclet;
-      setUniqueId(attachedSynclet.getId());
-    },
-
-    connect: async (sync: (address: Address) => Promise<void>) =>
-      await connectImpl?.(sync),
-
-    disconnect: async () => await disconnectImpl?.(),
-
-    getAtom,
-
-    getTimestamp: async (address: Address, context: Context) =>
-      (await getTimestamp(address, context)) ?? '',
-
-    getHash: async (address: Address, context: Context) =>
-      (await getHash(address, context)) ?? 0,
 
     setManagedAtom: async (
       address: Address,
@@ -100,8 +83,7 @@ export const createConnector: typeof createConnectorDecl = (
           arrayPush(tasks, async () => {
             await setHash(
               queuedAddress,
-              (((await getHash(queuedAddress, context)) ?? 0) ^ hashChange) >>>
-                0,
+              ((await getHash(queuedAddress, context)) ^ hashChange) >>> 0,
               context,
             );
           });
@@ -109,6 +91,29 @@ export const createConnector: typeof createConnectorDecl = (
       }
       await queue(...tasks);
     },
+
+    // --
+
+    attachToSynclet: (synclet: Synclet) => {
+      if (attachedSynclet) {
+        errorNew(
+          'Connector is already attached to Synclet ' + attachedSynclet.getId(),
+        );
+      }
+      attachedSynclet = synclet;
+      setUniqueId(attachedSynclet.getId());
+    },
+
+    connect: async (sync: (address: Address) => Promise<void>) =>
+      await connectImpl?.(sync),
+
+    disconnect: async () => await disconnectImpl?.(),
+
+    getAtom,
+
+    getTimestamp,
+
+    getHash,
 
     hasChildren: async (address: Address, context: Context) =>
       (await hasChildren(address, context)) ?? false,

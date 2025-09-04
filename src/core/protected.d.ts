@@ -27,13 +27,6 @@ export interface ProtectedConnector extends Connector {
   getAtom(address: Address, context: Context): Promise<Atom | undefined>;
   getHash(address: Address, context: Context): Promise<Hash>;
   getTimestamp(address: Address, context: Context): Promise<Timestamp>;
-  setManagedAtom(
-    address: Address,
-    atom: Atom,
-    context: Context,
-    newTimestamp: Timestamp,
-    oldTimestamp?: Timestamp,
-  ): Promise<void>;
   hasChildren(address: Address, context: Context): Promise<boolean>;
   getChildren(address: Address, context: Context): Promise<string[]>;
 }

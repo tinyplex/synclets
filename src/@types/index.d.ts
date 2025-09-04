@@ -70,6 +70,13 @@ export function createSynclet(
 export interface Connector {
   __brand: 'Connector';
   getNextTimestamp(): Timestamp;
+  setManagedAtom(
+    address: Address,
+    atom: Atom,
+    context: Context,
+    newTimestamp: Timestamp,
+    oldTimestamp?: Timestamp,
+  ): Promise<void>;
   log(message: string, level?: LogLevel): void;
 }
 
