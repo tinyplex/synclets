@@ -24,11 +24,11 @@ export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: Synclet): void;
   connect(sync: (address: Address) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
-  getAtom(address: Address, context: Context): Promise<Atom | undefined>;
-  getHash(address: Address, context: Context): Promise<Hash>;
-  getTimestamp(address: Address, context: Context): Promise<Timestamp>;
+  readAtom(address: Address, context: Context): Promise<Atom | undefined>;
+  readTimestamp(address: Address, context: Context): Promise<Timestamp>;
+  readHash(address: Address, context: Context): Promise<Hash>;
   hasChildren(address: Address, context: Context): Promise<boolean>;
-  getChildren(address: Address, context: Context): Promise<string[]>;
+  readChildrenIds(address: Address, context: Context): Promise<string[]>;
 }
 
 export interface ProtectedTransport extends Transport {

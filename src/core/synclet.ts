@@ -60,11 +60,11 @@ export const createSynclet: typeof createSyncletDecl = ((
     queueIfStarted(async () => {
       log(`sync: ${address}`);
       if (await connector.hasChildren(address, {})) {
-        await sendNodeMessage(address, await connector.getHash(address, {}));
+        await sendNodeMessage(address, await connector.readHash(address, {}));
       } else {
         await sendNodeMessage(
           address,
-          await connector.getTimestamp(address, {}),
+          await connector.readTimestamp(address, {}),
         );
       }
     });
@@ -147,11 +147,11 @@ export const createSynclet: typeof createSyncletDecl = ((
     context: Context,
   ): Promise<Node | undefined> => {
     if (!(await connector.hasChildren(address, context))) {
-      const myTimestamp = await connector.getTimestamp(address, context);
+      const myTimestamp = await connector.readTimestamp(address, context);
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
-        const value = await connector.getAtom(address, context);
+        const value = await connector.readAtom(address, context);
         if (value !== undefined) {
           return [myTimestamp, value];
         }
@@ -167,10 +167,10 @@ export const createSynclet: typeof createSyncletDecl = ((
     context: Context,
   ): Promise<Node | undefined> => {
     if (!(await connector.hasChildren(address, context))) {
-      const myTimestamp = await connector.getTimestamp(address, context);
+      const myTimestamp = await connector.readTimestamp(address, context);
       const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
       if (otherTimestamp > myTimestamp) {
-        await connector.setManagedAtom(
+        await connector.setAtom(
           address,
           otherAtom,
           context,
@@ -178,7 +178,7 @@ export const createSynclet: typeof createSyncletDecl = ((
           myTimestamp,
         );
       } else if (myTimestamp > otherTimestamp) {
-        const value = await connector.getAtom(address, context);
+        const value = await connector.readAtom(address, context);
         if (value !== undefined) {
           return [myTimestamp, value];
         }
@@ -194,19 +194,19 @@ export const createSynclet: typeof createSyncletDecl = ((
     context: Context,
   ): Promise<Node | undefined> => {
     if (await connector.hasChildren(address, context)) {
-      if (otherHash !== (await connector.getHash(address, context))) {
+      if (otherHash !== (await connector.readHash(address, context))) {
         return [
           objFromEntries(
             await promiseAll(
               arrayMap(
-                await connector.getChildren(address, context),
+                await connector.readChildrenIds(address, context),
                 async (id) => {
                   const childAddress = [...address, id];
                   return [
                     id,
                     await ((await connector.hasChildren(childAddress, context))
-                      ? connector.getHash(childAddress, context)
-                      : connector.getTimestamp(childAddress, context)),
+                      ? connector.readHash(childAddress, context)
+                      : connector.readTimestamp(childAddress, context)),
                   ];
                 },
               ),
@@ -261,7 +261,7 @@ export const createSynclet: typeof createSyncletDecl = ((
         await promiseAll(
           arrayMap(
             arrayDifference(
-              await connector.getChildren(address, context),
+              await connector.readChildrenIds(address, context),
               except,
             ),
             async (id) => {
@@ -271,8 +271,8 @@ export const createSynclet: typeof createSyncletDecl = ((
                 (await connector.hasChildren(childAddress, context))
                   ? await getFullNodes(childAddress, context)
                   : [
-                      await connector.getTimestamp(childAddress, context),
-                      await connector.getAtom(childAddress, context),
+                      await connector.readTimestamp(childAddress, context),
+                      await connector.readAtom(childAddress, context),
                     ],
               ];
             },

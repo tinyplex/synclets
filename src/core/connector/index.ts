@@ -47,19 +47,13 @@ export const createConnector: typeof createConnectorDecl = (
 
   // --
 
-  const getTimestamp = async (address: Address, context: Context) =>
-    (await readTimestampImpl(address, context)) ?? '';
-
-  const getHash = async (address: Address, context: Context) =>
-    (await readHashImpl(address, context)) ?? 0;
-
-  return {
+  const connector = {
     __brand: 'Connector',
 
     getNextTimestamp,
     log,
 
-    setManagedAtom: async (
+    setAtom: async (
       address: Address,
       atom: Atom,
       context: Context,
@@ -78,7 +72,7 @@ export const createConnector: typeof createConnectorDecl = (
       if (!isEmpty(address)) {
         const hashChange =
           (getTimestampHash(
-            oldTimestamp ?? (await getTimestamp(address, context)),
+            oldTimestamp ?? (await connector.readTimestamp(address, context)),
           ) ^
             getTimestampHash(newTimestamp)) >>>
           0;
@@ -88,7 +82,9 @@ export const createConnector: typeof createConnectorDecl = (
           arrayPush(tasks, async () => {
             await writeHash(
               queuedAddress,
-              ((await getHash(queuedAddress, context)) ^ hashChange) >>> 0,
+              ((await connector.readHash(queuedAddress, context)) ^
+                hashChange) >>>
+                0,
               context,
             );
           });
@@ -114,16 +110,20 @@ export const createConnector: typeof createConnectorDecl = (
 
     disconnect: async () => await disconnectImpl?.(),
 
-    getAtom: readAtom,
+    readAtom,
 
-    getTimestamp,
+    readTimestamp: async (address: Address, context: Context) =>
+      (await readTimestampImpl(address, context)) ?? '',
 
-    getHash,
+    readHash: async (address: Address, context: Context) =>
+      (await readHashImpl(address, context)) ?? 0,
 
     hasChildren: async (address: Address, context: Context) =>
       (await hasChildren(address, context)) ?? false,
 
-    getChildren: async (address: Address, context: Context) =>
+    readChildrenIds: async (address: Address, context: Context) =>
       (await readChildrenIds(address, context)) ?? [],
-  };
+  } as const;
+
+  return connector;
 };

@@ -106,7 +106,7 @@ const createTestTablesConnector = (
       rowId: string,
       cellId: string,
       cell: Atom,
-    ) => connector.setManagedCell(tableId, rowId, cellId, cell, {}),
+    ) => connector.setCell(tableId, rowId, cellId, cell, {}),
     getTablesForTest: () => tables,
     getTimestampsForTest: () => timestamps,
     getRowHashesForTest: () => rowHashes,

@@ -11,7 +11,7 @@ import type {
 
 export type BaseValueConnector = Connector & {
   getValue: () => Promise<Atom | undefined>;
-  setManagedValue: (value: Atom, context: Context) => Promise<void>;
+  setValue: (value: Atom, context: Context) => Promise<void>;
   delValue: () => Promise<void>;
 };
 
@@ -32,11 +32,7 @@ export function createBaseValueConnector(
 export type BaseValuesConnector = Connector & {
   getValueIds: () => Promise<string[]>;
   getValue: (valueId: string) => Promise<Atom | undefined>;
-  setManagedValue: (
-    valueId: string,
-    value: Atom,
-    context: Context,
-  ) => Promise<void>;
+  setValue: (valueId: string, value: Atom, context: Context) => Promise<void>;
   delValue: (valueId: string) => Promise<void>;
 };
 
@@ -61,7 +57,7 @@ export type BaseTableConnector = Connector & {
   getRowIds: () => Promise<string[]>;
   getCellIds: (rowId: string) => Promise<string[] | undefined>;
   getCell: (rowId: string, cellId: string) => Promise<Atom | undefined>;
-  setManagedCell: (
+  setCell: (
     rowId: string,
     cellId: string,
     cell: Atom,
@@ -108,7 +104,7 @@ export type BaseTablesConnector = Connector & {
     rowId: string,
     cellId: string,
   ) => Promise<Atom | undefined>;
-  setManagedCell: (
+  setCell: (
     tableId: string,
     rowId: string,
     cellId: string,

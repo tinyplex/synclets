@@ -38,7 +38,7 @@ const createTestValueConnector = (
 
   return {
     ...connector,
-    setValueForTest: (value: Atom) => connector.setManagedValue(value, {}),
+    setValueForTest: (value: Atom) => connector.setValue(value, {}),
     getValueForTest: () => value,
     getTimestampForTest: () => timestamp,
   };

@@ -199,7 +199,7 @@ const createTestCustomConnector = (
       value: Atom,
       sync: boolean = true,
     ) => {
-      await connector.setManagedAtom(address, value, {});
+      await connector.setAtom(address, value, {});
       if (sync) {
         await underlyingSync?.(address);
       }

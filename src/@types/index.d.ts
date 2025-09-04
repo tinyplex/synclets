@@ -70,7 +70,7 @@ export function createSynclet(
 export interface Connector {
   __brand: 'Connector';
   getNextTimestamp(): Timestamp;
-  setManagedAtom(
+  setAtom(
     address: Address,
     atom: Atom,
     context: Context,

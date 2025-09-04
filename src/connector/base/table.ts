@@ -90,7 +90,7 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     cell: Atom,
     context: Context,
   ) => {
-    await connector.setManagedAtom([rowId, cellId], cell, context);
+    await connector.setAtom([rowId, cellId], cell, context);
     await underlyingSync?.(rowId, cellId);
   };
 
@@ -101,7 +101,7 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     getRowIds: readRowIds,
     getCellIds: readCellIds,
     getCell,
-    setManagedCell,
+    setCell: setManagedCell,
     delCell,
   };
 };
