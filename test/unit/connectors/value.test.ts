@@ -1,8 +1,18 @@
 import {Atom, ConnectorOptions, Timestamp} from 'synclets';
-import {createBaseValueConnector} from 'synclets/connector/base';
+import {
+  BaseValueConnector,
+  createBaseValueConnector,
+} from 'synclets/connector/base';
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
-const createTestValueConnector = (options?: ConnectorOptions) => {
+type TestValueConnector = BaseValueConnector & {
+  getValueForTest: () => Atom;
+  getTimestampForTest: () => Timestamp;
+};
+
+const createTestValueConnector = (
+  options?: ConnectorOptions,
+): TestValueConnector => {
   let value: Atom = '';
   let timestamp: Timestamp = '';
 
@@ -25,9 +35,36 @@ const createTestValueConnector = (options?: ConnectorOptions) => {
     options,
   );
 
-  const getTimestamp = async () => timestamp;
+  return {
+    ...connector,
+    getValueForTest: () => value,
+    getTimestampForTest: () => timestamp,
+  };
+};
 
-  return {...connector, getTimestamp};
+const expectEquivalentConnectors = (
+  connector1: TestValueConnector,
+  connector2: TestValueConnector,
+  value: Atom = '',
+) => {
+  expect(connector1.getValueForTest()).toEqual(value);
+  expect(connector2.getValueForTest()).toEqual(value);
+  expect(connector1.getTimestampForTest()).toEqual(
+    connector2.getTimestampForTest(),
+  );
+};
+
+const expectDifferingConnectors = (
+  connector1: TestValueConnector,
+  connector2: TestValueConnector,
+  value1: Atom,
+  value2: Atom = '',
+) => {
+  expect(connector1.getValueForTest()).toEqual(value1);
+  expect(connector2.getValueForTest()).toEqual(value2);
+  expect(connector1.getTimestampForTest()).not.toEqual(
+    connector2.getTimestampForTest(),
+  );
 };
 
 describe('value sync, basics', () => {
@@ -38,10 +75,7 @@ describe('value sync, basics', () => {
     await synclet1.start();
     await synclet2.start();
 
-    expect(await connector1.getValue()).toEqual(await connector2.getValue());
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, '');
   });
 
   test('connected', async () => {
@@ -52,18 +86,10 @@ describe('value sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValue('V1');
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('V1');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V1');
 
     await connector2.setValue('V2');
-    expect(await connector2.getValue()).toEqual('V2');
-    expect(await connector1.getValue()).toEqual('V2');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V2');
   });
 
   test('start 1, set 1, start 2', async () => {
@@ -73,18 +99,10 @@ describe('value sync, basics', () => {
     await synclet1.start();
 
     await connector1.setValue('V1');
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('');
-    expect(await connector1.getTimestamp()).not.toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectDifferingConnectors(connector1, connector2, 'V1');
 
     await synclet2.start();
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('V1');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V1');
   });
 
   test('start 2, set 1, start 1', async () => {
@@ -93,18 +111,10 @@ describe('value sync, basics', () => {
 
     await synclet2.start();
     await connector1.setValue('V1');
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('');
-    expect(await connector1.getTimestamp()).not.toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectDifferingConnectors(connector1, connector2, 'V1');
 
     await synclet1.start();
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('V1');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V1');
   });
 
   test('stop 1, set 1, start 1', async () => {
@@ -115,26 +125,14 @@ describe('value sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValue('V1');
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('V1');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V1');
 
     await synclet1.stop();
     await connector1.setValue('V2');
-    expect(await connector1.getValue()).toEqual('V2');
-    expect(await connector2.getValue()).toEqual('V1');
-    expect(await connector1.getTimestamp()).not.toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectDifferingConnectors(connector1, connector2, 'V2', 'V1');
 
     await synclet1.start();
-    expect(await connector1.getValue()).toEqual('V2');
-    expect(await connector2.getValue()).toEqual('V2');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V2');
   });
 
   test('stop 1, set 2, start 1', async () => {
@@ -145,26 +143,14 @@ describe('value sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValue('V1');
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('V1');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V1');
 
     await synclet1.stop();
     await connector2.setValue('V2');
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('V2');
-    expect(await connector1.getTimestamp()).not.toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectDifferingConnectors(connector1, connector2, 'V1', 'V2');
 
     await synclet1.start();
-    expect(await connector1.getValue()).toEqual('V2');
-    expect(await connector2.getValue()).toEqual('V2');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V2');
   });
 
   test('set 1, set 2, start 2, start 1', async () => {
@@ -172,25 +158,13 @@ describe('value sync, basics', () => {
       getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await connector1.setValue('V1');
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('');
-    expect(await connector1.getTimestamp()).not.toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectDifferingConnectors(connector1, connector2, 'V1');
 
     await connector2.setValue('V2');
-    expect(await connector1.getValue()).toEqual('V1');
-    expect(await connector2.getValue()).toEqual('V2');
-    expect(await connector1.getTimestamp()).not.toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectDifferingConnectors(connector1, connector2, 'V1', 'V2');
 
     await synclet2.start();
     await synclet1.start();
-    expect(await connector1.getValue()).toEqual('V2');
-    expect(await connector2.getValue()).toEqual('V2');
-    expect(await connector1.getTimestamp()).toEqual(
-      await connector2.getTimestamp(),
-    );
+    expectEquivalentConnectors(connector1, connector2, 'V2');
   });
 });
