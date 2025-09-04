@@ -80,8 +80,12 @@ const expectEquivalentConnectors = (
   expect(connector1.getTimestampsForTest()).toEqual(
     connector2.getTimestampsForTest(),
   );
-  //  expect(connector1.getRowHashesForTest()).toEqual(connector2.getRowHashesForTest());
-  //  expect(connector1.getTableHashForTest()).toEqual(connector2.getTableHashForTest());
+  expect(connector1.getRowHashesForTest()).toEqual(
+    connector2.getRowHashesForTest(),
+  );
+  expect(connector1.getTableHashForTest()).toEqual(
+    connector2.getTableHashForTest(),
+  );
 };
 
 const expectDifferingConnectors = (
@@ -95,8 +99,12 @@ const expectDifferingConnectors = (
   expect(connector1.getTimestampsForTest()).not.toEqual(
     connector2.getTimestampsForTest(),
   );
-  //  expect(connector1.getRowHashesForTest()).not.toEqual(connector2.getRowHashesForTest());
-  //  expect(connector1.getTableHashForTest()).not.toEqual(connector2.getTableHashForTest());
+  expect(connector1.getRowHashesForTest()).not.toEqual(
+    connector2.getRowHashesForTest(),
+  );
+  expect(connector1.getTableHashForTest()).not.toEqual(
+    connector2.getTableHashForTest(),
+  );
 };
 
 describe('table sync, basics', () => {

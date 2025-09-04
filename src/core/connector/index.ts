@@ -5,13 +5,19 @@ import type {
   ConnectorOptions,
   Context,
   createConnector as createConnectorDecl,
-  Hash,
   LogLevel,
   Synclet,
   Timestamp,
 } from '@synclets/@types';
-import {errorNew, getHlcFunctions} from '@synclets/utils';
+import {
+  arrayPush,
+  errorNew,
+  getHlcFunctions,
+  getTimestampHash,
+  isEmpty,
+} from '@synclets/utils';
 import type {ProtectedConnector} from '../protected.d.ts';
+import {getQueueFunctions} from '../queue.ts';
 
 export const createConnector: typeof createConnectorDecl = (
   {
@@ -35,6 +41,8 @@ export const createConnector: typeof createConnectorDecl = (
     logger?.[level]?.(`[${attachedSynclet?.getId() ?? ''}/C] ${string}`);
 
   const [getNextTimestamp, seenTimestamp, setUniqueId] = getHlcFunctions();
+
+  const [queue] = getQueueFunctions();
 
   // --
 
@@ -67,20 +75,40 @@ export const createConnector: typeof createConnectorDecl = (
     getHash: async (address: Address, context: Context) =>
       (await getHash(address, context)) ?? 0,
 
-    setAtom: async (address: Address, value: Atom, context: Context) =>
-      await setAtom(address, value, context),
-
-    setTimestamp: async (
+    setManagedAtom: async (
       address: Address,
-      timestamp: Timestamp,
+      atom: Atom,
       context: Context,
+      newTimestamp: Timestamp,
+      oldTimestamp?: Timestamp,
     ) => {
-      seenTimestamp(timestamp);
-      await setTimestamp(address, timestamp, context);
+      seenTimestamp(newTimestamp);
+      const tasks = [
+        () => setAtom(address, atom, context),
+        () => setTimestamp(address, newTimestamp, context),
+      ];
+      if (!isEmpty(address)) {
+        const hashChange =
+          (getTimestampHash(
+            oldTimestamp ?? (await getTimestamp(address, context)),
+          ) ^
+            getTimestampHash(newTimestamp)) >>>
+          0;
+        let parentAddress = [...address];
+        while (!isEmpty(parentAddress)) {
+          const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
+          arrayPush(tasks, async () => {
+            await setHash(
+              queuedAddress,
+              (((await getHash(queuedAddress, context)) ?? 0) ^ hashChange) >>>
+                0,
+              context,
+            );
+          });
+        }
+      }
+      await queue(...tasks);
     },
-
-    setHash: async (address: Address, hash: Hash, context: Context) =>
-      await setHash(address, hash, context),
 
     hasChildren: async (address: Address, context: Context) =>
       (await hasChildren(address, context)) ?? false,

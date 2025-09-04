@@ -113,9 +113,16 @@ const expectEquivalentConnectors = (
   expect(connector1.getTimestampsForTest()).toEqual(
     connector2.getTimestampsForTest(),
   );
-  //  expect(connector1.getRowHashesForTest()).toEqual(connector2.getRowHashesForTest());
-  //  expect(connector1.getTableHashesForTest()).toEqual(connector2.getTableHashesForTest());
-  //  expect(connector1.getTablesHashForTest()).toEqual(connector2.getTablesHashForTest());
+
+  expect(connector1.getRowHashesForTest()).toEqual(
+    connector2.getRowHashesForTest(),
+  );
+  expect(connector1.getTableHashesForTest()).toEqual(
+    connector2.getTableHashesForTest(),
+  );
+  expect(connector1.getTablesHashForTest()).toEqual(
+    connector2.getTablesHashForTest(),
+  );
 };
 
 const expectDifferingConnectors = (
@@ -131,12 +138,18 @@ const expectDifferingConnectors = (
   expect(connector1.getTimestampsForTest()).not.toEqual(
     connector2.getTimestampsForTest(),
   );
-  //  expect(connector1.getRowHashesForTest()).not.toEqual(connector2.getRowHashesForTest());
-  //  expect(connector1.getTableHashesForTest()).not.toEqual(connector2.getTableHashesForTest());
-  //  expect(connector1.getTablesHashForTest()).not.toEqual(connector2.getTablesHashForTest());
+  expect(connector1.getRowHashesForTest()).not.toEqual(
+    connector2.getRowHashesForTest(),
+  );
+  expect(connector1.getTableHashesForTest()).not.toEqual(
+    connector2.getTableHashesForTest(),
+  );
+  expect(connector1.getTablesHashForTest()).not.toEqual(
+    connector2.getTablesHashForTest(),
+  );
 };
 
-describe('table sync, basics', () => {
+describe('tables sync, basics', () => {
   test('connected, initial', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       getTestSyncletsAndConnectors(createTestTablesConnector, 2);

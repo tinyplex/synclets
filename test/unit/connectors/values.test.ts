@@ -3,7 +3,7 @@ import {
   BaseValuesConnector,
   createBaseValuesConnector,
 } from 'synclets/connector/base';
-import {getTestSyncletsAndConnectors} from '../common.ts';
+import {getTestSyncletsAndConnectors, pause} from '../common.ts';
 
 type TestValuesConnector = BaseValuesConnector & {
   getValuesForTest: () => {[valueId: string]: Atom};
@@ -61,7 +61,7 @@ const expectEquivalentConnectors = (
   expect(connector1.getTimestampsForTest()).toEqual(
     connector2.getTimestampsForTest(),
   );
-  //  expect(connector1.getHashForTest()).toEqual(connector2.getHashForTest());
+  expect(connector1.getHashForTest()).toEqual(connector2.getHashForTest());
 };
 
 const expectDifferingConnectors = (
@@ -75,7 +75,7 @@ const expectDifferingConnectors = (
   expect(connector1.getTimestampsForTest()).not.toEqual(
     connector2.getTimestampsForTest(),
   );
-  //  expect(connector1.getHashForTest()).not.toEqual(connector2.getHashForTest());
+  expect(connector1.getHashForTest()).not.toEqual(connector2.getHashForTest());
 };
 
 describe('values sync, basics', () => {
@@ -211,6 +211,7 @@ describe('values sync, multiple values', () => {
 
     await connector1.setValue('v1', 'V1');
     await connector2.setValue('v2', 'V2');
+    await pause();
     await connector1.setValue('v2', 'V3');
     await connector2.setValue('v3', 'V3');
 

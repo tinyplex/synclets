@@ -148,7 +148,6 @@ export const createSynclet: typeof createSyncletDecl = ((
   ): Promise<Node | undefined> => {
     if (!(await connector.hasChildren(address, context))) {
       const myTimestamp = await connector.getTimestamp(address, context);
-      log(JSON.stringify({otherTimestamp, myTimestamp}));
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
@@ -171,8 +170,13 @@ export const createSynclet: typeof createSyncletDecl = ((
       const myTimestamp = await connector.getTimestamp(address, context);
       const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
       if (otherTimestamp > myTimestamp) {
-        await connector.setAtom(address, otherAtom, context);
-        await connector.setTimestamp(address, otherTimestamp, context);
+        await connector.setManagedAtom(
+          address,
+          otherAtom,
+          context,
+          otherTimestamp,
+          myTimestamp,
+        );
       } else if (myTimestamp > otherTimestamp) {
         const value = await connector.getAtom(address, context);
         if (value !== undefined) {

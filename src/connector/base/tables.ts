@@ -74,7 +74,7 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
             : getRowHash(tableId, rowId),
 
       setAtom: ([tableId, rowId, cellId]: Address, value: Atom) =>
-        setCell(tableId, rowId, cellId, value),
+        setCellAtom(tableId, rowId, cellId, value),
 
       setTimestamp: ([tableId, rowId, cellId]: Address, timestamp: Timestamp) =>
         setCellTimestamp(tableId, rowId, cellId, timestamp),
@@ -112,8 +112,9 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
   ) => {
     const timestamp = connector.getNextTimestamp();
     const hashChange =
-      getTimestampHash(await getCellTimestamp(tableId, rowId, cellId)) ^
-      getTimestampHash(timestamp);
+      (getTimestampHash(await getCellTimestamp(tableId, rowId, cellId)) ^
+        getTimestampHash(timestamp)) >>>
+      0;
 
     await setCellAtom(tableId, rowId, cellId, cell);
     await setCellTimestamp(tableId, rowId, cellId, timestamp);
@@ -126,7 +127,7 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
       tableId,
       (((await getTableHash(tableId)) ?? 0) ^ hashChange) >>> 0,
     );
-    await setTablesHash(((await getTablesHash()) ?? 0) ^ hashChange);
+    await setTablesHash((((await getTablesHash()) ?? 0) ^ hashChange) >>> 0);
     await underlyingSync?.(tableId, rowId, cellId);
   };
 

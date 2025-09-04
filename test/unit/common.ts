@@ -1,5 +1,5 @@
 import console from 'console';
-import {Connector, createSynclet, Synclet} from 'synclets';
+import {Connector, ConnectorOptions, createSynclet, Synclet} from 'synclets';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
 
@@ -20,13 +20,13 @@ export const getTestSyncletsAndConnectors = <TestConnector extends Connector>(
 };
 
 export const getTestSyncletAndConnector = <TestConnector extends Connector>(
-  createConnector: () => TestConnector,
+  createConnector: (options?: ConnectorOptions) => TestConnector,
   id?: string,
   poolId: string = getUniqueId(),
   log = false,
 ): [Synclet, TestConnector] => {
   const logger = log ? console : undefined;
-  const connector = createConnector();
+  const connector = createConnector({logger});
   const synclet = createSynclet(
     connector,
     createMemoryTransport({poolId, logger}),
