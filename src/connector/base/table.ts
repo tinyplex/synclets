@@ -51,26 +51,26 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
         await disconnect?.();
       },
 
-      getAtom: ([rowId, cellId]: Address) => getCellAtom(rowId, cellId),
+      readAtom: ([rowId, cellId]: Address) => getCellAtom(rowId, cellId),
 
-      getTimestamp: ([rowId, cellId]: Address) =>
+      readTimestamp: ([rowId, cellId]: Address) =>
         getCellTimestamp(rowId, cellId),
 
-      getHash: ([rowId]: Address) =>
+      readHash: ([rowId]: Address) =>
         isUndefined(rowId) ? getTableHash() : getRowHash(rowId),
 
-      setAtom: ([rowId, cellId]: Address, value: Atom) =>
+      writeAtom: ([rowId, cellId]: Address, value: Atom) =>
         setCellAtom(rowId, cellId, value),
 
-      setTimestamp: ([rowId, cellId]: Address, timestamp: Timestamp) =>
+      writeTimestamp: ([rowId, cellId]: Address, timestamp: Timestamp) =>
         setCellTimestamp(rowId, cellId, timestamp),
 
-      setHash: ([rowId]: Address, hash: number): Promise<void> =>
+      writeHash: ([rowId]: Address, hash: number): Promise<void> =>
         isUndefined(rowId) ? setTableHash(hash) : setRowHash(rowId, hash),
 
       hasChildren: async (address: Address) => size(address) < 2,
 
-      getChildren: async ([rowId, more]: Address) =>
+      readChildrenIds: async ([rowId, more]: Address) =>
         await (isUndefined(rowId)
           ? getRowIds()
           : isUndefined(more)

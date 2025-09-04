@@ -24,14 +24,14 @@ export const createConnector: typeof createConnectorDecl = (
   {
     connect: connectImpl,
     disconnect: disconnectImpl,
-    getAtom,
-    getHash: getHashImpl,
-    getTimestamp: getTimestampImpl,
-    setAtom,
-    setHash,
-    setTimestamp,
+    readAtom,
+    readTimestamp: readTimestampImpl,
+    readHash: readHashImpl,
+    writeAtom,
+    writeTimestamp,
+    writeHash,
     hasChildren,
-    getChildren,
+    readChildrenIds,
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
 ): ProtectedConnector => {
@@ -48,10 +48,10 @@ export const createConnector: typeof createConnectorDecl = (
   // --
 
   const getTimestamp = async (address: Address, context: Context) =>
-    (await getTimestampImpl(address, context)) ?? '';
+    (await readTimestampImpl(address, context)) ?? '';
 
   const getHash = async (address: Address, context: Context) =>
-    (await getHashImpl(address, context)) ?? 0;
+    (await readHashImpl(address, context)) ?? 0;
 
   return {
     __brand: 'Connector',
@@ -72,8 +72,8 @@ export const createConnector: typeof createConnectorDecl = (
         seenTimestamp(newTimestamp);
       }
       const tasks = [
-        () => setAtom(address, atom, context),
-        () => setTimestamp(address, newTimestamp, context),
+        () => writeAtom(address, atom, context),
+        () => writeTimestamp(address, newTimestamp, context),
       ];
       if (!isEmpty(address)) {
         const hashChange =
@@ -86,7 +86,7 @@ export const createConnector: typeof createConnectorDecl = (
         while (!isEmpty(parentAddress)) {
           const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
           arrayPush(tasks, async () => {
-            await setHash(
+            await writeHash(
               queuedAddress,
               ((await getHash(queuedAddress, context)) ^ hashChange) >>> 0,
               context,
@@ -114,7 +114,7 @@ export const createConnector: typeof createConnectorDecl = (
 
     disconnect: async () => await disconnectImpl?.(),
 
-    getAtom,
+    getAtom: readAtom,
 
     getTimestamp,
 
@@ -124,6 +124,6 @@ export const createConnector: typeof createConnectorDecl = (
       (await hasChildren(address, context)) ?? false,
 
     getChildren: async (address: Address, context: Context) =>
-      (await getChildren(address, context)) ?? [],
+      (await readChildrenIds(address, context)) ?? [],
   };
 };

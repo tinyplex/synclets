@@ -66,7 +66,7 @@ const createTestCustomConnector = (
         underlyingSync = sync;
       },
 
-      getAtom: async (address: Address) => {
+      readAtom: async (address: Address) => {
         switch (JSON.stringify(address)) {
           case '["one"]':
             return values.one;
@@ -81,22 +81,7 @@ const createTestCustomConnector = (
         }
       },
 
-      getHash: async (address: Address) => {
-        switch (JSON.stringify(address)) {
-          case '[]':
-            return hashes._;
-          case '["two"]':
-            return hashes.two._;
-          case '["three"]':
-            return hashes.three._;
-          case '["three","two"]':
-            return hashes.three.two._;
-          default:
-            return 0;
-        }
-      },
-
-      getTimestamp: async (address: Address) => {
+      readTimestamp: async (address: Address) => {
         switch (JSON.stringify(address)) {
           case '["one"]':
             return timestamps.one;
@@ -111,7 +96,22 @@ const createTestCustomConnector = (
         }
       },
 
-      setAtom: async (address: Address, atom: Atom) => {
+      readHash: async (address: Address) => {
+        switch (JSON.stringify(address)) {
+          case '[]':
+            return hashes._;
+          case '["two"]':
+            return hashes.two._;
+          case '["three"]':
+            return hashes.three._;
+          case '["three","two"]':
+            return hashes.three.two._;
+          default:
+            return 0;
+        }
+      },
+
+      writeAtom: async (address: Address, atom: Atom) => {
         switch (JSON.stringify(address)) {
           case '["one"]':
             values.one = atom;
@@ -128,24 +128,7 @@ const createTestCustomConnector = (
         }
       },
 
-      setHash: async (address: Address, hash: Hash) => {
-        switch (JSON.stringify(address)) {
-          case '[]':
-            hashes._ = hash;
-            return;
-          case '["two"]':
-            hashes.two._ = hash;
-            return;
-          case '["three"]':
-            hashes.three._ = hash;
-            return;
-          case '["three","two"]':
-            hashes.three.two._ = hash;
-            return;
-        }
-      },
-
-      setTimestamp: async (address: Address, timestamp: Timestamp) => {
+      writeTimestamp: async (address: Address, timestamp: Timestamp) => {
         switch (JSON.stringify(address)) {
           case '["one"]':
             timestamps.one = timestamp;
@@ -162,6 +145,23 @@ const createTestCustomConnector = (
         }
       },
 
+      writeHash: async (address: Address, hash: Hash) => {
+        switch (JSON.stringify(address)) {
+          case '[]':
+            hashes._ = hash;
+            return;
+          case '["two"]':
+            hashes.two._ = hash;
+            return;
+          case '["three"]':
+            hashes.three._ = hash;
+            return;
+          case '["three","two"]':
+            hashes.three.two._ = hash;
+            return;
+        }
+      },
+
       hasChildren: async (address: Address) => {
         switch (JSON.stringify(address)) {
           case '[]':
@@ -174,7 +174,7 @@ const createTestCustomConnector = (
         }
       },
 
-      getChildren: async (address: Address) => {
+      readChildrenIds: async (address: Address) => {
         switch (JSON.stringify(address)) {
           case '[]':
             return ['one', 'two', 'three'];

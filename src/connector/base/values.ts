@@ -42,23 +42,23 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
         await disconnect?.();
       },
 
-      getAtom: ([valueId]: Address) => getValueAtom(valueId),
+      readAtom: ([valueId]: Address) => getValueAtom(valueId),
 
-      getTimestamp: ([valueId]: Address) => getValueTimestamp(valueId),
+      readTimestamp: ([valueId]: Address) => getValueTimestamp(valueId),
 
-      getHash: getValuesHash,
+      readHash: getValuesHash,
 
-      setAtom: ([valueId]: Address, value: Atom) =>
+      writeAtom: ([valueId]: Address, value: Atom) =>
         setValueAtom(valueId, value),
 
-      setTimestamp: ([valueId]: Address, timestamp: Timestamp) =>
+      writeTimestamp: ([valueId]: Address, timestamp: Timestamp) =>
         setValueTimestamp(valueId, timestamp),
 
-      setHash: (_address: Address, hash: number) => setValuesHash(hash),
+      writeHash: (_address: Address, hash: number) => setValuesHash(hash),
 
       hasChildren: async (address: Address) => isEmpty(address),
 
-      getChildren: async (address: Address) =>
+      readChildrenIds: async (address: Address) =>
         isEmpty(address) ? await getValueIds() : [],
     },
     options,

@@ -12,14 +12,14 @@ let transport: Transport;
 
 const createMockConnector = () =>
   createConnector({
-    getAtom: async () => 0,
-    getTimestamp: async () => '',
-    getHash: async () => 0,
-    setAtom: async () => {},
-    setTimestamp: async () => {},
-    setHash: async () => {},
+    readAtom: async () => 0,
+    readTimestamp: async () => '',
+    readHash: async () => 0,
+    writeAtom: async () => {},
+    writeTimestamp: async () => {},
+    writeHash: async () => {},
     hasChildren: async () => false,
-    getChildren: async () => [],
+    readChildrenIds: async () => [],
   });
 
 const createMockTransport = () =>
