@@ -12,10 +12,10 @@ let transport: Transport;
 
 const createMockConnector = () =>
   createConnector({
-    get: async () => 0,
+    getAtom: async () => 0,
     getTimestamp: async () => '',
     getHash: async () => 0,
-    set: async () => {},
+    setAtom: async () => {},
     setTimestamp: async () => {},
     setHash: async () => {},
     hasChildren: async () => false,
