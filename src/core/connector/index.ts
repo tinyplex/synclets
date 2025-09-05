@@ -22,8 +22,8 @@ import {getQueueFunctions} from '../queue.ts';
 
 export const createConnector: typeof createConnectorDecl = (
   {
-    connect: connectImpl,
-    disconnect: disconnectImpl,
+    connect,
+    disconnect,
     readAtom,
     readTimestamp,
     readHash,
@@ -50,7 +50,6 @@ export const createConnector: typeof createConnectorDecl = (
   const connector = {
     __brand: 'Connector',
 
-    getNextTimestamp,
     log,
 
     setAtom: async (
@@ -105,11 +104,8 @@ export const createConnector: typeof createConnectorDecl = (
       setUniqueId(attachedSynclet.getId());
     },
 
-    connect: async (sync: (address: Address) => Promise<void>) =>
-      await connectImpl?.(sync),
-
-    disconnect: async () => await disconnectImpl?.(),
-
+    connect,
+    disconnect,
     readAtom,
     readTimestamp,
     readHash,

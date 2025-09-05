@@ -31,9 +31,10 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 
   const connector = createConnector(
     {
-      connect: async (sync: (address: Address) => Promise<void>) => {
-        underlyingSync = (valueId) =>
-          isUndefined(valueId) ? sync([]) : sync([valueId]);
+      connect: async (sync?: (address: Address) => Promise<void>) => {
+        underlyingSync = sync
+          ? (valueId) => (isUndefined(valueId) ? sync([]) : sync([valueId]))
+          : undefined;
         await connect?.(underlyingSync);
       },
 

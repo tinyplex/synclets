@@ -27,8 +27,8 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
   const connector = createConnector(
     {
-      connect: async (sync: (address: Address) => Promise<void>) => {
-        underlyingSync = () => sync([]);
+      connect: async (sync?: (address: Address) => Promise<void>) => {
+        underlyingSync = sync ? () => sync([]) : undefined;
         await connect?.(underlyingSync);
       },
 

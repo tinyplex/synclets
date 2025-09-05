@@ -69,7 +69,10 @@ export function createSynclet(
 
 export interface Connector {
   __brand: 'Connector';
-  getNextTimestamp(): Timestamp;
+  log(message: string, level?: LogLevel): void;
+
+  connect?(sync?: (address: Address) => Promise<void>): Promise<void>;
+  disconnect?(): Promise<void>;
   setAtom(
     address: Address,
     atom: Atom,
@@ -77,11 +80,10 @@ export interface Connector {
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ): Promise<void>;
-  log(message: string, level?: LogLevel): void;
 }
 
 export type ConnectorImplementations = {
-  connect?: (sync: (address: Address) => Promise<void>) => Promise<void>;
+  connect?: (sync?: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
   readAtom: (address: Address, context: Context) => Promise<Atom | undefined>;
   readTimestamp: (
