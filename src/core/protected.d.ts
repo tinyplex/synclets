@@ -25,10 +25,16 @@ export interface ProtectedConnector extends Connector {
   connect(sync: (address: Address) => Promise<void>): Promise<void>;
   disconnect(): Promise<void>;
   readAtom(address: Address, context: Context): Promise<Atom | undefined>;
-  readTimestamp(address: Address, context: Context): Promise<Timestamp>;
-  readHash(address: Address, context: Context): Promise<Hash>;
-  hasChildren(address: Address, context: Context): Promise<boolean>;
-  readChildrenIds(address: Address, context: Context): Promise<string[]>;
+  readTimestamp(
+    address: Address,
+    context: Context,
+  ): Promise<Timestamp | undefined>;
+  readHash(address: Address, context: Context): Promise<Hash | undefined>;
+  hasChildren(address: Address, context: Context): Promise<boolean | undefined>;
+  readChildrenIds(
+    address: Address,
+    context: Context,
+  ): Promise<string[] | undefined>;
 }
 
 export interface ProtectedTransport extends Transport {

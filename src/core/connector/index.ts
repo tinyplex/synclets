@@ -25,8 +25,8 @@ export const createConnector: typeof createConnectorDecl = (
     connect: connectImpl,
     disconnect: disconnectImpl,
     readAtom,
-    readTimestamp: readTimestampImpl,
-    readHash: readHashImpl,
+    readTimestamp,
+    readHash,
     writeAtom,
     writeTimestamp,
     writeHash,
@@ -82,7 +82,7 @@ export const createConnector: typeof createConnectorDecl = (
           arrayPush(tasks, async () => {
             await writeHash(
               queuedAddress,
-              ((await connector.readHash(queuedAddress, context)) ^
+              (((await connector.readHash(queuedAddress, context)) ?? 0) ^
                 hashChange) >>>
                 0,
               context,
@@ -111,18 +111,10 @@ export const createConnector: typeof createConnectorDecl = (
     disconnect: async () => await disconnectImpl?.(),
 
     readAtom,
-
-    readTimestamp: async (address: Address, context: Context) =>
-      (await readTimestampImpl(address, context)) ?? '',
-
-    readHash: async (address: Address, context: Context) =>
-      (await readHashImpl(address, context)) ?? 0,
-
-    hasChildren: async (address: Address, context: Context) =>
-      (await hasChildren(address, context)) ?? false,
-
-    readChildrenIds: async (address: Address, context: Context) =>
-      (await readChildrenIds(address, context)) ?? [],
+    readTimestamp,
+    readHash,
+    hasChildren,
+    readChildrenIds,
   } as const;
 
   return connector;
