@@ -23,7 +23,6 @@ import {
   isTimestamp,
   isTimestampAndAtom,
   isUndefined,
-  objFromEntries,
   objKeys,
   objMap,
   objNotEmpty,
@@ -62,6 +61,44 @@ export const createSynclet: typeof createSyncletDecl = ((
         ? connector.readHash
         : connector.readTimestamp
     )(address, context);
+
+  const readFullNodesOrAtomAndTimestamp = async (
+    address: Address,
+    context: Context,
+  ): Promise<SubNodes | TimestampAndAtom | undefined> => {
+    if (await connector.hasChildren(address, context)) {
+      return await readFullNodes(address, context);
+    }
+    const timestamp = await connector.readTimestamp(address, context);
+    const atom = await connector.readAtom(address, context);
+    if (!isUndefined(timestamp) && !isUndefined(atom)) {
+      return [timestamp, atom];
+    }
+  };
+
+  const readFullNodes = async (
+    address: Address,
+    context: Context,
+    except: string[] = [],
+  ): Promise<SubNodes> => {
+    const subNodeObj: {[id: string]: Node} = {};
+    await promiseAll(
+      arrayMap(
+        arrayDifference(
+          (await connector.readChildrenIds(address, context)) ?? [],
+          except,
+        ),
+        async (id) =>
+          ifNotUndefined(
+            await readFullNodesOrAtomAndTimestamp([...address, id], context),
+            (fullNodesOrAtomAndTimestamp) => {
+              subNodeObj[id] = fullNodesOrAtomAndTimestamp;
+            },
+          ),
+      ),
+    );
+    return [subNodeObj];
+  };
 
   const sync = (address: Address) =>
     queueIfStarted(async () => {
@@ -226,7 +263,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     if (await connector.hasChildren(address, context)) {
       const mySubNodes: SubNodes = partial
         ? [{}]
-        : await getFullNodes(address, context, objKeys(otherSubNodeObj));
+        : await readFullNodes(address, context, objKeys(otherSubNodeObj));
       await promiseAll(
         objMap(otherSubNodeObj, (id, otherSubNode) =>
           transformNode(
@@ -249,37 +286,6 @@ export const createSynclet: typeof createSyncletDecl = ((
       log(`${INVALID_NODE}; SubNodes vs no SubNodes: ${address}`, 'warn');
     }
   };
-
-  const getFullNodes = async (
-    address: Address,
-    context: Context,
-    except: string[] = [],
-  ): Promise<SubNodes> => [
-    objFromEntries(
-      (
-        await promiseAll(
-          arrayMap(
-            arrayDifference(
-              (await connector.readChildrenIds(address, context)) ?? [],
-              except,
-            ),
-            async (id) => {
-              const childAddress = [...address, id];
-              return [
-                id,
-                (await connector.hasChildren(childAddress, context))
-                  ? await getFullNodes(childAddress, context)
-                  : [
-                      await connector.readTimestamp(childAddress, context),
-                      await connector.readAtom(childAddress, context),
-                    ],
-              ];
-            },
-          ),
-        )
-      ).filter(([, node]) => node !== undefined),
-    ),
-  ];
 
   // #endregion
 
