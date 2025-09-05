@@ -56,19 +56,20 @@ export const createSynclet: typeof createSyncletDecl = ((
     }
   };
 
+  const readHashOrTimestamp = async (address: Address, context: Context) =>
+    await (
+      (await connector.hasChildren(address, context))
+        ? connector.readHash
+        : connector.readTimestamp
+    )(address, context);
+
   const sync = (address: Address) =>
     queueIfStarted(async () => {
       log(`sync: ${address}`);
-      if (await connector.hasChildren(address, {})) {
-        await ifNotUndefined(await connector.readHash(address, {}), (hash) =>
-          sendNodeMessage(address, hash),
-        );
-      } else {
-        await ifNotUndefined(
-          await connector.readTimestamp(address, {}),
-          (timestamp) => sendNodeMessage(address, timestamp),
-        );
-      }
+      await ifNotUndefined(
+        await readHashOrTimestamp(address, {}),
+        (hashOrTimestamp) => sendNodeMessage(address, hashOrTimestamp),
+      );
     });
 
   // #region send/receive
@@ -203,18 +204,11 @@ export const createSynclet: typeof createSyncletDecl = ((
         await promiseAll(
           arrayMap(
             (await connector.readChildrenIds(address, context)) ?? [],
-            async (id) => {
-              const childAddress = [...address, id];
-              const hashOrTimestamp = await ((await connector.hasChildren(
-                childAddress,
-                context,
-              ))
-                ? connector.readHash(childAddress, context)
-                : connector.readTimestamp(childAddress, context));
-              if (!isUndefined(hashOrTimestamp)) {
-                subNodeObj[id] = hashOrTimestamp;
-              }
-            },
+            async (id) =>
+              ifNotUndefined(
+                await readHashOrTimestamp([...address, id], context),
+                (hashOrTimestamp) => (subNodeObj[id] = hashOrTimestamp),
+              ),
           ),
         );
         return [subNodeObj];
