@@ -12,8 +12,8 @@ import type {
 import {
   arrayPush,
   errorNew,
+  getHash,
   getHlcFunctions,
-  getTimestampHash,
   isEmpty,
   isUndefined,
 } from '@synclets/utils';
@@ -70,10 +70,10 @@ export const createConnector: typeof createConnectorDecl = (
       ];
       if (!isEmpty(address)) {
         const hashChange =
-          (getTimestampHash(
+          (getHash(
             oldTimestamp ?? (await connector.readTimestamp(address, context)),
           ) ^
-            getTimestampHash(newTimestamp)) >>>
+            getHash(newTimestamp)) >>>
           0;
         let parentAddress = [...address];
         while (!isEmpty(parentAddress)) {

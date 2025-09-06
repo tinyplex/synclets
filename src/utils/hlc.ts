@@ -3,7 +3,7 @@ import type {
   Hlc,
   getHlcFunctions as getHlcFunctionsDecl,
 } from '@synclets/@types/utils';
-import {decode, encode, getTimestampHash, getUniqueId} from './codec.ts';
+import {decode, encode, getHash, getUniqueId} from './codec.ts';
 import {ifNotUndefined, isUndefined, mathMax} from './other.ts';
 
 const SHIFT36 = 2 ** 36;
@@ -14,7 +14,7 @@ const SHIFT12 = 2 ** 12;
 const SHIFT6 = 2 ** 6;
 
 const getClientIdFromUniqueId = (uniqueId: string): string => {
-  const clientHash30 = getTimestampHash(uniqueId);
+  const clientHash30 = getHash(uniqueId);
   return (
     encode(clientHash30 / SHIFT24) +
     encode(clientHash30 / SHIFT18) +

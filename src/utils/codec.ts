@@ -33,7 +33,7 @@ export const getUniqueId = (length = 16): string =>
   );
 
 // fnv1a
-export const getTimestampHash = (string: string = ''): Hash => {
+export const getHash = (string: string = ''): Hash => {
   let hash = 0x811c9dc5;
   arrayForEach(textEncoder.encode(string), (char) => {
     hash ^= char;
