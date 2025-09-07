@@ -11,6 +11,7 @@ import type {
 } from '@synclets/@types';
 import {
   arrayPush,
+  combineHash,
   errorNew,
   getHash,
   getHlcFunctions,
@@ -69,21 +70,22 @@ export const createConnector: typeof createConnectorDecl = (
         () => writeTimestamp(address, newTimestamp, context),
       ];
       if (!isEmpty(address)) {
-        const hashChange =
-          (getHash(
+        const hashChange = combineHash(
+          getHash(
             oldTimestamp ?? (await connector.readTimestamp(address, context)),
-          ) ^
-            getHash(newTimestamp)) >>>
-          0;
+          ),
+          getHash(newTimestamp),
+        );
         let parentAddress = [...address];
         while (!isEmpty(parentAddress)) {
           const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
           arrayPush(tasks, async () => {
             await writeHash(
               queuedAddress,
-              (((await connector.readHash(queuedAddress, context)) ?? 0) ^
-                hashChange) >>>
-                0,
+              combineHash(
+                await connector.readHash(queuedAddress, context),
+                hashChange,
+              ),
               context,
             );
           });

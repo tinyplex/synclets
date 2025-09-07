@@ -42,3 +42,6 @@ export const getHash = (string: string = ''): Hash => {
   });
   return hash >>> 0;
 };
+
+export const combineHash = (hash1?: Hash, hash2?: Hash): Hash =>
+  ((hash1 ?? 0) ^ (hash2 ?? 0)) >>> 0;
