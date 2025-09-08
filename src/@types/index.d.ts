@@ -98,11 +98,11 @@ export type ConnectorImplementations = {
     context: Context,
   ) => Promise<void>;
   writeHash: (address: Address, hash: Hash, context: Context) => Promise<void>;
-  hasChildren: (
+  isParent: (
     address: Address,
     context: Context,
   ) => Promise<boolean | undefined>;
-  readChildrenIds: (
+  readAtomIds: (
     address: Address,
     context: Context,
   ) => Promise<string[] | undefined>;

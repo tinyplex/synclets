@@ -86,9 +86,9 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
             ? writeTableHash(tableId, hash)
             : writeRowHash(tableId, rowId, hash),
 
-      hasChildren: async (address: Address) => size(address) < 3,
+      isParent: async (address: Address) => size(address) < 3,
 
-      readChildrenIds: async ([tableId, rowId, more]: Address) =>
+      readAtomIds: async ([tableId, rowId, more]: Address) =>
         await (isUndefined(tableId)
           ? readTableIds()
           : isUndefined(rowId)

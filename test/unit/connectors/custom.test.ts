@@ -62,7 +62,7 @@ const createTestCustomConnector = (
 
   const connector = createConnector(
     {
-      connect: async (sync: (address: Address) => Promise<void>) => {
+      connect: async (sync?: (address: Address) => Promise<void>) => {
         underlyingSync = sync;
       },
 
@@ -162,7 +162,7 @@ const createTestCustomConnector = (
         }
       },
 
-      hasChildren: async (address: Address) => {
+      isParent: async (address: Address) => {
         switch (JSON.stringify(address)) {
           case '[]':
           case '["two"]':
@@ -174,7 +174,7 @@ const createTestCustomConnector = (
         }
       },
 
-      readChildrenIds: async (address: Address) => {
+      readAtomIds: async (address: Address) => {
         switch (JSON.stringify(address)) {
           case '[]':
             return ['one', 'two', 'three'];

@@ -18,8 +18,8 @@ const createMockConnector = () =>
     writeAtom: async () => {},
     writeTimestamp: async () => {},
     writeHash: async () => {},
-    hasChildren: async () => false,
-    readChildrenIds: async () => [],
+    isParent: async () => false,
+    readAtomIds: async () => [],
   });
 
 const createMockTransport = () =>

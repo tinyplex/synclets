@@ -31,8 +31,8 @@ export const createConnector: typeof createConnectorDecl = (
     writeAtom,
     writeTimestamp,
     writeHash,
-    hasChildren,
-    readChildrenIds,
+    isParent,
+    readAtomIds,
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
 ): ProtectedConnector => {
@@ -111,8 +111,8 @@ export const createConnector: typeof createConnectorDecl = (
     readAtom,
     readTimestamp,
     readHash,
-    hasChildren,
-    readChildrenIds,
+    isParent,
+    readAtomIds,
   } as const;
 
   return connector;

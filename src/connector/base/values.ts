@@ -57,9 +57,9 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 
       writeHash: (_address: Address, hash: number) => writeValuesHash(hash),
 
-      hasChildren: async (address: Address) => isEmpty(address),
+      isParent: async (address: Address) => isEmpty(address),
 
-      readChildrenIds: async (address: Address) =>
+      readAtomIds: async (address: Address) =>
         isEmpty(address) ? await readValueIds() : [],
     },
     options,

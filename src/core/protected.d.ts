@@ -28,8 +28,8 @@ export interface ProtectedConnector extends Connector {
     context: Context,
   ): Promise<Timestamp | undefined>;
   readHash(address: Address, context: Context): Promise<Hash | undefined>;
-  hasChildren(address: Address, context: Context): Promise<boolean | undefined>;
-  readChildrenIds(
+  isParent(address: Address, context: Context): Promise<boolean | undefined>;
+  readAtomIds(
     address: Address,
     context: Context,
   ): Promise<string[] | undefined>;

@@ -50,9 +50,9 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
       writeHash: async () => {},
 
-      hasChildren: async () => false,
+      isParent: async () => false,
 
-      readChildrenIds: async () => [],
+      readAtomIds: async () => [],
     },
     options,
   );

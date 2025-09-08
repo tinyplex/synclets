@@ -57,7 +57,7 @@ export const createSynclet: typeof createSyncletDecl = ((
 
   const readHashOrTimestamp = async (address: Address, context: Context) =>
     await (
-      (await connector.hasChildren(address, context))
+      (await connector.isParent(address, context))
         ? connector.readHash
         : connector.readTimestamp
     )(address, context);
@@ -66,7 +66,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     address: Address,
     context: Context,
   ): Promise<SubNodes | TimestampAndAtom | undefined> => {
-    if (await connector.hasChildren(address, context)) {
+    if (await connector.isParent(address, context)) {
       return await readFullNodes(address, context);
     }
     const timestamp = await connector.readTimestamp(address, context);
@@ -85,7 +85,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     await promiseAll(
       arrayMap(
         arrayDifference(
-          (await connector.readChildrenIds(address, context)) ?? [],
+          (await connector.readAtomIds(address, context)) ?? [],
           except,
         ),
         async (id) =>
@@ -186,7 +186,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     otherTimestamp: Timestamp,
     context: Context,
   ): Promise<Node | undefined> => {
-    if (!(await connector.hasChildren(address, context))) {
+    if (!(await connector.isParent(address, context))) {
       const myTimestamp =
         (await connector.readTimestamp(address, context)) ?? '';
       if (otherTimestamp > myTimestamp) {
@@ -207,7 +207,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     otherTimestampAndAtom: TimestampAndAtom,
     context: Context,
   ): Promise<Node | undefined> => {
-    if (!(await connector.hasChildren(address, context))) {
+    if (!(await connector.isParent(address, context))) {
       const myTimestamp =
         (await connector.readTimestamp(address, context)) ?? '';
       const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
@@ -235,12 +235,12 @@ export const createSynclet: typeof createSyncletDecl = ((
     otherHash: Hash,
     context: Context,
   ): Promise<Node | undefined> => {
-    if (await connector.hasChildren(address, context)) {
+    if (await connector.isParent(address, context)) {
       if (otherHash !== (await connector.readHash(address, context))) {
         const subNodeObj: {[id: string]: Node} = {};
         await promiseAll(
           arrayMap(
-            (await connector.readChildrenIds(address, context)) ?? [],
+            (await connector.readAtomIds(address, context)) ?? [],
             async (id) =>
               ifNotUndefined(
                 await readHashOrTimestamp([...address, id], context),
@@ -260,7 +260,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     [otherSubNodeObj, partial]: SubNodes,
     context: Context,
   ): Promise<Node | undefined> => {
-    if (await connector.hasChildren(address, context)) {
+    if (await connector.isParent(address, context)) {
       const mySubNodes: SubNodes = partial
         ? [{}]
         : await readFullNodes(address, context, objKeys(otherSubNodeObj));
