@@ -59,7 +59,7 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
       },
 
       readAtom: ([tableId, rowId, cellId]: Address) =>
-        getCell(tableId, rowId, cellId),
+        readCellAtom(tableId, rowId, cellId),
 
       readTimestamp: ([tableId, rowId, cellId]: Address) =>
         readCellTimestamp(tableId, rowId, cellId),
@@ -102,32 +102,28 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
 
   // --
 
-  const getCell = readCellAtom;
-
-  const setManagedCell = async (
-    tableId: string,
-    rowId: string,
-    cellId: string,
-    cell: Atom,
-    context: Context,
-  ) => {
-    await connector.setAtom([tableId, rowId, cellId], cell, context);
-    await underlyingSync?.(tableId, rowId, cellId);
-  };
-
-  const delCell = async (
-    _tableId: string,
-    _rowId: string,
-    _cellId: string,
-  ): Promise<void> => {};
-
   return {
     ...connector,
     getTableIds: readTableIds,
     getRowIds: readRowIds,
     getCellIds: readCellIds,
-    getCell,
-    setCell: setManagedCell,
-    delCell,
+    getCell: readCellAtom,
+
+    setCell: async (
+      tableId: string,
+      rowId: string,
+      cellId: string,
+      cell: Atom,
+      context: Context,
+    ) => {
+      await connector.setAtom([tableId, rowId, cellId], cell, context);
+      await underlyingSync?.(tableId, rowId, cellId);
+    },
+
+    delCell: async (
+      _tableId: string,
+      _rowId: string,
+      _cellId: string,
+    ): Promise<void> => {},
   };
 };
