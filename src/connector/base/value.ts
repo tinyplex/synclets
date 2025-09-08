@@ -53,6 +53,8 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
       isParent: async () => false,
 
       readAtomIds: async () => [],
+
+      readDeletedAtomIds: async () => [],
     },
     options,
   );

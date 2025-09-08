@@ -188,6 +188,10 @@ const createTestCustomConnector = (
             return [];
         }
       },
+
+      readDeletedAtomIds: async (_address: Address) => {
+        return [];
+      },
     },
     options,
   );

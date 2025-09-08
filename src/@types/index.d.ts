@@ -70,7 +70,6 @@ export function createSynclet(
 export interface Connector {
   __brand: 'Connector';
   log(message: string, level?: LogLevel): void;
-
   connect?(sync?: (address: Address) => Promise<void>): Promise<void>;
   disconnect?(): Promise<void>;
   setAtom(
@@ -103,6 +102,10 @@ export type ConnectorImplementations = {
     context: Context,
   ) => Promise<boolean | undefined>;
   readAtomIds: (
+    address: Address,
+    context: Context,
+  ) => Promise<string[] | undefined>;
+  readDeletedAtomIds: (
     address: Address,
     context: Context,
   ) => Promise<string[] | undefined>;

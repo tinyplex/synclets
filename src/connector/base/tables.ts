@@ -19,10 +19,13 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
     disconnect,
     readTablesHash,
     readTableIds,
+    readDeletedTableIds,
     readTableHash,
     readRowIds,
+    readDeletedRowIds,
     readRowHash,
     readCellIds,
+    readDeletedCellIds,
     readCellAtom,
     readCellTimestamp,
     writeTablesHash,
@@ -95,6 +98,15 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
             ? readRowIds(tableId)
             : isUndefined(more)
               ? readCellIds(tableId, rowId)
+              : []),
+
+      readDeletedAtomIds: async ([tableId, rowId, more]: Address) =>
+        await (isUndefined(tableId)
+          ? readDeletedTableIds()
+          : isUndefined(rowId)
+            ? readDeletedRowIds(tableId)
+            : isUndefined(more)
+              ? readDeletedCellIds(tableId, rowId)
               : []),
     },
     options,
