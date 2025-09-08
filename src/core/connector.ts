@@ -18,8 +18,8 @@ import {
   isEmpty,
   isUndefined,
 } from '@synclets/utils';
-import type {ProtectedConnector} from '../protected.d.ts';
-import {getQueueFunctions} from '../queue.ts';
+import type {ProtectedConnector} from './protected.js';
+import {getQueueFunctions} from './queue.ts';
 
 export const createConnector: typeof createConnectorDecl = (
   {

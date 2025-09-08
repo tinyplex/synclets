@@ -6,8 +6,8 @@ import type {
   TransportOptions,
 } from '@synclets/@types';
 import {errorNew} from '@synclets/utils';
-import type {ProtectedTransport, ReceiveMessage} from '../protected.d.ts';
 import {getPacketFunctions} from './packets.ts';
+import type {ProtectedTransport, ReceiveMessage} from './protected.js';
 
 export {getPacketFromParts, getPartsFromPacket} from './packets.ts';
 

@@ -14,7 +14,7 @@ import {
   promiseAll,
   size,
 } from '@synclets/utils';
-import type {Message, ReceiveMessage} from '../protected.d.ts';
+import type {Message, ReceiveMessage} from './protected.js';
 
 type Pending = [fragments: string[], due: number];
 
