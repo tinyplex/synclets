@@ -23,13 +23,21 @@ export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 export interface ProtectedConnector extends Connector {
   attachToSynclet(synclet: Synclet): void;
   readAtom(address: Address, context: Context): Promise<Atom | undefined>;
+  readAtomIsDeleted(
+    address: Address,
+    context: Context,
+  ): Promise<boolean | undefined>;
   readTimestamp(
     address: Address,
     context: Context,
   ): Promise<Timestamp | undefined>;
   readHash(address: Address, context: Context): Promise<Hash | undefined>;
   isParent(address: Address, context: Context): Promise<boolean | undefined>;
-  readAtomIds(
+  readChildIds(
+    address: Address,
+    context: Context,
+  ): Promise<string[] | undefined>;
+  readDeletedChildIds(
     address: Address,
     context: Context,
   ): Promise<string[] | undefined>;

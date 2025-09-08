@@ -1,8 +1,8 @@
-import type {DeletedAtom} from '@synclets/@types';
+import type {Deleted} from '@synclets/@types';
 
 export const EMPTY_STRING = '';
 export const ASTERISK = '*';
-export const DELETED_VALUE: DeletedAtom = '\uFFFC';
+export const DELETED: Deleted = '\uFFFC';
 
 export const strSplit = (
   str: string,

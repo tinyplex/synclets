@@ -61,6 +61,12 @@ const createTestTablesConnector = (
       readCellAtom: async (tableId: string, rowId: string, cellId: string) =>
         tables[tableId]?.[rowId]?.[cellId],
 
+      readCellIsDeleted: async (
+        _tableId: string,
+        _rowId: string,
+        _cellId: string,
+      ) => false,
+
       readCellTimestamp: async (
         tableId: string,
         rowId: string,

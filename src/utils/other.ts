@@ -25,11 +25,11 @@ export const jsonParse = (string: string): any | null => {
 
 export const jsonStringify = (value: any): string => JSON.stringify(value);
 
-export const isUndefined = (thing: unknown): thing is undefined | null =>
-  thing == undefined;
+export const isUndefined = (thing: unknown): thing is undefined =>
+  thing === undefined;
 
 export const ifNotUndefined = <Value, Return>(
-  value: Value | null | undefined,
+  value: Value | undefined,
   then: (value: Value) => Return,
   otherwise?: () => Return,
 ): Return | undefined => (isUndefined(value) ? otherwise?.() : then(value));

@@ -1,7 +1,9 @@
 import type {
   Address,
+  Atom,
   Context,
   createSynclet as createSyncletDecl,
+  Deleted,
   Hash,
   LogLevel,
   Node,
@@ -16,6 +18,7 @@ import {
   arrayDifference,
   arrayMap,
   ASTERISK,
+  DELETED,
   getUniqueId,
   ifNotUndefined,
   isHash,
@@ -76,6 +79,14 @@ export const createSynclet: typeof createSyncletDecl = ((
     }
   };
 
+  const readChildAndDeletedChildIds = async (
+    address: Address,
+    context: Context,
+  ): Promise<string[]> => [
+    ...((await connector.readChildIds(address, context)) ?? []),
+    ...((await connector.readDeletedChildIds(address, context)) ?? []),
+  ];
+
   const readFullNodes = async (
     address: Address,
     context: Context,
@@ -85,7 +96,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     await promiseAll(
       arrayMap(
         arrayDifference(
-          (await connector.readAtomIds(address, context)) ?? [],
+          await readChildAndDeletedChildIds(address, context),
           except,
         ),
         async (id) =>
@@ -98,6 +109,18 @@ export const createSynclet: typeof createSyncletDecl = ((
       ),
     );
     return [subNodeObj];
+  };
+
+  const readAtomOrDeleted = async (
+    address: Address,
+    context: Context,
+  ): Promise<Atom | Deleted | undefined> => {
+    const atom = await connector.readAtom(address, context);
+    return !isUndefined(atom)
+      ? atom
+      : (await connector.readAtomIsDeleted(address, context))
+        ? DELETED
+        : undefined;
   };
 
   const sync = (address: Address) =>
@@ -192,9 +215,9 @@ export const createSynclet: typeof createSyncletDecl = ((
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
-        const value = await connector.readAtom(address, context);
-        if (value !== undefined) {
-          return [myTimestamp, value];
+        const atom = await readAtomOrDeleted(address, context);
+        if (!isUndefined(atom)) {
+          return [myTimestamp, atom];
         }
       }
     } else {
@@ -219,10 +242,10 @@ export const createSynclet: typeof createSyncletDecl = ((
           otherTimestamp,
           myTimestamp,
         );
-      } else if (myTimestamp > otherTimestamp) {
-        const value = await connector.readAtom(address, context);
-        if (value !== undefined) {
-          return [myTimestamp, value];
+      } else if (otherTimestamp < myTimestamp) {
+        const atom = await readAtomOrDeleted(address, context);
+        if (!isUndefined(atom)) {
+          return [myTimestamp, atom];
         }
       }
     } else {
@@ -240,7 +263,7 @@ export const createSynclet: typeof createSyncletDecl = ((
         const subNodeObj: {[id: string]: Node} = {};
         await promiseAll(
           arrayMap(
-            (await connector.readAtomIds(address, context)) ?? [],
+            await readChildAndDeletedChildIds(address, context),
             async (id) =>
               ifNotUndefined(
                 await readHashOrTimestamp([...address, id], context),

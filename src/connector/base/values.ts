@@ -21,6 +21,7 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
     readValueIds,
     readDeletedValueIds,
     readValueAtom,
+    readValueIsDeleted,
     readValueTimestamp,
     writeValuesHash,
     writeValueAtom,
@@ -46,6 +47,8 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 
       readAtom: ([valueId]: Address) => readValueAtom(valueId),
 
+      readAtomIsDeleted: ([valueId]: Address) => readValueIsDeleted(valueId),
+
       readTimestamp: ([valueId]: Address) => readValueTimestamp(valueId),
 
       readHash: readValuesHash,
@@ -60,10 +63,10 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 
       isParent: async (address: Address) => isEmpty(address),
 
-      readAtomIds: async (address: Address) =>
+      readChildIds: async (address: Address) =>
         isEmpty(address) ? await readValueIds() : [],
 
-      readDeletedAtomIds: async (address: Address) =>
+      readDeletedChildIds: async (address: Address) =>
         isEmpty(address) ? await readDeletedValueIds() : [],
     },
     options,

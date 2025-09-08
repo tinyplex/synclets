@@ -2,9 +2,9 @@
 
 import {MessageType} from '../core/message.ts';
 
-export type DeletedAtom = '\uFFFC';
+export type Deleted = '\uFFFC';
 
-export type Atom = string | number | boolean | null | DeletedAtom;
+export type Atom = string | number | boolean | null | Deleted;
 
 export type Timestamp = string;
 
@@ -85,6 +85,10 @@ export type ConnectorImplementations = {
   connect?: (sync?: (address: Address) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
   readAtom: (address: Address, context: Context) => Promise<Atom | undefined>;
+  readAtomIsDeleted: (
+    address: Address,
+    context: Context,
+  ) => Promise<boolean | undefined>;
   readTimestamp: (
     address: Address,
     context: Context,
@@ -101,11 +105,11 @@ export type ConnectorImplementations = {
     address: Address,
     context: Context,
   ) => Promise<boolean | undefined>;
-  readAtomIds: (
+  readChildIds: (
     address: Address,
     context: Context,
   ) => Promise<string[] | undefined>;
-  readDeletedAtomIds: (
+  readDeletedChildIds: (
     address: Address,
     context: Context,
   ) => Promise<string[] | undefined>;

@@ -29,6 +29,8 @@ const createTestValuesConnector = (
 
       readValueAtom: async (valueId: string) => values[valueId],
 
+      readValueIsDeleted: async (_valueId: string) => false,
+
       readValueTimestamp: async (valueId: string) => timestamps[valueId],
 
       writeValuesHash: async (hash: Hash) => {

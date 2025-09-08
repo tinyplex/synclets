@@ -21,6 +21,8 @@ const createTestValueConnector = (
     {
       readValueAtom: async () => value,
 
+      readValueIsDeleted: async () => false,
+
       readValueTimestamp: async () => timestamp,
 
       writeValueAtom: async (atom: Atom) => {

@@ -27,6 +27,7 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
     readCellIds,
     readDeletedCellIds,
     readCellAtom,
+    readCellIsDeleted,
     readCellTimestamp,
     writeTablesHash,
     writeTableHash,
@@ -64,6 +65,9 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
       readAtom: ([tableId, rowId, cellId]: Address) =>
         readCellAtom(tableId, rowId, cellId),
 
+      readAtomIsDeleted: ([tableId, rowId, cellId]: Address) =>
+        readCellIsDeleted(tableId, rowId, cellId),
+
       readTimestamp: ([tableId, rowId, cellId]: Address) =>
         readCellTimestamp(tableId, rowId, cellId),
 
@@ -91,7 +95,7 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
 
       isParent: async (address: Address) => size(address) < 3,
 
-      readAtomIds: async ([tableId, rowId, more]: Address) =>
+      readChildIds: async ([tableId, rowId, more]: Address) =>
         await (isUndefined(tableId)
           ? readTableIds()
           : isUndefined(rowId)
@@ -100,7 +104,7 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
               ? readCellIds(tableId, rowId)
               : []),
 
-      readDeletedAtomIds: async ([tableId, rowId, more]: Address) =>
+      readDeletedChildIds: async ([tableId, rowId, more]: Address) =>
         await (isUndefined(tableId)
           ? readDeletedTableIds()
           : isUndefined(rowId)
