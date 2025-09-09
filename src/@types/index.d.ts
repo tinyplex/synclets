@@ -108,6 +108,7 @@ export type ConnectorImplementations = {
   readChildIds: (
     address: Address,
     context: Context,
+    includeDeleted?: boolean,
   ) => Promise<string[] | undefined>;
   readDeletedChildIds: (
     address: Address,
