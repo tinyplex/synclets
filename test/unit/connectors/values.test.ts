@@ -9,7 +9,7 @@ type TestValuesConnector = BaseValuesConnector & {
   setValueForTest: (valueId: string, value: Atom) => Promise<void>;
   getValuesForTest: () => {[valueId: string]: Atom};
   getTimestampsForTest: () => {[valueId: string]: Timestamp};
-  getHashForTest: () => Hash;
+  getHashForTest: () => Hash | undefined;
 };
 
 const createTestValuesConnector = (
@@ -17,7 +17,7 @@ const createTestValuesConnector = (
 ): TestValuesConnector => {
   const values: {[valueId: string]: Atom} = {};
   const timestamps: {[valueId: string]: Timestamp} = {};
-  let valuesHash: Hash = 0;
+  let valuesHash: Hash | undefined;
 
   const connector = createBaseValuesConnector(
     {
@@ -40,16 +40,24 @@ const createTestValuesConnector = (
       writeValueTimestamp: async (valueId: string, timestamp: Timestamp) => {
         timestamps[valueId] = timestamp;
       },
+
+      removeValueAtom: async (valueId: string) => {
+        delete values[valueId];
+      },
     },
     options,
   );
 
   return {
     ...connector,
+
     setValueForTest: (valueId: string, value: Atom) =>
       connector.setValue(valueId, value, {}),
+
     getValuesForTest: () => values,
+
     getTimestampsForTest: () => timestamps,
+
     getHashForTest: () => valuesHash,
   };
 };

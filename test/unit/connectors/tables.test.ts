@@ -20,7 +20,7 @@ type TestTablesConnector = BaseTablesConnector & {
   };
   getRowHashesForTest: () => {[tableId: string]: {[rowId: string]: Hash}};
   getTableHashesForTest: () => {[tableId: string]: Hash};
-  getTablesHashForTest: () => Hash;
+  getTablesHashForTest: () => Hash | undefined;
 };
 
 const createTestTablesConnector = (
@@ -34,7 +34,7 @@ const createTestTablesConnector = (
   } = {};
   const rowHashes: {[tableId: string]: {[rowId: string]: Hash}} = {};
   const tableHashes: {[tableId: string]: Hash} = {};
-  let tablesHash: Hash = 0;
+  let tablesHash: Hash | undefined;
 
   const connector = createBaseTablesConnector(
     {
@@ -95,22 +95,36 @@ const createTestTablesConnector = (
         timestamps[tableId][rowId] = timestamps[tableId][rowId] || {};
         timestamps[tableId][rowId][cellId] = timestamp;
       },
+
+      removeCellAtom: async (
+        tableId: string,
+        rowId: string,
+        cellId: string,
+      ) => {
+        delete tables[tableId]?.[rowId]?.[cellId];
+      },
     },
     options,
   );
 
   return {
     ...connector,
+
     setCellForTest: (
       tableId: string,
       rowId: string,
       cellId: string,
       cell: Atom,
     ) => connector.setCell(tableId, rowId, cellId, cell, {}),
+
     getTablesForTest: () => tables,
+
     getTimestampsForTest: () => timestamps,
+
     getRowHashesForTest: () => rowHashes,
+
     getTableHashesForTest: () => tableHashes,
+
     getTablesHashForTest: () => tablesHash,
   };
 };

@@ -24,6 +24,7 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
     writeValuesHash,
     writeValueAtom,
     writeValueTimestamp,
+    removeValueAtom,
   }: BaseValuesConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseValuesConnector => {
@@ -64,6 +65,9 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
       writeHash: (_address: Address, hash: number, context: Context) =>
         writeValuesHash(hash, context),
 
+      removeAtom: ([valueId]: Address, context: Context) =>
+        removeValueAtom(valueId, context),
+
       isParent: async (address: Address) => isEmpty(address),
 
       readChildIds: async (address: Address, context: Context) =>
@@ -91,6 +95,9 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
       await underlyingSync?.(valueId);
     },
 
-    delValue: async (_valueId: string): Promise<void> => {},
+    delValue: async (valueId: string, context: Context = {}): Promise<void> => {
+      await connector.delAtom([valueId], context);
+      await underlyingSync?.(valueId);
+    },
   };
 };

@@ -10,9 +10,9 @@ import {
 import {getTestSyncletsAndConnectors} from '../common.ts';
 
 type Values = {
-  one: Atom;
-  two: {one: Atom};
-  three: {one: Atom; two: {one: Atom}};
+  one?: Atom;
+  two: {one?: Atom};
+  three: {one?: Atom; two: {one?: Atom}};
 };
 
 type Timestamps = {
@@ -186,6 +186,23 @@ const createTestCustomConnector = (
             return ['one'];
           default:
             return [];
+        }
+      },
+
+      removeAtom: async (address: Address) => {
+        switch (JSON.stringify(address)) {
+          case '["one"]':
+            delete values.one;
+            return;
+          case '["two","one"]':
+            delete values.two.one;
+            return;
+          case '["three","one"]':
+            delete values.three.one;
+            return;
+          case '["three","two","one"]':
+            delete values.three.two.one;
+            return;
         }
       },
     },

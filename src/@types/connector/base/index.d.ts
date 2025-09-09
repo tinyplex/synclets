@@ -25,6 +25,7 @@ export type BaseValueConnectorImplementations = {
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
+  removeValueAtom: (context: Context) => Promise<void>;
 };
 
 export function createBaseValueConnector(
@@ -63,6 +64,7 @@ export type BaseValuesConnectorImplementations = {
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
+  removeValueAtom: (valueId: string, context: Context) => Promise<void>;
 };
 
 export function createBaseValuesConnector(
@@ -126,6 +128,11 @@ export type BaseTableConnectorImplementations = {
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
+  removeCellAtom: (
+    rowId: string,
+    cellId: string,
+    context: Context,
+  ) => Promise<void>;
 };
 
 export function createBaseTableConnector(
@@ -157,7 +164,12 @@ export type BaseTablesConnector = Connector & {
     cell: Atom,
     context?: Context,
   ) => Promise<void>;
-  delCell: (tableId: string, rowId: string, cellId: string) => Promise<void>;
+  delCell: (
+    tableId: string,
+    rowId: string,
+    cellId: string,
+    context?: Context,
+  ) => Promise<void>;
 };
 
 export type BaseTablesConnectorImplementations = {
@@ -221,6 +233,12 @@ export type BaseTablesConnectorImplementations = {
     rowId: string,
     cellId: string,
     timestamp: Timestamp,
+    context: Context,
+  ) => Promise<void>;
+  removeCellAtom: (
+    tableId: string,
+    rowId: string,
+    cellId: string,
     context: Context,
   ) => Promise<void>;
 };

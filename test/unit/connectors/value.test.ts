@@ -7,15 +7,15 @@ import {getTestSyncletsAndConnectors} from '../common.ts';
 
 type TestValueConnector = BaseValueConnector & {
   setValueForTest: (value: Atom) => Promise<void>;
-  getValueForTest: () => Atom;
-  getTimestampForTest: () => Timestamp;
+  getValueForTest: () => Atom | undefined;
+  getTimestampForTest: () => Timestamp | undefined;
 };
 
 const createTestValueConnector = (
   options?: ConnectorOptions,
 ): TestValueConnector => {
-  let value: Atom = '';
-  let timestamp: Timestamp = '';
+  let value: Atom | undefined;
+  let timestamp: Timestamp | undefined;
 
   const connector = createBaseValueConnector(
     {
@@ -31,15 +31,20 @@ const createTestValueConnector = (
         timestamp = newTimestamp;
       },
 
-      // --
+      removeValueAtom: async () => {
+        value = undefined;
+      },
     },
     options,
   );
 
   return {
     ...connector,
+
     setValueForTest: (value: Atom) => connector.setValue(value, {}),
+
     getValueForTest: () => value,
+
     getTimestampForTest: () => timestamp,
   };
 };
@@ -47,7 +52,7 @@ const createTestValueConnector = (
 const expectEquivalentConnectors = (
   connector1: TestValueConnector,
   connector2: TestValueConnector,
-  value: Atom = '',
+  value?: Atom | undefined,
 ) => {
   expect(connector1.getValueForTest()).toEqual(value);
   expect(connector2.getValueForTest()).toEqual(value);
@@ -59,8 +64,8 @@ const expectEquivalentConnectors = (
 const expectDifferingConnectors = (
   connector1: TestValueConnector,
   connector2: TestValueConnector,
-  value1: Atom,
-  value2: Atom = '',
+  value1: Atom | undefined,
+  value2?: Atom | undefined,
 ) => {
   expect(connector1.getValueForTest()).toEqual(value1);
   expect(connector2.getValueForTest()).toEqual(value2);
@@ -77,7 +82,7 @@ describe('value sync, basics', () => {
     await synclet1.start();
     await synclet2.start();
 
-    expectEquivalentConnectors(connector1, connector2, '');
+    expectEquivalentConnectors(connector1, connector2);
   });
 
   test('connected', async () => {

@@ -60,11 +60,9 @@ export const createSynclet: typeof createSyncletDecl = ((
   };
 
   const readHashOrTimestamp = async (address: Address, context: Context) =>
-    await (
-      (await connector.isParent(address, context))
-        ? connector.readHash
-        : connector.readTimestamp
-    )(address, context);
+    (await connector.isParent(address, context))
+      ? ((await connector.readHash(address, context)) ?? 0)
+      : ((await connector.readTimestamp(address, context)) ?? EMPTY_STRING);
 
   const readFullNodesOrAtomAndTimestamp = async (
     address: Address,
@@ -114,10 +112,7 @@ export const createSynclet: typeof createSyncletDecl = ((
   const sync = (address: Address) =>
     queueIfStarted(async () => {
       log(`sync: ${address}`);
-      await ifNotUndefined(
-        await readHashOrTimestamp(address, {}),
-        (hashOrTimestamp) => sendNodeMessage(address, hashOrTimestamp),
-      );
+      await sendNodeMessage(address, await readHashOrTimestamp(address, {}));
     });
 
   // #region send/receive
@@ -246,11 +241,12 @@ export const createSynclet: typeof createSyncletDecl = ((
         await promiseAll(
           arrayMap(
             (await connector.readChildIds(address, context, true)) ?? [],
-            async (id) =>
-              ifNotUndefined(
-                await readHashOrTimestamp([...address, id], context),
-                (hashOrTimestamp) => (subNodeObj[id] = hashOrTimestamp),
-              ),
+            async (id) => {
+              subNodeObj[id] = await readHashOrTimestamp(
+                [...address, id],
+                context,
+              );
+            },
           ),
         );
         return [subNodeObj];

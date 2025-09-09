@@ -34,6 +34,19 @@ export interface ProtectedConnector extends Connector {
     context: Context,
     includeTombs?: boolean,
   ): Promise<string[] | undefined>;
+  setAtom(
+    address: Address,
+    atom: Atom,
+    context: Context,
+    newTimestamp?: Timestamp,
+    oldTimestamp?: Timestamp,
+  ): Promise<void>;
+  delAtom(
+    address: Address,
+    context: Context,
+    newTimestamp?: Timestamp,
+    oldTimestamp?: Timestamp,
+  ): Promise<void>;
 }
 
 export interface ProtectedTransport extends Transport {

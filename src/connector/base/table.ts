@@ -27,6 +27,7 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     writeRowHash,
     writeCellAtom,
     writeCellTimestamp,
+    removeCellAtom,
   }: BaseTableConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseTableConnector => {
@@ -82,6 +83,9 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
           ? writeTableHash(hash, context)
           : writeRowHash(rowId, hash, context),
 
+      removeAtom: ([rowId, cellId]: Address, context: Context) =>
+        removeCellAtom(rowId, cellId, context),
+
       isParent: async (address: Address) => size(address) < 2,
 
       readChildIds: async ([rowId, more]: Address, context: Context) =>
@@ -117,6 +121,13 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
       await underlyingSync?.(rowId, cellId);
     },
 
-    delCell: async (_rowId: string, _cellId: string): Promise<void> => {},
+    delCell: async (
+      rowId: string,
+      cellId: string,
+      context: Context = {},
+    ): Promise<void> => {
+      await connector.delAtom([rowId, cellId], context);
+      await underlyingSync?.(rowId, cellId);
+    },
   };
 };
