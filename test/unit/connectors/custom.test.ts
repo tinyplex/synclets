@@ -33,6 +33,7 @@ type TestCustomConnector = Connector & {
     value: Atom,
     sync?: boolean,
   ) => Promise<void>;
+  delValueForTest: (address: Address, sync?: boolean) => Promise<void>;
   getValuesForTest: () => Values;
   getTimestampsForTest: () => Timestamps;
   getHashesForTest: () => Hashes;
@@ -211,19 +212,31 @@ const createTestCustomConnector = (
 
   return {
     ...connector,
+
     setValueForTest: async (
       address: Address,
       value: Atom,
       sync: boolean = true,
     ) => {
-      await connector.setAtom(address, value, {});
+      await connector.setAtom(address, value);
       if (sync) {
         await underlyingSync?.(address);
       }
     },
+
+    delValueForTest: async (address: Address, sync: boolean = true) => {
+      await connector.delAtom(address);
+      if (sync) {
+        await underlyingSync?.(address);
+      }
+    },
+
     getValuesForTest: () => values,
+
     getTimestampsForTest: () => timestamps,
+
     getHashesForTest: () => hashes,
+
     syncForTest: async (address: Address) => await underlyingSync?.(address),
   };
 };
@@ -306,6 +319,14 @@ describe('custom sync, basics', () => {
       two: {one: 'V3'},
       three: {one: 'V4', two: {one: 'V5'}},
     });
+
+    const timestamp = connector1.getTimestampsForTest().one;
+    await connector1.delValueForTest(['one']);
+    expectEquivalentConnectors(connector1, connector2, {
+      two: {one: 'V3'},
+      three: {one: 'V4', two: {one: 'V5'}},
+    });
+    expect(timestamp).not.toEqual(connector1.getTimestampsForTest().one);
   });
 
   test('connected, value parents', async () => {

@@ -8,6 +8,7 @@ import type {
   LogLevel,
   Synclet,
   Timestamp,
+  Tomb,
 } from '@synclets/@types';
 import {
   arrayPush,
@@ -18,6 +19,7 @@ import {
   getHlcFunctions,
   isEmpty,
   isUndefined,
+  TOMB,
 } from '@synclets/utils';
 import type {ProtectedConnector} from './protected.js';
 import {getQueueFunctions} from './queue.ts';
@@ -52,8 +54,8 @@ export const createConnector: typeof createConnectorDecl = (
 
   const setOrDelAtom = async (
     address: Address,
-    atomOrUndefined: Atom | undefined,
-    context: Context,
+    atomOrTomb: Atom | Tomb,
+    context: Context = {},
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
@@ -63,9 +65,9 @@ export const createConnector: typeof createConnectorDecl = (
       seenTimestamp(newTimestamp);
     }
     const tasks = [
-      isUndefined(atomOrUndefined)
+      atomOrTomb === TOMB
         ? () => removeAtom(address, context)
-        : () => writeAtom(address, atomOrUndefined, context),
+        : () => writeAtom(address, atomOrTomb, context),
       () => writeTimestamp(address, newTimestamp, context),
     ];
     if (!isEmpty(address)) {
@@ -104,10 +106,10 @@ export const createConnector: typeof createConnectorDecl = (
 
     delAtom: (
       address: Address,
-      context: Context,
+      context?: Context,
       newTimestamp?: Timestamp,
       oldTimestamp?: Timestamp,
-    ) => setOrDelAtom(address, undefined, context, newTimestamp, oldTimestamp),
+    ) => setOrDelAtom(address, TOMB, context, newTimestamp, oldTimestamp),
 
     // --
 

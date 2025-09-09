@@ -72,8 +72,8 @@ export interface Connector {
   log(message: string, level?: LogLevel): void;
   connect?(sync?: (address: Address) => Promise<void>): Promise<void>;
   disconnect?(): Promise<void>;
-  setAtom(address: Address, atom: Atom, context: Context): Promise<void>;
-  delAtom(address: Address, context: Context): Promise<void>;
+  setAtom(address: Address, atom: Atom, context?: Context): Promise<void>;
+  delAtom(address: Address, context?: Context): Promise<void>;
 }
 
 export type ConnectorImplementations = {

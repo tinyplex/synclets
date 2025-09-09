@@ -12,6 +12,11 @@ type TestTablesConnector = BaseTablesConnector & {
     cellId: string,
     atom: Atom,
   ) => Promise<void>;
+  delCellForTest: (
+    tableId: string,
+    rowId: string,
+    cellId: string,
+  ) => Promise<void>;
   getTablesForTest: () => {
     [tableId: string]: {[rowId: string]: {[cellId: string]: Atom}};
   };
@@ -115,7 +120,10 @@ const createTestTablesConnector = (
       rowId: string,
       cellId: string,
       cell: Atom,
-    ) => connector.setCell(tableId, rowId, cellId, cell, {}),
+    ) => connector.setCell(tableId, rowId, cellId, cell),
+
+    delCellForTest: (tableId: string, rowId: string, cellId: string) =>
+      connector.delCell(tableId, rowId, cellId),
 
     getTablesForTest: () => tables,
 
@@ -198,6 +206,22 @@ describe('tables sync, basics', () => {
 
     await connector2.setCellForTest('t1', 'r1', 'c1', 'C2');
     expectEquivalentConnectors(connector1, connector2, {t1: {r1: {c1: 'C2'}}});
+  });
+
+  test('connected, deletion', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestTablesConnector, 2);
+
+    await synclet1.start();
+    await synclet2.start();
+
+    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
+    expectEquivalentConnectors(connector1, connector2, {t1: {r1: {c1: 'C1'}}});
+
+    const timestamp = connector1.getTimestampsForTest().t1.r1.c1;
+    await connector1.delCellForTest('t1', 'r1', 'c1');
+    expectEquivalentConnectors(connector1, connector2, {t1: {r1: {}}});
+    expect(timestamp).not.toEqual(connector1.getTimestampsForTest().t1.r1.c1);
   });
 
   test('start 1, set 1, start 2', async () => {

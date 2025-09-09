@@ -7,6 +7,7 @@ import {getTestSyncletsAndConnectors} from '../common.ts';
 
 type TestTableConnector = BaseTableConnector & {
   setCellForTest: (rowId: string, cellId: string, cell: Atom) => Promise<void>;
+  delCellForTest: (rowId: string, cellId: string) => Promise<void>;
   getTableForTest: () => {[rowId: string]: {[cellId: string]: Atom}};
   getTimestampsForTest: () => {[rowId: string]: {[cellId: string]: Timestamp}};
   getTableHashForTest: () => Hash | undefined;
@@ -70,7 +71,10 @@ const createTestTableConnector = (
     ...connector,
 
     setCellForTest: (rowId: string, cellId: string, cell: Atom) =>
-      connector.setCell(rowId, cellId, cell, {}),
+      connector.setCell(rowId, cellId, cell),
+
+    delCellForTest: (rowId: string, cellId: string) =>
+      connector.delCell(rowId, cellId),
 
     getTableForTest: () => table,
 
@@ -142,6 +146,22 @@ describe('table sync, basics', () => {
 
     await connector2.setCellForTest('r1', 'c1', 'C2');
     expectEquivalentConnectors(connector1, connector2, {r1: {c1: 'C2'}});
+  });
+
+  test('connected, deletion', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestTableConnector, 2);
+
+    await synclet1.start();
+    await synclet2.start();
+
+    await connector1.setCellForTest('r1', 'c1', 'C1');
+    expectEquivalentConnectors(connector1, connector2, {r1: {c1: 'C1'}});
+
+    const timestamp = connector1.getTimestampsForTest().r1.c1;
+    await connector1.delCellForTest('r1', 'c1');
+    expectEquivalentConnectors(connector1, connector2, {r1: {}});
+    expect(timestamp).not.toEqual(connector1.getTimestampsForTest().r1.c1);
   });
 
   test('start 1, set 1, start 2', async () => {

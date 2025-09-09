@@ -7,6 +7,7 @@ import {getTestSyncletsAndConnectors, pause} from '../common.ts';
 
 type TestValuesConnector = BaseValuesConnector & {
   setValueForTest: (valueId: string, value: Atom) => Promise<void>;
+  delValueForTest: (valueId: string) => Promise<void>;
   getValuesForTest: () => {[valueId: string]: Atom};
   getTimestampsForTest: () => {[valueId: string]: Timestamp};
   getHashForTest: () => Hash | undefined;
@@ -52,7 +53,9 @@ const createTestValuesConnector = (
     ...connector,
 
     setValueForTest: (valueId: string, value: Atom) =>
-      connector.setValue(valueId, value, {}),
+      connector.setValue(valueId, value),
+
+    delValueForTest: (valueId: string) => connector.delValue(valueId),
 
     getValuesForTest: () => values,
 
@@ -112,6 +115,22 @@ describe('values sync, basics', () => {
 
     await connector2.setValueForTest('v1', 'V2');
     expectEquivalentConnectors(connector1, connector2, {v1: 'V2'});
+  });
+
+  test('connected, deletion', async () => {
+    const [[synclet1, connector1], [synclet2, connector2]] =
+      getTestSyncletsAndConnectors(createTestValuesConnector, 2);
+
+    await synclet1.start();
+    await synclet2.start();
+
+    await connector1.setValueForTest('v1', 'V1');
+    expectEquivalentConnectors(connector1, connector2, {v1: 'V1'});
+
+    const timestamp = connector1.getTimestampsForTest().v1;
+    await connector1.delValueForTest('v1');
+    expectEquivalentConnectors(connector1, connector2);
+    expect(timestamp).not.toEqual(connector1.getTimestampsForTest().v1);
   });
 
   test('start 1, set 1, start 2', async () => {
