@@ -52,49 +52,6 @@ export const createConnector: typeof createConnectorDecl = (
 
   const [queue] = getQueueFunctions();
 
-  const setOrDelAtom = async (
-    address: Address,
-    atomOrTomb: Atom | Tomb,
-    context: Context = {},
-    newTimestamp?: Timestamp,
-    oldTimestamp?: Timestamp,
-  ) => {
-    if (isUndefined(newTimestamp)) {
-      newTimestamp = getNextTimestamp();
-    } else {
-      seenTimestamp(newTimestamp);
-    }
-    const tasks = [
-      atomOrTomb === TOMB
-        ? () => removeAtom(address, context)
-        : () => writeAtom(address, atomOrTomb, context),
-      () => writeTimestamp(address, newTimestamp, context),
-    ];
-    if (!isEmpty(address)) {
-      const hashChange = combineHash(
-        getHash(
-          oldTimestamp ?? (await connector.readTimestamp(address, context)),
-        ),
-        getHash(newTimestamp),
-      );
-      let parentAddress = [...address];
-      while (!isEmpty(parentAddress)) {
-        const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
-        arrayPush(tasks, async () => {
-          await writeHash(
-            queuedAddress,
-            combineHash(
-              await connector.readHash(queuedAddress, context),
-              hashChange,
-            ),
-            context,
-          );
-        });
-      }
-    }
-    await queue(...tasks);
-  };
-
   // --
 
   const connector = {
@@ -102,14 +59,54 @@ export const createConnector: typeof createConnectorDecl = (
 
     log,
 
-    setAtom: setOrDelAtom,
+    setAtom: (address: Address, atomOrTomb: Atom | Tomb, context?: Context) =>
+      connector.setOrDelAtom(address, atomOrTomb, context),
 
-    delAtom: (
+    delAtom: (address: Address, context?: Context) =>
+      connector.setOrDelAtom(address, TOMB, context),
+
+    setOrDelAtom: async (
       address: Address,
-      context?: Context,
+      atomOrTomb: Atom | Tomb,
+      context: Context = {},
       newTimestamp?: Timestamp,
       oldTimestamp?: Timestamp,
-    ) => setOrDelAtom(address, TOMB, context, newTimestamp, oldTimestamp),
+    ) => {
+      if (isUndefined(newTimestamp)) {
+        newTimestamp = getNextTimestamp();
+      } else {
+        seenTimestamp(newTimestamp);
+      }
+      const tasks = [
+        atomOrTomb === TOMB
+          ? () => removeAtom(address, context)
+          : () => writeAtom(address, atomOrTomb, context),
+        () => writeTimestamp(address, newTimestamp, context),
+      ];
+      if (!isEmpty(address)) {
+        const hashChange = combineHash(
+          getHash(
+            oldTimestamp ?? (await connector.readTimestamp(address, context)),
+          ),
+          getHash(newTimestamp),
+        );
+        let parentAddress = [...address];
+        while (!isEmpty(parentAddress)) {
+          const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
+          arrayPush(tasks, async () => {
+            await writeHash(
+              queuedAddress,
+              combineHash(
+                await connector.readHash(queuedAddress, context),
+                hashChange,
+              ),
+              context,
+            );
+          });
+        }
+      }
+      await queue(...tasks);
+    },
 
     // --
 

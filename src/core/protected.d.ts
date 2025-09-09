@@ -7,6 +7,7 @@ import type {
   Node,
   Synclet,
   Timestamp,
+  Tomb,
   Transport,
 } from '@synclets/@types';
 import {MessageType} from './message.ts';
@@ -34,15 +35,9 @@ export interface ProtectedConnector extends Connector {
     context: Context,
     includeTombs?: boolean,
   ): Promise<string[] | undefined>;
-  setAtom(
+  setOrDelAtom(
     address: Address,
-    atom: Atom,
-    context: Context,
-    newTimestamp?: Timestamp,
-    oldTimestamp?: Timestamp,
-  ): Promise<void>;
-  delAtom(
-    address: Address,
+    atom: Atom | Tomb,
     context: Context,
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,

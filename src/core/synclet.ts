@@ -215,7 +215,7 @@ export const createSynclet: typeof createSyncletDecl = ((
         (await connector.readTimestamp(address, context)) ?? EMPTY_STRING;
       const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
       if (otherTimestamp > myTimestamp) {
-        await connector.setAtom(
+        await connector.setOrDelAtom(
           address,
           otherAtom,
           context,
