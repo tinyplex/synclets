@@ -10,18 +10,21 @@ import type {
 } from '../../index.d.ts';
 
 export type BaseValueConnector = Connector & {
-  getValue: () => Promise<Atom | undefined>;
-  setValue: (value: Atom, context: Context) => Promise<void>;
-  delValue: () => Promise<void>;
+  getValue: (context?: Context) => Promise<Atom | undefined>;
+  setValue: (value: Atom, context?: Context) => Promise<void>;
+  delValue: (context?: Context) => Promise<void>;
 };
 
 export type BaseValueConnectorImplementations = {
   connect?: (sync?: () => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  readValueAtom: () => Promise<Atom | undefined>;
-  readValueTimestamp: () => Promise<Timestamp | undefined>;
-  writeValueAtom: (atom: Atom) => Promise<void>;
-  writeValueTimestamp: (timestamp: Timestamp) => Promise<void>;
+  readValueAtom: (context: Context) => Promise<Atom | undefined>;
+  readValueTimestamp: (context: Context) => Promise<Timestamp | undefined>;
+  writeValueAtom: (atom: Atom, context: Context) => Promise<void>;
+  writeValueTimestamp: (
+    timestamp: Timestamp,
+    context: Context,
+  ) => Promise<void>;
 };
 
 export function createBaseValueConnector(
@@ -30,22 +33,36 @@ export function createBaseValueConnector(
 ): BaseValueConnector;
 
 export type BaseValuesConnector = Connector & {
-  getValueIds: () => Promise<string[]>;
-  getValue: (valueId: string) => Promise<Atom | undefined>;
-  setValue: (valueId: string, value: Atom, context: Context) => Promise<void>;
-  delValue: (valueId: string) => Promise<void>;
+  getValueIds: (context?: Context) => Promise<string[]>;
+  getValue: (valueId: string, context?: Context) => Promise<Atom | undefined>;
+  setValue: (valueId: string, value: Atom, context?: Context) => Promise<void>;
+  delValue: (valueId: string, context?: Context) => Promise<void>;
 };
 
 export type BaseValuesConnectorImplementations = {
   connect?: (sync?: (valueId: string) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
-  readValuesHash: () => Promise<Hash | undefined>;
-  readValueIds: () => Promise<string[]>;
-  readValueAtom: (valueId: string) => Promise<Atom | undefined>;
-  readValueTimestamp: (valueId: string) => Promise<Timestamp | undefined>;
-  writeValuesHash: (hash: Hash) => Promise<void>;
-  writeValueAtom: (valueId: string, atom: Atom) => Promise<void>;
-  writeValueTimestamp: (valueId: string, timestamp: Timestamp) => Promise<void>;
+  readValuesHash: (context: Context) => Promise<Hash | undefined>;
+  readValueIds: (context: Context) => Promise<string[]>;
+  readValueAtom: (
+    valueId: string,
+    context: Context,
+  ) => Promise<Atom | undefined>;
+  readValueTimestamp: (
+    valueId: string,
+    context: Context,
+  ) => Promise<Timestamp | undefined>;
+  writeValuesHash: (hash: Hash, context: Context) => Promise<void>;
+  writeValueAtom: (
+    valueId: string,
+    atom: Atom,
+    context: Context,
+  ) => Promise<void>;
+  writeValueTimestamp: (
+    valueId: string,
+    timestamp: Timestamp,
+    context: Context,
+  ) => Promise<void>;
 };
 
 export function createBaseValuesConnector(
@@ -54,16 +71,23 @@ export function createBaseValuesConnector(
 ): BaseValuesConnector;
 
 export type BaseTableConnector = Connector & {
-  getRowIds: () => Promise<string[]>;
-  getCellIds: (rowId: string) => Promise<string[] | undefined>;
-  getCell: (rowId: string, cellId: string) => Promise<Atom | undefined>;
+  getRowIds: (context?: Context) => Promise<string[]>;
+  getCellIds: (
+    rowId: string,
+    context?: Context,
+  ) => Promise<string[] | undefined>;
+  getCell: (
+    rowId: string,
+    cellId: string,
+    context?: Context,
+  ) => Promise<Atom | undefined>;
   setCell: (
     rowId: string,
     cellId: string,
     cell: Atom,
-    context: Context,
+    context?: Context,
   ) => Promise<void>;
-  delCell: (rowId: string, cellId: string) => Promise<void>;
+  delCell: (rowId: string, cellId: string, context?: Context) => Promise<void>;
 };
 
 export type BaseTableConnectorImplementations = {
@@ -71,22 +95,36 @@ export type BaseTableConnectorImplementations = {
     sync?: (rowId: string, cellId: string) => Promise<void>,
   ) => Promise<void>;
   disconnect?: () => Promise<void>;
-  readTableHash: () => Promise<Hash | undefined>;
-  readRowIds: () => Promise<string[]>;
-  readRowHash: (rowId: string) => Promise<Hash | undefined>;
-  readCellIds: (rowId: string) => Promise<string[] | undefined>;
-  readCellAtom: (rowId: string, cellId: string) => Promise<Atom | undefined>;
+  readTableHash: (context: Context) => Promise<Hash | undefined>;
+  readRowIds: (context: Context) => Promise<string[]>;
+  readRowHash: (rowId: string, context: Context) => Promise<Hash | undefined>;
+  readCellIds: (
+    rowId: string,
+    context: Context,
+  ) => Promise<string[] | undefined>;
+  readCellAtom: (
+    rowId: string,
+    cellId: string,
+    context: Context,
+  ) => Promise<Atom | undefined>;
   readCellTimestamp: (
     rowId: string,
     cellId: string,
+    context: Context,
   ) => Promise<Timestamp | undefined>;
-  writeTableHash: (hash: Hash) => Promise<void>;
-  writeRowHash: (rowId: string, hash: Hash) => Promise<void>;
-  writeCellAtom: (rowId: string, cellId: string, atom: Atom) => Promise<void>;
+  writeTableHash: (hash: Hash, context: Context) => Promise<void>;
+  writeRowHash: (rowId: string, hash: Hash, context: Context) => Promise<void>;
+  writeCellAtom: (
+    rowId: string,
+    cellId: string,
+    atom: Atom,
+    context: Context,
+  ) => Promise<void>;
   writeCellTimestamp: (
     rowId: string,
     cellId: string,
     timestamp: Timestamp,
+    context: Context,
   ) => Promise<void>;
 };
 
@@ -96,20 +134,28 @@ export function createBaseTableConnector(
 ): BaseTableConnector;
 
 export type BaseTablesConnector = Connector & {
-  getTableIds: () => Promise<string[]>;
-  getRowIds: (tableId: string) => Promise<string[] | undefined>;
-  getCellIds: (tableId: string, rowId: string) => Promise<string[] | undefined>;
+  getTableIds: (context?: Context) => Promise<string[]>;
+  getRowIds: (
+    tableId: string,
+    context?: Context,
+  ) => Promise<string[] | undefined>;
+  getCellIds: (
+    tableId: string,
+    rowId: string,
+    context?: Context,
+  ) => Promise<string[] | undefined>;
   getCell: (
     tableId: string,
     rowId: string,
     cellId: string,
+    context?: Context,
   ) => Promise<Atom | undefined>;
   setCell: (
     tableId: string,
     rowId: string,
     cellId: string,
     cell: Atom,
-    context: Context,
+    context?: Context,
   ) => Promise<void>;
   delCell: (tableId: string, rowId: string, cellId: string) => Promise<void>;
 };
@@ -119,39 +165,63 @@ export type BaseTablesConnectorImplementations = {
     sync?: (tableId?: string, rowId?: string, cellId?: string) => Promise<void>,
   ) => Promise<void>;
   disconnect?: () => Promise<void>;
-  readTablesHash: () => Promise<Hash | undefined>;
-  readTableIds: () => Promise<string[]>;
-  readTableHash: (tableId: string) => Promise<Hash | undefined>;
-  readRowIds: (tableId: string) => Promise<string[] | undefined>;
-  readRowHash: (tableId: string, rowId: string) => Promise<Hash | undefined>;
+  readTablesHash: (context: Context) => Promise<Hash | undefined>;
+  readTableIds: (context: Context) => Promise<string[]>;
+  readTableHash: (
+    tableId: string,
+    context: Context,
+  ) => Promise<Hash | undefined>;
+  readRowIds: (
+    tableId: string,
+    context: Context,
+  ) => Promise<string[] | undefined>;
+  readRowHash: (
+    tableId: string,
+    rowId: string,
+    context: Context,
+  ) => Promise<Hash | undefined>;
   readCellIds: (
     tableId: string,
     rowId: string,
+    context: Context,
   ) => Promise<string[] | undefined>;
   readCellAtom: (
     tableId: string,
     rowId: string,
     cellId: string,
+    context: Context,
   ) => Promise<Atom | undefined>;
   readCellTimestamp: (
     tableId: string,
     rowId: string,
     cellId: string,
+    context: Context,
   ) => Promise<Timestamp | undefined>;
-  writeTablesHash: (hash: Hash) => Promise<void>;
-  writeTableHash: (tableId: string, hash: Hash) => Promise<void>;
-  writeRowHash: (tableId: string, rowId: string, hash: Hash) => Promise<void>;
+  writeTablesHash: (hash: Hash, context: Context) => Promise<void>;
+  writeTableHash: (
+    tableId: string,
+    hash: Hash,
+    context: Context,
+  ) => Promise<void>;
+  writeRowHash: (
+    tableId: string,
+    rowId: string,
+    hash: Hash,
+    context: Context,
+  ) => Promise<void>;
   writeCellAtom: (
     tableId: string,
     rowId: string,
     cellId: string,
     atom: Atom,
+    context: Context,
   ) => Promise<void>;
   writeCellTimestamp: (
     tableId: string,
     rowId: string,
     cellId: string,
     timestamp: Timestamp,
+    context: Context,
   ) => Promise<void>;
 };
 

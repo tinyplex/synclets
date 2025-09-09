@@ -58,43 +58,47 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
         await disconnect?.();
       },
 
-      readAtom: ([tableId, rowId, cellId]: Address) =>
-        readCellAtom(tableId, rowId, cellId),
+      readAtom: ([tableId, rowId, cellId]: Address, context: Context) =>
+        readCellAtom(tableId, rowId, cellId, context),
 
-      readTimestamp: ([tableId, rowId, cellId]: Address) =>
-        readCellTimestamp(tableId, rowId, cellId),
+      readTimestamp: ([tableId, rowId, cellId]: Address, context: Context) =>
+        readCellTimestamp(tableId, rowId, cellId, context),
 
-      readHash: ([tableId, rowId]: Address) =>
+      readHash: ([tableId, rowId]: Address, context: Context) =>
         isUndefined(tableId)
-          ? readTablesHash()
+          ? readTablesHash(context)
           : isUndefined(rowId)
-            ? readTableHash(tableId)
-            : readRowHash(tableId, rowId),
+            ? readTableHash(tableId, context)
+            : readRowHash(tableId, rowId, context),
 
-      writeAtom: ([tableId, rowId, cellId]: Address, value: Atom) =>
-        writeCellAtom(tableId, rowId, cellId, value),
+      writeAtom: (
+        [tableId, rowId, cellId]: Address,
+        value: Atom,
+        context: Context,
+      ) => writeCellAtom(tableId, rowId, cellId, value, context),
 
       writeTimestamp: (
         [tableId, rowId, cellId]: Address,
         timestamp: Timestamp,
-      ) => writeCellTimestamp(tableId, rowId, cellId, timestamp),
+        context: Context,
+      ) => writeCellTimestamp(tableId, rowId, cellId, timestamp, context),
 
-      writeHash: ([tableId, rowId]: Address, hash: number) =>
+      writeHash: ([tableId, rowId]: Address, hash: number, context: Context) =>
         isUndefined(tableId)
-          ? writeTablesHash(hash)
+          ? writeTablesHash(hash, context)
           : isUndefined(rowId)
-            ? writeTableHash(tableId, hash)
-            : writeRowHash(tableId, rowId, hash),
+            ? writeTableHash(tableId, hash, context)
+            : writeRowHash(tableId, rowId, hash, context),
 
       isParent: async (address: Address) => size(address) < 3,
 
-      readChildIds: async ([tableId, rowId, more]: Address) =>
+      readChildIds: async ([tableId, rowId, more]: Address, context: Context) =>
         await (isUndefined(tableId)
-          ? readTableIds()
+          ? readTableIds(context)
           : isUndefined(rowId)
-            ? readRowIds(tableId)
+            ? readRowIds(tableId, context)
             : isUndefined(more)
-              ? readCellIds(tableId, rowId)
+              ? readCellIds(tableId, rowId, context)
               : []),
     },
     options,
@@ -104,17 +108,27 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
 
   return {
     ...connector,
-    getTableIds: readTableIds,
-    getRowIds: readRowIds,
-    getCellIds: readCellIds,
-    getCell: readCellAtom,
+    getTableIds: (context: Context = {}) => readTableIds(context),
+
+    getRowIds: (tableId: string, context: Context = {}) =>
+      readRowIds(tableId, context),
+
+    getCellIds: (tableId: string, rowId: string, context: Context = {}) =>
+      readCellIds(tableId, rowId, context),
+
+    getCell: (
+      tableId: string,
+      rowId: string,
+      cellId: string,
+      context: Context = {},
+    ) => readCellAtom(tableId, rowId, cellId, context),
 
     setCell: async (
       tableId: string,
       rowId: string,
       cellId: string,
       cell: Atom,
-      context: Context,
+      context: Context = {},
     ) => {
       await connector.setAtom([tableId, rowId, cellId], cell, context);
       await underlyingSync?.(tableId, rowId, cellId);

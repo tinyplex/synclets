@@ -37,16 +37,21 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
         await disconnect?.();
       },
 
-      readAtom: readValueAtom,
+      readAtom: (_address: Address, context: Context) => readValueAtom(context),
 
-      readTimestamp: readValueTimestamp,
+      readTimestamp: (_address: Address, context: Context) =>
+        readValueTimestamp(context),
 
       readHash: async () => undefined,
 
-      writeAtom: (_address: Address, atom: Atom) => writeValueAtom(atom),
+      writeAtom: (_address: Address, atom: Atom, context: Context) =>
+        writeValueAtom(atom, context),
 
-      writeTimestamp: (_address: Address, timestamp: Timestamp) =>
-        writeValueTimestamp(timestamp),
+      writeTimestamp: (
+        _address: Address,
+        timestamp: Timestamp,
+        context: Context,
+      ) => writeValueTimestamp(timestamp, context),
 
       writeHash: async () => {},
 
@@ -61,9 +66,10 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
   return {
     ...connector,
-    getValue: readValueAtom,
 
-    setValue: async (value: Atom, context: Context) => {
+    getValue: (context: Context = {}) => readValueAtom(context),
+
+    setValue: async (value: Atom, context: Context = {}) => {
       await connector.setAtom([], value, context);
       await underlyingSync?.();
     },

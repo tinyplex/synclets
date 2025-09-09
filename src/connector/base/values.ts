@@ -43,24 +43,31 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
         await disconnect?.();
       },
 
-      readAtom: ([valueId]: Address) => readValueAtom(valueId),
+      readAtom: ([valueId]: Address, context: Context) =>
+        readValueAtom(valueId, context),
 
-      readTimestamp: ([valueId]: Address) => readValueTimestamp(valueId),
+      readTimestamp: ([valueId]: Address, context: Context) =>
+        readValueTimestamp(valueId, context),
 
-      readHash: readValuesHash,
+      readHash: (_address: Address, context: Context) =>
+        readValuesHash(context),
 
-      writeAtom: ([valueId]: Address, value: Atom) =>
-        writeValueAtom(valueId, value),
+      writeAtom: ([valueId]: Address, value: Atom, context: Context) =>
+        writeValueAtom(valueId, value, context),
 
-      writeTimestamp: ([valueId]: Address, timestamp: Timestamp) =>
-        writeValueTimestamp(valueId, timestamp),
+      writeTimestamp: (
+        [valueId]: Address,
+        timestamp: Timestamp,
+        context: Context,
+      ) => writeValueTimestamp(valueId, timestamp, context),
 
-      writeHash: (_address: Address, hash: number) => writeValuesHash(hash),
+      writeHash: (_address: Address, hash: number, context: Context) =>
+        writeValuesHash(hash, context),
 
       isParent: async (address: Address) => isEmpty(address),
 
-      readChildIds: async (address: Address) =>
-        isEmpty(address) ? await readValueIds() : [],
+      readChildIds: async (address: Address, context: Context) =>
+        isEmpty(address) ? await readValueIds(context) : [],
     },
     options,
   );
@@ -69,13 +76,16 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
 
   return {
     ...connector,
-    getValueIds: readValueIds,
-    getValue: readValueAtom,
+
+    getValueIds: (context: Context = {}) => readValueIds(context),
+
+    getValue: (valueId: string, context: Context = {}) =>
+      readValueAtom(valueId, context),
 
     setValue: async (
       valueId: string,
       value: Atom,
-      context: Context,
+      context: Context = {},
     ): Promise<void> => {
       await connector.setAtom([valueId], value, context);
       await underlyingSync?.(valueId);

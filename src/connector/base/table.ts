@@ -53,30 +53,42 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
         await disconnect?.();
       },
 
-      readAtom: ([rowId, cellId]: Address) => readCellAtom(rowId, cellId),
+      readAtom: ([rowId, cellId]: Address, context: Context) =>
+        readCellAtom(rowId, cellId, context),
 
-      readTimestamp: ([rowId, cellId]: Address) =>
-        readCellTimestamp(rowId, cellId),
+      readTimestamp: ([rowId, cellId]: Address, context: Context) =>
+        readCellTimestamp(rowId, cellId, context),
 
-      readHash: ([rowId]: Address) =>
-        isUndefined(rowId) ? readTableHash() : readRowHash(rowId),
+      readHash: ([rowId]: Address, context: Context) =>
+        isUndefined(rowId)
+          ? readTableHash(context)
+          : readRowHash(rowId, context),
 
-      writeAtom: ([rowId, cellId]: Address, value: Atom) =>
-        writeCellAtom(rowId, cellId, value),
+      writeAtom: ([rowId, cellId]: Address, value: Atom, context: Context) =>
+        writeCellAtom(rowId, cellId, value, context),
 
-      writeTimestamp: ([rowId, cellId]: Address, timestamp: Timestamp) =>
-        writeCellTimestamp(rowId, cellId, timestamp),
+      writeTimestamp: (
+        [rowId, cellId]: Address,
+        timestamp: Timestamp,
+        context: Context,
+      ) => writeCellTimestamp(rowId, cellId, timestamp, context),
 
-      writeHash: ([rowId]: Address, hash: number): Promise<void> =>
-        isUndefined(rowId) ? writeTableHash(hash) : writeRowHash(rowId, hash),
+      writeHash: (
+        [rowId]: Address,
+        hash: number,
+        context: Context,
+      ): Promise<void> =>
+        isUndefined(rowId)
+          ? writeTableHash(hash, context)
+          : writeRowHash(rowId, hash, context),
 
       isParent: async (address: Address) => size(address) < 2,
 
-      readChildIds: async ([rowId, more]: Address) =>
+      readChildIds: async ([rowId, more]: Address, context: Context) =>
         await (isUndefined(rowId)
-          ? readRowIds()
+          ? readRowIds(context)
           : isUndefined(more)
-            ? readCellIds(rowId)
+            ? readCellIds(rowId, context)
             : []),
     },
     options,
@@ -86,15 +98,20 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
 
   return {
     ...connector,
-    getRowIds: readRowIds,
-    getCellIds: readCellIds,
-    getCell: readCellAtom,
+
+    getRowIds: (context: Context = {}) => readRowIds(context),
+
+    getCellIds: (rowId: string, context: Context = {}) =>
+      readCellIds(rowId, context),
+
+    getCell: (rowId: string, cellId: string, context: Context = {}) =>
+      readCellAtom(rowId, cellId, context),
 
     setCell: async (
       rowId: string,
       cellId: string,
       cell: Atom,
-      context: Context,
+      context: Context = {},
     ) => {
       await connector.setAtom([rowId, cellId], cell, context);
       await underlyingSync?.(rowId, cellId);
