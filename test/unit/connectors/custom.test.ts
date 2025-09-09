@@ -81,8 +81,6 @@ const createTestCustomConnector = (
         }
       },
 
-      readAtomIsDeleted: async () => false,
-
       readTimestamp: async (address: Address) => {
         switch (JSON.stringify(address)) {
           case '["one"]':
@@ -189,10 +187,6 @@ const createTestCustomConnector = (
           default:
             return [];
         }
-      },
-
-      readDeletedChildIds: async (_address: Address) => {
-        return [];
       },
     },
     options,

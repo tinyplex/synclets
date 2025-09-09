@@ -19,7 +19,6 @@ export type BaseValueConnectorImplementations = {
   connect?: (sync?: () => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
   readValueAtom: () => Promise<Atom | undefined>;
-  readValueIsDeleted: () => Promise<boolean | undefined>;
   readValueTimestamp: () => Promise<Timestamp | undefined>;
   writeValueAtom: (atom: Atom) => Promise<void>;
   writeValueTimestamp: (timestamp: Timestamp) => Promise<void>;
@@ -42,9 +41,7 @@ export type BaseValuesConnectorImplementations = {
   disconnect?: () => Promise<void>;
   readValuesHash: () => Promise<Hash | undefined>;
   readValueIds: () => Promise<string[]>;
-  readDeletedValueIds: () => Promise<string[]>;
   readValueAtom: (valueId: string) => Promise<Atom | undefined>;
-  readValueIsDeleted: (valueId: string) => Promise<boolean | undefined>;
   readValueTimestamp: (valueId: string) => Promise<Timestamp | undefined>;
   writeValuesHash: (hash: Hash) => Promise<void>;
   writeValueAtom: (valueId: string, atom: Atom) => Promise<void>;
@@ -76,15 +73,9 @@ export type BaseTableConnectorImplementations = {
   disconnect?: () => Promise<void>;
   readTableHash: () => Promise<Hash | undefined>;
   readRowIds: () => Promise<string[]>;
-  readDeletedRowIds: () => Promise<string[]>;
   readRowHash: (rowId: string) => Promise<Hash | undefined>;
   readCellIds: (rowId: string) => Promise<string[] | undefined>;
-  readDeletedCellIds: (rowId: string) => Promise<string[] | undefined>;
   readCellAtom: (rowId: string, cellId: string) => Promise<Atom | undefined>;
-  readCellIsDeleted: (
-    rowId: string,
-    cellId: string,
-  ) => Promise<boolean | undefined>;
   readCellTimestamp: (
     rowId: string,
     cellId: string,
@@ -130,16 +121,10 @@ export type BaseTablesConnectorImplementations = {
   disconnect?: () => Promise<void>;
   readTablesHash: () => Promise<Hash | undefined>;
   readTableIds: () => Promise<string[]>;
-  readDeletedTableIds: () => Promise<string[]>;
   readTableHash: (tableId: string) => Promise<Hash | undefined>;
   readRowIds: (tableId: string) => Promise<string[] | undefined>;
-  readDeletedRowIds: (tableId: string) => Promise<string[] | undefined>;
   readRowHash: (tableId: string, rowId: string) => Promise<Hash | undefined>;
   readCellIds: (
-    tableId: string,
-    rowId: string,
-  ) => Promise<string[] | undefined>;
-  readDeletedCellIds: (
     tableId: string,
     rowId: string,
   ) => Promise<string[] | undefined>;
@@ -148,11 +133,6 @@ export type BaseTablesConnectorImplementations = {
     rowId: string,
     cellId: string,
   ) => Promise<Atom | undefined>;
-  readCellIsDeleted: (
-    tableId: string,
-    rowId: string,
-    cellId: string,
-  ) => Promise<boolean | undefined>;
   readCellTimestamp: (
     tableId: string,
     rowId: string,

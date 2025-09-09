@@ -4,6 +4,7 @@ import type {
   LogLevel,
 } from '@synclets/@types';
 import {
+  arrayJoin,
   arrayMap,
   ASTERISK,
   getUniqueId,
@@ -13,6 +14,7 @@ import {
   mapNew,
   promiseAll,
   size,
+  SPACE,
 } from '@synclets/utils';
 import type {Message, ReceiveMessage} from './protected.js';
 
@@ -64,7 +66,7 @@ export const getPacketFunctions = (
 
       if (pending[1] === 0) {
         buffer.delete(messageId);
-        const allFragments = fragments.join('');
+        const allFragments = arrayJoin(fragments);
         log(
           `recv: ${messageId} '${allFragments}', ${total} packets from ${from}`,
           'debug',
@@ -89,7 +91,7 @@ export const getPacketFunctions = (
       );
       await promiseAll(
         arrayMap(fragments, (fragment, index) =>
-          sendPacket([to, messageId, index, total, fragment].join(' ')),
+          sendPacket(arrayJoin([to, messageId, index, total, fragment], SPACE)),
         ),
       );
     }

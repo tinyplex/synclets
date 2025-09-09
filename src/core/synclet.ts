@@ -3,7 +3,6 @@ import type {
   Atom,
   Context,
   createSynclet as createSyncletDecl,
-  Deleted,
   Hash,
   LogLevel,
   Node,
@@ -13,12 +12,13 @@ import type {
   SyncletOptions,
   Timestamp,
   TimestampAndAtom,
+  Tomb,
 } from '@synclets/@types';
 import {
   arrayDifference,
   arrayMap,
   ASTERISK,
-  DELETED,
+  EMPTY_STRING,
   getUniqueId,
   ifNotUndefined,
   isHash,
@@ -30,6 +30,7 @@ import {
   objMap,
   objNotEmpty,
   promiseAll,
+  TOMB,
 } from '@synclets/utils';
 import {MessageType} from './message.ts';
 import type {
@@ -74,7 +75,7 @@ export const createSynclet: typeof createSyncletDecl = ((
     }
     const timestamp = await connector.readTimestamp(address, context);
     if (!isUndefined(timestamp)) {
-      return [timestamp, await readAtomOrDeleted(address, context)];
+      return [timestamp, await readAtomOrTomb(address, context)];
     }
   };
 
@@ -102,12 +103,12 @@ export const createSynclet: typeof createSyncletDecl = ((
     return [subNodeObj];
   };
 
-  const readAtomOrDeleted = async (
+  const readAtomOrTomb = async (
     address: Address,
     context: Context,
-  ): Promise<Atom | Deleted> => {
+  ): Promise<Atom | Tomb> => {
     const atom = await connector.readAtom(address, context);
-    return isUndefined(atom) ? DELETED : atom;
+    return isUndefined(atom) ? TOMB : atom;
   };
 
   const sync = (address: Address) =>
@@ -198,11 +199,11 @@ export const createSynclet: typeof createSyncletDecl = ((
   ): Promise<Node | undefined> => {
     if (!(await connector.isParent(address, context))) {
       const myTimestamp =
-        (await connector.readTimestamp(address, context)) ?? '';
+        (await connector.readTimestamp(address, context)) ?? EMPTY_STRING;
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
-        return [myTimestamp, await readAtomOrDeleted(address, context)];
+        return [myTimestamp, await readAtomOrTomb(address, context)];
       }
     } else {
       log(`${INVALID_NODE}; Timestamp vs SubNodes: ${address}`, 'warn');
@@ -216,7 +217,7 @@ export const createSynclet: typeof createSyncletDecl = ((
   ): Promise<Node | undefined> => {
     if (!(await connector.isParent(address, context))) {
       const myTimestamp =
-        (await connector.readTimestamp(address, context)) ?? '';
+        (await connector.readTimestamp(address, context)) ?? EMPTY_STRING;
       const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
       if (otherTimestamp > myTimestamp) {
         await connector.setAtom(
@@ -227,7 +228,7 @@ export const createSynclet: typeof createSyncletDecl = ((
           myTimestamp,
         );
       } else if (otherTimestamp < myTimestamp) {
-        return [myTimestamp, await readAtomOrDeleted(address, context)];
+        return [myTimestamp, await readAtomOrTomb(address, context)];
       }
     } else {
       log(`${INVALID_NODE}; TimestampAtom vs SubNodes: ${address}`, 'warn');

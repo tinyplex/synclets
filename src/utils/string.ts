@@ -1,8 +1,9 @@
-import type {Deleted} from '@synclets/@types';
+import type {Tomb} from '@synclets/@types';
 
 export const EMPTY_STRING = '';
+export const SPACE = ' ';
 export const ASTERISK = '*';
-export const DELETED: Deleted = '\uFFFC';
+export const TOMB: Tomb = '\uFFFC';
 
 export const strSplit = (
   str: string,

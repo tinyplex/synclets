@@ -1,4 +1,5 @@
 import {setHas, setNew} from './set.ts';
+import {EMPTY_STRING} from './string.ts';
 
 export const isArray = Array.isArray;
 
@@ -34,3 +35,8 @@ export const arrayDifference = (array1: string[], array2: string[]) => {
   const exclude = setNew(array2);
   return array1.filter((value) => !setHas(exclude, value));
 };
+
+export const arrayJoin = (
+  fragments: (string | number)[],
+  separator = EMPTY_STRING,
+): string => fragments.join(separator);

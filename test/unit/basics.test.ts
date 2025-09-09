@@ -13,7 +13,6 @@ let transport: Transport;
 const createMockConnector = () =>
   createConnector({
     readAtom: async () => 0,
-    readAtomIsDeleted: async () => false,
     readTimestamp: async () => '',
     readHash: async () => 0,
     writeAtom: async () => {},
@@ -21,7 +20,6 @@ const createMockConnector = () =>
     writeHash: async () => {},
     isParent: async () => false,
     readChildIds: async () => [],
-    readDeletedChildIds: async () => [],
   });
 
 const createMockTransport = () =>

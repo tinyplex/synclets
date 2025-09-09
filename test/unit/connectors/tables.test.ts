@@ -42,13 +42,9 @@ const createTestTablesConnector = (
 
       readTableIds: async () => Object.keys(tables),
 
-      readDeletedTableIds: async () => [],
-
       readTableHash: async (tableId: string) => tableHashes[tableId],
 
       readRowIds: async (tableId: string) => Object.keys(tables[tableId] ?? {}),
-
-      readDeletedRowIds: async (_tableId: string) => [],
 
       readRowHash: async (tableId: string, rowId: string) =>
         rowHashes[tableId]?.[rowId],
@@ -56,16 +52,8 @@ const createTestTablesConnector = (
       readCellIds: async (tableId: string, rowId: string) =>
         Object.keys(tables[tableId]?.[rowId] ?? {}),
 
-      readDeletedCellIds: async (_tableId: string, _rowId: string) => [],
-
       readCellAtom: async (tableId: string, rowId: string, cellId: string) =>
         tables[tableId]?.[rowId]?.[cellId],
-
-      readCellIsDeleted: async (
-        _tableId: string,
-        _rowId: string,
-        _cellId: string,
-      ) => false,
 
       readCellTimestamp: async (
         tableId: string,

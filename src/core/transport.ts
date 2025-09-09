@@ -5,7 +5,7 @@ import type {
   TransportImplementations,
   TransportOptions,
 } from '@synclets/@types';
-import {errorNew} from '@synclets/utils';
+import {EMPTY_STRING, errorNew} from '@synclets/utils';
 import {getPacketFunctions} from './packets.ts';
 import type {ProtectedTransport, ReceiveMessage} from './protected.js';
 
@@ -25,7 +25,9 @@ export const createTransport: typeof createTransportDecl = (
   // #region public
 
   const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[${attachedSynclet?.getId() ?? ''}/T] ${string}`);
+    logger?.[level]?.(
+      `[${attachedSynclet?.getId() ?? EMPTY_STRING}/T] ${string}`,
+    );
 
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
     getPacketFunctions(log, sendPacket, options.fragmentSize ?? 4096);

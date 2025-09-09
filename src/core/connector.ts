@@ -12,6 +12,7 @@ import type {
 import {
   arrayPush,
   combineHash,
+  EMPTY_STRING,
   errorNew,
   getHash,
   getHlcFunctions,
@@ -26,7 +27,6 @@ export const createConnector: typeof createConnectorDecl = (
     connect,
     disconnect,
     readAtom,
-    readAtomIsDeleted,
     readTimestamp,
     readHash,
     writeAtom,
@@ -34,7 +34,6 @@ export const createConnector: typeof createConnectorDecl = (
     writeHash,
     isParent,
     readChildIds,
-    readDeletedChildIds,
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
 ): ProtectedConnector => {
@@ -42,7 +41,9 @@ export const createConnector: typeof createConnectorDecl = (
   const logger = options.logger ?? {};
 
   const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[${attachedSynclet?.getId() ?? ''}/C] ${string}`);
+    logger?.[level]?.(
+      `[${attachedSynclet?.getId() ?? EMPTY_STRING}/C] ${string}`,
+    );
 
   const [getNextTimestamp, seenTimestamp, setUniqueId] = getHlcFunctions();
 
@@ -111,12 +112,10 @@ export const createConnector: typeof createConnectorDecl = (
     connect,
     disconnect,
     readAtom,
-    readAtomIsDeleted,
     readTimestamp,
     readHash,
     isParent,
     readChildIds,
-    readDeletedChildIds,
   } as const;
 
   return connector;

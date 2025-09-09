@@ -1,12 +1,12 @@
 /// utils
 
-import {Deleted, Hash} from '@synclets/@types';
+import {Hash, Tomb} from '@synclets/@types';
 
 export type GetNow = () => number;
 
 export type Hlc = string;
 
-export const DELETED_VALUE: Deleted;
+export const DELETED_VALUE: Tomb;
 
 export function getUniqueId(length?: number): string;
 
