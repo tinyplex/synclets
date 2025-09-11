@@ -30,12 +30,13 @@ export type LogLevel = keyof Logger;
 
 export interface Synclet {
   __brand: 'Synclet';
+  log(message: string, level?: LogLevel): void;
   getId(): string;
   getStarted(): boolean;
   getQueueState(): [number, boolean];
   start(): Promise<void>;
   stop(): Promise<void>;
-  log(message: string, level?: LogLevel): void;
+  sync: (address: Address) => Promise<void>;
 }
 
 export type SyncletImplementations = {
@@ -69,11 +70,20 @@ export function createSynclet(
 
 export interface Connector {
   __brand: 'Connector';
-  log(message: string, level?: LogLevel): void;
-  connect?(sync?: (address: Address) => Promise<void>): Promise<void>;
-  disconnect?(): Promise<void>;
-  setAtom(address: Address, atom: Atom, context?: Context): Promise<void>;
-  delAtom(address: Address, context?: Context): Promise<void>;
+  log: (message: string, level?: LogLevel) => void;
+  connect?: (sync?: (address: Address) => Promise<void>) => Promise<void>;
+  disconnect?: () => Promise<void>;
+  setAtom: (
+    address: Address,
+    atom: Atom,
+    context?: Context,
+    sync?: boolean,
+  ) => Promise<void>;
+  delAtom: (
+    address: Address,
+    context?: Context,
+    sync?: boolean,
+  ) => Promise<void>;
 }
 
 export type ConnectorImplementations = {

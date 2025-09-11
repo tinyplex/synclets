@@ -219,6 +219,7 @@ export const createSynclet: typeof createSyncletDecl = ((
           address,
           otherAtom,
           context,
+          false,
           otherTimestamp,
           myTimestamp,
         );
@@ -319,12 +320,13 @@ export const createSynclet: typeof createSyncletDecl = ((
   const synclet: Synclet = {
     __brand: 'Synclet',
 
+    log,
     getId,
     getStarted,
     getQueueState,
     start,
     stop,
-    log,
+    sync,
   };
 
   log('createSynclet');

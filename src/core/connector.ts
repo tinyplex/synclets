@@ -59,16 +59,21 @@ export const createConnector: typeof createConnectorDecl = (
 
     log,
 
-    setAtom: (address: Address, atomOrTomb: Atom | Tomb, context?: Context) =>
-      connector.setOrDelAtom(address, atomOrTomb, context),
+    setAtom: (
+      address: Address,
+      atomOrTomb: Atom | Tomb,
+      context?: Context,
+      sync?: boolean,
+    ) => connector.setOrDelAtom(address, atomOrTomb, context, sync),
 
-    delAtom: (address: Address, context?: Context) =>
-      connector.setOrDelAtom(address, TOMB, context),
+    delAtom: (address: Address, context?: Context, sync?: boolean) =>
+      connector.setOrDelAtom(address, TOMB, context, sync),
 
     setOrDelAtom: async (
       address: Address,
       atomOrTomb: Atom | Tomb,
       context: Context = {},
+      sync = true,
       newTimestamp?: Timestamp,
       oldTimestamp?: Timestamp,
     ) => {
@@ -76,6 +81,9 @@ export const createConnector: typeof createConnectorDecl = (
         newTimestamp = getNextTimestamp();
       } else {
         seenTimestamp(newTimestamp);
+      }
+      if (isUndefined(oldTimestamp)) {
+        oldTimestamp = await connector.readTimestamp(address, context);
       }
       const tasks = [
         atomOrTomb === TOMB
@@ -85,9 +93,7 @@ export const createConnector: typeof createConnectorDecl = (
       ];
       if (!isEmpty(address)) {
         const hashChange = combineHash(
-          getHash(
-            oldTimestamp ?? (await connector.readTimestamp(address, context)),
-          ),
+          getHash(oldTimestamp),
           getHash(newTimestamp),
         );
         let parentAddress = [...address];
@@ -106,6 +112,9 @@ export const createConnector: typeof createConnectorDecl = (
         }
       }
       await queue(...tasks);
+      if (sync) {
+        await attachedSynclet?.sync(address);
+      }
     },
 
     // --
