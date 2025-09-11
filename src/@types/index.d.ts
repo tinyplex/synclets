@@ -64,7 +64,7 @@ export function createSynclet(
   transport: Transport,
   implementations?: SyncletImplementations,
   options?: SyncletOptions,
-): Synclet;
+): Promise<Synclet>;
 
 // --
 
@@ -121,7 +121,7 @@ export type ConnectorOptions = {
 export function createConnector(
   implementations: ConnectorImplementations,
   options?: ConnectorOptions,
-): Connector;
+): Promise<Connector>;
 
 // --
 
@@ -144,7 +144,7 @@ export type TransportOptions = {
 export function createTransport(
   implementations: TransportImplementations,
   options?: TransportOptions,
-): Transport;
+): Promise<Transport>;
 
 export function getPartsFromPacket(packet: string): [to: string, body: string];
 

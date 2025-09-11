@@ -23,7 +23,7 @@ const pools: Map<string, Pool> = mapNew();
 
 export const createMemoryTransport: typeof createMemoryTransportDecl = (
   options: TransportOptions & {poolId?: string} = {},
-): Transport => {
+): Promise<Transport> => {
   const id = getUniqueId();
   const pool = mapEnsure(pools, options.poolId ?? 'default', mapNew) as Pool;
 
@@ -56,6 +56,5 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = (
     }
   };
 
-  const transport = createTransport({connect, disconnect, sendPacket}, options);
-  return transport;
+  return createTransport({connect, disconnect, sendPacket}, options);
 };

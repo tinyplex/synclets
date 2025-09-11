@@ -1,6 +1,6 @@
 import {createConnector, createSynclet, createTransport} from 'synclets';
 
-const connector = createConnector({} as any);
-const transport = createTransport({} as any);
+const connector = await createConnector({} as any);
+const transport = await createTransport({} as any);
 
-createSynclet(connector, transport);
+await createSynclet(connector, transport);

@@ -24,7 +24,7 @@ import {
 import type {ProtectedConnector} from './protected.js';
 import {getQueueFunctions} from './queue.ts';
 
-export const createConnector: typeof createConnectorDecl = (
+export const createConnector: typeof createConnectorDecl = async (
   {
     connect,
     disconnect,
@@ -39,7 +39,7 @@ export const createConnector: typeof createConnectorDecl = (
     readChildIds,
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
-): ProtectedConnector => {
+): Promise<ProtectedConnector> => {
   let attachedSynclet: Synclet | undefined;
   const logger = options.logger ?? {};
 

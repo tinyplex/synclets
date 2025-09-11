@@ -28,9 +28,9 @@ const createMockTransport = () =>
     sendPacket: async () => {},
   });
 
-beforeEach(() => {
-  connector = createMockConnector();
-  transport = createMockTransport();
+beforeEach(async () => {
+  connector = await createMockConnector();
+  transport = await createMockTransport();
 });
 
 test('createSynclet', () => {
@@ -38,37 +38,37 @@ test('createSynclet', () => {
   expect(synclet).toBeDefined();
 });
 
-test('log', () => {
+test('log', async () => {
   const logger = {info: jest.fn()};
-  const synclet = createSynclet(
+  const synclet = await createSynclet(
     connector,
     transport,
     {},
     {id: 'synclet', logger},
   );
   expect(logger.info).toHaveBeenCalledWith('[synclet] createSynclet');
-  synclet.start();
+  await synclet.start();
   expect(logger.info).toHaveBeenCalledWith('[synclet] start');
-  synclet.stop();
+  await synclet.stop();
   expect(logger.info).toHaveBeenCalledWith('[synclet] stop');
 });
 
-test('error on reassigning connector', () => {
-  createSynclet(connector, transport, {}, {id: 'synclet1'});
-  expect(() => {
-    createSynclet(connector, createMockTransport());
-  }).toThrow('Connector is already attached to Synclet synclet1');
+test('error on reassigning connector', async () => {
+  await createSynclet(connector, transport, {}, {id: 'synclet1'});
+  await expect(async () => {
+    await createSynclet(connector, await createMockTransport());
+  }).rejects.toThrow('Connector is already attached to Synclet synclet1');
 });
 
-test('error on reassigning transport', () => {
-  createSynclet(connector, transport, {}, {id: 'synclet1'});
-  expect(() => {
-    createSynclet(createMockConnector(), transport);
-  }).toThrow('Transport is already attached to Synclet synclet1');
+test('error on reassigning transport', async () => {
+  await createSynclet(connector, transport, {}, {id: 'synclet1'});
+  await expect(async () => {
+    await createSynclet(await createMockConnector(), transport);
+  }).rejects.toThrow('Transport is already attached to Synclet synclet1');
 });
 
 test('start & stop', async () => {
-  const synclet1 = createSynclet(connector, transport);
+  const synclet1 = await createSynclet(connector, transport);
   expect(synclet1.getStarted()).toEqual(false);
 
   await synclet1.start();
@@ -83,16 +83,16 @@ describe('context', () => {
     const getSendContext = jest.fn();
     const canReceiveMessage = jest.fn();
 
-    const synclet1 = createSynclet(
-      createMockConnector(),
-      createMemoryTransport({poolId: 'pool1'}),
+    const synclet1 = await createSynclet(
+      await createMockConnector(),
+      await createMemoryTransport({poolId: 'pool1'}),
       {
         getSendContext,
       },
     );
-    const synclet2 = createSynclet(
-      createMockConnector(),
-      createMemoryTransport({poolId: 'pool1'}),
+    const synclet2 = await createSynclet(
+      await createMockConnector(),
+      await createMemoryTransport({poolId: 'pool1'}),
       {
         canReceiveMessage,
       },
@@ -108,16 +108,16 @@ describe('context', () => {
     const getSendContext = jest.fn();
     const canReceiveMessage = jest.fn();
 
-    const synclet1 = createSynclet(
-      createMockConnector(),
-      createMemoryTransport({poolId: 'pool1'}),
+    const synclet1 = await createSynclet(
+      await createMockConnector(),
+      await createMemoryTransport({poolId: 'pool1'}),
       {
         getSendContext,
       },
     );
-    const synclet2 = createSynclet(
-      createMockConnector(),
-      createMemoryTransport({poolId: 'pool1'}),
+    const synclet2 = await createSynclet(
+      await createMockConnector(),
+      await createMemoryTransport({poolId: 'pool1'}),
       {
         canReceiveMessage,
       },

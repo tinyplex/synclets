@@ -11,14 +11,14 @@ import type {ProtectedTransport, ReceiveMessage} from './protected.js';
 
 export {getPacketFromParts, getPartsFromPacket} from './packets.ts';
 
-export const createTransport: typeof createTransportDecl = (
+export const createTransport: typeof createTransportDecl = async (
   {
     connect: connectImpl,
     disconnect: disconnectImpl,
     sendPacket,
   }: TransportImplementations,
   options: TransportOptions = {},
-): ProtectedTransport => {
+): Promise<ProtectedTransport> => {
   let attachedSynclet: Synclet | undefined;
   const logger = options.logger ?? {};
 

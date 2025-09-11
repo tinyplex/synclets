@@ -6,30 +6,36 @@ import {getUniqueId} from 'synclets/utils';
 export const pause = async (ms = 2) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
-export const getTestSyncletsAndConnectors = <TestConnector extends Connector>(
-  createConnector: () => TestConnector,
+export const getTestSyncletsAndConnectors = async <
+  TestConnector extends Connector,
+>(
+  createConnector: () => Promise<TestConnector>,
   number: number,
   log = false,
-): [Synclet, TestConnector][] => {
+): Promise<[Synclet, TestConnector][]> => {
   const poolId = getUniqueId();
-  return new Array(number)
-    .fill(0)
-    .map((_, i) =>
-      getTestSyncletAndConnector(createConnector, i + 1 + '', poolId, log),
-    );
+  return await Promise.all(
+    new Array(number)
+      .fill(0)
+      .map((_, i) =>
+        getTestSyncletAndConnector(createConnector, i + 1 + '', poolId, log),
+      ),
+  );
 };
 
-export const getTestSyncletAndConnector = <TestConnector extends Connector>(
-  createConnector: (options?: ConnectorOptions) => TestConnector,
+export const getTestSyncletAndConnector = async <
+  TestConnector extends Connector,
+>(
+  createConnector: (options?: ConnectorOptions) => Promise<TestConnector>,
   id?: string,
   poolId: string = getUniqueId(),
   log = false,
-): [Synclet, TestConnector] => {
+): Promise<[Synclet, TestConnector]> => {
   const logger = log ? console : undefined;
-  const connector = createConnector({logger});
-  const synclet = createSynclet(
+  const connector = await createConnector({logger});
+  const synclet = await createSynclet(
     connector,
-    createMemoryTransport({poolId, logger}),
+    await createMemoryTransport({poolId, logger}),
     {},
     {id, logger},
   );

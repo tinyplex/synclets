@@ -12,64 +12,66 @@ import type {
   createBaseValueConnector as createBaseValueConnectorDecl,
 } from '@synclets/@types/connector/base';
 
-export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
-  {
-    connect,
-    disconnect,
-    readValueAtom,
-    readValueTimestamp,
-    writeValueAtom,
-    writeValueTimestamp,
-    removeValueAtom,
-  }: BaseValueConnectorImplementations,
-  options?: ConnectorOptions,
-): BaseValueConnector => {
-  const connector = createConnector(
+export const createBaseValueConnector: typeof createBaseValueConnectorDecl =
+  async (
     {
-      connect: async (sync?: (address: Address) => Promise<void>) =>
-        await connect?.(sync ? () => sync([]) : undefined),
+      connect,
+      disconnect,
+      readValueAtom,
+      readValueTimestamp,
+      writeValueAtom,
+      writeValueTimestamp,
+      removeValueAtom,
+    }: BaseValueConnectorImplementations,
+    options?: ConnectorOptions,
+  ): Promise<BaseValueConnector> => {
+    const connector = await createConnector(
+      {
+        connect: async (sync?: (address: Address) => Promise<void>) =>
+          await connect?.(sync ? () => sync([]) : undefined),
 
-      disconnect: async () => disconnect?.(),
+        disconnect: async () => disconnect?.(),
 
-      readAtom: (_address: Address, context: Context) => readValueAtom(context),
+        readAtom: (_address: Address, context: Context) =>
+          readValueAtom(context),
 
-      readTimestamp: (_address: Address, context: Context) =>
-        readValueTimestamp(context),
+        readTimestamp: (_address: Address, context: Context) =>
+          readValueTimestamp(context),
 
-      readHash: async () => undefined,
+        readHash: async () => undefined,
 
-      writeAtom: (_address: Address, atom: Atom, context: Context) =>
-        writeValueAtom(atom, context),
+        writeAtom: (_address: Address, atom: Atom, context: Context) =>
+          writeValueAtom(atom, context),
 
-      writeTimestamp: (
-        _address: Address,
-        timestamp: Timestamp,
-        context: Context,
-      ) => writeValueTimestamp(timestamp, context),
+        writeTimestamp: (
+          _address: Address,
+          timestamp: Timestamp,
+          context: Context,
+        ) => writeValueTimestamp(timestamp, context),
 
-      writeHash: async () => {},
+        writeHash: async () => {},
 
-      removeAtom: (_address: Address, context: Context) =>
-        removeValueAtom(context),
+        removeAtom: (_address: Address, context: Context) =>
+          removeValueAtom(context),
 
-      isParent: async () => false,
+        isParent: async () => false,
 
-      readChildIds: async () => [],
-    },
-    options,
-  );
+        readChildIds: async () => [],
+      },
+      options,
+    );
 
-  // --
+    // --
 
-  return {
-    ...connector,
+    return {
+      ...connector,
 
-    getValue: (context: Context = {}) => readValueAtom(context),
+      getValue: (context: Context = {}) => readValueAtom(context),
 
-    setValue: (value: Atom, context: Context = {}, sync?: boolean) =>
-      connector.setAtom([], value, context, sync),
+      setValue: (value: Atom, context: Context = {}, sync?: boolean) =>
+        connector.setAtom([], value, context, sync),
 
-    delValue: (context: Context = {}, sync?: boolean) =>
-      connector.delAtom([], context, sync),
+      delValue: (context: Context = {}, sync?: boolean) =>
+        connector.delAtom([], context, sync),
+    };
   };
-};

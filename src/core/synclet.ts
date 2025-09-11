@@ -42,12 +42,12 @@ import {getQueueFunctions} from './queue.ts';
 
 const INVALID_NODE = 'invalid node';
 
-export const createSynclet: typeof createSyncletDecl = ((
+export const createSynclet: typeof createSyncletDecl = (async (
   connector: ProtectedConnector,
   transport: ProtectedTransport,
   {canReceiveMessage, getSendContext}: SyncletImplementations = {},
   options: SyncletOptions = {},
-): Synclet => {
+): Promise<Synclet> => {
   let started = false;
   const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};

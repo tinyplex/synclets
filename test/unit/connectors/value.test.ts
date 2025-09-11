@@ -12,13 +12,13 @@ type TestValueConnector = BaseValueConnector & {
   getTimestampForTest: () => Timestamp | undefined;
 };
 
-const createTestValueConnector = (
+const createTestValueConnector = async (
   options?: ConnectorOptions,
-): TestValueConnector => {
+): Promise<TestValueConnector> => {
   let value: Atom | undefined;
   let timestamp: Timestamp | undefined;
 
-  const connector = createBaseValueConnector(
+  const connector = await createBaseValueConnector(
     {
       readValueAtom: async () => value,
 
@@ -80,7 +80,7 @@ const expectDifferingConnectors = (
 describe('value sync, basics', () => {
   test('connected, initial', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await synclet1.start();
     await synclet2.start();
@@ -90,7 +90,7 @@ describe('value sync, basics', () => {
 
   test('connected', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await synclet1.start();
     await synclet2.start();
@@ -104,7 +104,7 @@ describe('value sync, basics', () => {
 
   test('connected, deletion', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await synclet1.start();
     await synclet2.start();
@@ -120,7 +120,7 @@ describe('value sync, basics', () => {
 
   test('start 1, set 1, start 2', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await synclet1.start();
 
@@ -133,7 +133,7 @@ describe('value sync, basics', () => {
 
   test('start 2, set 1, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await synclet2.start();
     await connector1.setValueForTest('V1');
@@ -145,7 +145,7 @@ describe('value sync, basics', () => {
 
   test('stop 1, set 1, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await synclet1.start();
     await synclet2.start();
@@ -163,7 +163,7 @@ describe('value sync, basics', () => {
 
   test('stop 1, set 2, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await synclet1.start();
     await synclet2.start();
@@ -181,7 +181,7 @@ describe('value sync, basics', () => {
 
   test('set 1, set 2, start 2, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await connector1.setValueForTest('V1');
     expectDifferingConnectors(connector1, connector2, 'V1');

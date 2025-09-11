@@ -31,7 +31,7 @@ export type BaseValueConnectorImplementations = {
 export function createBaseValueConnector(
   implementations: BaseValueConnectorImplementations,
   options?: ConnectorOptions,
-): BaseValueConnector;
+): Promise<BaseValueConnector>;
 
 export type BaseValuesConnector = Connector & {
   getValueIds: (context?: Context) => Promise<string[]>;
@@ -79,7 +79,7 @@ export type BaseValuesConnectorImplementations = {
 export function createBaseValuesConnector(
   implementations: BaseValuesConnectorImplementations,
   options?: ConnectorOptions,
-): BaseValuesConnector;
+): Promise<BaseValuesConnector>;
 
 export type BaseTableConnector = Connector & {
   getRowIds: (context?: Context) => Promise<string[]>;
@@ -153,7 +153,7 @@ export type BaseTableConnectorImplementations = {
 export function createBaseTableConnector(
   implementations: BaseTableConnectorImplementations,
   options?: ConnectorOptions,
-): BaseTableConnector;
+): Promise<BaseTableConnector>;
 
 export type BaseTablesConnector = Connector & {
   getTableIds: (context?: Context) => Promise<string[]>;
@@ -263,4 +263,4 @@ export type BaseTablesConnectorImplementations = {
 export function createBaseTablesConnector(
   implementations: BaseTablesConnectorImplementations,
   options?: ConnectorOptions,
-): BaseTablesConnector;
+): Promise<BaseTablesConnector>;
