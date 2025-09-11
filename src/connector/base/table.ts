@@ -31,28 +31,21 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
   }: BaseTableConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseTableConnector => {
-  let underlyingSync:
-    | ((rowId?: string, cellId?: string) => Promise<void>)
-    | undefined;
-
   const connector = createConnector(
     {
-      connect: async (sync?: (address: Address) => Promise<void>) => {
-        underlyingSync = sync
-          ? (rowId, cellId) =>
-              isUndefined(rowId)
-                ? sync([])
-                : isUndefined(cellId)
-                  ? sync([rowId])
-                  : sync([rowId, cellId])
-          : undefined;
-        await connect?.(underlyingSync);
-      },
+      connect: async (sync?: (address: Address) => Promise<void>) =>
+        await connect?.(
+          sync
+            ? (rowId, cellId) =>
+                isUndefined(rowId)
+                  ? sync([])
+                  : isUndefined(cellId)
+                    ? sync([rowId])
+                    : sync([rowId, cellId])
+            : undefined,
+        ),
 
-      disconnect: async () => {
-        underlyingSync = undefined;
-        await disconnect?.();
-      },
+      disconnect: async () => await disconnect?.(),
 
       readAtom: ([rowId, cellId]: Address, context: Context) =>
         readCellAtom(rowId, cellId, context),

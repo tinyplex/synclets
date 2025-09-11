@@ -24,19 +24,12 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
   }: BaseValueConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseValueConnector => {
-  let underlyingSync: (() => Promise<void>) | undefined;
-
   const connector = createConnector(
     {
-      connect: async (sync?: (address: Address) => Promise<void>) => {
-        underlyingSync = sync ? () => sync([]) : undefined;
-        await connect?.(underlyingSync);
-      },
+      connect: async (sync?: (address: Address) => Promise<void>) =>
+        await connect?.(sync ? () => sync([]) : undefined),
 
-      disconnect: async () => {
-        underlyingSync = undefined;
-        await disconnect?.();
-      },
+      disconnect: async () => disconnect?.(),
 
       readAtom: (_address: Address, context: Context) => readValueAtom(context),
 

@@ -34,30 +34,24 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
   }: BaseTablesConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseTablesConnector => {
-  let underlyingSync:
-    | ((tableId?: string, rowId?: string, cellId?: string) => Promise<void>)
-    | undefined;
-
   const connector = createConnector(
     {
       connect: async (sync?: (address: Address) => Promise<void>) => {
-        underlyingSync = sync
-          ? (tableId, rowId, cellId) =>
-              isUndefined(tableId)
-                ? sync([])
-                : isUndefined(rowId)
-                  ? sync([tableId])
-                  : isUndefined(cellId)
-                    ? sync([tableId, rowId])
-                    : sync([tableId, rowId, cellId])
-          : undefined;
-        await connect?.(underlyingSync);
+        await connect?.(
+          sync
+            ? (tableId, rowId, cellId) =>
+                isUndefined(tableId)
+                  ? sync([])
+                  : isUndefined(rowId)
+                    ? sync([tableId])
+                    : isUndefined(cellId)
+                      ? sync([tableId, rowId])
+                      : sync([tableId, rowId, cellId])
+            : undefined,
+        );
       },
 
-      disconnect: async () => {
-        underlyingSync = undefined;
-        await disconnect?.();
-      },
+      disconnect: async () => await disconnect?.(),
 
       readAtom: ([tableId, rowId, cellId]: Address, context: Context) =>
         readCellAtom(tableId, rowId, cellId, context),

@@ -28,21 +28,16 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
   }: BaseValuesConnectorImplementations,
   options?: ConnectorOptions,
 ): BaseValuesConnector => {
-  let underlyingSync: ((valueId?: string) => Promise<void>) | undefined;
-
   const connector = createConnector(
     {
-      connect: async (sync?: (address: Address) => Promise<void>) => {
-        underlyingSync = sync
-          ? (valueId) => (isUndefined(valueId) ? sync([]) : sync([valueId]))
-          : undefined;
-        await connect?.(underlyingSync);
-      },
+      connect: async (sync?: (address: Address) => Promise<void>) =>
+        await connect?.(
+          sync
+            ? (valueId) => (isUndefined(valueId) ? sync([]) : sync([valueId]))
+            : undefined,
+        ),
 
-      disconnect: async () => {
-        underlyingSync = undefined;
-        await disconnect?.();
-      },
+      disconnect: async () => await disconnect?.(),
 
       readAtom: ([valueId]: Address, context: Context) =>
         readValueAtom(valueId, context),
