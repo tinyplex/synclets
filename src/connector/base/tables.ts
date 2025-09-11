@@ -128,25 +128,22 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl = (
       context: Context = {},
     ) => readCellAtom(tableId, rowId, cellId, context),
 
-    setCell: async (
+    setCell: (
       tableId: string,
       rowId: string,
       cellId: string,
       cell: Atom,
       context: Context = {},
-    ) => {
-      await connector.setAtom([tableId, rowId, cellId], cell, context);
-      await underlyingSync?.(tableId, rowId, cellId);
-    },
+      sync?: boolean,
+    ) => connector.setAtom([tableId, rowId, cellId], cell, context, sync),
 
-    delCell: async (
+    delCell: (
       tableId: string,
       rowId: string,
       cellId: string,
       context: Context = {},
-    ): Promise<void> => {
-      await connector.delAtom([tableId, rowId, cellId], context);
-      await underlyingSync?.(tableId, rowId, cellId);
-    },
+      sync?: boolean,
+    ): Promise<void> =>
+      connector.delAtom([tableId, rowId, cellId], context, sync),
   };
 };

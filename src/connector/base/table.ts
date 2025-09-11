@@ -111,23 +111,19 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl = (
     getCell: (rowId: string, cellId: string, context: Context = {}) =>
       readCellAtom(rowId, cellId, context),
 
-    setCell: async (
+    setCell: (
       rowId: string,
       cellId: string,
       cell: Atom,
       context: Context = {},
-    ) => {
-      await connector.setAtom([rowId, cellId], cell, context);
-      await underlyingSync?.(rowId, cellId);
-    },
+      sync?: boolean,
+    ) => connector.setAtom([rowId, cellId], cell, context, sync),
 
-    delCell: async (
+    delCell: (
       rowId: string,
       cellId: string,
       context: Context = {},
-    ): Promise<void> => {
-      await connector.delAtom([rowId, cellId], context);
-      await underlyingSync?.(rowId, cellId);
-    },
+      sync?: boolean,
+    ): Promise<void> => connector.delAtom([rowId, cellId], context, sync),
   };
 };

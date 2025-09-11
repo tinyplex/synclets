@@ -73,14 +73,10 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl = (
 
     getValue: (context: Context = {}) => readValueAtom(context),
 
-    setValue: async (value: Atom, context: Context = {}) => {
-      await connector.setAtom([], value, context);
-      await underlyingSync?.();
-    },
+    setValue: (value: Atom, context: Context = {}, sync?: boolean) =>
+      connector.setAtom([], value, context, sync),
 
-    delValue: async (context: Context = {}) => {
-      await connector.delAtom([], context);
-      await underlyingSync?.();
-    },
+    delValue: (context: Context = {}, sync?: boolean) =>
+      connector.delAtom([], context, sync),
   };
 };

@@ -11,8 +11,8 @@ import type {
 
 export type BaseValueConnector = Connector & {
   getValue: (context?: Context) => Promise<Atom | undefined>;
-  setValue: (value: Atom, context?: Context) => Promise<void>;
-  delValue: (context?: Context) => Promise<void>;
+  setValue: (value: Atom, context?: Context, sync?: boolean) => Promise<void>;
+  delValue: (context?: Context, sync?: boolean) => Promise<void>;
 };
 
 export type BaseValueConnectorImplementations = {
@@ -36,8 +36,17 @@ export function createBaseValueConnector(
 export type BaseValuesConnector = Connector & {
   getValueIds: (context?: Context) => Promise<string[]>;
   getValue: (valueId: string, context?: Context) => Promise<Atom | undefined>;
-  setValue: (valueId: string, value: Atom, context?: Context) => Promise<void>;
-  delValue: (valueId: string, context?: Context) => Promise<void>;
+  setValue: (
+    valueId: string,
+    value: Atom,
+    context?: Context,
+    sync?: boolean,
+  ) => Promise<void>;
+  delValue: (
+    valueId: string,
+    context?: Context,
+    sync?: boolean,
+  ) => Promise<void>;
 };
 
 export type BaseValuesConnectorImplementations = {
@@ -88,8 +97,14 @@ export type BaseTableConnector = Connector & {
     cellId: string,
     cell: Atom,
     context?: Context,
+    sync?: boolean,
   ) => Promise<void>;
-  delCell: (rowId: string, cellId: string, context?: Context) => Promise<void>;
+  delCell: (
+    rowId: string,
+    cellId: string,
+    context?: Context,
+    sync?: boolean,
+  ) => Promise<void>;
 };
 
 export type BaseTableConnectorImplementations = {
@@ -163,12 +178,14 @@ export type BaseTablesConnector = Connector & {
     cellId: string,
     cell: Atom,
     context?: Context,
+    sync?: boolean,
   ) => Promise<void>;
   delCell: (
     tableId: string,
     rowId: string,
     cellId: string,
     context?: Context,
+    sync?: boolean,
   ) => Promise<void>;
 };
 

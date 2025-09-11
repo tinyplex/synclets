@@ -86,18 +86,17 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl = (
     getValue: (valueId: string, context: Context = {}) =>
       readValueAtom(valueId, context),
 
-    setValue: async (
+    setValue: (
       valueId: string,
       value: Atom,
       context: Context = {},
-    ): Promise<void> => {
-      await connector.setAtom([valueId], value, context);
-      await underlyingSync?.(valueId);
-    },
+      sync?: boolean,
+    ): Promise<void> => connector.setAtom([valueId], value, context, sync),
 
-    delValue: async (valueId: string, context: Context = {}): Promise<void> => {
-      await connector.delAtom([valueId], context);
-      await underlyingSync?.(valueId);
-    },
+    delValue: (
+      valueId: string,
+      context: Context = {},
+      sync?: boolean,
+    ): Promise<void> => connector.delAtom([valueId], context, sync),
   };
 };
