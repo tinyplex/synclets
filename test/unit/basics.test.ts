@@ -88,52 +88,41 @@ test('start & stop', async () => {
 
 describe('context', () => {
   test('send message', async () => {
-    const getSendContext = jest.fn();
     const canReceiveMessage = jest.fn();
 
     const synclet1 = await createSynclet(
       await createMockConnector(),
       await createMemoryTransport({poolId: 'pool1'}),
-      {
-        getSendContext,
-      },
     );
     const synclet2 = await createSynclet(
       await createMockConnector(),
       await createMemoryTransport({poolId: 'pool1'}),
-      {
-        canReceiveMessage,
-      },
+      {canReceiveMessage},
     );
     await synclet2.start();
     await synclet1.start();
 
-    expect(getSendContext).toHaveBeenCalledWith(0, [], '', {});
     expect(canReceiveMessage).toHaveBeenCalledWith(0, [], '', {});
   });
 
   test('add context', async () => {
-    const getSendContext = jest.fn();
+    const getSendContext = jest.fn(async () => ({foo: 42}));
     const canReceiveMessage = jest.fn();
 
     const synclet1 = await createSynclet(
       await createMockConnector(),
       await createMemoryTransport({poolId: 'pool1'}),
-      {
-        getSendContext,
-      },
+      {getSendContext},
     );
     const synclet2 = await createSynclet(
       await createMockConnector(),
       await createMemoryTransport({poolId: 'pool1'}),
-      {
-        canReceiveMessage,
-      },
+      {canReceiveMessage},
     );
     await synclet2.start();
     await synclet1.start();
 
     expect(getSendContext).toHaveBeenCalledWith(0, [], '', {});
-    expect(canReceiveMessage).toHaveBeenCalledWith(0, [], '', {});
+    expect(canReceiveMessage).toHaveBeenCalledWith(0, [], '', {foo: 42});
   });
 });
