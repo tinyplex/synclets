@@ -3,7 +3,7 @@ import {
   BaseTableConnector,
   createBaseTableConnector,
 } from 'synclets/connector/base';
-import {getTestSyncletsAndConnectors} from '../common.ts';
+import {getTestSyncletsAndConnectors} from '../../common.ts';
 
 type TestTableConnector = BaseTableConnector & {
   setCellForTest: (rowId: string, cellId: string, cell: Atom) => Promise<void>;

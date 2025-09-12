@@ -3,7 +3,7 @@ import {
   BaseTablesConnector,
   createBaseTablesConnector,
 } from 'synclets/connector/base';
-import {getTestSyncletsAndConnectors} from '../common.ts';
+import {getTestSyncletsAndConnectors} from '../../common.ts';
 
 type TestTablesConnector = BaseTablesConnector & {
   setCellForTest: (

@@ -3,7 +3,7 @@ import {
   BaseValueConnector,
   createBaseValueConnector,
 } from 'synclets/connector/base';
-import {getTestSyncletsAndConnectors} from '../common.ts';
+import {getTestSyncletsAndConnectors} from '../../common.ts';
 
 type TestValueConnector = BaseValueConnector & {
   setValueForTest: (value: Atom) => Promise<void>;
