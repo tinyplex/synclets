@@ -3,7 +3,7 @@ import {
   BaseTableConnector,
   createBaseTableConnector,
 } from 'synclets/connector/base';
-import {getTestSyncletsAndConnectors} from '../../common.ts';
+import {getTestSyncletsAndConnectors, pause} from '../../common.ts';
 
 type TestTableConnector = BaseTableConnector & {
   setCellForTest: (rowId: string, cellId: string, cell: Atom) => Promise<void>;
@@ -242,6 +242,8 @@ describe('table sync, basics', () => {
     await connector1.setCellForTest('r1', 'c1', 'C1');
     expectDifferingConnectors(connector1, connector2, {r1: {c1: 'C1'}});
 
+    await pause();
+
     await connector2.setCellForTest('r1', 'c1', 'C2');
     expectDifferingConnectors(
       connector1,
@@ -308,6 +310,7 @@ describe('table sync, multiple values', () => {
       await getTestSyncletsAndConnectors(createTestTableConnector, 2);
     await connector1.setCellForTest('r1', 'c1', 'C1');
     await connector2.setCellForTest('r1', 'c2', 'C2');
+    await pause();
     await connector1.setCellForTest('r1', 'c2', 'C3');
     await connector2.setCellForTest('r1', 'c3', 'C3');
     await synclet1.start();

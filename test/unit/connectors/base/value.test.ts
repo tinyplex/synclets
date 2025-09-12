@@ -3,7 +3,7 @@ import {
   BaseValueConnector,
   createBaseValueConnector,
 } from 'synclets/connector/base';
-import {getTestSyncletsAndConnectors} from '../../common.ts';
+import {getTestSyncletsAndConnectors, pause} from '../../common.ts';
 
 type TestValueConnector = BaseValueConnector & {
   setValueForTest: (value: Atom) => Promise<void>;
@@ -185,6 +185,8 @@ describe('value sync, basics', () => {
 
     await connector1.setValueForTest('V1');
     expectDifferingConnectors(connector1, connector2, 'V1');
+
+    await pause();
 
     await connector2.setValueForTest('V2');
     expectDifferingConnectors(connector1, connector2, 'V1', 'V2');

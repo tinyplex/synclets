@@ -7,7 +7,7 @@ import {
   Hash,
   Timestamp,
 } from 'synclets';
-import {getTestSyncletsAndConnectors} from '../common.ts';
+import {getTestSyncletsAndConnectors, pause} from '../common.ts';
 
 type Values = {
   one?: Atom;
@@ -584,9 +584,13 @@ describe('custom sync, multiple values', () => {
   test('disconnected, conflicting values', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestCustomConnector, 2);
+
     await connector1.setValueForTest(['one'], 'V2');
+    await pause();
     await connector2.setValueForTest(['one'], 'V3');
+
     await connector1.setValueForTest(['three', 'one'], 'V4');
+    await pause();
     await connector2.setValueForTest(['three', 'one'], 'V5');
 
     await synclet1.start();

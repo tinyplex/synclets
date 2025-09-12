@@ -17,9 +17,7 @@ export const getTestSyncletsAndConnectors = async <
   return await Promise.all(
     new Array(number)
       .fill(0)
-      .map((_, i) =>
-        getTestSyncletAndConnector(createConnector, i + 1 + '', poolId, log),
-      ),
+      .map(() => getTestSyncletAndConnector(createConnector, poolId, log)),
   );
 };
 
@@ -27,17 +25,12 @@ export const getTestSyncletAndConnector = async <
   TestConnector extends Connector,
 >(
   createConnector: (options?: ConnectorOptions) => Promise<TestConnector>,
-  id?: string,
   poolId: string = getUniqueId(),
   log = false,
 ): Promise<[Synclet, TestConnector]> => {
   const logger = log ? console : undefined;
   const connector = await createConnector({logger});
-  const synclet = await createSynclet(
-    connector,
-    await createMemoryTransport({poolId, logger}),
-    {},
-    {id, logger},
-  );
+  const transport = await createMemoryTransport({poolId, logger});
+  const synclet = await createSynclet(connector, transport, {}, {logger});
   return [synclet, connector];
 };

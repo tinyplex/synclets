@@ -201,6 +201,8 @@ describe('values sync, basics', () => {
     await connector1.setValueForTest('v1', 'V1');
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'});
 
+    await pause();
+
     await connector2.setValueForTest('v1', 'V2');
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {v1: 'V2'});
 

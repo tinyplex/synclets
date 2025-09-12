@@ -3,7 +3,7 @@ import {
   BaseTablesConnector,
   createBaseTablesConnector,
 } from 'synclets/connector/base';
-import {getTestSyncletsAndConnectors} from '../../common.ts';
+import {getTestSyncletsAndConnectors, pause} from '../../common.ts';
 
 type TestTablesConnector = BaseTablesConnector & {
   setCellForTest: (
@@ -302,6 +302,8 @@ describe('tables sync, basics', () => {
     await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
     expectDifferingConnectors(connector1, connector2, {t1: {r1: {c1: 'C1'}}});
 
+    await pause();
+
     await connector2.setCellForTest('t1', 'r1', 'c1', 'C2');
     expectDifferingConnectors(
       connector1,
@@ -316,7 +318,7 @@ describe('tables sync, basics', () => {
   });
 });
 
-describe('table sync, multiple values', () => {
+describe('tables sync, multiple values', () => {
   test('connected, different values 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestTablesConnector, 2);
@@ -368,6 +370,7 @@ describe('table sync, multiple values', () => {
       await getTestSyncletsAndConnectors(createTestTablesConnector, 2);
     await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
     await connector2.setCellForTest('t1', 'r1', 'c2', 'C2');
+    await pause();
     await connector1.setCellForTest('t1', 'r1', 'c2', 'C3');
     await connector2.setCellForTest('t1', 'r1', 'c3', 'C3');
     await synclet1.start();
