@@ -30,7 +30,7 @@ export function createFileValueConnector(
 // };
 
 // export type FileValuesConnectorImplementations = {
-//   connect?: (sync?: (valueId: string) => Promise<void>) => Promise<void>;
+//   connect?: () => Promise<void>;
 //   disconnect?: () => Promise<void>;
 //   readValuesHash: (context: Context) => Promise<Hash | undefined>;
 //   readValueIds: (context: Context) => Promise<string[]>;
@@ -89,7 +89,7 @@ export function createFileValueConnector(
 
 // export type FileTableConnectorImplementations = {
 //   connect?: (
-//     sync?: (rowId: string, cellId: string) => Promise<void>,
+//
 //   ) => Promise<void>;
 //   disconnect?: () => Promise<void>;
 //   readTableHash: (context: Context) => Promise<Hash | undefined>;
@@ -173,8 +173,7 @@ export function createFileValueConnector(
 
 // export type FileTablesConnectorImplementations = {
 //   connect?: (
-//     sync?: (tableId?: string, rowId?: string, cellId?: string) =>
-// Promise<void>,
+//
 //   ) => Promise<void>;
 //   disconnect?: () => Promise<void>;
 //   readTablesHash: (context: Context) => Promise<Hash | undefined>;

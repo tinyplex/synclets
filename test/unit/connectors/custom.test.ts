@@ -37,7 +37,6 @@ type TestCustomConnector = Connector & {
   getValuesForTest: () => Values;
   getTimestampsForTest: () => Timestamps;
   getHashesForTest: () => Hashes;
-  syncForTest: (address: Address) => Promise<void>;
 };
 
 const createTestCustomConnector = async (
@@ -59,14 +58,8 @@ const createTestCustomConnector = async (
     three: {_: 0, two: {_: 0}},
   };
 
-  let underlyingSync: ((address: Address) => Promise<void>) | undefined;
-
   const connector = await createConnector(
     {
-      connect: async (sync?: (address: Address) => Promise<void>) => {
-        underlyingSync = sync;
-      },
-
       readAtom: async (address: Address) => {
         switch (JSON.stringify(address)) {
           case '["one"]':
@@ -218,17 +211,11 @@ const createTestCustomConnector = async (
       value: Atom,
       sync: boolean = true,
     ) => {
-      await connector.setAtom(address, value);
-      if (sync) {
-        await underlyingSync?.(address);
-      }
+      await connector.setAtom(address, value, {}, sync);
     },
 
     delValueForTest: async (address: Address, sync: boolean = true) => {
-      await connector.delAtom(address);
-      if (sync) {
-        await underlyingSync?.(address);
-      }
+      await connector.delAtom(address, {}, sync);
     },
 
     getValuesForTest: () => values,
@@ -236,8 +223,6 @@ const createTestCustomConnector = async (
     getTimestampsForTest: () => timestamps,
 
     getHashesForTest: () => hashes,
-
-    syncForTest: async (address: Address) => await underlyingSync?.(address),
   };
 };
 
@@ -338,7 +323,7 @@ describe('custom sync, basics', () => {
 
     await connector1.setValueForTest(['one'], 'V2', false);
     await connector1.setValueForTest(['two', 'one'], 'V3', false);
-    await connector1.syncForTest([]);
+    await synclet1.sync([]);
 
     expectEquivalentConnectors(connector1, connector2, {
       one: 'V2',
@@ -348,7 +333,7 @@ describe('custom sync, basics', () => {
 
     await connector2.setValueForTest(['three', 'one'], 'V4', false);
     await connector2.setValueForTest(['three', 'two', 'one'], 'V5', false);
-    await connector2.syncForTest(['three']);
+    await synclet2.sync(['three']);
     expectEquivalentConnectors(connector1, connector2, {
       one: 'V2',
       two: {one: 'V3'},

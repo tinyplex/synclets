@@ -71,7 +71,7 @@ export function createSynclet(
 export interface Connector {
   __brand: 'Connector';
   log: (message: string, level?: LogLevel) => void;
-  connect?: (sync?: (address: Address) => Promise<void>) => Promise<void>;
+  connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
   setAtom: (
     address: Address,
@@ -87,7 +87,7 @@ export interface Connector {
 }
 
 export type ConnectorImplementations = {
-  connect?: (sync?: (address: Address) => Promise<void>) => Promise<void>;
+  connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
   readAtom: (address: Address, context: Context) => Promise<Atom | undefined>;
   readTimestamp: (

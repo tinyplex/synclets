@@ -299,7 +299,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const start = async () => {
     log('start');
-    await connector.connect?.(sync);
+    await connector.connect?.();
     await transport.connect?.(receiveMessage);
     started = true;
     await sync([]);

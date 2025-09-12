@@ -34,19 +34,9 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl =
   ): Promise<BaseTableConnector> => {
     const connector = await createConnector(
       {
-        connect: async (sync?: (address: Address) => Promise<void>) =>
-          await connect?.(
-            sync
-              ? (rowId, cellId) =>
-                  isUndefined(rowId)
-                    ? sync([])
-                    : isUndefined(cellId)
-                      ? sync([rowId])
-                      : sync([rowId, cellId])
-              : undefined,
-          ),
+        connect,
 
-        disconnect: async () => await disconnect?.(),
+        disconnect,
 
         readAtom: ([rowId, cellId]: Address, context: Context) =>
           readCellAtom(rowId, cellId, context),

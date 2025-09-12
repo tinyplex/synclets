@@ -27,10 +27,9 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl =
   ): Promise<BaseValueConnector> => {
     const connector = await createConnector(
       {
-        connect: async (sync?: (address: Address) => Promise<void>) =>
-          await connect?.(sync ? () => sync([]) : undefined),
+        connect,
 
-        disconnect: async () => disconnect?.(),
+        disconnect,
 
         readAtom: (_address: Address, context: Context) =>
           readValueAtom(context),

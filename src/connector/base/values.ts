@@ -11,7 +11,7 @@ import type {
   BaseValuesConnectorImplementations,
   createBaseValuesConnector as createBaseValuesConnectorDecl,
 } from '@synclets/@types/connector/base';
-import {isEmpty, isUndefined} from '@synclets/utils';
+import {isEmpty} from '@synclets/utils';
 
 export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl =
   async (
@@ -31,14 +31,9 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl =
   ): Promise<BaseValuesConnector> => {
     const connector = await createConnector(
       {
-        connect: async (sync?: (address: Address) => Promise<void>) =>
-          await connect?.(
-            sync
-              ? (valueId) => (isUndefined(valueId) ? sync([]) : sync([valueId]))
-              : undefined,
-          ),
+        connect,
 
-        disconnect: async () => await disconnect?.(),
+        disconnect,
 
         readAtom: ([valueId]: Address, context: Context) =>
           readValueAtom(valueId, context),
