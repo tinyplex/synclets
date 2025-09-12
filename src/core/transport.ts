@@ -7,7 +7,7 @@ import type {
 } from '@synclets/@types';
 import {errorNew, getUniqueId} from '@synclets/utils';
 import {getPacketFunctions} from './packets.ts';
-import type {ProtectedTransport, ReceiveMessage} from './protected.js';
+import type {Message, ProtectedTransport, ReceiveMessage} from './protected.js';
 
 export {getPacketFromParts, getPartsFromPacket} from './packets.ts';
 
@@ -50,7 +50,11 @@ export const createTransport: typeof createTransportDecl = async (
 
     isConnected: () => connected,
 
-    sendMessage: sendPackets,
+    sendMessage: async (message: Message, to?: string) => {
+      if (connected) {
+        await sendPackets(message, to);
+      }
+    },
 
     bind: (synclet: Synclet, syncletId: string) => {
       if (boundSynclet) {

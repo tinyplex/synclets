@@ -242,6 +242,7 @@ describe('tables sync, basics', () => {
       await getTestSyncletsAndConnectors(createTestTablesConnector, 2);
 
     await synclet2.start();
+    await connector1.connect();
     await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
     expectDifferingConnectors(connector1, connector2, {t1: {r1: {c1: 'C1'}}});
 
@@ -260,6 +261,7 @@ describe('tables sync, basics', () => {
     expectEquivalentConnectors(connector1, connector2, {t1: {r1: {c1: 'C1'}}});
 
     await synclet1.stop();
+    await connector1.connect();
     await connector1.setCellForTest('t1', 'r1', 'c1', 'C2');
     expectDifferingConnectors(
       connector1,
@@ -299,11 +301,13 @@ describe('tables sync, basics', () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestTablesConnector, 2);
 
+    await connector1.connect();
     await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
     expectDifferingConnectors(connector1, connector2, {t1: {r1: {c1: 'C1'}}});
 
     await pause();
 
+    await connector2.connect();
     await connector2.setCellForTest('t1', 'r1', 'c1', 'C2');
     expectDifferingConnectors(
       connector1,
@@ -345,6 +349,8 @@ describe('tables sync, multiple values', () => {
   test('disconnected, different values 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestTablesConnector, 2);
+    await connector1.connect();
+    await connector2.connect();
     await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
     await connector2.setCellForTest('t1', 'r1', 'c2', 'C2');
     await synclet1.start();
@@ -356,6 +362,8 @@ describe('tables sync, multiple values', () => {
   test('disconnected, different values 2', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestTablesConnector, 2);
+    await connector1.connect();
+    await connector2.connect();
     await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
     await connector2.setCellForTest('t2', 'r2', 'c2', 'C2');
     await synclet1.start();
@@ -368,6 +376,8 @@ describe('tables sync, multiple values', () => {
   test('disconnected, conflicting values', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestTablesConnector, 2);
+    await connector1.connect();
+    await connector2.connect();
     await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
     await connector2.setCellForTest('t1', 'r1', 'c2', 'C2');
     await pause();

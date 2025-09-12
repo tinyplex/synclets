@@ -63,6 +63,9 @@ export const createConnector: typeof createConnectorDecl = async (
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
+    if (!connected) {
+      return;
+    }
     if (isUndefined(newTimestamp)) {
       newTimestamp = getNextTimestamp();
     } else {
@@ -143,13 +146,19 @@ export const createConnector: typeof createConnectorDecl = async (
 
     bind: (synclet: Synclet, syncletId: string) => {
       boundSynclets.add(synclet);
-      id = syncletId;
+      if (boundSynclets.size == 1) {
+        id = syncletId;
+      }
     },
 
     readAtom,
+
     readTimestamp,
+
     readHash,
+
     isParent,
+
     readChildIds,
   };
 };

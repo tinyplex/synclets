@@ -376,6 +376,7 @@ describe('custom sync, basics', () => {
       await getTestSyncletsAndConnectors(createTestCustomConnector, 2);
 
     await synclet2.start();
+    await connector1.connect();
     await connector1.setValueForTest(['one'], 'V2');
     expectDifferingConnectors(
       connector1,
@@ -415,6 +416,7 @@ describe('custom sync, basics', () => {
     });
 
     await synclet1.stop();
+    await connector1.connect();
     await connector1.setValueForTest(['two', 'one'], 'V3');
     expectDifferingConnectors(
       connector1,
@@ -482,6 +484,7 @@ describe('custom sync, basics', () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestCustomConnector, 2);
 
+    await connector1.connect();
     await connector1.setValueForTest(['one'], 'V2');
     expectDifferingConnectors(
       connector1,
@@ -498,6 +501,7 @@ describe('custom sync, basics', () => {
       },
     );
 
+    await connector2.connect();
     await connector2.setValueForTest(['two', 'one'], 'V3');
     expectDifferingConnectors(
       connector1,
@@ -556,6 +560,8 @@ describe('custom sync, multiple values', () => {
   test('disconnected, different values 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestCustomConnector, 2);
+    await connector1.connect();
+    await connector2.connect();
     await connector1.setValueForTest(['one'], 'V2');
     await connector2.setValueForTest(['two', 'one'], 'V3');
     await synclet1.start();
@@ -570,6 +576,8 @@ describe('custom sync, multiple values', () => {
   test('disconnected, different values 2', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestCustomConnector, 2);
+    await connector1.connect();
+    await connector2.connect();
     await connector1.setValueForTest(['three', 'one'], 'V4');
     await connector2.setValueForTest(['three', 'two', 'one'], 'V5');
     await synclet1.start();
@@ -584,6 +592,9 @@ describe('custom sync, multiple values', () => {
   test('disconnected, conflicting values', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestCustomConnector, 2);
+
+    await connector1.connect();
+    await connector2.connect();
 
     await connector1.setValueForTest(['one'], 'V2');
     await pause();
