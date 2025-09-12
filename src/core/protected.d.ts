@@ -22,8 +22,6 @@ export type Message = [
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
 export interface ProtectedConnector extends Connector {
-  connect?: () => Promise<void>;
-  disconnect?: () => Promise<void>;
   attachToSynclet(synclet: Synclet): void;
   readAtom(address: Address, context: Context): Promise<Atom | undefined>;
   readTimestamp(

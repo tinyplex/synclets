@@ -68,8 +68,8 @@ export function createSynclet(
 export interface Connector {
   __brand: 'Connector';
   log(message: string, level?: LogLevel): void;
-  start(): Promise<void>;
-  stop(): Promise<void>;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
   setAtom: (
     address: Address,
     atom: Atom,

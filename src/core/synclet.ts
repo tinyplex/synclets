@@ -294,7 +294,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     start: async () => {
       if (!started) {
         log('start');
-        await connector.start();
+        await connector.connect();
         await transport.connect?.(receiveMessage);
         started = true;
         await sync([]);

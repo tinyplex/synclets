@@ -40,7 +40,7 @@ export const createConnector: typeof createConnectorDecl = async (
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
 ): Promise<ProtectedConnector> => {
-  let started = false;
+  let connected = false;
   let attachedSynclet: Synclet | undefined;
 
   const id = options.id ?? getUniqueId();
@@ -60,19 +60,19 @@ export const createConnector: typeof createConnectorDecl = async (
 
     log,
 
-    start: async () => {
-      if (!started) {
-        log('start');
+    connect: async () => {
+      if (!connected) {
+        log('connect');
         await connect?.();
-        started = true;
+        connected = true;
       }
     },
 
-    stop: async () => {
-      if (started) {
-        log('stop');
+    disconnect: async () => {
+      if (connected) {
+        log('disconnect');
         await disconnect?.();
-        started = false;
+        connected = false;
       }
     },
 
@@ -143,8 +143,6 @@ export const createConnector: typeof createConnectorDecl = async (
       attachedSynclet = synclet;
     },
 
-    connect,
-    disconnect,
     readAtom,
     readTimestamp,
     readHash,
