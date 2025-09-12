@@ -7,7 +7,12 @@ import {
   Hash,
   Timestamp,
 } from 'synclets';
-import {getTestSyncletsAndConnectors, pause} from '../common.ts';
+import {
+  expectDifferingConnectors,
+  expectEquivalentConnectors,
+  getTestSyncletsAndConnectors,
+  pause,
+} from '../common.ts';
 
 type Values = {
   one?: Atom;
@@ -27,17 +32,12 @@ type Hashes = {
   three: {_: Hash; two: {_: Hash}};
 };
 
-type TestCustomConnector = Connector & {
-  setValueForTest: (
-    address: Address,
-    value: Atom,
-    sync?: boolean,
-  ) => Promise<void>;
-  delValueForTest: (address: Address, sync?: boolean) => Promise<void>;
-  getValuesForTest: () => Values;
-  getTimestampsForTest: () => Timestamps;
-  getHashesForTest: () => Hashes;
-};
+interface TestCustomConnector extends Connector {
+  setValueForTest(address: Address, value: Atom, sync?: boolean): Promise<void>;
+  delValueForTest(address: Address, sync?: boolean): Promise<void>;
+  getDataForTest(): Values;
+  getMetaForTest(): [Timestamps, Hashes];
+}
 
 const createTestCustomConnector = async (
   options?: ConnectorOptions,
@@ -218,44 +218,13 @@ const createTestCustomConnector = async (
       await connector.delAtom(address, {}, sync);
     },
 
-    getValuesForTest: () => values,
+    getDataForTest: () => values,
 
-    getTimestampsForTest: () => timestamps,
-
-    getHashesForTest: () => hashes,
+    getMetaForTest: () => [timestamps, hashes],
   };
 };
 
-const expectEquivalentConnectors = (
-  connector1: TestCustomConnector,
-  connector2: TestCustomConnector,
-  values: any,
-) => {
-  expect(connector1.getValuesForTest()).toEqual(values);
-  expect(connector2.getValuesForTest()).toEqual(values);
-  expect(connector1.getTimestampsForTest()).toEqual(
-    connector2.getTimestampsForTest(),
-  );
-  expect(connector1.getHashesForTest()).toEqual(connector2.getHashesForTest());
-};
-
-const expectDifferingConnectors = (
-  connector1: TestCustomConnector,
-  connector2: TestCustomConnector,
-  values1: any,
-  values2: any,
-) => {
-  expect(connector1.getValuesForTest()).toEqual(values1);
-  expect(connector2.getValuesForTest()).toEqual(values2);
-  expect(connector1.getTimestampsForTest()).not.toEqual(
-    connector2.getTimestampsForTest(),
-  );
-  expect(connector1.getHashesForTest()).not.toEqual(
-    connector2.getHashesForTest(),
-  );
-};
-
-describe('custom sync, basics', () => {
+describe('2-way', () => {
   test('connected, initial', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestCustomConnector, 2);
@@ -263,7 +232,7 @@ describe('custom sync, basics', () => {
     await synclet1.start();
     await synclet2.start();
 
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V1',
       two: {one: 'V1'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -278,40 +247,40 @@ describe('custom sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValueForTest(['one'], 'V2');
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V1'},
       three: {one: 'V1', two: {one: 'V1'}},
     });
 
     await connector2.setValueForTest(['two', 'one'], 'V3');
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V1', two: {one: 'V1'}},
     });
 
     await connector1.setValueForTest(['three', 'one'], 'V4');
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V4', two: {one: 'V1'}},
     });
 
     await connector2.setValueForTest(['three', 'two', 'one'], 'V5');
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V4', two: {one: 'V5'}},
     });
 
-    const timestamp = connector1.getTimestampsForTest().one;
+    const timestamp = connector1.getMetaForTest()[0].one;
     await connector1.delValueForTest(['one']);
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       two: {one: 'V3'},
       three: {one: 'V4', two: {one: 'V5'}},
     });
-    expect(timestamp).not.toEqual(connector1.getTimestampsForTest().one);
+    expect(timestamp).not.toEqual(connector1.getMetaForTest()[0].one);
   });
 
   test('connected, value parents', async () => {
@@ -325,7 +294,7 @@ describe('custom sync, basics', () => {
     await connector1.setValueForTest(['two', 'one'], 'V3', false);
     await synclet1.sync([]);
 
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -334,7 +303,7 @@ describe('custom sync, basics', () => {
     await connector2.setValueForTest(['three', 'one'], 'V4', false);
     await connector2.setValueForTest(['three', 'two', 'one'], 'V5', false);
     await synclet2.sync(['three']);
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V4', two: {one: 'V5'}},
@@ -364,7 +333,7 @@ describe('custom sync, basics', () => {
     );
 
     await synclet2.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V1'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -394,7 +363,7 @@ describe('custom sync, basics', () => {
     );
 
     await synclet1.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V1'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -409,7 +378,7 @@ describe('custom sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValueForTest(['one'], 'V2');
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V1'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -434,7 +403,7 @@ describe('custom sync, basics', () => {
     );
 
     await synclet1.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -449,7 +418,7 @@ describe('custom sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValueForTest(['one'], 'V2');
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V1'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -473,7 +442,7 @@ describe('custom sync, basics', () => {
     );
 
     await synclet1.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -520,15 +489,13 @@ describe('custom sync, basics', () => {
 
     await synclet2.start();
     await synclet1.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V1', two: {one: 'V1'}},
     });
   });
-});
 
-describe('custom sync, multiple values', () => {
   test('connected, different values 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestCustomConnector, 2);
@@ -536,7 +503,7 @@ describe('custom sync, multiple values', () => {
     await synclet2.start();
     await connector1.setValueForTest(['one'], 'V2');
     await connector2.setValueForTest(['two', 'one'], 'V3');
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -550,7 +517,7 @@ describe('custom sync, multiple values', () => {
     await synclet2.start();
     await connector1.setValueForTest(['three', 'one'], 'V4');
     await connector2.setValueForTest(['three', 'two', 'one'], 'V5');
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V1',
       two: {one: 'V1'},
       three: {one: 'V4', two: {one: 'V5'}},
@@ -566,7 +533,7 @@ describe('custom sync, multiple values', () => {
     await connector2.setValueForTest(['two', 'one'], 'V3');
     await synclet1.start();
     await synclet2.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V2',
       two: {one: 'V3'},
       three: {one: 'V1', two: {one: 'V1'}},
@@ -582,7 +549,7 @@ describe('custom sync, multiple values', () => {
     await connector2.setValueForTest(['three', 'two', 'one'], 'V5');
     await synclet1.start();
     await synclet2.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V1',
       two: {one: 'V1'},
       three: {one: 'V4', two: {one: 'V5'}},
@@ -606,7 +573,7 @@ describe('custom sync, multiple values', () => {
 
     await synclet1.start();
     await synclet2.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       one: 'V3',
       two: {one: 'V1'},
       three: {one: 'V5', two: {one: 'V1'}},

@@ -3,15 +3,19 @@ import {
   BaseValuesConnector,
   createBaseValuesConnector,
 } from 'synclets/connector/base';
-import {getTestSyncletsAndConnectors, pause} from '../../common.ts';
+import {
+  expectDifferingConnectors,
+  expectEquivalentConnectors,
+  getTestSyncletsAndConnectors,
+  pause,
+} from '../../common.ts';
 
-type TestValuesConnector = BaseValuesConnector & {
-  setValueForTest: (valueId: string, value: Atom) => Promise<void>;
-  delValueForTest: (valueId: string) => Promise<void>;
-  getValuesForTest: () => {[valueId: string]: Atom};
-  getTimestampsForTest: () => {[valueId: string]: Timestamp};
-  getHashForTest: () => Hash | undefined;
-};
+interface TestValuesConnector extends BaseValuesConnector {
+  setValueForTest(valueId: string, value: Atom): Promise<void>;
+  delValueForTest(valueId: string): Promise<void>;
+  getDataForTest(): {[valueId: string]: Atom};
+  getMetaForTest(): [{[valueId: string]: Timestamp}, Hash | undefined];
+}
 
 const createTestValuesConnector = async (
   options?: ConnectorOptions,
@@ -57,42 +61,13 @@ const createTestValuesConnector = async (
 
     delValueForTest: (valueId: string) => connector.delValue(valueId),
 
-    getValuesForTest: () => values,
+    getDataForTest: () => values,
 
-    getTimestampsForTest: () => timestamps,
-
-    getHashForTest: () => valuesHash,
+    getMetaForTest: () => [timestamps, valuesHash],
   };
 };
 
-const expectEquivalentConnectors = (
-  connector1: TestValuesConnector,
-  connector2: TestValuesConnector,
-  values: {[valueId: string]: Atom} = {},
-) => {
-  expect(connector1.getValuesForTest()).toEqual(values);
-  expect(connector2.getValuesForTest()).toEqual(values);
-  expect(connector1.getTimestampsForTest()).toEqual(
-    connector2.getTimestampsForTest(),
-  );
-  expect(connector1.getHashForTest()).toEqual(connector2.getHashForTest());
-};
-
-const expectDifferingConnectors = (
-  connector1: TestValuesConnector,
-  connector2: TestValuesConnector,
-  values1: {[valueId: string]: Atom},
-  values2: {[valueId: string]: Atom} = {},
-) => {
-  expect(connector1.getValuesForTest()).toEqual(values1);
-  expect(connector2.getValuesForTest()).toEqual(values2);
-  expect(connector1.getTimestampsForTest()).not.toEqual(
-    connector2.getTimestampsForTest(),
-  );
-  expect(connector1.getHashForTest()).not.toEqual(connector2.getHashForTest());
-};
-
-describe('values sync, basics', () => {
+describe('2-way', () => {
   test('connected, initial', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestValuesConnector, 2);
@@ -100,7 +75,7 @@ describe('values sync, basics', () => {
     await synclet1.start();
     await synclet2.start();
 
-    expectEquivalentConnectors(connector1, connector2);
+    expectEquivalentConnectors([connector1, connector2], {});
   });
 
   test('connected', async () => {
@@ -111,10 +86,10 @@ describe('values sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValueForTest('v1', 'V1');
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V1'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
 
     await connector2.setValueForTest('v1', 'V2');
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V2'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V2'});
   });
 
   test('connected, deletion', async () => {
@@ -125,12 +100,12 @@ describe('values sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValueForTest('v1', 'V1');
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V1'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
 
-    const timestamp = connector1.getTimestampsForTest().v1;
+    const timestamp = connector1.getMetaForTest()[0].v1;
     await connector1.delValueForTest('v1');
-    expectEquivalentConnectors(connector1, connector2);
-    expect(timestamp).not.toEqual(connector1.getTimestampsForTest().v1);
+    expectEquivalentConnectors([connector1, connector2], {});
+    expect(timestamp).not.toEqual(connector1.getMetaForTest()[0].v1);
   });
 
   test('start 1, set 1, start 2', async () => {
@@ -143,7 +118,7 @@ describe('values sync, basics', () => {
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {});
 
     await synclet2.start();
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V1'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
   });
 
   test('start 2, set 1, start 1', async () => {
@@ -156,7 +131,7 @@ describe('values sync, basics', () => {
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {});
 
     await synclet1.start();
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V1'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
   });
 
   test('stop 1, set 1, start 1', async () => {
@@ -167,7 +142,7 @@ describe('values sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValueForTest('v1', 'V1');
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V1'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
 
     await synclet1.stop();
     await connector1.connect();
@@ -175,7 +150,7 @@ describe('values sync, basics', () => {
     expectDifferingConnectors(connector1, connector2, {v1: 'V2'}, {v1: 'V1'});
 
     await synclet1.start();
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V2'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V2'});
   });
 
   test('stop 1, set 2, start 1', async () => {
@@ -186,14 +161,14 @@ describe('values sync, basics', () => {
     await synclet2.start();
 
     await connector1.setValueForTest('v1', 'V1');
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V1'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
 
     await synclet1.stop();
     await connector2.setValueForTest('v1', 'V2');
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {v1: 'V2'});
 
     await synclet1.start();
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V2'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V2'});
   });
 
   test('set 1, set 2, start 2, start 1', async () => {
@@ -202,7 +177,7 @@ describe('values sync, basics', () => {
 
     await connector1.connect();
     await connector1.setValueForTest('v1', 'V1');
-    expectDifferingConnectors(connector1, connector2, {v1: 'V1'});
+    expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {});
 
     await pause();
 
@@ -212,11 +187,9 @@ describe('values sync, basics', () => {
 
     await synclet2.start();
     await synclet1.start();
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V2'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V2'});
   });
-});
 
-describe('values sync, multiple values', () => {
   test('connected, different values', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
       await getTestSyncletsAndConnectors(createTestValuesConnector, 2);
@@ -226,7 +199,7 @@ describe('values sync, multiple values', () => {
 
     await connector1.setValueForTest('v1', 'V1');
     await connector2.setValueForTest('v2', 'V2');
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V1', v2: 'V2'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V1', v2: 'V2'});
   });
 
   test('disconnected, different values', async () => {
@@ -240,7 +213,7 @@ describe('values sync, multiple values', () => {
 
     await synclet1.start();
     await synclet2.start();
-    expectEquivalentConnectors(connector1, connector2, {v1: 'V1', v2: 'V2'});
+    expectEquivalentConnectors([connector1, connector2], {v1: 'V1', v2: 'V2'});
   });
 
   test('disconnected, conflicting values', async () => {
@@ -257,7 +230,7 @@ describe('values sync, multiple values', () => {
 
     await synclet1.start();
     await synclet2.start();
-    expectEquivalentConnectors(connector1, connector2, {
+    expectEquivalentConnectors([connector1, connector2], {
       v1: 'V1',
       v2: 'V3',
       v3: 'V3',
