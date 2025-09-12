@@ -135,6 +135,7 @@ export type TransportImplementations = {
 };
 
 export type TransportOptions = {
+  id?: string;
   logger?: Logger;
   fragmentSize?: number;
 };

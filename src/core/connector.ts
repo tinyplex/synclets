@@ -42,20 +42,63 @@ export const createConnector: typeof createConnectorDecl = async (
 ): Promise<ProtectedConnector> => {
   let connected = false;
   let attachedSynclet: Synclet | undefined;
+  let id = options.id ?? getUniqueId();
 
-  const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};
 
   const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id);
 
   const [queue] = getQueueFunctions();
 
-  // --
-
   const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[C:${id}] ${string}`);
+    logger?.[level]?.(`[${id}/C] ${string}`);
 
-  const connector = {
+  const setOrDelAtom = async (
+    address: Address,
+    atomOrTomb: Atom | Tomb,
+    context: Context = {},
+    sync = true,
+    newTimestamp?: Timestamp,
+    oldTimestamp?: Timestamp,
+  ) => {
+    if (isUndefined(newTimestamp)) {
+      newTimestamp = getNextTimestamp();
+    } else {
+      seenTimestamp(newTimestamp);
+    }
+    if (isUndefined(oldTimestamp)) {
+      oldTimestamp = await readTimestamp(address, context);
+    }
+    const tasks = [
+      atomOrTomb === TOMB
+        ? () => removeAtom(address, context)
+        : () => writeAtom(address, atomOrTomb, context),
+      () => writeTimestamp(address, newTimestamp, context),
+    ];
+    if (!isEmpty(address)) {
+      const hashChange = combineHash(
+        getHash(oldTimestamp),
+        getHash(newTimestamp),
+      );
+      let parentAddress = [...address];
+      while (!isEmpty(parentAddress)) {
+        const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
+        arrayPush(tasks, async () => {
+          await writeHash(
+            queuedAddress,
+            combineHash(await readHash(queuedAddress, context), hashChange),
+            context,
+          );
+        });
+      }
+    }
+    if (sync) {
+      arrayPush(tasks, () => attachedSynclet?.sync(address));
+    }
+    await queue(...tasks);
+  };
+
+  return {
     __brand: 'Connector',
 
     log,
@@ -81,66 +124,19 @@ export const createConnector: typeof createConnectorDecl = async (
       atomOrTomb: Atom | Tomb,
       context?: Context,
       sync?: boolean,
-    ) => connector.setOrDelAtom(address, atomOrTomb, context, sync),
+    ) => setOrDelAtom(address, atomOrTomb, context, sync),
 
     delAtom: (address: Address, context?: Context, sync?: boolean) =>
-      connector.setOrDelAtom(address, TOMB, context, sync),
+      setOrDelAtom(address, TOMB, context, sync),
 
-    setOrDelAtom: async (
-      address: Address,
-      atomOrTomb: Atom | Tomb,
-      context: Context = {},
-      sync = true,
-      newTimestamp?: Timestamp,
-      oldTimestamp?: Timestamp,
-    ) => {
-      if (isUndefined(newTimestamp)) {
-        newTimestamp = getNextTimestamp();
-      } else {
-        seenTimestamp(newTimestamp);
-      }
-      if (isUndefined(oldTimestamp)) {
-        oldTimestamp = await connector.readTimestamp(address, context);
-      }
-      const tasks = [
-        atomOrTomb === TOMB
-          ? () => removeAtom(address, context)
-          : () => writeAtom(address, atomOrTomb, context),
-        () => writeTimestamp(address, newTimestamp, context),
-      ];
-      if (!isEmpty(address)) {
-        const hashChange = combineHash(
-          getHash(oldTimestamp),
-          getHash(newTimestamp),
-        );
-        let parentAddress = [...address];
-        while (!isEmpty(parentAddress)) {
-          const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
-          arrayPush(tasks, async () => {
-            await writeHash(
-              queuedAddress,
-              combineHash(
-                await connector.readHash(queuedAddress, context),
-                hashChange,
-              ),
-              context,
-            );
-          });
-        }
-      }
-      if (sync) {
-        arrayPush(tasks, () => attachedSynclet?.sync(address));
-      }
-      await queue(...tasks);
-    },
+    setOrDelAtom,
 
-    // --
-
-    attachToSynclet: (synclet: Synclet) => {
+    attachToSynclet: (synclet: Synclet, syncletId: string) => {
       if (attachedSynclet) {
         errorNew('Connector is already attached to Synclet');
       }
       attachedSynclet = synclet;
+      id = syncletId;
     },
 
     readAtom,
@@ -148,7 +144,5 @@ export const createConnector: typeof createConnectorDecl = async (
     readHash,
     isParent,
     readChildIds,
-  } as const;
-
-  return connector;
+  };
 };

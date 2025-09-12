@@ -5,63 +5,59 @@ import type {
   TransportImplementations,
   TransportOptions,
 } from '@synclets/@types';
-import {errorNew} from '@synclets/utils';
+import {errorNew, getUniqueId} from '@synclets/utils';
 import {getPacketFunctions} from './packets.ts';
 import type {ProtectedTransport, ReceiveMessage} from './protected.js';
 
 export {getPacketFromParts, getPartsFromPacket} from './packets.ts';
 
 export const createTransport: typeof createTransportDecl = async (
-  {
-    connect: connectImpl,
-    disconnect: disconnectImpl,
-    sendPacket,
-  }: TransportImplementations,
+  {connect, disconnect, sendPacket}: TransportImplementations,
   options: TransportOptions = {},
 ): Promise<ProtectedTransport> => {
+  let connected = false;
   let attachedSynclet: Synclet | undefined;
+  let id = options.id ?? getUniqueId();
+
   const logger = options.logger ?? {};
 
-  // #region public
-
   const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[T:] ${string}`);
+    logger?.[level]?.(`[${id}/T] ${string}`);
 
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
     getPacketFunctions(log, sendPacket, options.fragmentSize ?? 4096);
 
-  // #endregion
-
-  // #region protected
-
-  const attachToSynclet = (synclet: Synclet) => {
-    if (attachedSynclet) {
-      errorNew('Transport is already attached to Synclet');
-    }
-    attachedSynclet = synclet;
-  };
-
-  const connect = async (receiveMessage: ReceiveMessage) => {
-    startBuffer(receiveMessage);
-    await connectImpl?.(receivePacket);
-  };
-
-  const disconnect = async () => {
-    stopBuffer();
-    await disconnectImpl?.();
-  };
-
-  const sendMessage = sendPackets;
-
-  // #endregion
   return {
     __brand: 'Transport',
 
     log,
 
-    attachToSynclet,
-    connect,
-    disconnect,
-    sendMessage,
+    connect: async (receiveMessage: ReceiveMessage) => {
+      if (!connected) {
+        log('connect');
+        startBuffer(receiveMessage);
+        await connect?.(receivePacket);
+        connected = true;
+      }
+    },
+
+    disconnect: async () => {
+      if (connected) {
+        log('disconnect');
+        stopBuffer();
+        await disconnect?.();
+        connected = false;
+      }
+    },
+
+    sendMessage: sendPackets,
+
+    attachToSynclet: (synclet: Synclet, syncletId: string) => {
+      if (attachedSynclet) {
+        errorNew('Transport is already attached to Synclet');
+      }
+      attachedSynclet = synclet;
+      id = syncletId;
+    },
   };
 };

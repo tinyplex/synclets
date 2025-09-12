@@ -284,7 +284,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
   };
 
   const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[S:${id}] ${string}`);
+    logger?.[level]?.(`[${id}] ${string}`);
 
   const synclet: Synclet = {
     __brand: 'Synclet',
@@ -295,7 +295,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       if (!started) {
         log('start');
         await connector.connect();
-        await transport.connect?.(receiveMessage);
+        await transport.connect(receiveMessage);
         started = true;
         await sync([]);
       }
@@ -304,15 +304,15 @@ export const createSynclet: typeof createSyncletDecl = (async (
     stop: async () => {
       if (started) {
         log('stop');
-        await connector.disconnect?.();
-        await transport.disconnect?.();
+        await connector.disconnect();
+        await transport.disconnect();
         started = false;
       }
     },
     sync,
   };
 
-  connector.attachToSynclet(synclet);
-  transport.attachToSynclet(synclet);
+  connector.attachToSynclet(synclet, id);
+  transport.attachToSynclet(synclet, id);
   return synclet;
 }) as any;
