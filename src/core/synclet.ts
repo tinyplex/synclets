@@ -138,32 +138,30 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const receiveMessage = (message: Message, from: string) =>
     queueIfStarted(async () => {
-      if (from !== ASTERISK && from !== id) {
-        const [type, address, node, context] = message;
-        if (
-          isUndefined(canReceiveMessage) ||
-          (await canReceiveMessage(type, address, node, context))
-        ) {
-          if (type == MessageType.Node) {
-            return await transformNode(
-              address,
-              node,
-              context,
-              (newNode) => sendNodeMessage(address, newNode, context, from),
-              () => log(`${INVALID_NODE}: ${address}`, 'warn'),
-            );
-          }
-        }
+      const [type, address, node, context] = message;
+
+      if (from == ASTERISK || from == id || type != MessageType.Node) {
+        return log(`invalid message: ${from}`, 'warn');
       }
-      log(`invalid message: ${from}`, 'warn');
+
+      if (
+        !isUndefined(canReceiveMessage) &&
+        !(await canReceiveMessage(type, address, node, context))
+      ) {
+        return log(`can't receive message: ${from}`, 'warn');
+      }
+
+      await transformNode(address, node, context, (newNode) =>
+        sendNodeMessage(address, newNode, context, from),
+      );
     });
 
   const transformNode = async (
     address: Address,
     node: Node,
     context: Context,
-    ifDefined: (newNode: Node) => Promise<void> | void,
-    ifUndefined?: () => void,
+    ifTransformedToDefined: (newNode: Node) => Promise<void> | void,
+    ifTransformedToUndefined: () => void = () => {},
   ) =>
     await ifNotUndefined(
       await (
@@ -175,10 +173,10 @@ export const createSynclet: typeof createSyncletDecl = (async (
               ? transformHash
               : isSubNodes(node)
                 ? transformSubNodes
-                : undefined) as any
+                : () => log(`${INVALID_NODE}: ${address}`, 'warn')) as any
       )?.(address, node, context),
-      ifDefined,
-      ifUndefined,
+      ifTransformedToDefined,
+      ifTransformedToUndefined,
     );
 
   const transformTimestamp = async (
