@@ -11,7 +11,13 @@ import {dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
 
 const UTF8 = 'utf-8';
-const TEST_MODULES = ['', 'utils', 'connector/base', 'transport/memory'];
+const TEST_MODULES = [
+  '',
+  'utils',
+  'connector/base',
+  'connector/file',
+  'transport/memory',
+];
 const ALL_MODULES = [...TEST_MODULES];
 const ALL_DEFINITIONS = [...ALL_MODULES];
 
@@ -22,7 +28,7 @@ const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 
-const EXTERNAL = [];
+const EXTERNAL = ['fs/promises', 'path'];
 const MODULE_REPLACEMENTS = {};
 const MIN_MODULE_REPLACEMENTS = {};
 ALL_MODULES.forEach((module) => {
