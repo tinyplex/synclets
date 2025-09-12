@@ -285,8 +285,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
     logger?.[level]?.(`[${id}] ${string}`);
 
   const synclet: Synclet = {
-    __brand: 'Synclet',
-
     log,
 
     start: async () => {

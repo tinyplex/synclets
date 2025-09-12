@@ -28,8 +28,6 @@ export const createTransport: typeof createTransportDecl = async (
     getPacketFunctions(log, sendPacket, options.fragmentSize ?? 4096);
 
   return {
-    __brand: 'Transport',
-
     log,
 
     connect: async (receiveMessage: ReceiveMessage) => {

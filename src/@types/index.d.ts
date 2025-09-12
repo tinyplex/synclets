@@ -29,7 +29,6 @@ export type Logger = {
 export type LogLevel = keyof Logger;
 
 export interface Synclet {
-  __brand: 'Synclet';
   log(message: string, level?: LogLevel): void;
   start(): Promise<void>;
   stop(): Promise<void>;
@@ -67,7 +66,6 @@ export function createSynclet(
 // --
 
 export interface Connector {
-  __brand: 'Connector';
   log(message: string, level?: LogLevel): void;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
@@ -121,7 +119,6 @@ export function createConnector(
 // --
 
 export interface Transport {
-  __brand: 'Transport';
   log(message: string, level?: LogLevel): void;
 }
 

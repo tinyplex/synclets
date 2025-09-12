@@ -6,7 +6,7 @@ export type GetNow = () => number;
 
 export type Hlc = string;
 
-export const DELETED_VALUE: Tomb;
+export const TOMB: Tomb;
 
 export function getUniqueId(length?: number): string;
 

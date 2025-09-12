@@ -104,8 +104,6 @@ export const createConnector: typeof createConnectorDecl = async (
   };
 
   return {
-    __brand: 'Connector',
-
     log,
 
     connect: async () => {
