@@ -46,7 +46,7 @@ export const createConnector: typeof createConnectorDecl = async (
   const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};
 
-  const [getNextTimestamp, seenTimestamp, setUniqueId] = getHlcFunctions();
+  const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id);
 
   const [queue] = getQueueFunctions();
 
@@ -59,10 +59,6 @@ export const createConnector: typeof createConnectorDecl = async (
     __brand: 'Connector',
 
     log,
-
-    getId: () => id,
-
-    getStarted: () => started,
 
     start: async () => {
       if (!started) {
@@ -142,12 +138,9 @@ export const createConnector: typeof createConnectorDecl = async (
 
     attachToSynclet: (synclet: Synclet) => {
       if (attachedSynclet) {
-        errorNew(
-          'Connector is already attached to Synclet ' + attachedSynclet.getId(),
-        );
+        errorNew('Connector is already attached to Synclet');
       }
       attachedSynclet = synclet;
-      setUniqueId(attachedSynclet.getId());
     },
 
     connect,

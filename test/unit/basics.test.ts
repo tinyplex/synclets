@@ -54,28 +54,17 @@ test('log', async () => {
 });
 
 test('error on reassigning connector', async () => {
-  await createSynclet(connector, transport, {}, {id: 'synclet1'});
+  await createSynclet(connector, transport, {});
   await expect(async () => {
     await createSynclet(connector, await createMockTransport());
-  }).rejects.toThrow('Connector is already attached to Synclet synclet1');
+  }).rejects.toThrow('Connector is already attached to Synclet');
 });
 
 test('error on reassigning transport', async () => {
-  await createSynclet(connector, transport, {}, {id: 'synclet1'});
+  await createSynclet(connector, transport, {});
   await expect(async () => {
     await createSynclet(await createMockConnector(), transport);
-  }).rejects.toThrow('Transport is already attached to Synclet synclet1');
-});
-
-test('start & stop', async () => {
-  const synclet1 = await createSynclet(connector, transport);
-  expect(synclet1.getStarted()).toEqual(false);
-
-  await synclet1.start();
-  expect(synclet1.getStarted()).toEqual(true);
-
-  await synclet1.stop();
-  expect(synclet1.getStarted()).toEqual(false);
+  }).rejects.toThrow('Transport is already attached to Synclet');
 });
 
 describe('context', () => {

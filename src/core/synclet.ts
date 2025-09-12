@@ -291,10 +291,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
     log,
 
-    getId: () => id,
-
-    getStarted: () => started,
-
     start: async () => {
       if (!started) {
         log('start');
