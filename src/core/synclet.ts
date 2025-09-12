@@ -307,6 +307,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
         started = false;
       }
     },
+
+    isStarted: () => started,
+
     sync,
   };
 

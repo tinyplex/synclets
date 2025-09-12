@@ -33,7 +33,8 @@ export interface Synclet {
   log(message: string, level?: LogLevel): void;
   start(): Promise<void>;
   stop(): Promise<void>;
-  sync: (address: Address) => Promise<void>;
+  isStarted(): boolean;
+  sync(address: Address): Promise<void>;
 }
 
 export type SyncletImplementations = {
@@ -70,17 +71,13 @@ export interface Connector {
   log(message: string, level?: LogLevel): void;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
-  setAtom: (
+  setAtom(
     address: Address,
     atom: Atom,
     context?: Context,
     sync?: boolean,
-  ) => Promise<void>;
-  delAtom: (
-    address: Address,
-    context?: Context,
-    sync?: boolean,
-  ) => Promise<void>;
+  ): Promise<void>;
+  delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
 }
 
 export type ConnectorImplementations = {
