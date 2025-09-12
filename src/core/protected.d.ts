@@ -22,7 +22,7 @@ export type Message = [
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
 export interface ProtectedConnector extends Connector {
-  attachToSynclet(synclet: Synclet, syncletId: string): void;
+  bind(synclet: Synclet, syncletId: string): void;
   readAtom(address: Address, context: Context): Promise<Atom | undefined>;
   readTimestamp(
     address: Address,
@@ -46,7 +46,7 @@ export interface ProtectedConnector extends Connector {
 }
 
 export interface ProtectedTransport extends Transport {
-  attachToSynclet(synclet: Synclet, syncletId: string): void;
+  bind(synclet: Synclet, syncletId: string): void;
   connect(receiveMessage: ReceiveMessage): Promise<void>;
   disconnect(): Promise<void>;
   sendMessage(message: Message, to?: string): Promise<void>;

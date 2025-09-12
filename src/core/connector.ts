@@ -131,7 +131,7 @@ export const createConnector: typeof createConnectorDecl = async (
 
     setOrDelAtom,
 
-    attachToSynclet: (synclet: Synclet, syncletId: string) => {
+    bind: (synclet: Synclet, syncletId: string) => {
       if (attachedSynclet) {
         errorNew('Connector is already attached to Synclet');
       }

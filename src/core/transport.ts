@@ -52,7 +52,7 @@ export const createTransport: typeof createTransportDecl = async (
 
     sendMessage: sendPackets,
 
-    attachToSynclet: (synclet: Synclet, syncletId: string) => {
+    bind: (synclet: Synclet, syncletId: string) => {
       if (attachedSynclet) {
         errorNew('Transport is already attached to Synclet');
       }

@@ -310,7 +310,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     sync,
   };
 
-  connector.attachToSynclet(synclet, id);
-  transport.attachToSynclet(synclet, id);
+  connector.bind(synclet, id);
+  transport.bind(synclet, id);
   return synclet;
 }) as any;
