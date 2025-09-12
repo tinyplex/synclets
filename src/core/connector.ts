@@ -111,10 +111,10 @@ export const createConnector: typeof createConnectorDecl = async (
           });
         }
       }
-      await queue(...tasks);
       if (sync) {
-        await attachedSynclet?.sync(address);
+        arrayPush(tasks, () => attachedSynclet?.sync(address));
       }
+      await queue(...tasks);
     },
 
     // --

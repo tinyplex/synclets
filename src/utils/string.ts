@@ -4,6 +4,7 @@ export const EMPTY_STRING = '';
 export const SPACE = ' ';
 export const ASTERISK = '*';
 export const TOMB: Tomb = '\uFFFC';
+export const UTF8 = 'utf8';
 
 export const strSplit = (
   str: string,
