@@ -13,12 +13,12 @@ import type {
 import {
   arrayPush,
   combineHash,
-  errorNew,
   getHash,
   getHlcFunctions,
   getUniqueId,
   isEmpty,
   isUndefined,
+  setNew,
   TOMB,
 } from '@synclets/utils';
 import type {ProtectedConnector} from './protected.js';
@@ -41,8 +41,9 @@ export const createConnector: typeof createConnectorDecl = async (
   options: ConnectorOptions = {},
 ): Promise<ProtectedConnector> => {
   let connected = false;
-  let attachedSynclet: Synclet | undefined;
   let id = options.id ?? getUniqueId();
+
+  const boundSynclets: Set<Synclet> = setNew();
 
   const logger = options.logger ?? {};
 
@@ -57,7 +58,7 @@ export const createConnector: typeof createConnectorDecl = async (
     address: Address,
     atomOrTomb: Atom | Tomb,
     context: Context = {},
-    sync = true,
+    syncOrFromSynclet: boolean | Synclet = true,
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
@@ -92,8 +93,12 @@ export const createConnector: typeof createConnectorDecl = async (
         });
       }
     }
-    if (sync) {
-      arrayPush(tasks, () => attachedSynclet?.sync(address));
+    if (syncOrFromSynclet) {
+      boundSynclets.forEach((boundSynclet) => {
+        if (boundSynclet !== syncOrFromSynclet) {
+          arrayPush(tasks, () => boundSynclet.sync(address));
+        }
+      });
     }
     await queue(...tasks);
   };
@@ -132,10 +137,7 @@ export const createConnector: typeof createConnectorDecl = async (
     setOrDelAtom,
 
     bind: (synclet: Synclet, syncletId: string) => {
-      if (attachedSynclet) {
-        errorNew('Connector is already attached to Synclet');
-      }
-      attachedSynclet = synclet;
+      boundSynclets.add(synclet);
       id = syncletId;
     },
 

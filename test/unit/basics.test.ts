@@ -53,13 +53,6 @@ test('log', async () => {
   expect(logger.info).toHaveBeenCalledWith('[synclet] stop');
 });
 
-test('error on reassigning connector', async () => {
-  await createSynclet(connector, transport, {});
-  await expect(async () => {
-    await createSynclet(connector, await createMockTransport());
-  }).rejects.toThrow('Connector is already attached to Synclet');
-});
-
 test('error on reassigning transport', async () => {
   await createSynclet(connector, transport, {});
   await expect(async () => {

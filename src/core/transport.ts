@@ -16,7 +16,7 @@ export const createTransport: typeof createTransportDecl = async (
   options: TransportOptions = {},
 ): Promise<ProtectedTransport> => {
   let connected = false;
-  let attachedSynclet: Synclet | undefined;
+  let boundSynclet: Synclet | undefined;
   let id = options.id ?? getUniqueId();
 
   const logger = options.logger ?? {};
@@ -53,10 +53,10 @@ export const createTransport: typeof createTransportDecl = async (
     sendMessage: sendPackets,
 
     bind: (synclet: Synclet, syncletId: string) => {
-      if (attachedSynclet) {
+      if (boundSynclet) {
         errorNew('Transport is already attached to Synclet');
       }
-      attachedSynclet = synclet;
+      boundSynclet = synclet;
       id = syncletId;
     },
   };

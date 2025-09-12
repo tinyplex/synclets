@@ -211,7 +211,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
           address,
           otherAtom,
           context,
-          false,
+          synclet,
           otherTimestamp,
           myTimestamp,
         );

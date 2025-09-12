@@ -39,7 +39,7 @@ export interface ProtectedConnector extends Connector {
     address: Address,
     atom: Atom | Tomb,
     context: Context,
-    sync: boolean,
+    syncOrFromSynclet?: boolean | Synclet,
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ): Promise<void>;
