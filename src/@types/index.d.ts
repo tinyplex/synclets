@@ -69,6 +69,7 @@ export interface Connector {
   log(message: string, level?: LogLevel): void;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
+  isConnected(): boolean;
   setAtom(
     address: Address,
     atom: Atom,
@@ -120,6 +121,7 @@ export function createConnector(
 
 export interface Transport {
   log(message: string, level?: LogLevel): void;
+  isConnected(): boolean;
 }
 
 export type TransportImplementations = {

@@ -60,6 +60,32 @@ test('error on reassigning transport', async () => {
   }).rejects.toThrow('Transport is already attached to Synclet');
 });
 
+test('start & stop', async () => {
+  const synclet = await createSynclet(connector, transport);
+  expect(synclet.isStarted()).toBe(false);
+  expect(connector.isConnected()).toBe(false);
+  expect(transport.isConnected()).toBe(false);
+
+  await synclet.start();
+  expect(synclet.isStarted()).toBe(true);
+  expect(connector.isConnected()).toBe(true);
+  expect(transport.isConnected()).toBe(true);
+
+  await synclet.stop();
+  expect(synclet.isStarted()).toBe(false);
+  expect(connector.isConnected()).toBe(false);
+  expect(transport.isConnected()).toBe(false);
+
+  const synclet2 = await createSynclet(connector, await createMockTransport());
+  await synclet.start();
+  await synclet2.start();
+  expect(connector.isConnected()).toBe(true);
+  await synclet.stop();
+  expect(connector.isConnected()).toBe(true);
+  await synclet2.stop();
+  expect(connector.isConnected()).toBe(false);
+});
+
 describe('context', () => {
   test('send message', async () => {
     const getSendContext = jest.fn();

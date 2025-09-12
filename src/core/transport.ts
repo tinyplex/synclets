@@ -48,6 +48,8 @@ export const createTransport: typeof createTransportDecl = async (
       }
     },
 
+    isConnected: () => connected,
+
     sendMessage: sendPackets,
 
     bind: (synclet: Synclet, syncletId: string) => {

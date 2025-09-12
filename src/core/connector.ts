@@ -18,6 +18,7 @@ import {
   getUniqueId,
   isEmpty,
   isUndefined,
+  setEvery,
   setNew,
   TOMB,
 } from '@synclets/utils';
@@ -116,11 +117,17 @@ export const createConnector: typeof createConnectorDecl = async (
 
     disconnect: async () => {
       if (connected) {
-        log('disconnect');
-        await disconnect?.();
-        connected = false;
+        if (
+          setEvery(boundSynclets, (boundSynclet) => !boundSynclet.isStarted())
+        ) {
+          log('disconnect');
+          await disconnect?.();
+          connected = false;
+        }
       }
     },
+
+    isConnected: () => connected,
 
     setAtom: (
       address: Address,

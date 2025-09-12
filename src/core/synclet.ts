@@ -300,9 +300,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
     stop: async () => {
       if (started) {
         log('stop');
+        started = false;
         await connector.disconnect();
         await transport.disconnect();
-        started = false;
       }
     },
 

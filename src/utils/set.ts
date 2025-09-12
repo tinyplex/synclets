@@ -4,3 +4,8 @@ export const setNew = /* @__PURE__ */ <Value>(entries?: Value[]): Set<Value> =>
 export const setHas = <Value>(set: Set<Value>, value: Value) => set.has(value);
 
 export const setAdd = <Value>(set: Set<Value>, value: Value) => set.add(value);
+
+export const setEvery = <Value>(
+  set: Set<Value>,
+  test: (value: Value) => boolean,
+) => Array.from(set).every(test);
