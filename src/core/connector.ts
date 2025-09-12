@@ -13,10 +13,10 @@ import type {
 import {
   arrayPush,
   combineHash,
-  EMPTY_STRING,
   errorNew,
   getHash,
   getHlcFunctions,
+  getUniqueId,
   isEmpty,
   isUndefined,
   TOMB,
@@ -40,13 +40,11 @@ export const createConnector: typeof createConnectorDecl = async (
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
 ): Promise<ProtectedConnector> => {
+  let started = false;
   let attachedSynclet: Synclet | undefined;
-  const logger = options.logger ?? {};
 
-  const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(
-      `[${attachedSynclet?.getId() ?? EMPTY_STRING}/C] ${string}`,
-    );
+  const id = options.id ?? getUniqueId();
+  const logger = options.logger ?? {};
 
   const [getNextTimestamp, seenTimestamp, setUniqueId] = getHlcFunctions();
 
@@ -54,10 +52,33 @@ export const createConnector: typeof createConnectorDecl = async (
 
   // --
 
+  const log = (string: string, level: LogLevel = 'info') =>
+    logger?.[level]?.(`[C:${id}] ${string}`);
+
   const connector = {
     __brand: 'Connector',
 
     log,
+
+    getId: () => id,
+
+    getStarted: () => started,
+
+    start: async () => {
+      if (!started) {
+        log('start');
+        await connect?.();
+        started = true;
+      }
+    },
+
+    stop: async () => {
+      if (started) {
+        log('stop');
+        await disconnect?.();
+        started = false;
+      }
+    },
 
     setAtom: (
       address: Address,

@@ -51,7 +51,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
   let started = false;
   const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};
-  const [queue, getQueueState] = getQueueFunctions();
+  const [queue] = getQueueFunctions();
 
   const queueIfStarted = async (actions: () => Promise<void>) => {
     if (started) {
@@ -111,11 +111,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const sync = (address: Address) =>
     queueIfStarted(async () => {
-      log(`sync: ${address}`);
+      log(`sync ${address}`);
       await sendNodeMessage(address, await readHashOrTimestamp(address, {}));
     });
-
-  // #region send/receive
 
   const sendNodeMessage = async (
     address: Address,
@@ -159,10 +157,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
       }
       log(`invalid message: ${from}`, 'warn');
     });
-
-  // #endregion
-
-  // #region transform
 
   const transformNode = async (
     address: Address,
@@ -289,47 +283,39 @@ export const createSynclet: typeof createSyncletDecl = (async (
     }
   };
 
-  // #endregion
-
-  // #region public
-
-  const getId = () => id;
-
-  const getStarted = () => started;
-
-  const start = async () => {
-    log('start');
-    await connector.connect?.();
-    await transport.connect?.(receiveMessage);
-    started = true;
-    await sync([]);
-  };
-
-  const stop = async () => {
-    log('stop');
-    await connector.disconnect?.();
-    await transport.disconnect?.();
-    started = false;
-  };
-
   const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[${id}] ${string}`);
-
-  // #endregion
+    logger?.[level]?.(`[S:${id}] ${string}`);
 
   const synclet: Synclet = {
     __brand: 'Synclet',
 
     log,
-    getId,
-    getStarted,
-    getQueueState,
-    start,
-    stop,
+
+    getId: () => id,
+
+    getStarted: () => started,
+
+    start: async () => {
+      if (!started) {
+        log('start');
+        await connector.start();
+        await transport.connect?.(receiveMessage);
+        started = true;
+        await sync([]);
+      }
+    },
+
+    stop: async () => {
+      if (started) {
+        log('stop');
+        await connector.disconnect?.();
+        await transport.disconnect?.();
+        started = false;
+      }
+    },
     sync,
   };
 
-  log('createSynclet');
   connector.attachToSynclet(synclet);
   transport.attachToSynclet(synclet);
   return synclet;

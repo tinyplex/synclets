@@ -33,7 +33,6 @@ export interface Synclet {
   log(message: string, level?: LogLevel): void;
   getId(): string;
   getStarted(): boolean;
-  getQueueState(): [number, boolean];
   start(): Promise<void>;
   stop(): Promise<void>;
   sync: (address: Address) => Promise<void>;
@@ -70,9 +69,11 @@ export function createSynclet(
 
 export interface Connector {
   __brand: 'Connector';
-  log: (message: string, level?: LogLevel) => void;
-  connect?: () => Promise<void>;
-  disconnect?: () => Promise<void>;
+  log(message: string, level?: LogLevel): void;
+  getId(): string;
+  getStarted(): boolean;
+  start(): Promise<void>;
+  stop(): Promise<void>;
   setAtom: (
     address: Address,
     atom: Atom,
@@ -115,6 +116,7 @@ export type ConnectorImplementations = {
 };
 
 export type ConnectorOptions = {
+  id?: string;
   logger?: Logger;
 };
 

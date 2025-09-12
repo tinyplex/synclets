@@ -46,11 +46,11 @@ test('log', async () => {
     {},
     {id: 'synclet', logger},
   );
-  expect(logger.info).toHaveBeenCalledWith('[synclet] createSynclet');
   await synclet.start();
-  expect(logger.info).toHaveBeenCalledWith('[synclet] start');
+  expect(logger.info).toHaveBeenCalledWith('[S:synclet] start');
+  expect(logger.info).toHaveBeenCalledWith('[S:synclet] sync ');
   await synclet.stop();
-  expect(logger.info).toHaveBeenCalledWith('[synclet] stop');
+  expect(logger.info).toHaveBeenCalledWith('[S:synclet] stop');
 });
 
 test('error on reassigning connector', async () => {
