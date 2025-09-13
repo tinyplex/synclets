@@ -9,8 +9,8 @@ import type {
   FileValueConnector,
 } from '@synclets/@types/connector/file';
 import {createBaseValueConnector} from '@synclets/connector/base';
-import {jsonParse, jsonStringify, UTF8, validateFile} from '@synclets/utils';
-import {readFile, unlink, watch, writeFile} from 'fs/promises';
+import {jsonParse, jsonString, UTF8, validateFile} from '@synclets/utils';
+import {readFile, watch, writeFile} from 'fs/promises';
 
 export const createFileValueConnector: typeof createFileValueConnectorDecl =
   async (
@@ -47,12 +47,13 @@ export const createFileValueConnector: typeof createFileValueConnectorDecl =
           jsonParse(await readFile(metaFile, UTF8)),
 
         writeValueAtom: (atom: Atom, _context: Context) =>
-          writeFile(dataFile, jsonStringify(atom), UTF8),
+          writeFile(dataFile, jsonString(atom), UTF8),
 
         writeValueTimestamp: (timestamp: Timestamp, _context: Context) =>
-          writeFile(metaFile, jsonStringify(timestamp), UTF8),
+          writeFile(metaFile, jsonString(timestamp), UTF8),
 
-        removeValueAtom: (_context: Context) => unlink(dataFile),
+        removeValueAtom: (_context: Context) =>
+          writeFile(dataFile, jsonString(undefined), UTF8),
       },
       options,
     );

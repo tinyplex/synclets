@@ -20,7 +20,6 @@ import {
   isUndefined,
   setEvery,
   setNew,
-  TOMB,
 } from '@synclets/utils';
 import type {ProtectedConnector} from './protected.js';
 import {getQueueFunctions} from './queue.ts';
@@ -57,7 +56,7 @@ export const createConnector: typeof createConnectorDecl = async (
 
   const setOrDelAtom = async (
     address: Address,
-    atomOrTomb: Atom | Tomb,
+    atomOrUndefined: Atom | undefined,
     context: Context = {},
     syncOrFromSynclet: boolean | Synclet = true,
     newTimestamp?: Timestamp,
@@ -75,9 +74,9 @@ export const createConnector: typeof createConnectorDecl = async (
       oldTimestamp = await readTimestamp(address, context);
     }
     const tasks = [
-      atomOrTomb === TOMB
+      isUndefined(atomOrUndefined)
         ? () => removeAtom(address, context)
-        : () => writeAtom(address, atomOrTomb, context),
+        : () => writeAtom(address, atomOrUndefined, context),
       () => writeTimestamp(address, newTimestamp, context),
     ];
     if (!isEmpty(address)) {
@@ -140,7 +139,7 @@ export const createConnector: typeof createConnectorDecl = async (
     ) => setOrDelAtom(address, atomOrTomb, context, sync),
 
     delAtom: (address: Address, context?: Context, sync?: boolean) =>
-      setOrDelAtom(address, TOMB, context, sync),
+      setOrDelAtom(address, undefined, context, sync),
 
     setOrDelAtom,
 

@@ -8,6 +8,10 @@ export type Hlc = string;
 
 export const TOMB: Tomb;
 
+export function jsonString(obj: unknown): string;
+
+export function jsonParse(str: string): any;
+
 export function getUniqueId(length?: number): string;
 
 export function getTimestampHash(string: string): Hash;

@@ -9,7 +9,7 @@ import {
   ASTERISK,
   getUniqueId,
   jsonParse,
-  jsonStringify,
+  jsonString,
   mapEnsure,
   mapNew,
   promiseAll,
@@ -82,7 +82,7 @@ export const getPacketFunctions = (
   ): Promise<void> => {
     if (sendPacket) {
       const messageId = getUniqueId();
-      const allFragments = jsonStringify(message);
+      const allFragments = jsonString(message);
       const fragments = allFragments.match(messageSplit) ?? [];
       const total = size(fragments);
       log(

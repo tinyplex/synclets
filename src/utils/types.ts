@@ -19,7 +19,8 @@ export const isNode = (node: unknown): node is Node =>
 export const isTimestamp = (node: unknown): node is Timestamp =>
   typeof node === 'string';
 
-export const isAtom = (value: unknown): value is Atom =>
+export const isAtom = (value: unknown): value is Atom | undefined =>
+  value === undefined ||
   value === null ||
   typeof value === 'number' ||
   typeof value === 'string' ||

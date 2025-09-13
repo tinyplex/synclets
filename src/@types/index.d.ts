@@ -14,7 +14,7 @@ export type Address = string[];
 
 export type Node = Timestamp | TimestampAndAtom | Hash | SubNodes;
 
-export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom];
+export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom | undefined];
 
 export type SubNodes = [subNodes: {[id: string]: Node}, partial?: 1];
 

@@ -2,6 +2,7 @@ export * from './array.ts';
 export * from './codec.ts';
 export * from './fs.ts';
 export * from './hlc.ts';
+export * from './json.ts';
 export * from './map.ts';
 export * from './object.ts';
 export * from './other.ts';
