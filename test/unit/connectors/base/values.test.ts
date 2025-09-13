@@ -12,8 +12,6 @@ import {
 } from '../../common.ts';
 
 interface TestValuesConnector extends BaseValuesConnector {
-  setValueForTest(valueId: string, value: Atom): Promise<void>;
-  delValueForTest(valueId: string): Promise<void>;
   getDataForTest(): {[valueId: string]: Atom};
   getMetaForTest(): [{[valueId: string]: Timestamp}, Hash | undefined];
 }
@@ -57,11 +55,6 @@ const createTestValuesConnector = async (
   return {
     ...connector,
 
-    setValueForTest: (valueId: string, value: Atom) =>
-      connector.setValue(valueId, value),
-
-    delValueForTest: (valueId: string) => connector.delValue(valueId),
-
     getDataForTest: () => values,
 
     getMetaForTest: () => [timestamps, valuesHash],
@@ -80,10 +73,10 @@ describe('2-way', () => {
     const [[, connector1], [, connector2]] =
       await getPooledTestSyncletsAndConnectors(createTestValuesConnector, 2);
 
-    await connector1.setValueForTest('v1', 'V1');
+    await connector1.setValue('v1', 'V1');
     expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
 
-    await connector2.setValueForTest('v1', 'V2');
+    await connector2.setValue('v1', 'V2');
     expectEquivalentConnectors([connector1, connector2], {v1: 'V2'});
   });
 
@@ -91,11 +84,11 @@ describe('2-way', () => {
     const [[, connector1], [, connector2]] =
       await getPooledTestSyncletsAndConnectors(createTestValuesConnector, 2);
 
-    await connector1.setValueForTest('v1', 'V1');
+    await connector1.setValue('v1', 'V1');
     expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
 
     const timestamp = connector1.getMetaForTest()[0].v1;
-    await connector1.delValueForTest('v1');
+    await connector1.delValue('v1');
     expectEquivalentConnectors([connector1, connector2], {});
     expect(timestamp).not.toEqual(connector1.getMetaForTest()[0].v1);
   });
@@ -110,7 +103,7 @@ describe('2-way', () => {
 
     await synclet1.start();
 
-    await connector1.setValueForTest('v1', 'V1');
+    await connector1.setValue('v1', 'V1');
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {});
 
     await synclet2.start();
@@ -127,7 +120,7 @@ describe('2-way', () => {
 
     await synclet2.start();
     await connector1.connect();
-    await connector1.setValueForTest('v1', 'V1');
+    await connector1.setValue('v1', 'V1');
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {});
 
     await synclet1.start();
@@ -145,12 +138,12 @@ describe('2-way', () => {
     await synclet1.start();
     await synclet2.start();
 
-    await connector1.setValueForTest('v1', 'V1');
+    await connector1.setValue('v1', 'V1');
     expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
 
     await synclet1.stop();
     await connector1.connect();
-    await connector1.setValueForTest('v1', 'V2');
+    await connector1.setValue('v1', 'V2');
     expectDifferingConnectors(connector1, connector2, {v1: 'V2'}, {v1: 'V1'});
 
     await synclet1.start();
@@ -168,11 +161,11 @@ describe('2-way', () => {
     await synclet1.start();
     await synclet2.start();
 
-    await connector1.setValueForTest('v1', 'V1');
+    await connector1.setValue('v1', 'V1');
     expectEquivalentConnectors([connector1, connector2], {v1: 'V1'});
 
     await synclet1.stop();
-    await connector2.setValueForTest('v1', 'V2');
+    await connector2.setValue('v1', 'V2');
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {v1: 'V2'});
 
     await synclet1.start();
@@ -188,13 +181,13 @@ describe('2-way', () => {
       );
 
     await connector1.connect();
-    await connector1.setValueForTest('v1', 'V1');
+    await connector1.setValue('v1', 'V1');
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {});
 
     await pause();
 
     await connector2.connect();
-    await connector2.setValueForTest('v1', 'V2');
+    await connector2.setValue('v1', 'V2');
     expectDifferingConnectors(connector1, connector2, {v1: 'V1'}, {v1: 'V2'});
 
     await synclet2.start();
@@ -206,8 +199,8 @@ describe('2-way', () => {
     const [[, connector1], [, connector2]] =
       await getPooledTestSyncletsAndConnectors(createTestValuesConnector, 2);
 
-    await connector1.setValueForTest('v1', 'V1');
-    await connector2.setValueForTest('v2', 'V2');
+    await connector1.setValue('v1', 'V1');
+    await connector2.setValue('v2', 'V2');
     expectEquivalentConnectors([connector1, connector2], {v1: 'V1', v2: 'V2'});
   });
 
@@ -221,8 +214,8 @@ describe('2-way', () => {
 
     await connector1.connect();
     await connector2.connect();
-    await connector1.setValueForTest('v1', 'V1');
-    await connector2.setValueForTest('v2', 'V2');
+    await connector1.setValue('v1', 'V1');
+    await connector2.setValue('v2', 'V2');
 
     await synclet1.start();
     await synclet2.start();
@@ -239,11 +232,11 @@ describe('2-way', () => {
 
     await connector1.connect();
     await connector2.connect();
-    await connector1.setValueForTest('v1', 'V1');
-    await connector2.setValueForTest('v2', 'V2');
+    await connector1.setValue('v1', 'V1');
+    await connector2.setValue('v2', 'V2');
     await pause();
-    await connector1.setValueForTest('v2', 'V3');
-    await connector2.setValueForTest('v3', 'V3');
+    await connector1.setValue('v2', 'V3');
+    await connector2.setValue('v3', 'V3');
 
     await synclet1.start();
     await synclet2.start();
@@ -265,7 +258,7 @@ describe.each([3, 10])('%d-way', (count: number) => {
     const connectors = syncletsAndConnectors.map(([, connector]) => connector);
 
     for (const [i, connector] of connectors.entries()) {
-      await connector.setValueForTest('v', 'V' + i);
+      await connector.setValue('v', 'V' + i);
       expectEquivalentConnectors(connectors, {v: 'V' + i});
     }
   });
@@ -277,7 +270,7 @@ describe.each([3, 10])('%d-way', (count: number) => {
     );
 
     for (const [i, connector] of connectors.entries()) {
-      await connector.setValueForTest('v', 'V' + i);
+      await connector.setValue('v', 'V' + i);
       expectEquivalentConnectors(connectors, {v: 'V' + i});
     }
   });
@@ -290,7 +283,7 @@ describe.each([3, 10])('%d-way', (count: number) => {
     );
 
     for (const [i, connector] of connectors.entries()) {
-      await connector.setValueForTest('v', 'V' + i);
+      await connector.setValue('v', 'V' + i);
       expectEquivalentConnectors(connectors, {v: 'V' + i});
     }
   });

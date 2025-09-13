@@ -12,13 +12,6 @@ import {
 } from '../../common.ts';
 
 interface TestTablesConnector extends BaseTablesConnector {
-  setCellForTest(
-    tableId: string,
-    rowId: string,
-    cellId: string,
-    atom: Atom,
-  ): Promise<void>;
-  delCellForTest(tableId: string, rowId: string, cellId: string): Promise<void>;
   getDataForTest(): {
     [tableId: string]: {[rowId: string]: {[cellId: string]: Atom}};
   };
@@ -117,16 +110,6 @@ const createTestTablesConnector = async (
   return {
     ...connector,
 
-    setCellForTest: (
-      tableId: string,
-      rowId: string,
-      cellId: string,
-      cell: Atom,
-    ) => connector.setCell(tableId, rowId, cellId, cell),
-
-    delCellForTest: (tableId: string, rowId: string, cellId: string) =>
-      connector.delCell(tableId, rowId, cellId),
-
     getDataForTest: () => tables,
 
     getMetaForTest: () => [timestamps, tablesHash, tableHashes, rowHashes],
@@ -145,12 +128,12 @@ describe('2-way', () => {
     const [[, connector1], [, connector2]] =
       await getPooledTestSyncletsAndConnectors(createTestTablesConnector, 2);
 
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
     expectEquivalentConnectors([connector1, connector2], {
       t1: {r1: {c1: 'C1'}},
     });
 
-    await connector2.setCellForTest('t1', 'r1', 'c1', 'C2');
+    await connector2.setCell('t1', 'r1', 'c1', 'C2');
     expectEquivalentConnectors([connector1, connector2], {
       t1: {r1: {c1: 'C2'}},
     });
@@ -160,13 +143,13 @@ describe('2-way', () => {
     const [[, connector1], [, connector2]] =
       await getPooledTestSyncletsAndConnectors(createTestTablesConnector, 2);
 
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
     expectEquivalentConnectors([connector1, connector2], {
       t1: {r1: {c1: 'C1'}},
     });
 
     const timestamp = connector1.getMetaForTest()[0].t1.r1.c1;
-    await connector1.delCellForTest('t1', 'r1', 'c1');
+    await connector1.delCell('t1', 'r1', 'c1');
     expectEquivalentConnectors([connector1, connector2], {t1: {r1: {}}});
     expect(timestamp).not.toEqual(connector1.getMetaForTest()[0].t1.r1.c1);
   });
@@ -181,7 +164,7 @@ describe('2-way', () => {
 
     await synclet1.start();
 
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
     expectDifferingConnectors(
       connector1,
       connector2,
@@ -205,7 +188,7 @@ describe('2-way', () => {
 
     await synclet2.start();
     await connector1.connect();
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
     expectDifferingConnectors(
       connector1,
       connector2,
@@ -230,14 +213,14 @@ describe('2-way', () => {
     await synclet1.start();
     await synclet2.start();
 
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
     expectEquivalentConnectors([connector1, connector2], {
       t1: {r1: {c1: 'C1'}},
     });
 
     await synclet1.stop();
     await connector1.connect();
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C2');
+    await connector1.setCell('t1', 'r1', 'c1', 'C2');
     expectDifferingConnectors(
       connector1,
       connector2,
@@ -262,13 +245,13 @@ describe('2-way', () => {
     await synclet1.start();
     await synclet2.start();
 
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
     expectEquivalentConnectors([connector1, connector2], {
       t1: {r1: {c1: 'C1'}},
     });
 
     await synclet1.stop();
-    await connector2.setCellForTest('t1', 'r1', 'c1', 'C2');
+    await connector2.setCell('t1', 'r1', 'c1', 'C2');
     expectDifferingConnectors(
       connector1,
       connector2,
@@ -291,7 +274,7 @@ describe('2-way', () => {
       );
 
     await connector1.connect();
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
     expectDifferingConnectors(
       connector1,
       connector2,
@@ -302,7 +285,7 @@ describe('2-way', () => {
     await pause();
 
     await connector2.connect();
-    await connector2.setCellForTest('t1', 'r1', 'c1', 'C2');
+    await connector2.setCell('t1', 'r1', 'c1', 'C2');
     expectDifferingConnectors(
       connector1,
       connector2,
@@ -320,8 +303,8 @@ describe('2-way', () => {
   test('connected, different values 1', async () => {
     const [[, connector1], [, connector2]] =
       await getPooledTestSyncletsAndConnectors(createTestTablesConnector, 2);
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
-    await connector2.setCellForTest('t1', 'r1', 'c2', 'C2');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t1', 'r1', 'c2', 'C2');
     expectEquivalentConnectors([connector1, connector2], {
       t1: {r1: {c1: 'C1', c2: 'C2'}},
     });
@@ -330,8 +313,8 @@ describe('2-way', () => {
   test('connected, different values 2', async () => {
     const [[, connector1], [, connector2]] =
       await getPooledTestSyncletsAndConnectors(createTestTablesConnector, 2);
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
-    await connector2.setCellForTest('t2', 'r2', 'c2', 'C2');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t2', 'r2', 'c2', 'C2');
     expectEquivalentConnectors([connector1, connector2], {
       t1: {r1: {c1: 'C1'}},
       t2: {r2: {c2: 'C2'}},
@@ -347,8 +330,8 @@ describe('2-way', () => {
       );
     await connector1.connect();
     await connector2.connect();
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
-    await connector2.setCellForTest('t1', 'r1', 'c2', 'C2');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t1', 'r1', 'c2', 'C2');
     await synclet1.start();
     await synclet2.start();
     expectEquivalentConnectors([connector1, connector2], {
@@ -365,8 +348,8 @@ describe('2-way', () => {
       );
     await connector1.connect();
     await connector2.connect();
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
-    await connector2.setCellForTest('t2', 'r2', 'c2', 'C2');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t2', 'r2', 'c2', 'C2');
     await synclet1.start();
     await synclet2.start();
     expectEquivalentConnectors([connector1, connector2], {
@@ -384,11 +367,11 @@ describe('2-way', () => {
       );
     await connector1.connect();
     await connector2.connect();
-    await connector1.setCellForTest('t1', 'r1', 'c1', 'C1');
-    await connector2.setCellForTest('t1', 'r1', 'c2', 'C2');
+    await connector1.setCell('t1', 'r1', 'c1', 'C1');
+    await connector2.setCell('t1', 'r1', 'c2', 'C2');
     await pause();
-    await connector1.setCellForTest('t1', 'r1', 'c2', 'C3');
-    await connector2.setCellForTest('t1', 'r1', 'c3', 'C3');
+    await connector1.setCell('t1', 'r1', 'c2', 'C3');
+    await connector2.setCell('t1', 'r1', 'c3', 'C3');
     await synclet1.start();
     await synclet2.start();
     expectEquivalentConnectors([connector1, connector2], {
@@ -407,7 +390,7 @@ describe.each([3, 10])('%d-way', (count: number) => {
     const connectors = syncletsAndConnectors.map(([, connector]) => connector);
 
     for (const [i, connector] of connectors.entries()) {
-      await connector.setCellForTest('t', 'r', 'c', 'C' + i);
+      await connector.setCell('t', 'r', 'c', 'C' + i);
       expectEquivalentConnectors(connectors, {t: {r: {c: 'C' + i}}});
     }
   });
@@ -419,7 +402,7 @@ describe.each([3, 10])('%d-way', (count: number) => {
     );
 
     for (const [i, connector] of connectors.entries()) {
-      await connector.setCellForTest('t', 'r', 'c', 'C' + i);
+      await connector.setCell('t', 'r', 'c', 'C' + i);
       expectEquivalentConnectors(connectors, {t: {r: {c: 'C' + i}}});
     }
   });
@@ -432,7 +415,7 @@ describe.each([3, 10])('%d-way', (count: number) => {
     );
 
     for (const [i, connector] of connectors.entries()) {
-      await connector.setCellForTest('t', 'r', 'c', 'C' + i);
+      await connector.setCell('t', 'r', 'c', 'C' + i);
       expectEquivalentConnectors(connectors, {t: {r: {c: 'C' + i}}});
     }
   });
