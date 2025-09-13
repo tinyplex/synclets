@@ -22,10 +22,10 @@ interface TestFileValueConnector extends FileValueConnector {
 const createTestFileValueConnector = async (
   options?: ConnectorOptions,
 ): Promise<TestFileValueConnector> => {
-  const connector = await createFileValueConnector(
-    join(tmp, getUniqueId()),
-    options,
-  );
+  const connector = await createFileValueConnector({
+    directory: join(tmp, getUniqueId()),
+    ...options,
+  });
 
   return {
     ...connector,
@@ -45,6 +45,12 @@ beforeAll(async () => {
 });
 
 afterAll(async () => await rm(tmp, {recursive: true, force: true}));
+
+test('directory', async () => {
+  const directory = join(tmp, '42');
+  const connector = await createFileValueConnector({directory});
+  expect(connector.getDirectory()).toBe(join(tmp, '42'));
+});
 
 describe('2-way', () => {
   test('connected, initial', async () => {

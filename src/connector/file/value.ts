@@ -1,45 +1,23 @@
-import type {
-  Atom,
-  ConnectorOptions,
-  Context,
-  Timestamp,
-} from '@synclets/@types';
+import type {Atom, Context, Timestamp} from '@synclets/@types';
 import type {
   createFileValueConnector as createFileValueConnectorDecl,
+  FileConnectorOptions,
   FileValueConnector,
 } from '@synclets/@types/connector/file';
 import {createBaseValueConnector} from '@synclets/connector/base';
 import {jsonParse, jsonString, UTF8, validateFile} from '@synclets/utils';
-import {readFile, watch, writeFile} from 'fs/promises';
+import {readFile, writeFile} from 'fs/promises';
 
 export const createFileValueConnector: typeof createFileValueConnectorDecl =
-  async (
-    directory: string,
-    options?: ConnectorOptions,
-  ): Promise<FileValueConnector> => {
-    let controller: AbortController | undefined;
-
+  async ({
+    directory,
+    ...options
+  }: FileConnectorOptions): Promise<FileValueConnector> => {
     const dataFile = await validateFile(directory, 'data');
     const metaFile = await validateFile(directory, 'meta');
 
     const connector = await createBaseValueConnector(
       {
-        connect: async (sync?: () => Promise<void>) => {
-          if (sync) {
-            controller = new AbortController();
-            for await (const _ of watch(metaFile, {
-              signal: controller.signal,
-            })) {
-              await sync();
-            }
-          }
-        },
-
-        disconnect: async () => {
-          controller?.abort();
-          controller = undefined;
-        },
-
         readValueAtom: async (_context: Context) =>
           jsonParse(await readFile(dataFile, UTF8)),
 
