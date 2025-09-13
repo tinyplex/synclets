@@ -6,7 +6,8 @@ import {
 import {
   expectDifferingConnectors,
   expectEquivalentConnectors,
-  getTestSyncletsAndConnectors,
+  getChainedTestConnectors,
+  getPooledTestSyncletsAndConnectors,
   pause,
 } from '../../common.ts';
 
@@ -91,21 +92,15 @@ const createTestTableConnector = async (
 
 describe('2-way', () => {
   test('connected, initial', async () => {
-    const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
-
-    await synclet1.start();
-    await synclet2.start();
+    const [[, connector1], [, connector2]] =
+      await getPooledTestSyncletsAndConnectors(createTestTableConnector, 2);
 
     expectEquivalentConnectors([connector1, connector2], {});
   });
 
   test('connected', async () => {
-    const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
-
-    await synclet1.start();
-    await synclet2.start();
+    const [[, connector1], [, connector2]] =
+      await getPooledTestSyncletsAndConnectors(createTestTableConnector, 2);
 
     await connector1.setCellForTest('r1', 'c1', 'C1');
     expectEquivalentConnectors([connector1, connector2], {r1: {c1: 'C1'}});
@@ -115,11 +110,8 @@ describe('2-way', () => {
   });
 
   test('connected, deletion', async () => {
-    const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
-
-    await synclet1.start();
-    await synclet2.start();
+    const [[, connector1], [, connector2]] =
+      await getPooledTestSyncletsAndConnectors(createTestTableConnector, 2);
 
     await connector1.setCellForTest('r1', 'c1', 'C1');
     expectEquivalentConnectors([connector1, connector2], {r1: {c1: 'C1'}});
@@ -132,7 +124,11 @@ describe('2-way', () => {
 
   test('start 1, set 1, start 2', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestTableConnector,
+        2,
+        false,
+      );
 
     await synclet1.start();
 
@@ -145,7 +141,11 @@ describe('2-way', () => {
 
   test('start 2, set 1, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestTableConnector,
+        2,
+        false,
+      );
 
     await synclet2.start();
     await connector1.connect();
@@ -158,7 +158,11 @@ describe('2-way', () => {
 
   test('stop 1, set 1, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestTableConnector,
+        2,
+        false,
+      );
 
     await synclet1.start();
     await synclet2.start();
@@ -182,7 +186,11 @@ describe('2-way', () => {
 
   test('stop 1, set 2, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestTableConnector,
+        2,
+        false,
+      );
 
     await synclet1.start();
     await synclet2.start();
@@ -205,7 +213,11 @@ describe('2-way', () => {
 
   test('set 1, set 2, start 2, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestTableConnector,
+        2,
+        false,
+      );
 
     await connector1.connect();
     await connector1.setCellForTest('r1', 'c1', 'C1');
@@ -228,21 +240,18 @@ describe('2-way', () => {
   });
 
   test('connected, different values 1', async () => {
-    const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
-    await synclet1.start();
-    await synclet2.start();
+    const [[, connector1], [, connector2]] =
+      await getPooledTestSyncletsAndConnectors(createTestTableConnector, 2);
     await connector1.setCellForTest('r1', 'c1', 'C1');
     await connector2.setCellForTest('r1', 'c2', 'C2');
     expectEquivalentConnectors([connector1, connector2], {
       r1: {c1: 'C1', c2: 'C2'},
     });
   });
+
   test('connected, different values 2', async () => {
-    const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
-    await synclet1.start();
-    await synclet2.start();
+    const [[, connector1], [, connector2]] =
+      await getPooledTestSyncletsAndConnectors(createTestTableConnector, 2);
     await connector1.setCellForTest('r1', 'c1', 'C1');
     await connector2.setCellForTest('r2', 'c2', 'C2');
     expectEquivalentConnectors([connector1, connector2], {
@@ -250,9 +259,14 @@ describe('2-way', () => {
       r2: {c2: 'C2'},
     });
   });
+
   test('disconnected, different values 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestTableConnector,
+        2,
+        false,
+      );
     await connector1.connect();
     await connector2.connect();
     await connector1.setCellForTest('r1', 'c1', 'C1');
@@ -263,9 +277,14 @@ describe('2-way', () => {
       r1: {c1: 'C1', c2: 'C2'},
     });
   });
+
   test('disconnected, different values 2', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestTableConnector,
+        2,
+        false,
+      );
     await connector1.connect();
     await connector2.connect();
     await connector1.setCellForTest('r1', 'c1', 'C1');
@@ -277,9 +296,14 @@ describe('2-way', () => {
       r2: {c2: 'C2'},
     });
   });
+
   test('disconnected, conflicting values', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestTableConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestTableConnector,
+        2,
+        false,
+      );
     await connector1.connect();
     await connector2.connect();
     await connector1.setCellForTest('r1', 'c1', 'C1');
@@ -292,5 +316,54 @@ describe('2-way', () => {
     expectEquivalentConnectors([connector1, connector2], {
       r1: {c1: 'C1', c2: 'C3', c3: 'C3'},
     });
+  });
+});
+
+describe.each([3, 10])('%d-way', (count: number) => {
+  test('pool', async () => {
+    const syncletsAndConnectors = await getPooledTestSyncletsAndConnectors(
+      createTestTableConnector,
+      count,
+    );
+
+    const connectors = syncletsAndConnectors.map(([, connector]) => connector);
+    await Promise.all(
+      connectors.map(async (connector, i) => {
+        await pause();
+        await connector.setCellForTest('r', 'c', 'C' + i);
+        expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
+      }),
+    );
+  });
+
+  test('chain', async () => {
+    const connectors = await getChainedTestConnectors(
+      createTestTableConnector,
+      count,
+    );
+
+    await Promise.all(
+      connectors.map(async (connector, i) => {
+        await pause();
+        await connector.setCellForTest('r', 'c', 'C' + i);
+        expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
+      }),
+    );
+  });
+
+  test('ring', async () => {
+    const connectors = await getChainedTestConnectors(
+      createTestTableConnector,
+      count,
+      true,
+    );
+
+    await Promise.all(
+      connectors.map(async (connector, i) => {
+        await pause();
+        await connector.setCellForTest('r', 'c', 'C' + i);
+        expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
+      }),
+    );
   });
 });

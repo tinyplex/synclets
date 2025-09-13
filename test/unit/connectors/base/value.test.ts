@@ -6,7 +6,8 @@ import {
 import {
   expectDifferingConnectors,
   expectEquivalentConnectors,
-  getTestSyncletsAndConnectors,
+  getChainedTestConnectors,
+  getPooledTestSyncletsAndConnectors,
   pause,
 } from '../../common.ts';
 
@@ -59,21 +60,15 @@ const createTestValueConnector = async (
 
 describe('2-way', () => {
   test('connected, initial', async () => {
-    const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
-
-    await synclet1.start();
-    await synclet2.start();
+    const [[, connector1], [, connector2]] =
+      await getPooledTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     expectEquivalentConnectors([connector1, connector2], undefined);
   });
 
   test('connected', async () => {
-    const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
-
-    await synclet1.start();
-    await synclet2.start();
+    const [[, connector1], [, connector2]] =
+      await getPooledTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await connector1.setValueForTest('V1');
     expectEquivalentConnectors([connector1, connector2], 'V1');
@@ -83,11 +78,8 @@ describe('2-way', () => {
   });
 
   test('connected, deletion', async () => {
-    const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
-
-    await synclet1.start();
-    await synclet2.start();
+    const [[, connector1], [, connector2]] =
+      await getPooledTestSyncletsAndConnectors(createTestValueConnector, 2);
 
     await connector1.setValueForTest('V1');
     expectEquivalentConnectors([connector1, connector2], 'V1');
@@ -100,7 +92,11 @@ describe('2-way', () => {
 
   test('start 1, set 1, start 2', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestValueConnector,
+        2,
+        false,
+      );
 
     await synclet1.start();
 
@@ -113,7 +109,11 @@ describe('2-way', () => {
 
   test('start 2, set 1, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestValueConnector,
+        2,
+        false,
+      );
 
     await synclet2.start();
     await connector1.connect();
@@ -126,7 +126,11 @@ describe('2-way', () => {
 
   test('stop 1, set 1, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestValueConnector,
+        2,
+        false,
+      );
 
     await synclet1.start();
     await synclet2.start();
@@ -145,7 +149,11 @@ describe('2-way', () => {
 
   test('stop 1, set 2, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestValueConnector,
+        2,
+        false,
+      );
 
     await synclet1.start();
     await synclet2.start();
@@ -163,7 +171,11 @@ describe('2-way', () => {
 
   test('set 1, set 2, start 2, start 1', async () => {
     const [[synclet1, connector1], [synclet2, connector2]] =
-      await getTestSyncletsAndConnectors(createTestValueConnector, 2);
+      await getPooledTestSyncletsAndConnectors(
+        createTestValueConnector,
+        2,
+        false,
+      );
 
     await connector1.connect();
     await connector1.setValueForTest('V1');
@@ -181,25 +193,51 @@ describe('2-way', () => {
   });
 });
 
-describe('3-way', () => {
+describe.each([3, 10])('%d-way', (count: number) => {
   test('pool', async () => {
-    const [
-      [synclet1, connector1],
-      [synclet2, connector2],
-      [synclet3, connector3],
-    ] = await getTestSyncletsAndConnectors(createTestValueConnector, 3);
+    const syncletsAndConnectors = await getPooledTestSyncletsAndConnectors(
+      createTestValueConnector,
+      count,
+    );
 
-    await synclet1.start();
-    await synclet2.start();
-    await synclet3.start();
+    const connectors = syncletsAndConnectors.map(([, connector]) => connector);
+    await Promise.all(
+      connectors.map(async (connector, i) => {
+        await pause();
+        await connector.setValueForTest('V' + i);
+        expectEquivalentConnectors(connectors, 'V' + i);
+      }),
+    );
+  });
 
-    await connector1.setValueForTest('V1');
-    expectEquivalentConnectors([connector1, connector2, connector3], 'V1');
+  test('chain', async () => {
+    const connectors = await getChainedTestConnectors(
+      createTestValueConnector,
+      count,
+    );
 
-    await connector2.setValueForTest('V2');
-    expectEquivalentConnectors([connector1, connector2, connector3], 'V2');
+    await Promise.all(
+      connectors.map(async (connector, i) => {
+        await pause();
+        await connector.setValueForTest('V' + i);
+        expectEquivalentConnectors(connectors, 'V' + i);
+      }),
+    );
+  });
 
-    await connector3.setValueForTest('V3');
-    expectEquivalentConnectors([connector1, connector2, connector3], 'V3');
+  test('ring', async () => {
+    const connectors = await getChainedTestConnectors(
+      createTestValueConnector,
+      count,
+      true,
+    );
+
+    await Promise.all(
+      connectors.map(async (connector, i) => {
+        await pause();
+        await connector.setValueForTest('V' + i);
+        expectEquivalentConnectors(connectors, 'V' + i);
+      }),
+    );
   });
 });
