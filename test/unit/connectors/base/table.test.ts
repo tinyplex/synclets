@@ -327,13 +327,11 @@ describe.each([3, 10])('%d-way', (count: number) => {
     );
 
     const connectors = syncletsAndConnectors.map(([, connector]) => connector);
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setCellForTest('r', 'c', 'C' + i);
-        expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
-      }),
-    );
+
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setCellForTest('r', 'c', 'C' + i);
+      expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
+    }
   });
 
   test('chain', async () => {
@@ -342,13 +340,10 @@ describe.each([3, 10])('%d-way', (count: number) => {
       count,
     );
 
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setCellForTest('r', 'c', 'C' + i);
-        expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
-      }),
-    );
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setCellForTest('r', 'c', 'C' + i);
+      expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
+    }
   });
 
   test('ring', async () => {
@@ -358,12 +353,9 @@ describe.each([3, 10])('%d-way', (count: number) => {
       true,
     );
 
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setCellForTest('r', 'c', 'C' + i);
-        expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
-      }),
-    );
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setCellForTest('r', 'c', 'C' + i);
+      expectEquivalentConnectors(connectors, {r: {c: 'C' + i}});
+    }
   });
 });

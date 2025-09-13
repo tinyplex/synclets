@@ -189,21 +189,19 @@ describe('2-way', () => {
   });
 });
 
-describe.each([3])('%d-way', (count: number) => {
-  test.only('pool', async () => {
+describe.each([3, 10])('%d-way', (count: number) => {
+  test('pool', async () => {
     const syncletsAndConnectors = await getPooledTestSyncletsAndConnectors(
       createTestFileValueConnector,
       count,
     );
 
     const connectors = syncletsAndConnectors.map(([, connector]) => connector);
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setValueForTest('V' + i);
-        expectEquivalentConnectors(connectors, 'V' + i);
-      }),
-    );
+
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setValueForTest('V' + i);
+      expectEquivalentConnectors(connectors, 'V' + i);
+    }
   });
 
   test('chain', async () => {
@@ -212,13 +210,10 @@ describe.each([3])('%d-way', (count: number) => {
       count,
     );
 
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setValueForTest('V' + i);
-        expectEquivalentConnectors(connectors, 'V' + i);
-      }),
-    );
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setValueForTest('V' + i);
+      expectEquivalentConnectors(connectors, 'V' + i);
+    }
   });
 
   test('ring', async () => {
@@ -228,12 +223,9 @@ describe.each([3])('%d-way', (count: number) => {
       true,
     );
 
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setValueForTest('V' + i);
-        expectEquivalentConnectors(connectors, 'V' + i);
-      }),
-    );
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setValueForTest('V' + i);
+      expectEquivalentConnectors(connectors, 'V' + i);
+    }
   });
 });

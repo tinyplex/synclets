@@ -609,20 +609,18 @@ describe.each([3, 10])('%d-way', (count: number) => {
     );
 
     const connectors = syncletsAndConnectors.map(([, connector]) => connector);
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setValueForTest(['one'], 'V' + i);
-        await connector.setValueForTest(['two', 'one'], 'V' + (i + 1));
-        await connector.setValueForTest(['three', 'one'], 'V' + (i + 2));
-        await connector.setValueForTest(['three', 'two', 'one'], 'V' + (i + 3));
-        expectEquivalentConnectors(connectors, {
-          one: 'V' + i,
-          two: {one: 'V' + (i + 1)},
-          three: {one: 'V' + (i + 2), two: {one: 'V' + (i + 3)}},
-        });
-      }),
-    );
+
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setValueForTest(['one'], 'V' + i);
+      await connector.setValueForTest(['two', 'one'], 'V' + (i + 1));
+      await connector.setValueForTest(['three', 'one'], 'V' + (i + 2));
+      await connector.setValueForTest(['three', 'two', 'one'], 'V' + (i + 3));
+      expectEquivalentConnectors(connectors, {
+        one: 'V' + i,
+        two: {one: 'V' + (i + 1)},
+        three: {one: 'V' + (i + 2), two: {one: 'V' + (i + 3)}},
+      });
+    }
   });
 
   test('chain', async () => {
@@ -631,20 +629,17 @@ describe.each([3, 10])('%d-way', (count: number) => {
       count,
     );
 
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setValueForTest(['one'], 'V' + i);
-        await connector.setValueForTest(['two', 'one'], 'V' + (i + 1));
-        await connector.setValueForTest(['three', 'one'], 'V' + (i + 2));
-        await connector.setValueForTest(['three', 'two', 'one'], 'V' + (i + 3));
-        expectEquivalentConnectors(connectors, {
-          one: 'V' + i,
-          two: {one: 'V' + (i + 1)},
-          three: {one: 'V' + (i + 2), two: {one: 'V' + (i + 3)}},
-        });
-      }),
-    );
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setValueForTest(['one'], 'V' + i);
+      await connector.setValueForTest(['two', 'one'], 'V' + (i + 1));
+      await connector.setValueForTest(['three', 'one'], 'V' + (i + 2));
+      await connector.setValueForTest(['three', 'two', 'one'], 'V' + (i + 3));
+      expectEquivalentConnectors(connectors, {
+        one: 'V' + i,
+        two: {one: 'V' + (i + 1)},
+        three: {one: 'V' + (i + 2), two: {one: 'V' + (i + 3)}},
+      });
+    }
   });
 
   test('ring', async () => {
@@ -654,19 +649,16 @@ describe.each([3, 10])('%d-way', (count: number) => {
       true,
     );
 
-    await Promise.all(
-      connectors.map(async (connector, i) => {
-        await pause();
-        await connector.setValueForTest(['one'], 'V' + i);
-        await connector.setValueForTest(['two', 'one'], 'V' + (i + 1));
-        await connector.setValueForTest(['three', 'one'], 'V' + (i + 2));
-        await connector.setValueForTest(['three', 'two', 'one'], 'V' + (i + 3));
-        expectEquivalentConnectors(connectors, {
-          one: 'V' + i,
-          two: {one: 'V' + (i + 1)},
-          three: {one: 'V' + (i + 2), two: {one: 'V' + (i + 3)}},
-        });
-      }),
-    );
+    for (const [i, connector] of connectors.entries()) {
+      await connector.setValueForTest(['one'], 'V' + i);
+      await connector.setValueForTest(['two', 'one'], 'V' + (i + 1));
+      await connector.setValueForTest(['three', 'one'], 'V' + (i + 2));
+      await connector.setValueForTest(['three', 'two', 'one'], 'V' + (i + 3));
+      expectEquivalentConnectors(connectors, {
+        one: 'V' + i,
+        two: {one: 'V' + (i + 1)},
+        three: {one: 'V' + (i + 2), two: {one: 'V' + (i + 3)}},
+      });
+    }
   });
 });
