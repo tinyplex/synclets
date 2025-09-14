@@ -1,16 +1,15 @@
 /// connector/file
 
-import type {ConnectorOptions} from '../../index.d.ts';
-import type {BaseValueConnector} from '../base/index.d.ts';
+import type {Connector, ConnectorOptions} from '../../index.d.ts';
 
 export type FileConnectorOptions = ConnectorOptions & {
   directory: string;
 };
 
-export interface FileValueConnector extends BaseValueConnector {
+export interface FileConnector extends Connector {
   getDirectory(): string;
 }
 
-export function createFileValueConnector(
+export function createFileConnector(
   options: FileConnectorOptions,
-): Promise<FileValueConnector>;
+): Promise<FileConnector>;
