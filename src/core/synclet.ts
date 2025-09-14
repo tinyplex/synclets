@@ -83,7 +83,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     await promiseAll(
       arrayMap(
         arrayDifference(
-          (await connector.readChildIds(address, context, true)) ?? [],
+          (await connector.readChildIds(address, context)) ?? [],
           except,
         ),
         async (id) =>
@@ -222,7 +222,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
         const subNodeObj: {[id: string]: Node} = {};
         await promiseAll(
           arrayMap(
-            (await connector.readChildIds(address, context, true)) ?? [],
+            (await connector.readChildIds(address, context)) ?? [],
             async (id) => {
               subNodeObj[id] = await readHashOrTimestamp(
                 [...address, id],

@@ -32,7 +32,6 @@ export interface ProtectedConnector extends Connector {
   readChildIds(
     address: Address,
     context: Context,
-    includeTombs?: boolean,
   ): Promise<string[] | undefined>;
   setOrDelAtom(
     address: Address,

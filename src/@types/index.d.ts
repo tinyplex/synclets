@@ -103,7 +103,6 @@ export type ConnectorImplementations = {
   readChildIds: (
     address: Address,
     context: Context,
-    includeTombs?: boolean,
   ) => Promise<string[] | undefined>;
 };
 

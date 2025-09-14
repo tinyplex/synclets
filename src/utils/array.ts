@@ -40,3 +40,9 @@ export const arrayJoin = (
   fragments: (string | number)[],
   separator = EMPTY_STRING,
 ): string => fragments.join(separator);
+
+export const arraySlice = <Value>(
+  array: Value[],
+  start?: number,
+  end?: number,
+): Value[] => array.slice(start, end);

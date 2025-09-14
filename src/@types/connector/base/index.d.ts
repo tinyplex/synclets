@@ -33,6 +33,8 @@ export function createBaseValueConnector(
   options?: ConnectorOptions,
 ): Promise<BaseValueConnector>;
 
+// --
+
 export interface BaseValuesConnector extends Connector {
   getValueIds(context?: Context): Promise<string[]>;
   getValue(valueId: string, context?: Context): Promise<Atom | undefined>;
@@ -76,6 +78,8 @@ export function createBaseValuesConnector(
   implementations: BaseValuesConnectorImplementations,
   options?: ConnectorOptions,
 ): Promise<BaseValuesConnector>;
+
+// --
 
 export interface BaseTableConnector extends Connector {
   getRowIds(context?: Context): Promise<string[]>;
@@ -145,6 +149,8 @@ export function createBaseTableConnector(
   implementations: BaseTableConnectorImplementations,
   options?: ConnectorOptions,
 ): Promise<BaseTableConnector>;
+
+// --
 
 export interface BaseTablesConnector extends Connector {
   getTableIds(context?: Context): Promise<string[]>;
