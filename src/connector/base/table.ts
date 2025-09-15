@@ -11,7 +11,7 @@ import type {
   BaseTableConnectorImplementations,
   createBaseTableConnector as createBaseTableConnectorDecl,
 } from '@synclets/@types/connector/base';
-import {isUndefined, size} from '@synclets/utils';
+import {isUndefined} from '@synclets/utils';
 
 export const createBaseTableConnector: typeof createBaseTableConnectorDecl =
   async (
@@ -37,6 +37,8 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl =
         connect,
 
         disconnect,
+
+        atomDepth: 2,
 
         readAtom: ([rowId, cellId]: Address, context: Context) =>
           readCellAtom(rowId, cellId, context),
@@ -69,8 +71,6 @@ export const createBaseTableConnector: typeof createBaseTableConnectorDecl =
 
         removeAtom: ([rowId, cellId]: Address, context: Context) =>
           removeCellAtom(rowId, cellId, context),
-
-        isParent: async (address: Address) => size(address) < 2,
 
         readChildIds: async ([rowId, more]: Address, context: Context) =>
           await (isUndefined(rowId)

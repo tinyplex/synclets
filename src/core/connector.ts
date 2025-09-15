@@ -28,6 +28,7 @@ export const createConnector: typeof createConnectorDecl = async (
   {
     connect,
     disconnect,
+    atomDepth,
     readAtom,
     readTimestamp,
     readHash,
@@ -35,7 +36,6 @@ export const createConnector: typeof createConnectorDecl = async (
     writeTimestamp,
     writeHash,
     removeAtom,
-    isParent,
     readChildIds,
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
@@ -131,6 +131,8 @@ export const createConnector: typeof createConnectorDecl = async (
 
     isConnected: () => connected,
 
+    atomDepth,
+
     setAtom: (
       address: Address,
       atomOrTomb: Atom | Tomb,
@@ -155,8 +157,6 @@ export const createConnector: typeof createConnectorDecl = async (
     readTimestamp,
 
     readHash,
-
-    isParent,
 
     readChildIds,
   };

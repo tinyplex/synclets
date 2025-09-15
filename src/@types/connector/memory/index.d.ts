@@ -1,11 +1,9 @@
 /// connector/memory
 
 import type {
-  Address,
   Atom,
   Connector,
   ConnectorOptions,
-  Context,
   Hash,
   Timestamp,
 } from '../../index.d.ts';
@@ -19,12 +17,7 @@ export interface MemoryConnector extends Connector {
   dumpMeta(): MetaNode;
 }
 
-export type MemoryConnectorImplementations = {
-  isParent: (
-    address: Address,
-    context: Context,
-  ) => Promise<boolean | undefined>;
-};
+export type MemoryConnectorImplementations = {atomDepth: number};
 
 export function createMemoryConnector(
   implementations: MemoryConnectorImplementations,

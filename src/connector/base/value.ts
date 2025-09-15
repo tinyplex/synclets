@@ -31,6 +31,8 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl =
 
         disconnect,
 
+        atomDepth: 0,
+
         readAtom: (_address: Address, context: Context) =>
           readValueAtom(context),
 
@@ -52,8 +54,6 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl =
 
         removeAtom: (_address: Address, context: Context) =>
           removeValueAtom(context),
-
-        isParent: async () => false,
 
         readChildIds: async () => [],
       },

@@ -15,7 +15,6 @@ import type {
   MetaNode,
 } from '@synclets/@types/connector/memory';
 import {
-  arraySlice,
   isAtom,
   isHash,
   isObject,
@@ -39,10 +38,10 @@ const getMetaNode = (node: Node): MetaNode =>
     : [node[0], objMap(node[1] as {[id: string]: Node}, getMetaNode)];
 
 export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
-  {isParent}: MemoryConnectorImplementations,
+  {atomDepth}: MemoryConnectorImplementations,
   options: ConnectorOptions = {},
 ): Promise<MemoryConnector> => {
-  const nodes: Node = (await isParent([], {})) ? [0, {}] : ['', undefined];
+  const nodes: Node = atomDepth > 0 ? [0, {}] : ['', undefined];
 
   const nodeAtAddress = async (
     node: Node,
@@ -58,12 +57,7 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
     const nextId = address[depth];
     if (isUndefined(subNodes[nextId])) {
       if (create) {
-        subNodes[nextId] = (await isParent(
-          arraySlice(address, 0, depth),
-          context,
-        ))
-          ? [0, {}]
-          : ['', undefined];
+        subNodes[nextId] = atomDepth > depth ? [0, {}] : ['', undefined];
       } else {
         return undefined;
       }
@@ -84,6 +78,8 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
 
   const connector = await createConnector(
     {
+      atomDepth,
+
       readAtom: async (address: Address, context: Context) => {
         const node = await nodeAtAddress(nodes, address, context);
         if (isTimestamp(node?.[0]) && isAtom(node[1])) {
@@ -127,8 +123,6 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
 
       removeAtom: (address: Address, context: Context) =>
         writeAtom(address, undefined, context),
-
-      isParent,
 
       readChildIds: async (address: Address, context: Context) => {
         const node = await nodeAtAddress(nodes, address, context);

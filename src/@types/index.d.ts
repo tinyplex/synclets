@@ -87,6 +87,7 @@ export interface Connector {
 export type ConnectorImplementations = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
+  atomDepth: number;
   readAtom: (address: Address, context: Context) => Promise<Atom | undefined>;
   readTimestamp: (
     address: Address,
@@ -101,10 +102,6 @@ export type ConnectorImplementations = {
   ) => Promise<void>;
   writeHash: (address: Address, hash: Hash, context: Context) => Promise<void>;
   removeAtom: (address: Address, context: Context) => Promise<void>;
-  isParent: (
-    address: Address,
-    context: Context,
-  ) => Promise<boolean | undefined>;
   readChildIds: (
     address: Address,
     context: Context,

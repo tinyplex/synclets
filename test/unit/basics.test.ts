@@ -12,6 +12,7 @@ let transport: Transport;
 
 const createMockConnector = () =>
   createConnector({
+    atomDepth: 0,
     readAtom: async () => 0,
     readTimestamp: async () => '',
     readHash: async () => 0,
@@ -19,7 +20,6 @@ const createMockConnector = () =>
     writeTimestamp: async () => {},
     writeHash: async () => {},
     removeAtom: async () => {},
-    isParent: async () => false,
     readChildIds: async () => [],
   });
 

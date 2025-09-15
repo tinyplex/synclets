@@ -35,6 +35,8 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl =
 
         disconnect,
 
+        atomDepth: 1,
+
         readAtom: ([valueId]: Address, context: Context) =>
           readValueAtom(valueId, context),
 
@@ -58,8 +60,6 @@ export const createBaseValuesConnector: typeof createBaseValuesConnectorDecl =
 
         removeAtom: ([valueId]: Address, context: Context) =>
           removeValueAtom(valueId, context),
-
-        isParent: async (address: Address) => isEmpty(address),
 
         readChildIds: async (address: Address, context: Context) =>
           isEmpty(address) ? await readValueIds(context) : [],
