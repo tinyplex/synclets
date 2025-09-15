@@ -65,6 +65,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/utils/index.d.ts')
     .addApiFile('dist/@types/connector/base/index.d.ts')
     .addApiFile('dist/@types/connector/fs/index.d.ts')
+    .addApiFile('dist/@types/connector/memory/index.d.ts')
     .addApiFile('dist/@types/transport/memory/index.d.ts');
 
 const addPages = (docs: Docs): Docs =>

@@ -8,6 +8,8 @@ export const objKeys = object.keys;
 
 export const objValues = object.values;
 
+export const objEntries = object.entries;
+
 export const objFromEntries = object.fromEntries;
 
 export const isObject = (obj: unknown): obj is {[id: string]: unknown} =>
@@ -29,7 +31,13 @@ export const objEvery = <Value>(
   test: (value: Value) => boolean,
 ): boolean => arrayEvery(objValues(obj), test);
 
-export const objMap = <Value, Return>(
+export const objToArray = <Value, Return>(
   obj: {[id: string]: Value},
   cb: (id: string, value: Value) => Return,
-): Return[] => object.entries(obj).map((args) => cb(...args));
+): Return[] => objEntries(obj).map(([id, value]) => cb(id, value));
+
+export const objMap = <Value, Return>(
+  obj: {[id: string]: Value},
+  cb: (value: Value) => Return,
+): {[id: string]: Return} =>
+  objFromEntries(objEntries(obj).map(([id, value]) => [id, cb(value)]));

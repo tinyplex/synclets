@@ -4,7 +4,7 @@ import type {
   Connector,
   Context,
   Hash,
-  Node,
+  ProtocolNode,
   Synclet,
   Timestamp,
   Transport,
@@ -14,7 +14,7 @@ import {MessageType} from './message.ts';
 export type Message = [
   type: MessageType,
   address: Address,
-  node: Node,
+  node: ProtocolNode,
   context: Context,
 ];
 

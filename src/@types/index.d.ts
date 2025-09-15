@@ -12,11 +12,18 @@ export type Hash = number;
 
 export type Address = string[];
 
-export type Node = Timestamp | TimestampAndAtom | Hash | SubNodes;
+export type ProtocolNode =
+  | Timestamp
+  | TimestampAndAtom
+  | Hash
+  | ProtocolSubNodes;
+
+export type ProtocolSubNodes = [
+  subNodes: {[id: string]: ProtocolNode},
+  partial?: 1,
+];
 
 export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom | undefined];
-
-export type SubNodes = [subNodes: {[id: string]: Node}, partial?: 1];
 
 export type Context = {[key: string]: Atom};
 
@@ -40,13 +47,11 @@ export type SyncletImplementations = {
   canReceiveMessage?: (
     type: MessageType,
     address: Address,
-    node: Node,
     context: Context,
   ) => Promise<boolean>;
   getSendContext?: (
     type: MessageType,
     address: Address,
-    node: Node,
     receivedContext?: Context,
   ) => Promise<Context>;
 };

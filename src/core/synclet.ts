@@ -4,8 +4,8 @@ import type {
   createSynclet as createSyncletDecl,
   Hash,
   LogLevel,
-  Node,
-  SubNodes,
+  ProtocolNode,
+  ProtocolSubNodes,
   Synclet,
   SyncletImplementations,
   SyncletOptions,
@@ -20,13 +20,13 @@ import {
   getUniqueId,
   ifNotUndefined,
   isHash,
-  isSubNodes,
+  isProtocolSubNodes,
   isTimestamp,
   isTimestampAndAtom,
   isUndefined,
   objKeys,
-  objMap,
   objNotEmpty,
+  objToArray,
   promiseAll,
 } from '@synclets/utils';
 import {MessageType} from './message.ts';
@@ -64,7 +64,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const readFullNodesOrAtomAndTimestamp = async (
     address: Address,
     context: Context,
-  ): Promise<SubNodes | TimestampAndAtom | undefined> => {
+  ): Promise<ProtocolSubNodes | TimestampAndAtom | undefined> => {
     if (await connector.isParent(address, context)) {
       return await readFullNodes(address, context);
     }
@@ -78,8 +78,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
     address: Address,
     context: Context,
     except: string[] = [],
-  ): Promise<SubNodes> => {
-    const subNodeObj: {[id: string]: Node} = {};
+  ): Promise<ProtocolSubNodes> => {
+    const subNodeObj: {[id: string]: ProtocolNode} = {};
     await promiseAll(
       arrayMap(
         arrayDifference(
@@ -106,7 +106,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const sendNodeMessage = async (
     address: Address,
-    node: Node,
+    node: ProtocolNode,
     receivedContext: Context = {},
     to?: string,
   ) =>
@@ -115,12 +115,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
         MessageType.Node,
         address,
         node,
-        (await getSendContext?.(
-          MessageType.Node,
-          address,
-          node,
-          receivedContext,
-        )) ?? {},
+        (await getSendContext?.(MessageType.Node, address, receivedContext)) ??
+          {},
       ],
       to,
     );
@@ -135,7 +131,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
       if (
         !isUndefined(canReceiveMessage) &&
-        !(await canReceiveMessage(type, address, node, context))
+        !(await canReceiveMessage(type, address, context))
       ) {
         return log(`can't receive message: ${from}`, 'warn');
       }
@@ -147,9 +143,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const transformNode = async (
     address: Address,
-    node: Node,
+    node: ProtocolNode,
     context: Context,
-    ifTransformedToDefined: (newNode: Node) => Promise<void> | void,
+    ifTransformedToDefined: (newNode: ProtocolNode) => Promise<void> | void,
     ifTransformedToUndefined: () => void = () => {},
   ) =>
     await ifNotUndefined(
@@ -160,7 +156,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
             ? transformTimestampAndAtom
             : isHash(node)
               ? transformHash
-              : isSubNodes(node)
+              : isProtocolSubNodes(node)
                 ? transformSubNodes
                 : () => log(`${INVALID_NODE}: ${address}`, 'warn')) as any
       )?.(address, node, context),
@@ -172,7 +168,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     address: Address,
     otherTimestamp: Timestamp,
     context: Context,
-  ): Promise<Node | undefined> => {
+  ): Promise<ProtocolNode | undefined> => {
     if (!(await connector.isParent(address, context))) {
       const myTimestamp =
         (await connector.readTimestamp(address, context)) ?? EMPTY_STRING;
@@ -190,7 +186,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     address: Address,
     otherTimestampAndAtom: TimestampAndAtom,
     context: Context,
-  ): Promise<Node | undefined> => {
+  ): Promise<ProtocolNode | undefined> => {
     if (!(await connector.isParent(address, context))) {
       const myTimestamp =
         (await connector.readTimestamp(address, context)) ?? EMPTY_STRING;
@@ -216,10 +212,10 @@ export const createSynclet: typeof createSyncletDecl = (async (
     address: Address,
     otherHash: Hash,
     context: Context,
-  ): Promise<Node | undefined> => {
+  ): Promise<ProtocolNode | undefined> => {
     if (await connector.isParent(address, context)) {
       if (otherHash !== (await connector.readHash(address, context))) {
-        const subNodeObj: {[id: string]: Node} = {};
+        const subNodeObj: {[id: string]: ProtocolNode} = {};
         await promiseAll(
           arrayMap(
             (await connector.readChildIds(address, context)) ?? [],
@@ -240,15 +236,15 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const transformSubNodes = async (
     address: Address,
-    [otherSubNodeObj, partial]: SubNodes,
+    [otherSubNodeObj, partial]: ProtocolSubNodes,
     context: Context,
-  ): Promise<Node | undefined> => {
+  ): Promise<ProtocolNode | undefined> => {
     if (await connector.isParent(address, context)) {
-      const mySubNodes: SubNodes = partial
+      const mySubNodes: ProtocolSubNodes = partial
         ? [{}]
         : await readFullNodes(address, context, objKeys(otherSubNodeObj));
       await promiseAll(
-        objMap(otherSubNodeObj, (id, otherSubNode) =>
+        objToArray(otherSubNodeObj, (id, otherSubNode) =>
           transformNode(
             [...address, id],
             otherSubNode,

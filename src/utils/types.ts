@@ -1,8 +1,8 @@
 import {
   Atom,
   Hash,
-  Node,
-  SubNodes,
+  ProtocolNode,
+  ProtocolSubNodes,
   Timestamp,
   TimestampAndAtom,
 } from '@synclets/@types';
@@ -10,29 +10,33 @@ import {isArray} from './array.ts';
 import {isObject, objEvery} from './object.ts';
 import {size} from './other.ts';
 
-export const isNode = (node: unknown): node is Node =>
-  isTimestamp(node) ||
-  isTimestampAndAtom(node) ||
-  isHash(node) ||
-  isSubNodes(node);
+export const isProtocolNode = (thing: unknown): thing is ProtocolNode =>
+  isTimestamp(thing) ||
+  isTimestampAndAtom(thing) ||
+  isHash(thing) ||
+  isProtocolSubNodes(thing);
 
-export const isTimestamp = (node: unknown): node is Timestamp =>
-  typeof node === 'string';
+export const isTimestamp = (thing: unknown): thing is Timestamp =>
+  typeof thing === 'string';
 
-export const isAtom = (value: unknown): value is Atom | undefined =>
-  value === undefined ||
-  value === null ||
-  typeof value === 'number' ||
-  typeof value === 'string' ||
-  typeof value === 'boolean';
+export const isAtom = (thing: unknown): thing is Atom | undefined =>
+  thing === undefined ||
+  thing === null ||
+  typeof thing === 'number' ||
+  typeof thing === 'string' ||
+  typeof thing === 'boolean';
 
-export const isTimestampAndAtom = (node: unknown): node is TimestampAndAtom =>
-  isArray(node) && size(node) == 2 && isTimestamp(node[0]) && isAtom(node[1]);
+export const isTimestampAndAtom = (thing: unknown): thing is TimestampAndAtom =>
+  isArray(thing) &&
+  size(thing) == 2 &&
+  isTimestamp(thing[0]) &&
+  isAtom(thing[1]);
 
-export const isHash = (node: unknown): node is Hash => typeof node === 'number';
+export const isHash = (thing: unknown): thing is Hash =>
+  typeof thing === 'number';
 
-export const isSubNodes = (node: unknown): node is SubNodes =>
-  isArray(node) &&
-  isObject(node[0]) &&
-  objEvery(node[0], isNode) &&
-  (size(node) == 1 || (size(node) == 2 && node[1] === 1));
+export const isProtocolSubNodes = (thing: unknown): thing is ProtocolSubNodes =>
+  isArray(thing) &&
+  isObject(thing[0]) &&
+  objEvery(thing[0], isProtocolNode) &&
+  (size(thing) == 1 || (size(thing) == 2 && thing[1] === 1));
