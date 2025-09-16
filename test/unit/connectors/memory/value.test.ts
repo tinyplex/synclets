@@ -1,9 +1,7 @@
-import {ConnectorOptions} from 'synclets';
+import {Atoms, ConnectorOptions} from 'synclets';
 import {
   createMemoryConnector,
-  type DataNode,
   type MemoryConnector,
-  type MetaNode,
 } from 'synclets/connector/memory';
 import {
   expectEquivalentConnectors,
@@ -14,17 +12,14 @@ import {
 interface TestMemoryConnector extends MemoryConnector {
   setValueForTest(value: string): Promise<void>;
   delValueForTest(): Promise<void>;
-  getDataForTest(): DataNode;
-  getMetaForTest(): MetaNode;
+  getDataForTest(): Atoms;
+  getMetaForTest(): string;
 }
 
 const createTestMemoryConnector = async (
   options?: ConnectorOptions,
 ): Promise<TestMemoryConnector> => {
-  const connector = await createMemoryConnector(
-    {isParent: async () => false},
-    options,
-  );
+  const connector = await createMemoryConnector({atomDepth: 0}, options);
 
   return {
     ...connector,
@@ -33,9 +28,9 @@ const createTestMemoryConnector = async (
 
     delValueForTest: async () => connector.delAtom([]),
 
-    getDataForTest: connector.dumpData,
+    getDataForTest: connector.getAtoms,
 
-    getMetaForTest: connector.dumpMeta,
+    getMetaForTest: connector.getJson,
   };
 };
 
@@ -56,8 +51,6 @@ describe('2-way', () => {
 
     await connector2.setValueForTest('V2');
     expectEquivalentConnectors([connector1, connector2], 'V2');
-
-    console.log(connector1.getDataForTest(), connector2.getMetaForTest());
   });
 
   test('connected, deletion', async () => {

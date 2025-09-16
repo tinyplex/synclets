@@ -1,6 +1,5 @@
 import {access, constants, mkdir, stat, writeFile} from 'fs/promises';
 import {dirname, resolve} from 'path';
-import {arrayMap} from './array.ts';
 import {errorNew} from './other.ts';
 
 const {R_OK, W_OK} = constants;
@@ -18,11 +17,8 @@ const validateReadWrite = async (path: string) => {
   }
 };
 
-const encodePaths = (paths: string[]) =>
-  resolve(...arrayMap(paths, encodeURIComponent));
-
 export const validateDirectory = async (...paths: string[]) => {
-  const directory = encodePaths(paths);
+  const directory = resolve(...paths);
   try {
     await stat(directory);
   } catch {
@@ -40,7 +36,7 @@ export const validateDirectory = async (...paths: string[]) => {
 };
 
 export const validateFile = async (...paths: string[]) => {
-  const file = encodePaths(paths);
+  const file = resolve(...paths);
   const directory = dirname(file);
   try {
     await stat(file);

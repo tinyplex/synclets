@@ -34,10 +34,7 @@ export interface FileConnector extends Connector {
 }
 
 export type FileConnectorImplementations = {
-  isParent: (
-    address: Address,
-    context: Context,
-  ) => Promise<boolean | undefined>;
+  atomDepth: number;
 };
 
 export type FileConnectorOptions = ConnectorOptions & {

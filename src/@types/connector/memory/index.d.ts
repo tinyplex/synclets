@@ -1,23 +1,17 @@
 /// connector/memory
 
-import type {
-  Atom,
-  Connector,
-  ConnectorOptions,
-  Hash,
-  Timestamp,
-} from '../../index.d.ts';
-
-export type DataNode = {[id: string]: DataNode} | Atom | undefined;
-
-export type MetaNode = [Hash, {[id: string]: MetaNode}] | Timestamp | undefined;
+import type {Atoms, Connector, ConnectorOptions} from '../../index.d.ts';
 
 export interface MemoryConnector extends Connector {
-  dumpData(): DataNode;
-  dumpMeta(): MetaNode;
+  getAtoms(): Atoms;
+  getJson(): string;
+  setJson(json: string): void;
 }
 
-export type MemoryConnectorImplementations = {atomDepth: number};
+export type MemoryConnectorImplementations = {
+  atomDepth: number;
+  onWrite?: () => Promise<void>;
+};
 
 export function createMemoryConnector(
   implementations: MemoryConnectorImplementations,

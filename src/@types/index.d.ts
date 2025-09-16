@@ -6,6 +6,8 @@ export type Tomb = '\uFFFC';
 
 export type Atom = string | number | boolean | null | Tomb;
 
+export type Atoms = {[id: string]: Atoms} | Atom | undefined;
+
 export type Timestamp = string;
 
 export type Hash = number;

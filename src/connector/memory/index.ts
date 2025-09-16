@@ -2,6 +2,7 @@ import {createConnector} from '@synclets';
 import type {
   Address,
   Atom,
+  Atoms,
   ConnectorOptions,
   Context,
   Hash,
@@ -9,10 +10,8 @@ import type {
 } from '@synclets/@types';
 import type {
   createMemoryConnector as createMemoryConnectorDecl,
-  DataNode,
   MemoryConnector,
   MemoryConnectorImplementations,
-  MetaNode,
 } from '@synclets/@types/connector/memory';
 import {
   isAtom,
@@ -20,6 +19,8 @@ import {
   isObject,
   isTimestamp,
   isUndefined,
+  jsonParse,
+  jsonString,
   objKeys,
   objMap,
   size,
@@ -27,21 +28,16 @@ import {
 
 type Node = [Hash, {[id: string]: Node}] | [Timestamp, Atom | undefined];
 
-const getDataNode = (node: Node): DataNode =>
+const getAtoms = (node: Node): Atoms =>
   isTimestamp(node[0])
     ? (node[1] as Atom | undefined)
-    : objMap(node[1] as {[id: string]: Node}, getDataNode);
-
-const getMetaNode = (node: Node): MetaNode =>
-  isTimestamp(node[0])
-    ? (node[0] as Timestamp | undefined)
-    : [node[0], objMap(node[1] as {[id: string]: Node}, getMetaNode)];
+    : objMap(node[1] as {[id: string]: Node}, getAtoms);
 
 export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
-  {atomDepth}: MemoryConnectorImplementations,
+  {atomDepth, onWrite}: MemoryConnectorImplementations,
   options: ConnectorOptions = {},
 ): Promise<MemoryConnector> => {
-  const nodes: Node = atomDepth > 0 ? [0, {}] : ['', undefined];
+  let nodes: Node = atomDepth > 0 ? [0, {}] : ['', undefined];
 
   const nodeAtAddress = async (
     node: Node,
@@ -70,9 +66,10 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
     atom: Atom | undefined,
     context: Context,
   ) => {
-    const node = await nodeAtAddress(nodes, address, context);
+    const node = await nodeAtAddress(nodes, address, context, true);
     if (isTimestamp(node?.[0])) {
       node[1] = atom;
+      await onWrite?.();
     }
   };
 
@@ -108,16 +105,18 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
         timestamp: Timestamp,
         context: Context,
       ) => {
-        const node = await nodeAtAddress(nodes, address, context);
+        const node = await nodeAtAddress(nodes, address, context, true);
         if (isTimestamp(node?.[0])) {
           node[0] = timestamp;
+          await onWrite?.();
         }
       },
 
       writeHash: async (address: Address, hash: Hash, context: Context) => {
-        const node = await nodeAtAddress(nodes, address, context);
+        const node = await nodeAtAddress(nodes, address, context, true);
         if (isHash(node?.[0])) {
           node[0] = hash;
+          await onWrite?.();
         }
       },
 
@@ -139,7 +138,12 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
   return {
     ...connector,
 
-    dumpData: () => getDataNode(nodes),
-    dumpMeta: () => getMetaNode(nodes),
+    getAtoms: () => getAtoms(nodes),
+
+    getJson: () => jsonString(nodes),
+
+    setJson: (json: string) => {
+      nodes = jsonParse(json) as Node;
+    },
   };
 };
