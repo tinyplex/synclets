@@ -33,15 +33,8 @@ export interface FileConnector extends Connector {
   getFile(): string;
 }
 
-export type FileConnectorImplementations = {
-  atomDepth: number;
-};
-
-export type FileConnectorOptions = ConnectorOptions & {
-  file: string;
-};
-
 export function createFileConnector(
-  implementations: FileConnectorImplementations,
-  options: FileConnectorOptions,
+  atomDepth: number,
+  file: string,
+  options?: ConnectorOptions,
 ): Promise<FileConnector>;

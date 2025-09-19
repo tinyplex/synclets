@@ -21,8 +21,8 @@ export type Message = [
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
 export interface ProtectedConnector extends Connector {
-  bind(synclet: Synclet, syncletId: string): void;
   atomDepth: number;
+  bind(synclet: Synclet, syncletId: string): void;
   readAtom(address: Address, context: Context): Promise<Atom | undefined>;
   readTimestamp(
     address: Address,

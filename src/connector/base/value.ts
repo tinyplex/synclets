@@ -26,12 +26,11 @@ export const createBaseValueConnector: typeof createBaseValueConnectorDecl =
     options?: ConnectorOptions,
   ): Promise<BaseValueConnector> => {
     const connector = await createConnector(
+      0,
       {
         connect,
 
         disconnect,
-
-        atomDepth: 0,
 
         readAtom: (_address: Address, context: Context) =>
           readValueAtom(context),

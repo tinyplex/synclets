@@ -34,7 +34,8 @@ const getAtoms = (node: Node): Atoms =>
     : objMap(node[1] as {[id: string]: Node}, getAtoms);
 
 export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
-  {atomDepth, onWrite}: MemoryConnectorImplementations,
+  atomDepth,
+  {onWrite}: MemoryConnectorImplementations = {},
   options: ConnectorOptions = {},
 ): Promise<MemoryConnector> => {
   let nodes: Node = atomDepth > 0 ? [0, {}] : ['', undefined];
@@ -74,9 +75,8 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
   };
 
   const connector = await createConnector(
+    atomDepth,
     {
-      atomDepth,
-
       readAtom: async (address: Address, context: Context) => {
         const node = await nodeAtAddress(nodes, address, context);
         if (isTimestamp(node?.[0]) && isAtom(node[1])) {

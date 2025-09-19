@@ -33,8 +33,9 @@ const createTestFileConnector = async (
   options?: ConnectorOptions,
 ): Promise<TestFileConnector> => {
   const connector = await createFileConnector(
-    {atomDepth: 0},
-    {file: join(tmp, getUniqueId()), ...options},
+    0,
+    join(tmp, getUniqueId()),
+    options,
   );
 
   return {
@@ -61,7 +62,7 @@ afterAll(async () => await rm(tmp, {recursive: true, force: true}));
 
 test('file', async () => {
   const file = join(tmp, '42');
-  const connector = await createFileConnector({atomDepth: 0}, {file});
+  const connector = await createFileConnector(0, file);
   expect(connector.getFile()).toBe(file);
 });
 

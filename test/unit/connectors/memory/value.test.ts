@@ -19,7 +19,7 @@ interface TestMemoryConnector extends MemoryConnector {
 const createTestMemoryConnector = async (
   options?: ConnectorOptions,
 ): Promise<TestMemoryConnector> => {
-  const connector = await createMemoryConnector({atomDepth: 0}, options);
+  const connector = await createMemoryConnector(0, {}, options);
 
   return {
     ...connector,

@@ -25,10 +25,10 @@ import type {ProtectedConnector} from './protected.js';
 import {getQueueFunctions} from './queue.ts';
 
 export const createConnector: typeof createConnectorDecl = async (
+  atomDepth,
   {
     connect,
     disconnect,
-    atomDepth,
     readAtom,
     readTimestamp,
     readHash,
@@ -107,7 +107,16 @@ export const createConnector: typeof createConnectorDecl = async (
   };
 
   return {
+    atomDepth,
+
     log,
+
+    bind: (synclet: Synclet, syncletId: string) => {
+      boundSynclets.add(synclet);
+      if (boundSynclets.size == 1) {
+        id = syncletId;
+      }
+    },
 
     connect: async () => {
       if (!connected) {
@@ -131,8 +140,6 @@ export const createConnector: typeof createConnectorDecl = async (
 
     isConnected: () => connected,
 
-    atomDepth,
-
     setAtom: (
       address: Address,
       atomOrTomb: Atom | Tomb,
@@ -144,13 +151,6 @@ export const createConnector: typeof createConnectorDecl = async (
       setOrDelAtom(address, undefined, context, sync),
 
     setOrDelAtom,
-
-    bind: (synclet: Synclet, syncletId: string) => {
-      boundSynclets.add(synclet);
-      if (boundSynclets.size == 1) {
-        id = syncletId;
-      }
-    },
 
     readAtom,
 

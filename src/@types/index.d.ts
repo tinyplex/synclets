@@ -89,7 +89,6 @@ export interface Connector {
 export type ConnectorImplementations = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
-  atomDepth: number;
   readAtom: (address: Address, context: Context) => Promise<Atom | undefined>;
   readTimestamp: (
     address: Address,
@@ -116,6 +115,7 @@ export type ConnectorOptions = {
 };
 
 export function createConnector(
+  atomDepth: number,
   implementations: ConnectorImplementations,
   options?: ConnectorOptions,
 ): Promise<Connector>;

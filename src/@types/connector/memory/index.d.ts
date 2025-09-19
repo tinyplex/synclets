@@ -9,11 +9,11 @@ export interface MemoryConnector extends Connector {
 }
 
 export type MemoryConnectorImplementations = {
-  atomDepth: number;
   onWrite?: () => Promise<void>;
 };
 
 export function createMemoryConnector(
-  implementations: MemoryConnectorImplementations,
+  atomDepth: number,
+  implementations?: MemoryConnectorImplementations,
   options?: ConnectorOptions,
 ): Promise<MemoryConnector>;

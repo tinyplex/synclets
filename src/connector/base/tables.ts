@@ -36,12 +36,11 @@ export const createBaseTablesConnector: typeof createBaseTablesConnectorDecl =
     options?: ConnectorOptions,
   ): Promise<BaseTablesConnector> => {
     const connector = await createConnector(
+      3,
       {
         connect,
 
         disconnect,
-
-        atomDepth: 3,
 
         readAtom: ([tableId, rowId, cellId]: Address, context: Context) =>
           readCellAtom(tableId, rowId, cellId, context),

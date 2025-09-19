@@ -1,9 +1,7 @@
-import type {Atom, Hash, Timestamp} from '@synclets/@types';
+import type {Atom, ConnectorOptions, Hash, Timestamp} from '@synclets/@types';
 import type {
   createFileConnector as createFileConnectorDecl,
   FileConnector,
-  FileConnectorImplementations,
-  FileConnectorOptions,
 } from '@synclets/@types/connector/fs';
 import {createMemoryConnector} from '@synclets/connector/memory';
 import {jsonString, UTF8, validateFile} from '@synclets/utils';
@@ -13,17 +11,15 @@ type Node = [Hash, SubNodes] | [Timestamp, Atom | undefined];
 type SubNodes = {[id: string]: Node};
 
 export const createFileConnector: typeof createFileConnectorDecl = async (
-  {atomDepth}: FileConnectorImplementations,
-  {file, ...options}: FileConnectorOptions,
+  atomDepth,
+  file,
+  options: ConnectorOptions = {},
 ): Promise<FileConnector> => {
   const path = await validateFile(file);
 
   const connector = await createMemoryConnector(
-    {
-      atomDepth,
-
-      onWrite: () => writeFile(path, connector.getJson(), UTF8),
-    },
+    atomDepth,
+    {onWrite: () => writeFile(path, connector.getJson(), UTF8)},
     options,
   );
 

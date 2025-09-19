@@ -11,8 +11,7 @@ let connector: Connector;
 let transport: Transport;
 
 const createMockConnector = () =>
-  createConnector({
-    atomDepth: 0,
+  createConnector(0, {
     readAtom: async () => 0,
     readTimestamp: async () => '',
     readHash: async () => 0,
