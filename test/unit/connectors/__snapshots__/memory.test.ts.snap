@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`0-depth 2-way connected, deletion: equivalent 1`] = `"A"`;
+
+exports[`0-depth 2-way connected, deletion: equivalent 2`] = `undefined`;
+
+exports[`0-depth 2-way connected, initial: equivalent 1`] = `undefined`;
+
+exports[`0-depth 2-way connected: equivalent 1`] = `"A"`;
+
+exports[`0-depth 2-way connected: equivalent 2`] = `"B"`;
+
+exports[`0-depth 2-way disconnected, conflicting values: equivalent 1`] = `"B"`;
+
+exports[`0-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
+[
+  "A",
+  undefined,
+]
+`;
+
+exports[`0-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
+[
+  "A",
+  "B",
+]
+`;
+
+exports[`0-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `"B"`;
+
+exports[`0-depth 2-way start 1, set 1, start 2: differing 1`] = `
+[
+  "A",
+  undefined,
+]
+`;
+
+exports[`0-depth 2-way start 1, set 1, start 2: equivalent 1`] = `"A"`;
+
+exports[`0-depth 2-way start 2, set 1, start 1: differing 1`] = `
+[
+  "A",
+  undefined,
+]
+`;
+
+exports[`0-depth 2-way start 2, set 1, start 1: equivalent 1`] = `"A"`;
+
+exports[`0-depth 2-way stop 1, set 1, start 1: differing 1`] = `
+[
+  "B",
+  "A",
+]
+`;
+
+exports[`0-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `"A"`;
+
+exports[`0-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `"B"`;
+
+exports[`0-depth 2-way stop 1, set 2, start 1: differing 1`] = `
+[
+  "A",
+  "B",
+]
+`;
+
+exports[`0-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `"A"`;
+
+exports[`0-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `"B"`;
+
+exports[`0-depth 3-way chain: equivalent 1`] = `"V1"`;
+
+exports[`0-depth 3-way chain: equivalent 2`] = `"V2"`;
+
+exports[`0-depth 3-way chain: equivalent 3`] = `"V3"`;
+
+exports[`0-depth 3-way pool: equivalent 1`] = `"A1"`;
+
+exports[`0-depth 3-way pool: equivalent 2`] = `"A2"`;
+
+exports[`0-depth 3-way pool: equivalent 3`] = `"A3"`;
+
+exports[`0-depth 3-way ring: equivalent 1`] = `"V1"`;
+
+exports[`0-depth 3-way ring: equivalent 2`] = `"V2"`;
+
+exports[`0-depth 3-way ring: equivalent 3`] = `"V3"`;
+
+exports[`0-depth 10-way chain: equivalent 1`] = `"V1"`;
+
+exports[`0-depth 10-way chain: equivalent 2`] = `"V2"`;
+
+exports[`0-depth 10-way chain: equivalent 3`] = `"V3"`;
+
+exports[`0-depth 10-way chain: equivalent 4`] = `"V4"`;
+
+exports[`0-depth 10-way chain: equivalent 5`] = `"V5"`;
+
+exports[`0-depth 10-way chain: equivalent 6`] = `"V6"`;
+
+exports[`0-depth 10-way chain: equivalent 7`] = `"V7"`;
+
+exports[`0-depth 10-way chain: equivalent 8`] = `"V8"`;
+
+exports[`0-depth 10-way chain: equivalent 9`] = `"V9"`;
+
+exports[`0-depth 10-way chain: equivalent 10`] = `"V10"`;
+
+exports[`0-depth 10-way pool: equivalent 1`] = `"A1"`;
+
+exports[`0-depth 10-way pool: equivalent 2`] = `"A2"`;
+
+exports[`0-depth 10-way pool: equivalent 3`] = `"A3"`;
+
+exports[`0-depth 10-way pool: equivalent 4`] = `"A4"`;
+
+exports[`0-depth 10-way pool: equivalent 5`] = `"A5"`;
+
+exports[`0-depth 10-way pool: equivalent 6`] = `"A6"`;
+
+exports[`0-depth 10-way pool: equivalent 7`] = `"A7"`;
+
+exports[`0-depth 10-way pool: equivalent 8`] = `"A8"`;
+
+exports[`0-depth 10-way pool: equivalent 9`] = `"A9"`;
+
+exports[`0-depth 10-way pool: equivalent 10`] = `"A10"`;
+
+exports[`0-depth 10-way ring: equivalent 1`] = `"V1"`;
+
+exports[`0-depth 10-way ring: equivalent 2`] = `"V2"`;
+
+exports[`0-depth 10-way ring: equivalent 3`] = `"V3"`;
+
+exports[`0-depth 10-way ring: equivalent 4`] = `"V4"`;
+
+exports[`0-depth 10-way ring: equivalent 5`] = `"V5"`;
+
+exports[`0-depth 10-way ring: equivalent 6`] = `"V6"`;
+
+exports[`0-depth 10-way ring: equivalent 7`] = `"V7"`;
+
+exports[`0-depth 10-way ring: equivalent 8`] = `"V8"`;
+
+exports[`0-depth 10-way ring: equivalent 9`] = `"V9"`;
+
+exports[`0-depth 10-way ring: equivalent 10`] = `"V10"`;

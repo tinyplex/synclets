@@ -96,11 +96,10 @@ export const getChainedTestConnectors = async <TestConnector extends Connector>(
   );
 };
 
-export const expectEquivalentConnectors = (
-  connectors: TestConnector[],
-  data: any,
-) => {
+export const expectEquivalentConnectors = (connectors: TestConnector[]) => {
+  const data = connectors[0].getDataForTest();
   const timestamp = connectors[0].getMetaForTest();
+  expect(data).toMatchSnapshot('equivalent');
   connectors.forEach((connector) => {
     expect(connector.getDataForTest()).toEqual(data);
     expect(connector.getMetaForTest()).toEqual(timestamp);
@@ -110,10 +109,10 @@ export const expectEquivalentConnectors = (
 export const expectDifferingConnectors = (
   connector1: TestConnector,
   connector2: TestConnector,
-  data1: any,
-  data2: any,
 ) => {
-  expect(connector1.getDataForTest()).toEqual(data1);
-  expect(connector2.getDataForTest()).toEqual(data2);
+  const data1 = connector1.getDataForTest();
+  const data2 = connector2.getDataForTest();
+  expect(data1).not.toEqual(data2);
+  expect([data1, data2]).toMatchSnapshot('differing');
   expect(connector1.getMetaForTest()).not.toEqual(connector2.getMetaForTest());
 };
