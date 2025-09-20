@@ -25,6 +25,13 @@ describe.each([
   [0, []],
   [1, ['a'], ['b']],
   [2, ['a', 'aa'], ['a', 'ab'], ['b', 'ba']],
+  [3, ['a', 'aa', 'aaa'], ['a', 'aa', 'aab'], ['b', 'ba', 'baa']],
+  [
+    4,
+    ['a', 'aa', 'aaa', 'aaaa'],
+    ['a', 'aa', 'aaa', 'aaab'],
+    ['b', 'ba', 'baa', 'baaa'],
+  ],
 ])(
   '%d-depth',
   (
