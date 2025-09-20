@@ -24,6 +24,7 @@ interface TestMemoryConnector extends MemoryConnector {
 describe.each([
   [0, []],
   [1, ['a'], ['b']],
+  [2, ['a', 'aa'], ['a', 'ab'], ['b', 'ba']],
 ])(
   '%d-depth',
   (
@@ -230,10 +231,7 @@ describe.each([
             );
           await connector1.setAtomForTest('A');
           await connector2.setFarAtomForTest('B');
-          expectEquivalentConnectors([connector1, connector2], {
-            t1: {r1: {c1: 'A'}},
-            t2: {r2: {c2: 'B'}},
-          });
+          expectEquivalentConnectors([connector1, connector2]);
         }
       });
 
@@ -269,10 +267,7 @@ describe.each([
           await connector2.setFarAtomForTest('B');
           await synclet1.start();
           await synclet2.start();
-          expectEquivalentConnectors([connector1, connector2], {
-            t1: {r1: {c1: 'A'}},
-            t2: {r2: {c2: 'B'}},
-          });
+          expectEquivalentConnectors([connector1, connector2]);
         }
       });
 
@@ -290,9 +285,7 @@ describe.each([
         await connector1.setAtomForTest('B');
         await synclet1.start();
         await synclet2.start();
-        expectEquivalentConnectors([connector1, connector2], {
-          t1: {r1: {c1: 'B'}},
-        });
+        expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('disconnected, conflicting values 2', async () => {
@@ -312,10 +305,7 @@ describe.each([
           await connector2.setFarAtomForTest('D');
           await synclet1.start();
           await synclet2.start();
-          expectEquivalentConnectors([connector1, connector2], {
-            t1: {r1: {c1: 'A', c2: 'C'}},
-            t2: {r2: {c2: 'D'}},
-          });
+          expectEquivalentConnectors([connector1, connector2]);
         }
       });
     });

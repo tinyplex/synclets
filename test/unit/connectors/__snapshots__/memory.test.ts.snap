@@ -527,3 +527,543 @@ exports[`1-depth 10-way ring: equivalent 10`] = `
   "a": "A10",
 }
 `;
+
+exports[`2-depth 2-way connected, deletion: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+  },
+}
+`;
+
+exports[`2-depth 2-way connected, deletion: equivalent 2`] = `
+{
+  "a": {
+    "aa": undefined,
+  },
+}
+`;
+
+exports[`2-depth 2-way connected, far atom: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+  },
+  "b": {
+    "ba": "B",
+  },
+}
+`;
+
+exports[`2-depth 2-way connected, initial: equivalent 1`] = `{}`;
+
+exports[`2-depth 2-way connected, near atom: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+    "ab": "B",
+  },
+}
+`;
+
+exports[`2-depth 2-way connected: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+  },
+}
+`;
+
+exports[`2-depth 2-way connected: equivalent 2`] = `
+{
+  "a": {
+    "aa": "B",
+  },
+}
+`;
+
+exports[`2-depth 2-way disconnected, conflicting values 2: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+    "ab": "C",
+  },
+  "b": {
+    "ba": "D",
+  },
+}
+`;
+
+exports[`2-depth 2-way disconnected, conflicting values: equivalent 1`] = `
+{
+  "a": {
+    "aa": "B",
+  },
+}
+`;
+
+exports[`2-depth 2-way disconnected, far atom: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+  },
+  "b": {
+    "ba": "B",
+  },
+}
+`;
+
+exports[`2-depth 2-way disconnected, near atom: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+    "ab": "B",
+  },
+}
+`;
+
+exports[`2-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
+[
+  {
+    "a": {
+      "aa": "A",
+    },
+  },
+  {},
+]
+`;
+
+exports[`2-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
+[
+  {
+    "a": {
+      "aa": "A",
+    },
+  },
+  {
+    "a": {
+      "aa": "B",
+    },
+  },
+]
+`;
+
+exports[`2-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
+{
+  "a": {
+    "aa": "B",
+  },
+}
+`;
+
+exports[`2-depth 2-way start 1, set 1, start 2: differing 1`] = `
+[
+  {
+    "a": {
+      "aa": "A",
+    },
+  },
+  {},
+]
+`;
+
+exports[`2-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+  },
+}
+`;
+
+exports[`2-depth 2-way start 2, set 1, start 1: differing 1`] = `
+[
+  {
+    "a": {
+      "aa": "A",
+    },
+  },
+  {},
+]
+`;
+
+exports[`2-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+  },
+}
+`;
+
+exports[`2-depth 2-way stop 1, set 1, start 1: differing 1`] = `
+[
+  {
+    "a": {
+      "aa": "B",
+    },
+  },
+  {
+    "a": {
+      "aa": "A",
+    },
+  },
+]
+`;
+
+exports[`2-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+  },
+}
+`;
+
+exports[`2-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
+{
+  "a": {
+    "aa": "B",
+  },
+}
+`;
+
+exports[`2-depth 2-way stop 1, set 2, start 1: differing 1`] = `
+[
+  {
+    "a": {
+      "aa": "A",
+    },
+  },
+  {
+    "a": {
+      "aa": "B",
+    },
+  },
+]
+`;
+
+exports[`2-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A",
+  },
+}
+`;
+
+exports[`2-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
+{
+  "a": {
+    "aa": "B",
+  },
+}
+`;
+
+exports[`2-depth 3-way chain: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A1",
+  },
+}
+`;
+
+exports[`2-depth 3-way chain: equivalent 2`] = `
+{
+  "a": {
+    "aa": "A2",
+  },
+}
+`;
+
+exports[`2-depth 3-way chain: equivalent 3`] = `
+{
+  "a": {
+    "aa": "A3",
+  },
+}
+`;
+
+exports[`2-depth 3-way pool: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A1",
+  },
+}
+`;
+
+exports[`2-depth 3-way pool: equivalent 2`] = `
+{
+  "a": {
+    "aa": "A2",
+  },
+}
+`;
+
+exports[`2-depth 3-way pool: equivalent 3`] = `
+{
+  "a": {
+    "aa": "A3",
+  },
+}
+`;
+
+exports[`2-depth 3-way ring: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A1",
+  },
+}
+`;
+
+exports[`2-depth 3-way ring: equivalent 2`] = `
+{
+  "a": {
+    "aa": "A2",
+  },
+}
+`;
+
+exports[`2-depth 3-way ring: equivalent 3`] = `
+{
+  "a": {
+    "aa": "A3",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A1",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 2`] = `
+{
+  "a": {
+    "aa": "A2",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 3`] = `
+{
+  "a": {
+    "aa": "A3",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 4`] = `
+{
+  "a": {
+    "aa": "A4",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 5`] = `
+{
+  "a": {
+    "aa": "A5",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 6`] = `
+{
+  "a": {
+    "aa": "A6",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 7`] = `
+{
+  "a": {
+    "aa": "A7",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 8`] = `
+{
+  "a": {
+    "aa": "A8",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 9`] = `
+{
+  "a": {
+    "aa": "A9",
+  },
+}
+`;
+
+exports[`2-depth 10-way chain: equivalent 10`] = `
+{
+  "a": {
+    "aa": "A10",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A1",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 2`] = `
+{
+  "a": {
+    "aa": "A2",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 3`] = `
+{
+  "a": {
+    "aa": "A3",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 4`] = `
+{
+  "a": {
+    "aa": "A4",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 5`] = `
+{
+  "a": {
+    "aa": "A5",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 6`] = `
+{
+  "a": {
+    "aa": "A6",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 7`] = `
+{
+  "a": {
+    "aa": "A7",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 8`] = `
+{
+  "a": {
+    "aa": "A8",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 9`] = `
+{
+  "a": {
+    "aa": "A9",
+  },
+}
+`;
+
+exports[`2-depth 10-way pool: equivalent 10`] = `
+{
+  "a": {
+    "aa": "A10",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 1`] = `
+{
+  "a": {
+    "aa": "A1",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 2`] = `
+{
+  "a": {
+    "aa": "A2",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 3`] = `
+{
+  "a": {
+    "aa": "A3",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 4`] = `
+{
+  "a": {
+    "aa": "A4",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 5`] = `
+{
+  "a": {
+    "aa": "A5",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 6`] = `
+{
+  "a": {
+    "aa": "A6",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 7`] = `
+{
+  "a": {
+    "aa": "A7",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 8`] = `
+{
+  "a": {
+    "aa": "A8",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 9`] = `
+{
+  "a": {
+    "aa": "A9",
+  },
+}
+`;
+
+exports[`2-depth 10-way ring: equivalent 10`] = `
+{
+  "a": {
+    "aa": "A10",
+  },
+}
+`;
