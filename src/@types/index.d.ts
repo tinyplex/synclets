@@ -84,6 +84,8 @@ export interface Connector {
     sync?: boolean,
   ): Promise<void>;
   delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
+  getAtoms(): Atoms;
+  getJson(): string;
 }
 
 export type ConnectorImplementations = {

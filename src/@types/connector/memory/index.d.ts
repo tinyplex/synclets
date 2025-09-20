@@ -1,10 +1,8 @@
 /// connector/memory
 
-import type {Atoms, Connector, ConnectorOptions} from '../../index.d.ts';
+import type {Connector, ConnectorOptions} from '../../index.d.ts';
 
 export interface MemoryConnector extends Connector {
-  getAtoms(): Atoms;
-  getJson(): string;
   setJson(json: string): void;
 }
 
