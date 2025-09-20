@@ -6,6 +6,7 @@ import {getUniqueId} from 'synclets/utils';
 export interface TestConnector extends Connector {
   getDataForTest(): any;
   getMetaForTest(): any;
+  getUnderlyingMetaForTest(): Promise<any>;
 }
 
 export const pause = async (ms = 2) =>
@@ -96,17 +97,22 @@ export const getChainedTestConnectors = async <TestConnector extends Connector>(
   );
 };
 
-export const expectEquivalentConnectors = (connectors: TestConnector[]) => {
+export const expectEquivalentConnectors = async (
+  connectors: TestConnector[],
+) => {
   const data = connectors[0].getDataForTest();
-  const timestamp = connectors[0].getMetaForTest();
+  const meta = connectors[0].getMetaForTest();
   expect(data).toMatchSnapshot('equivalent');
-  connectors.forEach((connector) => {
-    expect(connector.getDataForTest()).toEqual(data);
-    expect(connector.getMetaForTest()).toEqual(timestamp);
-  });
+  await Promise.all(
+    connectors.map(async (connector) => {
+      expect(connector.getDataForTest()).toEqual(data);
+      expect(connector.getMetaForTest()).toEqual(meta);
+      expect(await connector.getUnderlyingMetaForTest()).toEqual(meta);
+    }),
+  );
 };
 
-export const expectDifferingConnectors = (
+export const expectDifferingConnectors = async (
   connector1: TestConnector,
   connector2: TestConnector,
 ) => {

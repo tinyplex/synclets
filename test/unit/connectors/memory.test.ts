@@ -19,6 +19,7 @@ interface TestMemoryConnector extends MemoryConnector {
   delAtomForTest(): Promise<void>;
   getDataForTest(): Atoms;
   getMetaForTest(): string;
+  getUnderlyingMetaForTest(): Promise<string>;
 }
 
 describe.each([
@@ -68,6 +69,8 @@ describe.each([
         getDataForTest: connector.getAtoms,
 
         getMetaForTest: () => jsonParse(connector.getJson()),
+
+        getUnderlyingMetaForTest: () => jsonParse(connector.getJson()),
       };
     };
 
@@ -79,7 +82,7 @@ describe.each([
             2,
           );
 
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('connected', async () => {
@@ -90,10 +93,10 @@ describe.each([
           );
 
         await connector1.setAtomForTest('A');
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
 
         await connector2.setAtomForTest('B');
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('connected, deletion', async () => {
@@ -104,11 +107,11 @@ describe.each([
           );
 
         await connector1.setAtomForTest('A');
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
 
         const timestamp = connector1.getMetaForTest();
         await connector1.delAtomForTest();
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
         expect(timestamp).not.toEqual(connector1.getMetaForTest());
       });
 
@@ -123,10 +126,10 @@ describe.each([
         await synclet1.start();
 
         await connector1.setAtomForTest('A');
-        expectDifferingConnectors(connector1, connector2);
+        await expectDifferingConnectors(connector1, connector2);
 
         await synclet2.start();
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('start 2, set 1, start 1', async () => {
@@ -140,10 +143,10 @@ describe.each([
         await synclet2.start();
         await connector1.connect();
         await connector1.setAtomForTest('A');
-        expectDifferingConnectors(connector1, connector2);
+        await expectDifferingConnectors(connector1, connector2);
 
         await synclet1.start();
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('stop 1, set 1, start 1', async () => {
@@ -158,15 +161,15 @@ describe.each([
         await synclet2.start();
 
         await connector1.setAtomForTest('A');
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
 
         await synclet1.stop();
         await connector1.connect();
         await connector1.setAtomForTest('B');
-        expectDifferingConnectors(connector1, connector2);
+        await expectDifferingConnectors(connector1, connector2);
 
         await synclet1.start();
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('stop 1, set 2, start 1', async () => {
@@ -181,14 +184,14 @@ describe.each([
         await synclet2.start();
 
         await connector1.setAtomForTest('A');
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
 
         await synclet1.stop();
         await connector2.setAtomForTest('B');
-        expectDifferingConnectors(connector1, connector2);
+        await expectDifferingConnectors(connector1, connector2);
 
         await synclet1.start();
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('set 1, set 2, start 2, start 1', async () => {
@@ -201,17 +204,17 @@ describe.each([
 
         await connector1.connect();
         await connector1.setAtomForTest('A');
-        expectDifferingConnectors(connector1, connector2);
+        await expectDifferingConnectors(connector1, connector2);
 
         await pause();
 
         await connector2.connect();
         await connector2.setAtomForTest('B');
-        expectDifferingConnectors(connector1, connector2);
+        await expectDifferingConnectors(connector1, connector2);
 
         await synclet2.start();
         await synclet1.start();
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('connected, near atom', async () => {
@@ -225,7 +228,7 @@ describe.each([
           await connector1.setAtomForTest('A');
           await connector2.setNearAtomForTest('B');
 
-          expectEquivalentConnectors([connector1, connector2]);
+          await expectEquivalentConnectors([connector1, connector2]);
         }
       });
 
@@ -238,7 +241,7 @@ describe.each([
             );
           await connector1.setAtomForTest('A');
           await connector2.setFarAtomForTest('B');
-          expectEquivalentConnectors([connector1, connector2]);
+          await expectEquivalentConnectors([connector1, connector2]);
         }
       });
 
@@ -256,7 +259,7 @@ describe.each([
           await connector2.setNearAtomForTest('B');
           await synclet1.start();
           await synclet2.start();
-          expectEquivalentConnectors([connector1, connector2]);
+          await expectEquivalentConnectors([connector1, connector2]);
         }
       });
 
@@ -274,7 +277,7 @@ describe.each([
           await connector2.setFarAtomForTest('B');
           await synclet1.start();
           await synclet2.start();
-          expectEquivalentConnectors([connector1, connector2]);
+          await expectEquivalentConnectors([connector1, connector2]);
         }
       });
 
@@ -292,7 +295,7 @@ describe.each([
         await connector1.setAtomForTest('B');
         await synclet1.start();
         await synclet2.start();
-        expectEquivalentConnectors([connector1, connector2]);
+        await expectEquivalentConnectors([connector1, connector2]);
       });
 
       test('disconnected, conflicting values 2', async () => {
@@ -312,7 +315,7 @@ describe.each([
           await connector2.setFarAtomForTest('D');
           await synclet1.start();
           await synclet2.start();
-          expectEquivalentConnectors([connector1, connector2]);
+          await expectEquivalentConnectors([connector1, connector2]);
         }
       });
     });
@@ -330,7 +333,7 @@ describe.each([
 
         for (const [i, connector] of connectors.entries()) {
           await connector.setAtomForTest('A' + (i + 1));
-          expectEquivalentConnectors(connectors);
+          await expectEquivalentConnectors(connectors);
         }
       });
 
@@ -342,7 +345,7 @@ describe.each([
 
         for (const [i, connector] of connectors.entries()) {
           await connector.setAtomForTest('A' + (i + 1));
-          expectEquivalentConnectors(connectors);
+          await expectEquivalentConnectors(connectors);
         }
       });
 
@@ -355,7 +358,7 @@ describe.each([
 
         for (const [i, connector] of connectors.entries()) {
           await connector.setAtomForTest('A' + (i + 1));
-          expectEquivalentConnectors(connectors);
+          await expectEquivalentConnectors(connectors);
         }
       });
     });
