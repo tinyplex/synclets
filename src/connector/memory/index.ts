@@ -54,7 +54,7 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
     const nextId = address[depth];
     if (isUndefined(subNodes[nextId])) {
       if (create) {
-        subNodes[nextId] = atomDepth > depth ? [0, {}] : ['', undefined];
+        subNodes[nextId] = atomDepth > depth + 1 ? [0, {}] : ['', undefined];
       } else {
         return undefined;
       }

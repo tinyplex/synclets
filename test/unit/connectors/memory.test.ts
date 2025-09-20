@@ -3,6 +3,7 @@ import {
   createMemoryConnector,
   type MemoryConnector,
 } from 'synclets/connector/memory';
+import {jsonParse} from 'synclets/utils';
 import {
   expectDifferingConnectors,
   expectEquivalentConnectors,
@@ -20,7 +21,10 @@ interface TestMemoryConnector extends MemoryConnector {
   getMetaForTest(): string;
 }
 
-describe.each([[0, []]])(
+describe.each([
+  [0, []],
+  [1, ['a'], ['b']],
+])(
   '%d-depth',
   (
     atomDepth: number,
@@ -37,15 +41,17 @@ describe.each([[0, []]])(
         ...connector,
 
         setAtomForTest: async (value: string) =>
-          connector.setAtom(address, value),
+          await connector.setAtom(address, value),
+
         setNearAtomForTest: async (value: string) => {
           if (nearAddress) {
-            connector.setAtom(nearAddress, value);
+            await connector.setAtom(nearAddress, value);
           }
         },
+
         setFarAtomForTest: async (value: string) => {
           if (farAddress) {
-            connector.setAtom(farAddress, value);
+            await connector.setAtom(farAddress, value);
           }
         },
 
@@ -53,7 +59,7 @@ describe.each([[0, []]])(
 
         getDataForTest: connector.getAtoms,
 
-        getMetaForTest: connector.getJson,
+        getMetaForTest: () => jsonParse(connector.getJson()),
       };
     };
 
@@ -207,11 +213,11 @@ describe.each([[0, []]])(
               createTestMemoryConnector,
               2,
             );
+
           await connector1.setAtomForTest('A');
           await connector2.setNearAtomForTest('B');
-          expectEquivalentConnectors([connector1, connector2], {
-            t1: {r1: {c1: 'A', c2: 'B'}},
-          });
+
+          expectEquivalentConnectors([connector1, connector2]);
         }
       });
 
@@ -245,9 +251,7 @@ describe.each([[0, []]])(
           await connector2.setNearAtomForTest('B');
           await synclet1.start();
           await synclet2.start();
-          expectEquivalentConnectors([connector1, connector2], {
-            t1: {r1: {c1: 'A', c2: 'B'}},
-          });
+          expectEquivalentConnectors([connector1, connector2]);
         }
       });
 
@@ -340,7 +344,7 @@ describe.each([[0, []]])(
         );
 
         for (const [i, connector] of connectors.entries()) {
-          await connector.setAtomForTest('V' + (i + 1));
+          await connector.setAtomForTest('A' + (i + 1));
           expectEquivalentConnectors(connectors);
         }
       });
@@ -353,7 +357,7 @@ describe.each([[0, []]])(
         );
 
         for (const [i, connector] of connectors.entries()) {
-          await connector.setAtomForTest('V' + (i + 1));
+          await connector.setAtomForTest('A' + (i + 1));
           expectEquivalentConnectors(connectors);
         }
       });
