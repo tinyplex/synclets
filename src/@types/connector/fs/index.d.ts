@@ -1,36 +1,24 @@
 /// connector/fs
 
-import type {
-  Address,
-  Connector,
-  ConnectorOptions,
-  Context,
-} from '../../index.js';
+import type {Atoms, Connector, ConnectorOptions} from '../../index.js';
 
 export interface DirectoryConnector extends Connector {
   getDirectory(): string;
 }
 
-export type DirectoryConnectorImplementations = {
-  isParent: (
-    address: Address,
-    context: Context,
-  ) => Promise<boolean | undefined>;
-};
-
-export type DirectoryConnectorOptions = ConnectorOptions & {
-  directory: string;
-};
-
 export function createDirectoryConnector(
-  implementations: DirectoryConnectorImplementations,
-  options: DirectoryConnectorOptions,
+  atomDepth: number,
+  directory: string,
+  options?: ConnectorOptions,
 ): Promise<DirectoryConnector>;
 
 // --
 
 export interface FileConnector extends Connector {
   getFile(): string;
+  getAtoms(): Atoms;
+  getJson(): string;
+  setJson(json: string): void;
 }
 
 export function createFileConnector(

@@ -1,6 +1,9 @@
+import {mkdtemp, rm} from 'fs/promises';
+import {tmpdir} from 'os';
+import {join, sep} from 'path';
 import {Atoms, ConnectorOptions} from 'synclets';
 import {createFileConnector, type FileConnector} from 'synclets/connector/fs';
-import {jsonParse} from 'synclets/utils';
+import {getUniqueId, jsonParse} from 'synclets/utils';
 import {
   expectDifferingConnectors,
   expectEquivalentConnectors,
@@ -17,6 +20,20 @@ interface TestFileConnector extends FileConnector {
   getDataForTest(): Atoms;
   getMetaForTest(): string;
 }
+
+let tmp: string;
+
+beforeAll(async () => {
+  tmp = await mkdtemp(tmpdir() + sep);
+});
+
+afterAll(async () => await rm(tmp, {recursive: true, force: true}));
+
+test('file', async () => {
+  const file = join(tmp, '42');
+  const connector = await createFileConnector(0, file);
+  expect(connector.getFile()).toBe(file);
+});
 
 describe.each([
   [0, []],
@@ -40,7 +57,11 @@ describe.each([
     const createTestFileConnector = async (
       options?: ConnectorOptions,
     ): Promise<TestFileConnector> => {
-      const connector = await createFileConnector(atomDepth, {}, options);
+      const connector = await createFileConnector(
+        atomDepth,
+        join(tmp, getUniqueId()),
+        options,
+      );
 
       return {
         ...connector,
