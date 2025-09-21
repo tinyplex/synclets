@@ -6,6 +6,7 @@ import type {
   Context,
   Data,
   Hash,
+  Meta,
   Timestamp,
 } from '@synclets/@types';
 import type {
@@ -23,25 +24,41 @@ import {
   jsonString,
   objKeys,
   objMap,
+  objNotEmpty,
   size,
 } from '@synclets/utils';
+
+export type ProtectedMemoryConnector = MemoryConnector & {
+  _getJson(): string;
+  _setJson(json: string): void;
+};
 
 type HashContainer = [Hash, {[id: string]: HashContainer | TimestampContainer}];
 type TimestampContainer = [Timestamp, Atom | undefined];
 
 const getData = (dataAndMeta: HashContainer): Data =>
+  objMap(dataAndMeta[1], (child) => {
+    if (isTimestamp(child[0])) {
+      return (child as TimestampContainer)[1] as Atom;
+    }
+    const childData = getData(child as HashContainer);
+    return objNotEmpty(childData) ? childData : (undefined as any);
+  });
+const getMeta = (dataAndMeta: HashContainer): Meta => [
+  dataAndMeta[0],
   objMap(dataAndMeta[1], (child) =>
     isTimestamp(child[0])
-      ? (child as TimestampContainer)[1]
-      : getData(child as HashContainer),
-  );
+      ? (child as TimestampContainer)[0]
+      : getMeta(child as HashContainer),
+  ),
+];
 
 export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
   atomDepth,
   {onWrite}: MemoryConnectorImplementations = {},
   options: ConnectorOptions = {},
 ): Promise<MemoryConnector> => {
-  let dataAndMeta: HashContainer = [0, {}];
+  let root: HashContainer = [0, {}];
 
   const getContainer = (
     container: HashContainer,
@@ -76,7 +93,7 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
     atom: Atom | undefined,
     context: Context,
   ) => {
-    const container = getContainer(dataAndMeta, address, context, true);
+    const container = getContainer(root, address, context, true);
     if (isTimestamp(container?.[0])) {
       container[1] = atom;
       await onWrite?.();
@@ -87,21 +104,21 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
     atomDepth,
     {
       readAtom: async (address: Address, context: Context) => {
-        const container = getContainer(dataAndMeta, address, context);
+        const container = getContainer(root, address, context);
         if (isTimestamp(container?.[0]) && isAtom(container[1])) {
           return container[1];
         }
       },
 
       readTimestamp: async (address: Address, context: Context) => {
-        const container = getContainer(dataAndMeta, address, context);
+        const container = getContainer(root, address, context);
         if (isTimestamp(container?.[0])) {
           return container[0];
         }
       },
 
       readHash: async (address: Address, context: Context) => {
-        const container = getContainer(dataAndMeta, address, context);
+        const container = getContainer(root, address, context);
         if (isHash(container?.[0])) {
           return container[0];
         }
@@ -114,7 +131,7 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
         timestamp: Timestamp,
         context: Context,
       ) => {
-        const container = getContainer(dataAndMeta, address, context, true);
+        const container = getContainer(root, address, context, true);
         if (isTimestamp(container?.[0])) {
           container[0] = timestamp;
           await onWrite?.();
@@ -122,7 +139,7 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
       },
 
       writeHash: async (address: Address, hash: Hash, context: Context) => {
-        const container = getContainer(dataAndMeta, address, context, true);
+        const container = getContainer(root, address, context, true);
         if (isHash(container?.[0])) {
           container[0] = hash;
           await onWrite?.();
@@ -133,7 +150,7 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
         writeAtom(address, undefined, context),
 
       readChildIds: async (address: Address, context: Context) => {
-        const container = getContainer(dataAndMeta, address, context);
+        const container = getContainer(root, address, context);
         if (isHash(container?.[0]) && isObject(container[1])) {
           return objKeys(container[1]);
         }
@@ -147,12 +164,14 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
   return {
     ...connector,
 
-    getData: () => getData(dataAndMeta) as Data,
+    getData: () => getData(root) as Data,
 
-    getJson: () => jsonString(dataAndMeta),
+    getMeta: () => getMeta(root) as Meta,
 
-    setJson: (json: string) => {
-      dataAndMeta = jsonParse(json) as HashContainer;
+    _getJson: () => jsonString(root),
+
+    _setJson: (json: string) => {
+      root = json ? jsonParse(json) : [0, {}];
     },
-  };
+  } as ProtectedMemoryConnector;
 };

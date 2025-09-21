@@ -3,8 +3,11 @@ import type {
   createFileConnector as createFileConnectorDecl,
   FileConnector,
 } from '@synclets/@types/connector/fs';
-import {createMemoryConnector} from '@synclets/connector/memory';
-import {jsonString, UTF8, validateFile} from '@synclets/utils';
+import {
+  createMemoryConnector,
+  ProtectedMemoryConnector,
+} from '@synclets/connector/memory';
+import {UTF8, validateFile} from '@synclets/utils';
 import {readFile, writeFile} from 'fs/promises';
 
 type Node = [Hash, SubNodes] | [Timestamp, Atom | undefined];
@@ -17,14 +20,13 @@ export const createFileConnector: typeof createFileConnectorDecl = async (
 ): Promise<FileConnector> => {
   const path = await validateFile(file);
 
-  const connector = await createMemoryConnector(
+  const connector = (await createMemoryConnector(
     atomDepth,
-    {onWrite: () => writeFile(path, connector.getJson(), UTF8)},
+    {onWrite: () => writeFile(path, connector._getJson(), UTF8)},
     options,
-  );
+  )) as ProtectedMemoryConnector;
 
-  const json = await readFile(path, UTF8);
-  connector.setJson(json == '' ? jsonString([0, {}]) : json);
+  connector._setJson(await readFile(path, UTF8));
 
   // --
 

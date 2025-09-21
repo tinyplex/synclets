@@ -29,7 +29,7 @@ export const mapEnsure = <Key, Value>(
   if (!mapHas(map, key)) {
     mapSet(map, key, getDefaultValue());
   }
-  return mapGet(map, key);
+  return mapGet(map, key) as Value;
 };
 
 export const mapForEach = <Key, Value>(

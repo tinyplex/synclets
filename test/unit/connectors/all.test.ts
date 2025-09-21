@@ -1,10 +1,10 @@
 import {mkdtemp, rm} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join, sep} from 'path';
-import {Connector, ConnectorOptions, Data} from 'synclets';
+import {Connector, ConnectorOptions, Data, Meta} from 'synclets';
 import {createFileConnector} from 'synclets/connector/fs';
 import {createMemoryConnector} from 'synclets/connector/memory';
-import {getUniqueId, jsonParse} from 'synclets/utils';
+import {getUniqueId} from 'synclets/utils';
 import {
   expectDifferingConnectors,
   expectEquivalentConnectors,
@@ -19,7 +19,7 @@ interface TestMemoryConnector extends Connector {
   setFarAtomForTest(value: string): Promise<void>;
   delAtomForTest(): Promise<void>;
   getDataForTest(): Data;
-  getMetaForTest(): string;
+  getMetaForTest(): Meta;
   getUnderlyingMetaForTest(): Promise<string>;
 }
 
@@ -28,13 +28,13 @@ describe.each([
     'memory',
     (atomDepth: number, options: ConnectorOptions) =>
       createMemoryConnector(atomDepth, {}, options),
-    (connector: Connector) => jsonParse(connector.getJson()),
+    async (connector: Connector) => connector.getMeta(),
   ],
   [
     'file',
     (atomDepth: number, options: ConnectorOptions, {file}: {file: string}) =>
       createFileConnector(atomDepth, join(file, getUniqueId()), options),
-    (connector: Connector) => jsonParse(connector.getJson()),
+    async (connector: Connector) => connector.getMeta(),
     async () => ({file: await mkdtemp(tmpdir() + sep)}),
     async ({file}: {file: string}) =>
       await rm(file, {recursive: true, force: true}),
@@ -105,7 +105,7 @@ describe.each([
 
             getDataForTest: connector.getData,
 
-            getMetaForTest: () => jsonParse(connector.getJson()),
+            getMetaForTest: connector.getMeta,
 
             getUnderlyingMetaForTest: async () =>
               await getUnderlyingMetaForTest?.(connector),

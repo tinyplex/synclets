@@ -40,4 +40,8 @@ export const objMap = <Value, Return>(
   obj: {[id: string]: Value},
   cb: (value: Value) => Return,
 ): {[id: string]: Return} =>
-  objFromEntries(objEntries(obj).map(([id, value]) => [id, cb(value)]));
+  objFromEntries(
+    objEntries(obj)
+      .map(([id, value]) => [id, cb(value)])
+      .filter(([, value]) => !isUndefined(value)),
+  );

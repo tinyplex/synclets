@@ -6,17 +6,15 @@ export type Tomb = '\uFFFC';
 
 export type Atom = string | number | boolean | null | Tomb;
 
-export type Data = {[id: string]: Data | Atom | undefined};
+export type Data = Readonly<{[id: string]: Data | Atom}>;
 
-export type Meta = {
-  [id: string]: [hash: Hash, children: Meta] | Timestamp | undefined;
-};
+export type Meta = Readonly<[hash: Hash, {[id: string]: Meta | Timestamp}]>;
 
 export type Timestamp = string;
 
 export type Hash = number;
 
-export type Address = string[];
+export type Address = Readonly<string[]>;
 
 export type ProtocolNode =
   | Timestamp
@@ -89,7 +87,7 @@ export interface Connector {
   ): Promise<void>;
   delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
   getData(): Data;
-  getJson(): string;
+  getMeta(): Meta;
 }
 
 export type ConnectorImplementations = {

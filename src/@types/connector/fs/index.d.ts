@@ -16,7 +16,6 @@ export function createDirectoryConnector(
 
 export interface FileConnector extends Connector {
   getFile(): string;
-  setJson(json: string): void;
 }
 
 export function createFileConnector(

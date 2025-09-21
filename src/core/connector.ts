@@ -164,5 +164,9 @@ export const createConnector: typeof createConnectorDecl = async (
     readHash,
 
     readChildIds,
+
+    getData: () => ({}),
+
+    getMeta: () => [0, {}],
   };
 };

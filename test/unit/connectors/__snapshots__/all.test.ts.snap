@@ -6,11 +6,7 @@ exports[`file connector 1-depth 2-way connected, deletion: equivalent 1`] = `
 }
 `;
 
-exports[`file connector 1-depth 2-way connected, deletion: equivalent 2`] = `
-{
-  "a": undefined,
-}
-`;
+exports[`file connector 1-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
 exports[`file connector 1-depth 2-way connected, initial: equivalent 1`] = `{}`;
 
@@ -390,13 +386,7 @@ exports[`file connector 2-depth 2-way connected, deletion: equivalent 1`] = `
 }
 `;
 
-exports[`file connector 2-depth 2-way connected, deletion: equivalent 2`] = `
-{
-  "a": {
-    "aa": undefined,
-  },
-}
-`;
+exports[`file connector 2-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
 exports[`file connector 2-depth 2-way connected, far atom: equivalent 1`] = `
 {
@@ -932,15 +922,7 @@ exports[`file connector 3-depth 2-way connected, deletion: equivalent 1`] = `
 }
 `;
 
-exports[`file connector 3-depth 2-way connected, deletion: equivalent 2`] = `
-{
-  "a": {
-    "aa": {
-      "aaa": undefined,
-    },
-  },
-}
-`;
+exports[`file connector 3-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
 exports[`file connector 3-depth 2-way connected, far atom: equivalent 1`] = `
 {
@@ -1610,17 +1592,7 @@ exports[`file connector 4-depth 2-way connected, deletion: equivalent 1`] = `
 }
 `;
 
-exports[`file connector 4-depth 2-way connected, deletion: equivalent 2`] = `
-{
-  "a": {
-    "aa": {
-      "aaa": {
-        "aaaa": undefined,
-      },
-    },
-  },
-}
-`;
+exports[`file connector 4-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
 exports[`file connector 4-depth 2-way connected, far atom: equivalent 1`] = `
 {
@@ -2416,11 +2388,7 @@ exports[`memory connector 1-depth 2-way connected, deletion: equivalent 1`] = `
 }
 `;
 
-exports[`memory connector 1-depth 2-way connected, deletion: equivalent 2`] = `
-{
-  "a": undefined,
-}
-`;
+exports[`memory connector 1-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
 exports[`memory connector 1-depth 2-way connected, initial: equivalent 1`] = `{}`;
 
@@ -2800,13 +2768,7 @@ exports[`memory connector 2-depth 2-way connected, deletion: equivalent 1`] = `
 }
 `;
 
-exports[`memory connector 2-depth 2-way connected, deletion: equivalent 2`] = `
-{
-  "a": {
-    "aa": undefined,
-  },
-}
-`;
+exports[`memory connector 2-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
 exports[`memory connector 2-depth 2-way connected, far atom: equivalent 1`] = `
 {
@@ -3342,15 +3304,7 @@ exports[`memory connector 3-depth 2-way connected, deletion: equivalent 1`] = `
 }
 `;
 
-exports[`memory connector 3-depth 2-way connected, deletion: equivalent 2`] = `
-{
-  "a": {
-    "aa": {
-      "aaa": undefined,
-    },
-  },
-}
-`;
+exports[`memory connector 3-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
 exports[`memory connector 3-depth 2-way connected, far atom: equivalent 1`] = `
 {
@@ -4020,17 +3974,7 @@ exports[`memory connector 4-depth 2-way connected, deletion: equivalent 1`] = `
 }
 `;
 
-exports[`memory connector 4-depth 2-way connected, deletion: equivalent 2`] = `
-{
-  "a": {
-    "aa": {
-      "aaa": {
-        "aaaa": undefined,
-      },
-    },
-  },
-}
-`;
+exports[`memory connector 4-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
 exports[`memory connector 4-depth 2-way connected, far atom: equivalent 1`] = `
 {
