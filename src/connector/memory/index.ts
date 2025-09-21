@@ -2,9 +2,9 @@ import {createConnector} from '@synclets';
 import type {
   Address,
   Atom,
-  Atoms,
   ConnectorOptions,
   Context,
+  Data,
   Hash,
   Timestamp,
 } from '@synclets/@types';
@@ -28,10 +28,10 @@ import {
 
 type Node = [Hash, {[id: string]: Node}] | [Timestamp, Atom | undefined];
 
-const getAtoms = (node: Node): Atoms =>
+const getData = (node: Node): Data =>
   isTimestamp(node[0])
     ? (node[1] as Atom | undefined)
-    : objMap(node[1] as {[id: string]: Node}, getAtoms);
+    : objMap(node[1] as {[id: string]: Node}, getData);
 
 export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
   atomDepth,
@@ -137,7 +137,7 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
   return {
     ...connector,
 
-    getAtoms: () => getAtoms(nodes),
+    getData: () => getData(nodes),
 
     getJson: () => jsonString(nodes),
 

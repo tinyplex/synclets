@@ -1,7 +1,7 @@
 import {mkdtemp, rm} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join, sep} from 'path';
-import {Atoms, Connector, ConnectorOptions} from 'synclets';
+import {Connector, ConnectorOptions, Data} from 'synclets';
 import {createFileConnector} from 'synclets/connector/fs';
 import {createMemoryConnector} from 'synclets/connector/memory';
 import {getUniqueId, jsonParse} from 'synclets/utils';
@@ -18,7 +18,7 @@ interface TestMemoryConnector extends Connector {
   setNearAtomForTest(value: string): Promise<void>;
   setFarAtomForTest(value: string): Promise<void>;
   delAtomForTest(): Promise<void>;
-  getDataForTest(): Atoms;
+  getDataForTest(): Data;
   getMetaForTest(): string;
   getUnderlyingMetaForTest(): Promise<string>;
 }
@@ -103,7 +103,7 @@ describe.each([
 
             delAtomForTest: async () => connector.delAtom(address),
 
-            getDataForTest: connector.getAtoms,
+            getDataForTest: connector.getData,
 
             getMetaForTest: () => jsonParse(connector.getJson()),
 

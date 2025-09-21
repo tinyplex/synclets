@@ -6,7 +6,7 @@ export type Tomb = '\uFFFC';
 
 export type Atom = string | number | boolean | null | Tomb;
 
-export type Atoms = {[id: string]: Atoms} | Atom | undefined;
+export type Data = {[id: string]: Data | Atom | undefined};
 
 export type Timestamp = string;
 
@@ -84,7 +84,7 @@ export interface Connector {
     sync?: boolean,
   ): Promise<void>;
   delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
-  getAtoms(): Atoms;
+  getData(): Data;
   getJson(): string;
 }
 
