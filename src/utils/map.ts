@@ -24,12 +24,12 @@ export const mapDel = <Key, Value>(map: Map<Key, Value>, key: Key) =>
 export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,
   key: Key,
-  getDefaultValue: () => Value,
-): Value => {
-  if (!mapHas(map, key)) {
+  getDefaultValue?: () => Value,
+): Value | undefined => {
+  if (!mapHas(map, key) && getDefaultValue) {
     mapSet(map, key, getDefaultValue());
   }
-  return mapGet(map, key) as Value;
+  return mapGet(map, key);
 };
 
 export const mapForEach = <Key, Value>(
