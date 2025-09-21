@@ -24,13 +24,7 @@ export const createFileConnector: typeof createFileConnectorDecl = async (
   );
 
   const json = await readFile(path, UTF8);
-  connector.setJson(
-    json == ''
-      ? atomDepth > 0
-        ? jsonString([0, {}])
-        : jsonString(['', undefined])
-      : json,
-  );
+  connector.setJson(json == '' ? jsonString([0, {}]) : json);
 
   // --
 

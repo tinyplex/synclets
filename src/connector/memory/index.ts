@@ -38,8 +38,7 @@ export const createMemoryConnector: typeof createMemoryConnectorDecl = async (
   {onWrite}: MemoryConnectorImplementations = {},
   options: ConnectorOptions = {},
 ): Promise<MemoryConnector> => {
-  let nodes: Node = atomDepth > 0 ? [0, {}] : ['', undefined];
-
+  let nodes: Node = [0, {}];
   const nodeAtAddress = async (
     node: Node,
     address: Address,
