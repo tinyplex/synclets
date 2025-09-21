@@ -13,6 +13,6 @@ afterAll(async () => await rm(tmp, {recursive: true, force: true}));
 
 test('file', async () => {
   const file = join(tmp, '42');
-  const connector = await createFileConnector(0, file);
+  const connector = await createFileConnector(1, file);
   expect(connector.getFile()).toBe(file);
 });

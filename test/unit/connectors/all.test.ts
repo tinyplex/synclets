@@ -59,7 +59,6 @@ describe.each([
     afterAll(async () => await after?.(environment));
 
     describe.each([
-      [0, []],
       [1, ['a'], ['b']],
       [2, ['a', 'aa'], ['a', 'ab'], ['b', 'ba']],
       [3, ['a', 'aa', 'aaa'], ['a', 'aa', 'aab'], ['b', 'ba', 'baa']],
@@ -74,7 +73,7 @@ describe.each([
       (
         atomDepth: number,
         address: string[],
-        nearAddress?: string[],
+        nearAddress: string[],
         farAddress?: string[],
       ) => {
         const createTestMemoryConnector = async (
@@ -93,9 +92,7 @@ describe.each([
               await connector.setAtom(address, value),
 
             setNearAtomForTest: async (value: string) => {
-              if (nearAddress) {
-                await connector.setAtom(nearAddress, value);
-              }
+              await connector.setAtom(nearAddress, value);
             },
 
             setFarAtomForTest: async (value: string) => {
@@ -259,18 +256,16 @@ describe.each([
           });
 
           test('connected, near atom', async () => {
-            if (nearAddress) {
-              const [[, connector1], [, connector2]] =
-                await getPooledTestSyncletsAndConnectors(
-                  createTestMemoryConnector,
-                  2,
-                );
+            const [[, connector1], [, connector2]] =
+              await getPooledTestSyncletsAndConnectors(
+                createTestMemoryConnector,
+                2,
+              );
 
-              await connector1.setAtomForTest('A');
-              await connector2.setNearAtomForTest('B');
+            await connector1.setAtomForTest('A');
+            await connector2.setNearAtomForTest('B');
 
-              await expectEquivalentConnectors([connector1, connector2]);
-            }
+            await expectEquivalentConnectors([connector1, connector2]);
           });
 
           test('connected, far atom', async () => {
@@ -287,21 +282,19 @@ describe.each([
           });
 
           test('disconnected, near atom', async () => {
-            if (nearAddress) {
-              const [[synclet1, connector1], [synclet2, connector2]] =
-                await getPooledTestSyncletsAndConnectors(
-                  createTestMemoryConnector,
-                  2,
-                  false,
-                );
-              await connector1.connect();
-              await connector2.connect();
-              await connector1.setAtomForTest('A');
-              await connector2.setNearAtomForTest('B');
-              await synclet1.start();
-              await synclet2.start();
-              await expectEquivalentConnectors([connector1, connector2]);
-            }
+            const [[synclet1, connector1], [synclet2, connector2]] =
+              await getPooledTestSyncletsAndConnectors(
+                createTestMemoryConnector,
+                2,
+                false,
+              );
+            await connector1.connect();
+            await connector2.connect();
+            await connector1.setAtomForTest('A');
+            await connector2.setNearAtomForTest('B');
+            await synclet1.start();
+            await synclet2.start();
+            await expectEquivalentConnectors([connector1, connector2]);
           });
 
           test('disconnected, far atom', async () => {
@@ -340,7 +333,7 @@ describe.each([
           });
 
           test('disconnected, conflicting values 2', async () => {
-            if (nearAddress && farAddress) {
+            if (farAddress) {
               const [[synclet1, connector1], [synclet2, connector2]] =
                 await getPooledTestSyncletsAndConnectors(
                   createTestMemoryConnector,

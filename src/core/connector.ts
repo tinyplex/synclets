@@ -13,6 +13,7 @@ import type {
 import {
   arrayPush,
   combineHash,
+  errorNew,
   getHash,
   getHlcFunctions,
   getUniqueId,
@@ -40,6 +41,10 @@ export const createConnector: typeof createConnectorDecl = async (
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
 ): Promise<ProtectedConnector> => {
+  if (atomDepth < 1) {
+    errorNew('atomDepth must be positive');
+  }
+
   let connected = false;
   let id = options.id ?? getUniqueId();
 
