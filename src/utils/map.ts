@@ -24,9 +24,9 @@ export const mapDel = <Key, Value>(map: Map<Key, Value>, key: Key) =>
 export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,
   key: Key,
-  getDefaultValue?: () => Value,
-): Value | undefined => {
-  if (!mapHas(map, key) && getDefaultValue) {
+  getDefaultValue: () => Value,
+): Value => {
+  if (!mapHas(map, key)) {
     mapSet(map, key, getDefaultValue());
   }
   return mapGet(map, key);
