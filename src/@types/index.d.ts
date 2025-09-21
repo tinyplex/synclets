@@ -8,6 +8,10 @@ export type Atom = string | number | boolean | null | Tomb;
 
 export type Data = {[id: string]: Data | Atom | undefined};
 
+export type Meta = {
+  [id: string]: [hash: Hash, children: Meta] | Timestamp | undefined;
+};
+
 export type Timestamp = string;
 
 export type Hash = number;
