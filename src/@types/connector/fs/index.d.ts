@@ -1,6 +1,6 @@
 /// connector/fs
 
-import type {Connector, ConnectorOptions} from '../../index.js';
+import type {Connector, ConnectorOptions} from '../../index.d.ts';
 
 export interface DirectoryConnector extends Connector {
   getDirectory(): string;

@@ -3,19 +3,11 @@ import type {
   getPartsFromPacket as getPartsFromPacketDecl,
   LogLevel,
 } from '@synclets/@types';
-import {
-  arrayJoin,
-  arrayMap,
-  ASTERISK,
-  getUniqueId,
-  jsonParse,
-  jsonString,
-  mapEnsure,
-  mapNew,
-  promiseAll,
-  size,
-  SPACE,
-} from '@synclets/utils';
+import {getUniqueId, jsonParse, jsonString} from '@synclets/utils';
+import {arrayJoin, arrayMap} from '../common/array.ts';
+import {mapEnsure, mapNew} from '../common/map.ts';
+import {promiseAll, size} from '../common/other.ts';
+import {ASTERISK, SPACE} from '../common/string.ts';
 import type {Message, ReceiveMessage} from './protected.js';
 
 type Pending = [fragments: string[], due: number];

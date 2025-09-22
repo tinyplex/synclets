@@ -8,20 +8,14 @@ import type {
   LogLevel,
   Synclet,
   Timestamp,
-  Tomb,
 } from '@synclets/@types';
-import {
-  arrayPush,
-  combineHash,
-  errorNew,
-  getHash,
-  getHlcFunctions,
-  getUniqueId,
-  isEmpty,
-  isUndefined,
-  setEvery,
-  setNew,
-} from '@synclets/utils';
+import {Tomb} from '@synclets/@types/utils';
+import {getUniqueId} from '@synclets/utils';
+import {arrayPush} from '../common/array.ts';
+import {combineHash, getHash} from '../common/codec.ts';
+import {getHlcFunctions} from '../common/hlc.ts';
+import {errorNew, isEmpty, isUndefined} from '../common/other.ts';
+import {setEvery, setNew} from '../common/set.ts';
 import type {ProtectedConnector} from './protected.js';
 import {getQueueFunctions} from './queue.ts';
 

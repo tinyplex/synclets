@@ -7,8 +7,9 @@ import {
   createMemoryConnector,
   ProtectedMemoryConnector,
 } from '@synclets/connector/memory';
-import {UTF8, validateFile} from '@synclets/utils';
 import {readFile, writeFile} from 'fs/promises';
+import {validateFile} from '../../common/fs.ts';
+import {UTF8} from '../../common/string.ts';
 
 type Node = [Hash, SubNodes] | [Timestamp, Atom | undefined];
 type SubNodes = {[id: string]: Node};

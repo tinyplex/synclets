@@ -1,11 +1,11 @@
-import type {
-  GetNow,
-  Hlc,
-  getHlcFunctions as getHlcFunctionsDecl,
-} from '@synclets/@types/utils';
-import {decode, encode, getHash, getUniqueId} from './codec.ts';
+import {getUniqueId} from '@synclets/utils';
+import {decode, encode, getHash} from './codec.ts';
 import {ifNotUndefined, isUndefined, mathMax} from './other.ts';
 import {EMPTY_STRING} from './string.ts';
+
+type GetNow = () => number;
+
+type Hlc = string;
 
 const SHIFT36 = 2 ** 36;
 const SHIFT30 = 2 ** 30;
@@ -25,7 +25,7 @@ const getClientIdFromUniqueId = (uniqueId: string): string => {
   );
 };
 
-export const getHlcFunctions: typeof getHlcFunctionsDecl = (
+export const getHlcFunctions = (
   uniqueId?: string,
   getNow: GetNow = Date.now,
 ): [

@@ -2,7 +2,7 @@
 
 import {MessageType} from '../core/message.ts';
 
-export type Tomb = '\uFFFC';
+import type {Tomb} from './utils/index.d.ts';
 
 export type Atom = string | number | boolean | null | Tomb;
 

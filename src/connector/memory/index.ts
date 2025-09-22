@@ -14,19 +14,10 @@ import type {
   MemoryConnector,
   MemoryConnectorImplementations,
 } from '@synclets/@types/connector/memory';
-import {
-  isAtom,
-  isHash,
-  isObject,
-  isTimestamp,
-  isUndefined,
-  jsonParse,
-  jsonString,
-  objKeys,
-  objMap,
-  objNotEmpty,
-  size,
-} from '@synclets/utils';
+import {jsonParse, jsonString} from '@synclets/utils';
+import {isObject, objKeys, objMap, objNotEmpty} from '../../common/object.ts';
+import {isUndefined, size} from '../../common/other.ts';
+import {isAtom, isHash, isTimestamp} from '../../common/types.ts';
 
 export type ProtectedMemoryConnector = MemoryConnector & {
   _getJson(): string;

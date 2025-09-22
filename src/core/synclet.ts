@@ -12,24 +12,22 @@ import type {
   Timestamp,
   TimestampAndAtom,
 } from '@synclets/@types';
+import {getUniqueId} from '@synclets/utils';
+import {arrayDifference, arrayMap} from '../common/array.ts';
+import {objKeys, objNotEmpty, objToArray} from '../common/object.ts';
 import {
-  arrayDifference,
-  arrayMap,
-  ASTERISK,
-  EMPTY_STRING,
-  getUniqueId,
   ifNotUndefined,
+  isUndefined,
+  promiseAll,
+  size,
+} from '../common/other.ts';
+import {ASTERISK, EMPTY_STRING} from '../common/string.ts';
+import {
   isHash,
   isProtocolSubNodes,
   isTimestamp,
   isTimestampAndAtom,
-  isUndefined,
-  objKeys,
-  objNotEmpty,
-  objToArray,
-  promiseAll,
-  size,
-} from '@synclets/utils';
+} from '../common/types.ts';
 import {MessageType} from './message.ts';
 import type {
   Message,

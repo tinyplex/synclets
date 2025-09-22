@@ -5,7 +5,8 @@ import type {
   TransportImplementations,
   TransportOptions,
 } from '@synclets/@types';
-import {errorNew, getUniqueId} from '@synclets/utils';
+import {getUniqueId} from '@synclets/utils';
+import {errorNew} from '../common/other.ts';
 import {getPacketFunctions} from './packets.ts';
 import type {Message, ProtectedTransport, ReceiveMessage} from './protected.js';
 
