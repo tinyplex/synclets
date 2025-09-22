@@ -15,9 +15,9 @@ import {arrayPush} from '../common/array.ts';
 import {combineHash, getHash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
 import {errorNew, isEmpty, isUndefined} from '../common/other.ts';
+import {getQueueFunctions} from '../common/queue.ts';
 import {setEvery, setNew} from '../common/set.ts';
-import type {ProtectedConnector} from './protected.js';
-import {getQueueFunctions} from './queue.ts';
+import {ProtectedConnector} from './types.js';
 
 export const createConnector: typeof createConnectorDecl = async (
   atomDepth,

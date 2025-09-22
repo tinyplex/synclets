@@ -1,4 +1,4 @@
-import type {
+import {
   Address,
   Context,
   createSynclet as createSyncletDecl,
@@ -21,6 +21,7 @@ import {
   promiseAll,
   size,
 } from '../common/other.ts';
+import {getQueueFunctions} from '../common/queue.ts';
 import {ASTERISK, EMPTY_STRING} from '../common/string.ts';
 import {
   isHash,
@@ -28,13 +29,7 @@ import {
   isTimestamp,
   isTimestampAndAtom,
 } from '../common/types.ts';
-import {MessageType} from './message.ts';
-import type {
-  Message,
-  ProtectedConnector,
-  ProtectedTransport,
-} from './protected.d.ts';
-import {getQueueFunctions} from './queue.ts';
+import {Message, ProtectedConnector, ProtectedTransport} from './types.js';
 
 const INVALID_NODE = 'invalid node';
 
@@ -110,13 +105,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     to?: string,
   ) =>
     await transport.sendMessage(
-      [
-        MessageType.Node,
-        address,
-        node,
-        (await getSendContext?.(MessageType.Node, address, receivedContext)) ??
-          {},
-      ],
+      [0, address, node, (await getSendContext?.(receivedContext)) ?? {}],
       to,
     );
 
@@ -124,13 +113,13 @@ export const createSynclet: typeof createSyncletDecl = (async (
     queueIfStarted(async () => {
       const [type, address, node, context] = message;
 
-      if (from == ASTERISK || from == id || type != MessageType.Node) {
+      if (from == ASTERISK || from == id || type != 0) {
         return log(`invalid message: ${from}`, 'warn');
       }
 
       if (
         !isUndefined(canReceiveMessage) &&
-        !(await canReceiveMessage(type, address, context))
+        !(await canReceiveMessage(context))
       ) {
         return log(`can't receive message: ${from}`, 'warn');
       }

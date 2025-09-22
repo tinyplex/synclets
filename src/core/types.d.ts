@@ -9,7 +9,8 @@ import type {
   Timestamp,
   Transport,
 } from '@synclets/@types';
-import {MessageType} from './message.ts';
+
+export type MessageType = 0;
 
 export type Message = [
   type: MessageType,
@@ -19,6 +20,13 @@ export type Message = [
 ];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
+
+export interface ProtectedTransport extends Transport {
+  bind(synclet: Synclet, syncletId: string): void;
+  connect(receiveMessage: ReceiveMessage): Promise<void>;
+  disconnect(): Promise<void>;
+  sendMessage(message: Message, to?: string): Promise<void>;
+}
 
 export interface ProtectedConnector extends Connector {
   atomDepth: number;
@@ -41,11 +49,4 @@ export interface ProtectedConnector extends Connector {
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ): Promise<void>;
-}
-
-export interface ProtectedTransport extends Transport {
-  bind(synclet: Synclet, syncletId: string): void;
-  connect(receiveMessage: ReceiveMessage): Promise<void>;
-  disconnect(): Promise<void>;
-  sendMessage(message: Message, to?: string): Promise<void>;
 }

@@ -1,4 +1,4 @@
-import {arrayPush, arrayShift} from '../common/array.ts';
+import {arrayPush, arrayShift} from './array.ts';
 
 type Task = () => Promise<any>;
 

@@ -101,7 +101,7 @@ describe('context', () => {
     await synclet2.start();
     await synclet1.start();
 
-    expect(canReceiveMessage).toHaveBeenCalledWith(0, [], {});
+    expect(canReceiveMessage).toHaveBeenCalledWith({});
   });
 
   test('add context', async () => {
@@ -121,7 +121,7 @@ describe('context', () => {
     await synclet2.start();
     await synclet1.start();
 
-    expect(getSendContext).toHaveBeenCalledWith(0, [], {});
-    expect(canReceiveMessage).toHaveBeenCalledWith(0, [], {foo: 42});
+    expect(getSendContext).toHaveBeenCalledWith({});
+    expect(canReceiveMessage).toHaveBeenCalledWith({foo: 42});
   });
 });

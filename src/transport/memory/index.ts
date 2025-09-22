@@ -1,11 +1,11 @@
-import {
-  createTransport,
-  getPacketFromParts,
-  getPartsFromPacket,
-} from '@synclets';
+import {createTransport} from '@synclets';
 import type {Transport, TransportOptions} from '@synclets/@types';
 import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/transport/memory';
-import {getUniqueId} from '@synclets/utils';
+import {
+  getPacketFromParts,
+  getPartsFromPacket,
+  getUniqueId,
+} from '@synclets/utils';
 import {
   mapDel,
   mapEnsure,

@@ -1,7 +1,5 @@
 /// synclets
 
-import {MessageType} from '../core/message.ts';
-
 import type {Tomb} from './utils/index.d.ts';
 
 export type Atom = string | number | boolean | null | Tomb;
@@ -48,16 +46,8 @@ export interface Synclet {
 }
 
 export type SyncletImplementations = {
-  canReceiveMessage?: (
-    type: MessageType,
-    address: Address,
-    context: Context,
-  ) => Promise<boolean>;
-  getSendContext?: (
-    type: MessageType,
-    address: Address,
-    receivedContext?: Context,
-  ) => Promise<Context>;
+  canReceiveMessage?: (context: Context) => Promise<boolean>;
+  getSendContext?: (receivedContext?: Context) => Promise<Context>;
 };
 
 export type SyncletOptions = {
