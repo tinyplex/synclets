@@ -110,41 +110,43 @@ export const createTransport: typeof createTransportDecl = async (
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
     getPacketFunctions(log, sendPacket, options.fragmentSize ?? 4096);
 
+  const bind = (synclet: Synclet, syncletId: string) => {
+    if (boundSynclet) {
+      errorNew('Transport is already attached to Synclet');
+    }
+    boundSynclet = synclet;
+    id = syncletId;
+  };
+
+  const connectImpl = async (receiveMessage: ReceiveMessage) => {
+    if (!connected) {
+      log('connect');
+      startBuffer(receiveMessage);
+      await connect?.(receivePacket);
+      connected = true;
+    }
+  };
+
+  const disconnectImpl = async () => {
+    if (connected) {
+      log('disconnect');
+      stopBuffer();
+      await disconnect?.();
+      connected = false;
+    }
+  };
+
+  const sendMessage = async (message: Message, to?: string) => {
+    if (connected) {
+      await sendPackets(message, to);
+    }
+  };
+
   return {
     log,
 
     isConnected: () => connected,
 
-    _bind: (synclet: Synclet, syncletId: string) => {
-      if (boundSynclet) {
-        errorNew('Transport is already attached to Synclet');
-      }
-      boundSynclet = synclet;
-      id = syncletId;
-    },
-
-    _connect: async (receiveMessage: ReceiveMessage) => {
-      if (!connected) {
-        log('connect');
-        startBuffer(receiveMessage);
-        await connect?.(receivePacket);
-        connected = true;
-      }
-    },
-
-    _disconnect: async () => {
-      if (connected) {
-        log('disconnect');
-        stopBuffer();
-        await disconnect?.();
-        connected = false;
-      }
-    },
-
-    _sendMessage: async (message: Message, to?: string) => {
-      if (connected) {
-        await sendPackets(message, to);
-      }
-    },
+    _: [bind, connectImpl, disconnectImpl, sendMessage],
   };
 };

@@ -53,6 +53,13 @@ export const createConnector: typeof createConnectorDecl = async (
   const log = (string: string, level: LogLevel = 'info') =>
     logger?.[level]?.(`[${id}/C] ${string}`);
 
+  const bind = (synclet: Synclet, syncletId: string) => {
+    boundSynclets.add(synclet);
+    if (boundSynclets.size == 1) {
+      id = syncletId;
+    }
+  };
+
   const setOrDelAtom = async (
     address: Address,
     atomOrUndefined: Atom | undefined,
@@ -144,23 +151,14 @@ export const createConnector: typeof createConnectorDecl = async (
 
     getMeta: () => [0, {}],
 
-    _atomDepth: atomDepth,
-
-    _bind: (synclet: Synclet, syncletId: string) => {
-      boundSynclets.add(synclet);
-      if (boundSynclets.size == 1) {
-        id = syncletId;
-      }
-    },
-
-    _setOrDelAtom: setOrDelAtom,
-
-    _readAtom: readAtom,
-
-    _readTimestamp: readTimestamp,
-
-    _readHash: readHash,
-
-    _readChildIds: readChildIds,
+    _: [
+      atomDepth,
+      bind,
+      readAtom,
+      readTimestamp,
+      readHash,
+      readChildIds,
+      setOrDelAtom,
+    ],
   };
 };
