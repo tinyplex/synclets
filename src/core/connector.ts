@@ -106,16 +106,7 @@ export const createConnector: typeof createConnectorDecl = async (
   };
 
   return {
-    _atomDepth: atomDepth,
-
     log,
-
-    _bind: (synclet: Synclet, syncletId: string) => {
-      boundSynclets.add(synclet);
-      if (boundSynclets.size == 1) {
-        id = syncletId;
-      }
-    },
 
     connect: async () => {
       if (!connected) {
@@ -149,6 +140,19 @@ export const createConnector: typeof createConnectorDecl = async (
     delAtom: (address: Address, context?: Context, sync?: boolean) =>
       setOrDelAtom(address, undefined, context, sync),
 
+    getData: () => ({}),
+
+    getMeta: () => [0, {}],
+
+    _atomDepth: atomDepth,
+
+    _bind: (synclet: Synclet, syncletId: string) => {
+      boundSynclets.add(synclet);
+      if (boundSynclets.size == 1) {
+        id = syncletId;
+      }
+    },
+
     _setOrDelAtom: setOrDelAtom,
 
     _readAtom: readAtom,
@@ -158,9 +162,5 @@ export const createConnector: typeof createConnectorDecl = async (
     _readHash: readHash,
 
     _readChildIds: readChildIds,
-
-    getData: () => ({}),
-
-    getMeta: () => [0, {}],
   };
 };

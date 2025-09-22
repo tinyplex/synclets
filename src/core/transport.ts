@@ -113,6 +113,16 @@ export const createTransport: typeof createTransportDecl = async (
   return {
     log,
 
+    isConnected: () => connected,
+
+    _bind: (synclet: Synclet, syncletId: string) => {
+      if (boundSynclet) {
+        errorNew('Transport is already attached to Synclet');
+      }
+      boundSynclet = synclet;
+      id = syncletId;
+    },
+
     _connect: async (receiveMessage: ReceiveMessage) => {
       if (!connected) {
         log('connect');
@@ -131,20 +141,10 @@ export const createTransport: typeof createTransportDecl = async (
       }
     },
 
-    isConnected: () => connected,
-
     _sendMessage: async (message: Message, to?: string) => {
       if (connected) {
         await sendPackets(message, to);
       }
-    },
-
-    _bind: (synclet: Synclet, syncletId: string) => {
-      if (boundSynclet) {
-        errorNew('Transport is already attached to Synclet');
-      }
-      boundSynclet = synclet;
-      id = syncletId;
     },
   };
 };

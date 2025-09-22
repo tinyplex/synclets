@@ -6,9 +6,22 @@ import {
   readFileSync,
   writeFileSync,
 } from 'fs';
-import gulp from 'gulp';
+import {parallel, series} from 'gulp';
 import {dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
+
+const PROTECTED_PROPS = [
+  '_atomDepth',
+  '_bind',
+  '_connect',
+  '_disconnect',
+  '_readAtom',
+  '_readChildIds',
+  '_readHash',
+  '_readTimestamp',
+  '_sendMessage',
+  '_setOrDelAtom',
+];
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = [
@@ -400,6 +413,10 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
         target: 'esnext',
         legalComments: 'inline',
         jsx: 'automatic',
+        mangleProps: new RegExp(PROTECTED_PROPS.join('|')),
+        mangleCache: Object.fromEntries(
+          PROTECTED_PROPS.map((prop, p) => [prop, '_' + p]),
+        ),
       }),
       replace({
         '/*!': '\n/*',
@@ -409,14 +426,14 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       }),
       shebang(),
       image(),
-      min
+      ...(min
         ? [
             terser({
               toplevel: true,
               compress: {unsafe: true, passes: 3},
             }),
           ]
-        : prettierPlugin(await getPrettierConfig()),
+        : [prettierPlugin(await getPrettierConfig())]),
     ],
     onwarn: (warning, warn) => {
       if (warning.code !== 'MISSING_NODE_BUILTINS') {
@@ -553,8 +570,6 @@ const npmPublish = async () => {
   const {promisify} = await import('util');
   return await promisify(exec)('npm publish');
 };
-
-const {parallel, series} = gulp;
 
 // --
 
