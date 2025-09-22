@@ -27,7 +27,7 @@ describe.each([
   [
     'memory',
     (atomDepth: number, options: ConnectorOptions) =>
-      createMemoryConnector(atomDepth, {}, options),
+      createMemoryConnector(atomDepth, options),
     async (connector: Connector) => connector.getMeta(),
   ],
   [
