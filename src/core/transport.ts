@@ -113,7 +113,7 @@ export const createTransport: typeof createTransportDecl = async (
   return {
     log,
 
-    connect: async (receiveMessage: ReceiveMessage) => {
+    _connect: async (receiveMessage: ReceiveMessage) => {
       if (!connected) {
         log('connect');
         startBuffer(receiveMessage);
@@ -122,7 +122,7 @@ export const createTransport: typeof createTransportDecl = async (
       }
     },
 
-    disconnect: async () => {
+    _disconnect: async () => {
       if (connected) {
         log('disconnect');
         stopBuffer();
@@ -133,13 +133,13 @@ export const createTransport: typeof createTransportDecl = async (
 
     isConnected: () => connected,
 
-    sendMessage: async (message: Message, to?: string) => {
+    _sendMessage: async (message: Message, to?: string) => {
       if (connected) {
         await sendPackets(message, to);
       }
     },
 
-    bind: (synclet: Synclet, syncletId: string) => {
+    _bind: (synclet: Synclet, syncletId: string) => {
       if (boundSynclet) {
         errorNew('Transport is already attached to Synclet');
       }

@@ -106,11 +106,11 @@ export const createConnector: typeof createConnectorDecl = async (
   };
 
   return {
-    atomDepth,
+    _atomDepth: atomDepth,
 
     log,
 
-    bind: (synclet: Synclet, syncletId: string) => {
+    _bind: (synclet: Synclet, syncletId: string) => {
       boundSynclets.add(synclet);
       if (boundSynclets.size == 1) {
         id = syncletId;
@@ -149,15 +149,15 @@ export const createConnector: typeof createConnectorDecl = async (
     delAtom: (address: Address, context?: Context, sync?: boolean) =>
       setOrDelAtom(address, undefined, context, sync),
 
-    setOrDelAtom,
+    _setOrDelAtom: setOrDelAtom,
 
-    readAtom,
+    _readAtom: readAtom,
 
-    readTimestamp,
+    _readTimestamp: readTimestamp,
 
-    readHash,
+    _readHash: readHash,
 
-    readChildIds,
+    _readChildIds: readChildIds,
 
     getData: () => ({}),
 

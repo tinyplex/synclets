@@ -22,26 +22,26 @@ export type Message = [
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
 export interface ProtectedTransport extends Transport {
-  bind(synclet: Synclet, syncletId: string): void;
-  connect(receiveMessage: ReceiveMessage): Promise<void>;
-  disconnect(): Promise<void>;
-  sendMessage(message: Message, to?: string): Promise<void>;
+  _bind(synclet: Synclet, syncletId: string): void;
+  _connect(receiveMessage: ReceiveMessage): Promise<void>;
+  _disconnect(): Promise<void>;
+  _sendMessage(message: Message, to?: string): Promise<void>;
 }
 
 export interface ProtectedConnector extends Connector {
-  atomDepth: number;
-  bind(synclet: Synclet, syncletId: string): void;
-  readAtom(address: Address, context: Context): Promise<Atom | undefined>;
-  readTimestamp(
+  _atomDepth: number;
+  _bind(synclet: Synclet, syncletId: string): void;
+  _readAtom(address: Address, context: Context): Promise<Atom | undefined>;
+  _readTimestamp(
     address: Address,
     context: Context,
   ): Promise<Timestamp | undefined>;
-  readHash(address: Address, context: Context): Promise<Hash | undefined>;
-  readChildIds(
+  _readHash(address: Address, context: Context): Promise<Hash | undefined>;
+  _readChildIds(
     address: Address,
     context: Context,
   ): Promise<string[] | undefined>;
-  setOrDelAtom(
+  _setOrDelAtom(
     address: Address,
     atomOrUndefined: Atom | undefined,
     context: Context,
