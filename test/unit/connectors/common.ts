@@ -1,10 +1,4 @@
-import {mkdtemp, rm} from 'fs/promises';
-import {tmpdir} from 'os';
-import {join, sep} from 'path';
 import {Connector, ConnectorOptions, Data, Meta} from 'synclets';
-import {createFileConnector} from 'synclets/connector/fs';
-import {createMemoryConnector} from 'synclets/connector/memory';
-import {getUniqueId} from 'synclets/utils';
 import {
   expectDifferingConnectors,
   expectEquivalentConnectors,
@@ -23,35 +17,19 @@ interface TestMemoryConnector extends Connector {
   getUnderlyingMetaForTest(): Promise<string>;
 }
 
-describe.each([
-  [
-    'memory',
-    (atomDepth: number, options: ConnectorOptions) =>
-      createMemoryConnector(atomDepth, options),
-    async (connector: Connector) => connector.getMeta(),
-  ],
-  [
-    'file',
-    (atomDepth: number, options: ConnectorOptions, {file}: {file: string}) =>
-      createFileConnector(atomDepth, join(file, getUniqueId()), options),
-    async (connector: Connector) => connector.getMeta(),
-    async () => ({file: await mkdtemp(tmpdir() + sep)}),
-    async ({file}: {file: string}) =>
-      await rm(file, {recursive: true, force: true}),
-  ],
-])(
-  '%s connector',
-  (
-    _,
-    createConnector: (
-      atomDepth: number,
-      options: ConnectorOptions,
-      environment: any,
-    ) => Promise<Connector>,
-    getUnderlyingMetaForTest?: (connector: Connector) => Promise<any>,
-    before?: () => Promise<any>,
-    after?: (environment: any) => Promise<any>,
-  ) => {
+// eslint-disable-next-line jest/no-export
+export const testConnector = (
+  type: string,
+  createConnector: (
+    atomDepth: number,
+    options: ConnectorOptions,
+    environment: any,
+  ) => Promise<Connector>,
+  getUnderlyingMetaForTest: (connector: Connector) => Promise<any>,
+  before?: () => Promise<any>,
+  after?: (environment: any) => Promise<any>,
+) =>
+  describe(`${type} connector`, () => {
     let environment: any;
 
     beforeAll(async () => (environment = await before?.()));
@@ -107,8 +85,7 @@ describe.each([
 
             getMetaForTest: connector.getMeta,
 
-            getUnderlyingMetaForTest: async () =>
-              await getUnderlyingMetaForTest?.(connector),
+            getUnderlyingMetaForTest: () => getUnderlyingMetaForTest(connector),
           };
         };
 
@@ -399,5 +376,4 @@ describe.each([
         });
       },
     );
-  },
-);
+  });

@@ -1,7 +1,10 @@
 import {mkdtemp, rm} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join, sep} from 'path';
+import {Connector, ConnectorOptions} from 'synclets';
 import {createFileConnector} from 'synclets/connector/fs';
+import {getUniqueId} from 'synclets/utils';
+import {testConnector} from './common.ts';
 
 let tmp: string;
 
@@ -16,3 +19,13 @@ test('file', async () => {
   const connector = await createFileConnector(1, file);
   expect(connector.getFile()).toBe(file);
 });
+
+testConnector(
+  'file',
+  (atomDepth: number, options: ConnectorOptions, {file}: {file: string}) =>
+    createFileConnector(atomDepth, join(file, getUniqueId()), options),
+  async (connector: Connector) => connector.getMeta(),
+  async () => ({file: await mkdtemp(tmpdir() + sep)}),
+  async ({file}: {file: string}) =>
+    await rm(file, {recursive: true, force: true}),
+);
