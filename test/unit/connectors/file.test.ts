@@ -4,7 +4,7 @@ import {join, sep} from 'path';
 import {Connector, ConnectorOptions} from 'synclets';
 import {createFileConnector} from 'synclets/connector/fs';
 import {getUniqueId} from 'synclets/utils';
-import {testConnector} from './common.ts';
+import {describeConnectorTests} from '../common.ts';
 
 let tmp: string;
 
@@ -20,7 +20,7 @@ test('file', async () => {
   expect(connector.getFile()).toBe(file);
 });
 
-testConnector(
+describeConnectorTests(
   'file',
   (atomDepth: number, options: ConnectorOptions, {file}: {file: string}) =>
     createFileConnector(atomDepth, join(file, getUniqueId()), options),

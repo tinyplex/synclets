@@ -1,8 +1,8 @@
 import {Connector, ConnectorOptions} from 'synclets';
 import {createMemoryConnector} from 'synclets/connector/memory';
-import {testConnector} from './common.ts';
+import {describeConnectorTests} from '../common.ts';
 
-testConnector(
+describeConnectorTests(
   'memory',
   (atomDepth: number, options: ConnectorOptions) =>
     createMemoryConnector(atomDepth, options),
