@@ -22,7 +22,13 @@ import {
   size,
 } from '../common/other.ts';
 import {getQueueFunctions} from '../common/queue.ts';
-import {ASTERISK, EMPTY_STRING} from '../common/string.ts';
+import {
+  ASTERISK,
+  EMPTY_STRING,
+  INVALID,
+  INVALID_NODE,
+  WARN,
+} from '../common/string.ts';
 import {
   isHash,
   isProtocolSubNodes,
@@ -32,8 +38,6 @@ import {
 import {Message, ProtectedConnector, ProtectedTransport} from './types.js';
 
 const VERSION = 1;
-
-const INVALID_NODE = 'invalid node';
 
 export const createSynclet: typeof createSyncletDecl = (async (
   {
@@ -107,7 +111,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const sync = (address: Address) =>
     queueIfStarted(async () => {
-      log(`sync ${address}`);
+      log(`sync ` + address);
       await sendNodeMessage(address, await readHashOrTimestamp(address, {}));
     });
 
@@ -134,22 +138,22 @@ export const createSynclet: typeof createSyncletDecl = (async (
       const [version, type, atomDepth, address, node, context] = message;
 
       if (from == ASTERISK || from == id) {
-        return log(`invalid from: ${from}`, 'warn');
+        return log(INVALID + 'from: ' + from, WARN);
       }
       if (version != VERSION) {
-        return log(`invalid version: ${version}`, 'warn');
+        return log(INVALID + 'version: ' + version, WARN);
       }
       if (type != 0) {
-        return log(`invalid type: ${type}`, 'warn');
+        return log(INVALID + 'type: ' + type, WARN);
       }
       if (atomDepth != connectorAtomDepth) {
-        return log(`invalid atomDepth: ${atomDepth}`, 'warn');
+        return log(INVALID + 'atomDepth: ' + atomDepth, WARN);
       }
       if (
         !isUndefined(canReceiveMessage) &&
         !(await canReceiveMessage(context))
       ) {
-        return log(`can't receive message: ${from}`, 'warn');
+        return log(`can't receive message: ${from}`, WARN);
       }
 
       await transformNode(address, node, context, (newNode) =>
@@ -174,7 +178,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
               ? transformHash
               : isProtocolSubNodes(node)
                 ? transformSubNodes
-                : () => log(`${INVALID_NODE}: ${address}`, 'warn')) as any
+                : () => log(INVALID_NODE + ' ' + address, WARN)) as any
       )?.(address, node, context),
       ifTransformedToDefined,
       ifTransformedToUndefined,
@@ -194,7 +198,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
         return [myTimestamp, await readAtom(address, context)];
       }
     } else {
-      log(`${INVALID_NODE}; Timestamp vs SubNodes: ${address}`, 'warn');
+      log(INVALID_NODE + ' Timestamp vs SubNodes: ' + address, WARN);
     }
   };
 
@@ -220,7 +224,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
         return [myTimestamp, await readAtom(address, context)];
       }
     } else {
-      log(`${INVALID_NODE}; TimestampAtom vs SubNodes: ${address}`, 'warn');
+      log(INVALID_NODE + ' TimestampAtom vs SubNodes: ' + address, WARN);
     }
   };
 
@@ -243,7 +247,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
         return [subNodeObj];
       }
     } else {
-      log(`${INVALID_NODE}; Hash vs no SubNodes: ${address}`, 'warn');
+      log(INVALID_NODE + ' Hash vs no SubNodes: ' + address, WARN);
     }
   };
 
@@ -275,7 +279,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
         return mySubNodes;
       }
     } else {
-      log(`${INVALID_NODE}; SubNodes vs no SubNodes: ${address}`, 'warn');
+      log(INVALID_NODE + ' SubNodes vs no SubNodes: ' + address, WARN);
     }
   };
 
