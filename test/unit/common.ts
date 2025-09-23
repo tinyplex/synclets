@@ -101,10 +101,10 @@ export const describeConnectorTests = (
             await connector1.setAtomForTest('A');
             await expectEquivalentConnectors([connector1, connector2]);
 
-            const timestamp = connector1.getMeta();
+            const meta = await connector1.getMeta();
             await connector1.delAtomForTest();
             await expectEquivalentConnectors([connector1, connector2]);
-            expect(timestamp).not.toEqual(connector1.getMeta());
+            expect(meta).not.toEqual(await connector1.getMeta());
           });
 
           test('start 1, set 1, start 2', async () => {
@@ -443,13 +443,13 @@ export const getChainedTestConnectors = async <TestConnector extends Connector>(
 export const expectEquivalentConnectors = async (
   connectors: TestConnector[],
 ) => {
-  const data = connectors[0].getData();
-  const meta = connectors[0].getMeta();
+  const data = await connectors[0].getData();
+  const meta = await connectors[0].getMeta();
   expect(data).toMatchSnapshot('equivalent');
   await Promise.all(
     connectors.map(async (connector) => {
-      expect(connector.getData()).toEqual(data);
-      expect(connector.getMeta()).toEqual(meta);
+      expect(await connector.getData()).toEqual(data);
+      expect(await connector.getMeta()).toEqual(meta);
       expect(await connector.getUnderlyingMetaForTest()).toEqual(meta);
     }),
   );
@@ -459,9 +459,9 @@ export const expectDifferingConnectors = async (
   connector1: TestConnector,
   connector2: TestConnector,
 ) => {
-  const data1 = connector1.getData();
-  const data2 = connector2.getData();
+  const data1 = await connector1.getData();
+  const data2 = await connector2.getData();
   expect(data1).not.toEqual(data2);
   expect([data1, data2]).toMatchSnapshot('differing');
-  expect(connector1.getMeta()).not.toEqual(connector2.getMeta());
+  expect(await connector1.getMeta()).not.toEqual(await connector2.getMeta());
 };

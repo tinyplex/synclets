@@ -5,16 +5,27 @@ import type {
   ConnectorOptions,
   Context,
   createConnector as createConnectorDecl,
+  Data,
+  Hash,
   LogLevel,
+  Meta,
   Synclet,
   Timestamp,
 } from '@synclets/@types';
 import {Tomb} from '@synclets/@types/utils';
 import {getUniqueId} from '@synclets/utils';
-import {arrayPush} from '../common/array.ts';
+import {arrayMap, arrayPush} from '../common/array.ts';
 import {combineHash, getHash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
-import {errorNew, isEmpty, isUndefined} from '../common/other.ts';
+import {objNotEmpty} from '../common/object.ts';
+import {
+  errorNew,
+  ifNotUndefined,
+  isEmpty,
+  isUndefined,
+  promiseAll,
+  size,
+} from '../common/other.ts';
 import {getQueueFunctions} from '../common/queue.ts';
 import {setEvery, setNew} from '../common/set.ts';
 import {ProtectedConnector} from './types.js';
@@ -49,6 +60,47 @@ export const createConnector: typeof createConnectorDecl = async (
   const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id);
 
   const [queue] = getQueueFunctions();
+
+  const getData = async (address: Address): Promise<Data | undefined> => {
+    const data = {} as {[id: string]: Data | Atom};
+    await promiseAll(
+      arrayMap((await readChildIds(address, {})) ?? [], async (childId) =>
+        ifNotUndefined(
+          await (size(address) == depth - 1 ? readAtom : getData)(
+            [...address, childId],
+            {},
+          ),
+          (childData) => {
+            data[childId] = childData;
+          },
+        ),
+      ),
+    );
+    return objNotEmpty(data) ? data : (undefined as any);
+  };
+
+  const getMeta = async (
+    address: Address,
+  ): Promise<Meta | Timestamp | undefined> => {
+    const meta = [await readHash(address, {}), {}] as [
+      Hash,
+      {[id: string]: Meta | Timestamp},
+    ];
+    await promiseAll(
+      arrayMap((await readChildIds(address, {})) ?? [], async (childId) => {
+        ifNotUndefined(
+          await (size(address) == depth - 1 ? readTimestamp : getMeta)(
+            [...address, childId],
+            {},
+          ),
+          (childData) => {
+            meta[1][childId] = childData;
+          },
+        );
+      }),
+    );
+    return !isUndefined(meta[0]) ? meta : undefined;
+  };
 
   const log = (string: string, level: LogLevel = 'info') =>
     logger?.[level]?.(`[${id}/C] ${string}`);
@@ -147,9 +199,9 @@ export const createConnector: typeof createConnectorDecl = async (
     delAtom: (address: Address, context?: Context, sync?: boolean) =>
       setOrDelAtom(address, undefined, context, sync),
 
-    getData: () => ({}),
+    getData: async () => ((await getData([])) ?? {}) as Data,
 
-    getMeta: () => [0, {}],
+    getMeta: async () => (await getMeta([])) as Meta,
 
     _: [
       depth,

@@ -76,8 +76,8 @@ export interface Connector {
     sync?: boolean,
   ): Promise<void>;
   delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
-  getData(): Data;
-  getMeta(): Meta;
+  getData(): Promise<Data>;
+  getMeta(): Promise<Meta>;
 }
 
 export type ConnectorImplementations = {

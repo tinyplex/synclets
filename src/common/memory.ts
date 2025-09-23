@@ -147,8 +147,8 @@ export const createMemoryConnector = async (
   return {
     ...connector,
 
-    getData: () => getData(root) as Data,
+    getData: async () => getData(root) as Data,
 
-    getMeta: () => getMeta(root) as Meta,
+    getMeta: async () => getMeta(root) as Meta,
   };
 };
