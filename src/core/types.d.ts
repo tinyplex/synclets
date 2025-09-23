@@ -13,7 +13,9 @@ import type {
 export type MessageType = 0;
 
 export type Message = [
+  version: number,
   type: MessageType,
+  atomDepth: number,
   address: Address,
   node: ProtocolNode,
   context: Context,
