@@ -37,7 +37,7 @@ const getMeta = (dataAndMeta: HashContainer): Meta => [
 ];
 
 export const createMemoryConnector = async (
-  atomDepth: number,
+  depth: number,
   options: ConnectorOptions = {},
   onChange?: (root: Root) => Promise<void>,
   initial?: Root,
@@ -49,16 +49,17 @@ export const createMemoryConnector = async (
     address: Address,
     context: Context,
     create = false,
-    depth = 0,
+    recursionDepth = 0,
   ): HashContainer | TimestampContainer | undefined => {
-    if (size(address) == depth) {
+    if (size(address) == recursionDepth) {
       return container;
     }
     const children = container[1];
-    const nextId = address[depth];
+    const nextId = address[recursionDepth];
     if (isUndefined(children[nextId])) {
       if (create) {
-        children[nextId] = atomDepth > depth + 1 ? [0, {}] : ['', undefined];
+        children[nextId] =
+          depth > recursionDepth + 1 ? [0, {}] : ['', undefined];
       } else {
         return undefined;
       }
@@ -68,7 +69,7 @@ export const createMemoryConnector = async (
       address,
       context,
       create,
-      depth + 1,
+      recursionDepth + 1,
     );
   };
 
@@ -85,7 +86,7 @@ export const createMemoryConnector = async (
   };
 
   const connector = await createConnector(
-    atomDepth,
+    depth,
     {
       readAtom: async (address: Address, context: Context) => {
         const container = getContainer(root, address, context);

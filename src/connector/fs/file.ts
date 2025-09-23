@@ -13,14 +13,14 @@ type Node = [Hash, SubNodes] | [Timestamp, Atom | undefined];
 type SubNodes = {[id: string]: Node};
 
 export const createFileConnector: typeof createFileConnectorDecl = async (
-  atomDepth,
+  depth,
   file,
   options: ConnectorOptions = {},
 ): Promise<FileConnector> => {
   const path = await validateFile(file);
 
   const connector = await createMemoryConnector(
-    atomDepth,
+    depth,
     options,
     (root: Root) => writeFile(path, jsonString(root), UTF8),
     jsonParse(await readFile(path, UTF8)),

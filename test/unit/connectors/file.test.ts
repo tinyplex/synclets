@@ -22,8 +22,8 @@ test('file', async () => {
 
 describeConnectorTests(
   'file',
-  (atomDepth: number, options: ConnectorOptions, {file}: {file: string}) =>
-    createFileConnector(atomDepth, join(file, getUniqueId()), options),
+  (depth: number, options: ConnectorOptions, {file}: {file: string}) =>
+    createFileConnector(depth, join(file, getUniqueId()), options),
   async (connector: Connector) => connector.getMeta(),
   async () => ({file: await mkdtemp(tmpdir() + sep)}),
   async ({file}: {file: string}) =>

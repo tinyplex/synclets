@@ -15,7 +15,7 @@ export type MessageType = 0;
 export type Message = [
   version: number,
   type: MessageType,
-  atomDepth: number,
+  depth: number,
   address: Address,
   node: ProtocolNode,
   context: Context,
@@ -34,7 +34,7 @@ export interface ProtectedTransport extends Transport {
 
 export interface ProtectedConnector extends Connector {
   _: [
-    atomDepth: number,
+    depth: number,
     bind: (synclet: Synclet, syncletId: string) => void,
     readAtom: (address: Address, context: Context) => Promise<Atom | undefined>,
     readTimestamp: (

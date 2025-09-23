@@ -7,7 +7,7 @@ export interface DirectoryConnector extends Connector {
 }
 
 export function createDirectoryConnector(
-  atomDepth: number,
+  depth: number,
   directory: string,
   options?: ConnectorOptions,
 ): Promise<DirectoryConnector>;
@@ -19,7 +19,7 @@ export interface FileConnector extends Connector {
 }
 
 export function createFileConnector(
-  atomDepth: number,
+  depth: number,
   file: string,
   options?: ConnectorOptions,
 ): Promise<FileConnector>;

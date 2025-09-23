@@ -3,6 +3,6 @@ import type {createMemoryConnector as createMemoryConnectorDecl} from '@synclets
 import {createMemoryConnector as createMemoryConnectorImpl} from '../../common/memory.ts';
 
 export const createMemoryConnector: typeof createMemoryConnectorDecl = (
-  atomDepth,
+  depth,
   options?: ConnectorOptions,
-): Promise<Connector> => createMemoryConnectorImpl(atomDepth, options);
+): Promise<Connector> => createMemoryConnectorImpl(depth, options);

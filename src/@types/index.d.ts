@@ -109,7 +109,7 @@ export type ConnectorOptions = {
 };
 
 export function createConnector(
-  atomDepth: number,
+  depth: number,
   implementations: ConnectorImplementations,
   options?: ConnectorOptions,
 ): Promise<Connector>;

@@ -15,7 +15,7 @@ interface TestConnector extends Connector {
 export const describeConnectorTests = (
   type: string,
   createConnector: (
-    atomDepth: number,
+    depth: number,
     options: ConnectorOptions,
     environment: any,
   ) => Promise<Connector>,
@@ -43,7 +43,7 @@ export const describeConnectorTests = (
     ])(
       '%d-depth',
       (
-        atomDepth: number,
+        depth: number,
         address: string[],
         nearAddress: string[],
         farAddress?: string[],
@@ -51,11 +51,7 @@ export const describeConnectorTests = (
         const createTestConnector = async (
           options: ConnectorOptions = {},
         ): Promise<TestConnector> => {
-          const connector = await createConnector(
-            atomDepth,
-            options,
-            environment,
-          );
+          const connector = await createConnector(depth, options, environment);
 
           return {
             ...connector,

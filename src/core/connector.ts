@@ -20,7 +20,7 @@ import {setEvery, setNew} from '../common/set.ts';
 import {ProtectedConnector} from './types.js';
 
 export const createConnector: typeof createConnectorDecl = async (
-  atomDepth,
+  depth,
   {
     connect,
     disconnect,
@@ -35,8 +35,8 @@ export const createConnector: typeof createConnectorDecl = async (
   }: ConnectorImplementations,
   options: ConnectorOptions = {},
 ): Promise<ProtectedConnector> => {
-  if (atomDepth < 1) {
-    errorNew('atomDepth must be positive');
+  if (depth < 1) {
+    errorNew('depth must be positive');
   }
 
   let connected = false;
@@ -152,7 +152,7 @@ export const createConnector: typeof createConnectorDecl = async (
     getMeta: () => [0, {}],
 
     _: [
-      atomDepth,
+      depth,
       bind,
       readAtom,
       readTimestamp,

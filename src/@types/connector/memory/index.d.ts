@@ -3,6 +3,6 @@
 import type {Connector, ConnectorOptions} from '../../index.d.ts';
 
 export function createMemoryConnector(
-  atomDepth: number,
+  depth: number,
   options?: ConnectorOptions,
 ): Promise<Connector>;
