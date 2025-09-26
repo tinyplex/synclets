@@ -6,14 +6,19 @@ import {
   LogLevel,
   ProtocolNode,
   ProtocolSubNodes,
-  Synclet,
   SyncletImplementations,
   SyncletOptions,
   Timestamp,
   TimestampAndAtom,
 } from '@synclets/@types';
 import {getUniqueId} from '@synclets/utils';
-import {arrayDifference, arrayMap} from '../common/array.ts';
+import {
+  arrayDifference,
+  arrayForEach,
+  arrayMap,
+  arrayPush,
+  isArray,
+} from '../common/array.ts';
 import {objKeys, objNotEmpty, objToArray} from '../common/object.ts';
 import {
   ifNotUndefined,
@@ -21,7 +26,7 @@ import {
   promiseAll,
   size,
 } from '../common/other.ts';
-import {getQueueFunctions} from '../common/queue.ts';
+import {getQueueFunctions, Task} from '../common/queue.ts';
 import {
   ASTERISK,
   EMPTY_STRING,
@@ -35,7 +40,12 @@ import {
   isTimestamp,
   isTimestampAndAtom,
 } from '../common/types.ts';
-import {Message, ProtectedConnector, ProtectedTransport} from './types.js';
+import {
+  Message,
+  ProtectedConnector,
+  ProtectedSynclet,
+  ProtectedTransport,
+} from './types.js';
 
 const VERSION = 1;
 
@@ -53,17 +63,10 @@ export const createSynclet: typeof createSyncletDecl = (async (
       connectorSetOrDelAtom,
     ],
   }: ProtectedConnector,
-  {
-    _: [
-      transportBind,
-      transportConnect,
-      transportDisconnect,
-      transportSendMessage,
-    ],
-  }: ProtectedTransport,
+  transport: ProtectedTransport | ProtectedTransport[],
   {canReceiveMessage, getSendContext}: SyncletImplementations = {},
   options: SyncletOptions = {},
-): Promise<Synclet> => {
+): Promise<ProtectedSynclet> => {
   let started = false;
   const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};
@@ -74,6 +77,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
       await queue(actions);
     }
   };
+
+  const transports = isArray(transport) ? transport : [transport];
 
   const readHashOrTimestamp = async (address: Address, context: Context) =>
     size(address) < connectorDepth
@@ -117,19 +122,35 @@ export const createSynclet: typeof createSyncletDecl = (async (
     return [subNodeObj];
   };
 
-  const sync = (address: Address) =>
-    queueIfStarted(async () => {
+  const sync = (address: Address) => syncExcept(address);
+
+  const syncExcept = async (
+    address: Address,
+    exceptTransport?: ProtectedTransport,
+  ) => {
+    if (started) {
       log(`sync ` + address);
-      await sendNodeMessage(address, await readHashOrTimestamp(address, {}));
-    });
+      const hashOrTimestamp = await readHashOrTimestamp(address, {});
+      const tasks: Task[] = [];
+      arrayForEach(transports, (transport) => {
+        if (transport !== exceptTransport) {
+          arrayPush(tasks, () =>
+            sendNodeMessage(transport, address, hashOrTimestamp),
+          );
+        }
+      });
+      await queue(...tasks);
+    }
+  };
 
   const sendNodeMessage = async (
+    transport: ProtectedTransport,
     address: Address,
     node: ProtocolNode,
     receivedContext: Context = {},
     to?: string,
   ) =>
-    await transportSendMessage(
+    await transport._[3](
       [
         VERSION,
         0,
@@ -141,7 +162,11 @@ export const createSynclet: typeof createSyncletDecl = (async (
       to,
     );
 
-  const receiveMessage = (message: Message, from: string) =>
+  const receiveMessage = (
+    transport: ProtectedTransport,
+    message: Message,
+    from: string,
+  ) =>
     queueIfStarted(async () => {
       const [version, type, depth, address, node, context] = message;
 
@@ -164,12 +189,13 @@ export const createSynclet: typeof createSyncletDecl = (async (
         return log(`can't receive message: ${from}`, WARN);
       }
 
-      await transformNode(address, node, context, (newNode) =>
-        sendNodeMessage(address, newNode, context, from),
+      await transformNode(transport, address, node, context, (newNode) =>
+        sendNodeMessage(transport, address, newNode, context, from),
       );
     });
 
   const transformNode = async (
+    transport: ProtectedTransport,
     address: Address,
     node: ProtocolNode,
     context: Context,
@@ -187,12 +213,13 @@ export const createSynclet: typeof createSyncletDecl = (async (
               : isProtocolSubNodes(node)
                 ? transformSubNodes
                 : () => log(INVALID_NODE + ' ' + address, WARN)) as any
-      )?.(address, node, context),
+      )?.(transport, address, node, context),
       ifTransformedToDefined,
       ifTransformedToUndefined,
     );
 
   const transformTimestamp = async (
+    _transport: ProtectedTransport,
     address: Address,
     otherTimestamp: Timestamp,
     context: Context,
@@ -211,6 +238,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
   };
 
   const transformTimestampAndAtom = async (
+    transport: ProtectedTransport,
     address: Address,
     otherTimestampAndAtom: TimestampAndAtom,
     context: Context,
@@ -224,7 +252,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
           address,
           otherAtom,
           context,
-          synclet,
+          transport,
           otherTimestamp,
           myTimestamp,
         );
@@ -237,6 +265,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
   };
 
   const transformHash = async (
+    _transport: ProtectedTransport,
     address: Address,
     otherHash: Hash,
     context: Context,
@@ -263,6 +292,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
   };
 
   const transformSubNodes = async (
+    transport: ProtectedTransport,
     address: Address,
     [otherSubNodeObj, partial]: ProtocolSubNodes,
     context: Context,
@@ -274,6 +304,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       await promiseAll(
         objToArray(otherSubNodeObj, (id, otherSubNode) =>
           transformNode(
+            transport,
             [...address, id],
             otherSubNode,
             context,
@@ -297,14 +328,20 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const log = (string: string, level: LogLevel = 'info') =>
     logger?.[level]?.(`[${id}] ${string}`);
 
-  const synclet: Synclet = {
+  const synclet: ProtectedSynclet = {
     log,
 
     start: async () => {
       if (!started) {
         log('start');
         await connectorConnect();
-        await transportConnect(receiveMessage);
+        await promiseAll(
+          arrayMap(transports, (transport) =>
+            transport._[1]((message: Message, from: string) =>
+              receiveMessage(transport, message, from),
+            ),
+          ),
+        );
         started = true;
         await sync([]);
       }
@@ -315,16 +352,19 @@ export const createSynclet: typeof createSyncletDecl = (async (
         log('stop');
         started = false;
         await connectorDisconnect();
-        await transportDisconnect();
+        await promiseAll(arrayMap(transports, (transport) => transport._[2]()));
       }
     },
 
     isStarted: () => started,
 
     sync,
+
+    _: [syncExcept],
   };
 
   connectorBind(synclet, id);
-  transportBind(synclet, id);
+  arrayForEach(transports, (transport) => transport._[0](synclet, id));
+
   return synclet;
 }) as any;

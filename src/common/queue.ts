@@ -1,6 +1,6 @@
 import {arrayPush, arrayShift} from './array.ts';
 
-type Task = () => Promise<any>;
+export type Task = () => Promise<any>;
 
 export const getQueueFunctions = (): [
   queue: (...tasks: Task[]) => Promise<void>,

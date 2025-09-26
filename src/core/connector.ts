@@ -9,7 +9,6 @@ import type {
   Hash,
   LogLevel,
   Meta,
-  Synclet,
   Timestamp,
 } from '@synclets/@types';
 import {Tomb} from '@synclets/@types/utils';
@@ -27,8 +26,11 @@ import {
   size,
 } from '../common/other.ts';
 import {getQueueFunctions} from '../common/queue.ts';
-import {setEvery, setNew} from '../common/set.ts';
-import {ProtectedConnector} from './types.js';
+import {
+  ProtectedConnector,
+  ProtectedSynclet,
+  ProtectedTransport,
+} from './types.js';
 
 export const createConnector: typeof createConnectorDecl = async (
   depth,
@@ -51,9 +53,8 @@ export const createConnector: typeof createConnectorDecl = async (
   }
 
   let connected = false;
+  let boundSynclet: ProtectedSynclet | undefined;
   let id = options.id ?? getUniqueId();
-
-  const boundSynclets: Set<Synclet> = setNew();
 
   const logger = options.logger ?? {};
 
@@ -105,18 +106,19 @@ export const createConnector: typeof createConnectorDecl = async (
   const log = (string: string, level: LogLevel = 'info') =>
     logger?.[level]?.(`[${id}/C] ${string}`);
 
-  const bind = (synclet: Synclet, syncletId: string) => {
-    boundSynclets.add(synclet);
-    if (boundSynclets.size == 1) {
-      id = syncletId;
+  const bind = (synclet: ProtectedSynclet, syncletId: string) => {
+    if (boundSynclet) {
+      errorNew('Connector is already attached to Synclet');
     }
+    boundSynclet = synclet;
+    id = syncletId;
   };
 
   const setOrDelAtom = async (
     address: Address,
     atomOrUndefined: Atom | undefined,
     context: Context = {},
-    syncOrFromSynclet: boolean | Synclet = true,
+    syncOrFromTransport: boolean | ProtectedTransport = true,
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
@@ -154,13 +156,12 @@ export const createConnector: typeof createConnectorDecl = async (
         });
       }
     }
-    if (syncOrFromSynclet) {
-      boundSynclets.forEach((boundSynclet) => {
-        if (boundSynclet !== syncOrFromSynclet) {
-          arrayPush(tasks, () => boundSynclet.sync(address));
-        }
-      });
+    if (syncOrFromTransport === true) {
+      arrayPush(tasks, () => boundSynclet?.sync(address));
+    } else if (syncOrFromTransport) {
+      arrayPush(tasks, () => boundSynclet?._[0](address, syncOrFromTransport));
     }
+
     await queue(...tasks);
   };
 
@@ -177,13 +178,9 @@ export const createConnector: typeof createConnectorDecl = async (
 
     disconnect: async () => {
       if (connected) {
-        if (
-          setEvery(boundSynclets, (boundSynclet) => !boundSynclet.isStarted())
-        ) {
-          log('disconnect');
-          await disconnect?.();
-          connected = false;
-        }
+        log('disconnect');
+        await disconnect?.();
+        connected = false;
       }
     },
 

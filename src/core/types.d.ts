@@ -23,9 +23,18 @@ export type Message = [
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
+export interface ProtectedSynclet extends Synclet {
+  _: [
+    syncExcept: (
+      address: Address,
+      transport?: ProtectedTransport,
+    ) => Promise<void>,
+  ];
+}
+
 export interface ProtectedTransport extends Transport {
   _: [
-    bind: (synclet: Synclet, syncletId: string) => void,
+    bind: (synclet: ProtectedSynclet, syncletId: string) => void,
     connect: (receiveMessage: ReceiveMessage) => Promise<void>,
     disconnect: () => Promise<void>,
     sendMessage: (message: Message, to?: string) => Promise<void>,
@@ -35,7 +44,7 @@ export interface ProtectedTransport extends Transport {
 export interface ProtectedConnector extends Connector {
   _: [
     depth: number,
-    bind: (synclet: Synclet, syncletId: string) => void,
+    bind: (synclet: ProtectedSynclet, syncletId: string) => void,
     readAtom: (address: Address, context: Context) => Promise<Atom | undefined>,
     readTimestamp: (
       address: Address,
@@ -50,7 +59,7 @@ export interface ProtectedConnector extends Connector {
       address: Address,
       atomOrUndefined: Atom | undefined,
       context: Context,
-      syncOrFromSynclet?: boolean | Synclet,
+      syncOrFromTransport?: boolean | ProtectedTransport,
       newTimestamp?: Timestamp,
       oldTimestamp?: Timestamp,
     ) => Promise<void>,

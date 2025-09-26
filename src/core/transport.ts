@@ -1,7 +1,6 @@
 import type {
   createTransport as createTransportDecl,
   LogLevel,
-  Synclet,
   TransportImplementations,
   TransportOptions,
 } from '@synclets/@types';
@@ -10,7 +9,12 @@ import {arrayJoin, arrayMap} from '../common/array.ts';
 import {mapEnsure, mapNew} from '../common/map.ts';
 import {errorNew, promiseAll, size} from '../common/other.ts';
 import {ASTERISK, SPACE} from '../common/string.ts';
-import {Message, ProtectedTransport, ReceiveMessage} from './types.js';
+import {
+  Message,
+  ProtectedSynclet,
+  ProtectedTransport,
+  ReceiveMessage,
+} from './types.js';
 
 type Pending = [fragments: string[], due: number];
 
@@ -99,7 +103,7 @@ export const createTransport: typeof createTransportDecl = async (
   options: TransportOptions = {},
 ): Promise<ProtectedTransport> => {
   let connected = false;
-  let boundSynclet: Synclet | undefined;
+  let boundSynclet: ProtectedSynclet | undefined;
   let id = options.id ?? getUniqueId();
 
   const logger = options.logger ?? {};
@@ -110,7 +114,7 @@ export const createTransport: typeof createTransportDecl = async (
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
     getPacketFunctions(log, sendPacket, options.fragmentSize ?? 4096);
 
-  const bind = (synclet: Synclet, syncletId: string) => {
+  const bind = (synclet: ProtectedSynclet, syncletId: string) => {
     if (boundSynclet) {
       errorNew('Transport is already attached to Synclet');
     }

@@ -410,30 +410,28 @@ export const getChainedTestConnectors = async <TestConnector extends Connector>(
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
       const connector = await createConnector({logger});
-      const backwardSynclet =
-        i != 0 || loop
-          ? await createSynclet(
-              connector,
-              await createMemoryTransport({poolId: poolId + i, logger}),
-              {},
-              {id: `synclet${i}B`, logger},
-            )
-          : undefined;
-      const forwardSynclet =
-        i != number - 1 || loop
-          ? await createSynclet(
-              connector,
-              await createMemoryTransport({
-                poolId: poolId + (i == number - 1 ? 0 : i + 1),
-                logger,
-              }),
-              {},
-              {id: `synclet${i}F`, logger},
-            )
-          : undefined;
+      const transports = [];
+      if (i != 0 || loop) {
+        transports.push(
+          await createMemoryTransport({poolId: poolId + i, logger}),
+        );
+      }
+      if (i != number - 1 || loop) {
+        transports.push(
+          await createMemoryTransport({
+            poolId: poolId + (i == number - 1 ? 0 : i + 1),
+            logger,
+          }),
+        );
+      }
+      const synclet = await createSynclet(
+        connector,
+        transports,
+        {},
+        {id: 'synclet' + (i + 1), logger},
+      );
       if (start) {
-        await backwardSynclet?.start();
-        await forwardSynclet?.start();
+        await synclet.start();
       }
       return connector;
     }),

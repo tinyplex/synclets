@@ -59,6 +59,13 @@ test('error on reassigning transport', async () => {
   }).rejects.toThrow('Transport is already attached to Synclet');
 });
 
+test('error on reassigning connector', async () => {
+  await createSynclet(connector, transport, {});
+  await expect(async () => {
+    await createSynclet(connector, await createMockConnector());
+  }).rejects.toThrow('Connector is already attached to Synclet');
+});
+
 test('start & stop', async () => {
   const synclet = await createSynclet(connector, transport);
   expect(synclet.isStarted()).toBe(false);
@@ -75,14 +82,15 @@ test('start & stop', async () => {
   expect(connector.isConnected()).toBe(false);
   expect(transport.isConnected()).toBe(false);
 
-  const synclet2 = await createSynclet(connector, await createMockTransport());
-  await synclet.start();
+  const transports = [await createMockTransport(), await createMockTransport()];
+  const synclet2 = await createSynclet(await createMockConnector(), transports);
   await synclet2.start();
-  expect(connector.isConnected()).toBe(true);
-  await synclet.stop();
-  expect(connector.isConnected()).toBe(true);
+  expect(transports[0].isConnected()).toBe(true);
+  expect(transports[1].isConnected()).toBe(true);
+
   await synclet2.stop();
-  expect(connector.isConnected()).toBe(false);
+  expect(transports[0].isConnected()).toBe(false);
+  expect(transports[1].isConnected()).toBe(false);
 });
 
 describe('context', () => {

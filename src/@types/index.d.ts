@@ -57,7 +57,7 @@ export type SyncletOptions = {
 
 export function createSynclet(
   connector: Connector,
-  transport: Transport,
+  transport: Transport | Transport[],
   implementations?: SyncletImplementations,
   options?: SyncletOptions,
 ): Promise<Synclet>;
