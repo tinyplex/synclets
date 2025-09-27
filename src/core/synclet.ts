@@ -1,9 +1,12 @@
 import {
   Address,
+  Atom,
   Context,
   createSynclet as createSyncletDecl,
+  Data,
   Hash,
   LogLevel,
+  Meta,
   ProtocolNode,
   ProtocolSubNodes,
   SyncletImplementations,
@@ -19,9 +22,12 @@ import {
   arrayPush,
   isArray,
 } from '../common/array.ts';
+import {combineHash, getHash} from '../common/codec.ts';
+import {getHlcFunctions} from '../common/hlc.ts';
 import {objKeys, objNotEmpty, objToArray} from '../common/object.ts';
 import {
   ifNotUndefined,
+  isEmpty,
   isUndefined,
   promiseAll,
   size,
@@ -53,14 +59,18 @@ export const createSynclet: typeof createSyncletDecl = (async (
   {
     connect: connectorConnect,
     disconnect: connectorDisconnect,
+    isConnected: connectorIsConnected,
     _: [
       connectorDepth,
       connectorBind,
       connectorReadAtom,
       connectorReadTimestamp,
       connectorReadHash,
+      connectorWriteAtom,
+      connectorWriteTimestamp,
+      connectorWriteHash,
+      connectorRemoveAtom,
       connectorReadChildIds,
-      connectorSetOrDelAtom,
     ],
   }: ProtectedConnector,
   transport: ProtectedTransport | ProtectedTransport[],
@@ -79,6 +89,106 @@ export const createSynclet: typeof createSyncletDecl = (async (
   };
 
   const transports = isArray(transport) ? transport : [transport];
+
+  const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id);
+
+  const setOrDelAtom = async (
+    address: Address,
+    atomOrUndefined: Atom | undefined,
+    context: Context = {},
+    syncOrFromTransport: boolean | ProtectedTransport = true,
+    newTimestamp?: Timestamp,
+    oldTimestamp?: Timestamp,
+  ) => {
+    if (!connectorIsConnected()) {
+      return;
+    }
+    if (isUndefined(newTimestamp)) {
+      newTimestamp = getNextTimestamp();
+    } else {
+      seenTimestamp(newTimestamp);
+    }
+    if (isUndefined(oldTimestamp)) {
+      oldTimestamp = await connectorReadTimestamp(address, context);
+    }
+    const tasks = [
+      isUndefined(atomOrUndefined)
+        ? () => connectorRemoveAtom(address, context)
+        : () => connectorWriteAtom(address, atomOrUndefined, context),
+      () => connectorWriteTimestamp(address, newTimestamp, context),
+    ];
+    if (!isEmpty(address)) {
+      const hashChange = combineHash(
+        getHash(oldTimestamp),
+        getHash(newTimestamp),
+      );
+      let parentAddress = [...address];
+      while (!isEmpty(parentAddress)) {
+        const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
+        arrayPush(tasks, async () => {
+          await connectorWriteHash(
+            queuedAddress,
+            combineHash(
+              await connectorReadHash(queuedAddress, context),
+              hashChange,
+            ),
+            context,
+          );
+        });
+      }
+    }
+    if (syncOrFromTransport) {
+      arrayPush(tasks, () => syncExcept(address, syncOrFromTransport));
+    }
+
+    await queue(...tasks);
+  };
+
+  const getData = async (address: Address): Promise<Data | undefined> => {
+    const data = {} as {[id: string]: Data | Atom};
+    await promiseAll(
+      arrayMap(
+        (await connectorReadChildIds(address, {})) ?? [],
+        async (childId) =>
+          ifNotUndefined(
+            await (
+              size(address) == connectorDepth - 1 ? connectorReadAtom : getData
+            )([...address, childId], {}),
+            (childData) => {
+              data[childId] = childData;
+            },
+          ),
+      ),
+    );
+    return objNotEmpty(data) ? data : (undefined as any);
+  };
+
+  const getMeta = async (
+    address: Address,
+  ): Promise<Meta | Timestamp | undefined> => {
+    const meta = [await connectorReadHash(address, {}), {}] as [
+      Hash,
+      {[id: string]: Meta | Timestamp},
+    ];
+    await promiseAll(
+      arrayMap(
+        (await connectorReadChildIds(address, {})) ?? [],
+        async (childId) => {
+          ifNotUndefined(
+            await (
+              size(address) == connectorDepth - 1
+                ? connectorReadTimestamp
+                : getMeta
+            )([...address, childId], {}),
+            (childData) => {
+              meta[1][childId] = childData;
+            },
+          );
+        },
+      ),
+    );
+    return !isUndefined(meta[0]) ? meta : undefined;
+  };
 
   const readHashOrTimestamp = async (address: Address, context: Context) =>
     size(address) < connectorDepth
@@ -126,7 +236,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const syncExcept = async (
     address: Address,
-    exceptTransport?: ProtectedTransport,
+    exceptTransport?: ProtectedTransport | boolean,
   ) => {
     if (started) {
       log(`sync ` + address);
@@ -248,7 +358,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
         (await connectorReadTimestamp(address, context)) ?? EMPTY_STRING;
       const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
       if (otherTimestamp > myTimestamp) {
-        await connectorSetOrDelAtom(
+        await setOrDelAtom(
           address,
           otherAtom,
           context,
@@ -359,6 +469,20 @@ export const createSynclet: typeof createSyncletDecl = (async (
     isStarted: () => started,
 
     sync,
+
+    setAtom: (
+      address: Address,
+      atom: Atom,
+      context?: Context,
+      sync?: boolean,
+    ) => setOrDelAtom(address, atom, context, sync),
+
+    delAtom: (address: Address, context?: Context, sync?: boolean) =>
+      setOrDelAtom(address, undefined, context, sync),
+
+    getData: async () => ((await getData([])) ?? {}) as Data,
+
+    getMeta: async () => (await getMeta([])) as Meta,
 
     _: [syncExcept],
   };

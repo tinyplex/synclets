@@ -51,17 +51,25 @@ export interface ProtectedConnector extends Connector {
       context: Context,
     ) => Promise<Timestamp | undefined>,
     readHash: (address: Address, context: Context) => Promise<Hash | undefined>,
+    writeAtom: (
+      address: Address,
+      atom: Atom,
+      context: Context,
+    ) => Promise<void>,
+    writeTimestamp: (
+      address: Address,
+      timestamp: Timestamp,
+      context: Context,
+    ) => Promise<void>,
+    writeHash: (
+      address: Address,
+      hash: Hash,
+      context: Context,
+    ) => Promise<void>,
+    removeAtom: (address: Address, context: Context) => Promise<void>,
     readChildIds: (
       address: Address,
       context: Context,
     ) => Promise<string[] | undefined>,
-    setOrDelAtom: (
-      address: Address,
-      atomOrUndefined: Atom | undefined,
-      context: Context,
-      syncOrFromTransport?: boolean | ProtectedTransport,
-      newTimestamp?: Timestamp,
-      oldTimestamp?: Timestamp,
-    ) => Promise<void>,
   ];
 }

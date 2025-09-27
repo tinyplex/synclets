@@ -43,6 +43,15 @@ export interface Synclet {
   stop(): Promise<void>;
   isStarted(): boolean;
   sync(address: Address): Promise<void>;
+  setAtom(
+    address: Address,
+    atom: Atom,
+    context?: Context,
+    sync?: boolean,
+  ): Promise<void>;
+  delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
+  getData(): Promise<Data>;
+  getMeta(): Promise<Meta>;
 }
 
 export type SyncletImplementations = {
@@ -69,15 +78,6 @@ export interface Connector {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
-  setAtom(
-    address: Address,
-    atom: Atom,
-    context?: Context,
-    sync?: boolean,
-  ): Promise<void>;
-  delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
-  getData(): Promise<Data>;
-  getMeta(): Promise<Meta>;
 }
 
 export type ConnectorImplementations = {
