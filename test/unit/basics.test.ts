@@ -1,31 +1,9 @@
-import {
-  Connector,
-  createConnector,
-  createSynclet,
-  createTransport,
-  Transport,
-} from 'synclets';
+import {Connector, createSynclet, Transport} from 'synclets';
 import {createMemoryTransport} from 'synclets/transport/memory';
+import {createMockConnector, createMockTransport} from './common.ts';
 
 let connector: Connector;
 let transport: Transport;
-
-const createMockConnector = () =>
-  createConnector(1, {
-    readAtom: async () => 0,
-    readTimestamp: async () => '',
-    readHash: async () => 0,
-    writeAtom: async () => {},
-    writeTimestamp: async () => {},
-    writeHash: async () => {},
-    removeAtom: async () => {},
-    readChildIds: async () => [],
-  });
-
-const createMockTransport = () =>
-  createTransport({
-    sendPacket: async () => {},
-  });
 
 beforeEach(async () => {
   connector = await createMockConnector();

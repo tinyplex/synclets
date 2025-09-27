@@ -1,7 +1,7 @@
 import {mkdtemp, rm} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join, sep} from 'path';
-import {Connector, ConnectorOptions} from 'synclets';
+import {ConnectorOptions, Synclet} from 'synclets';
 import {createFileConnector} from 'synclets/connector/fs';
 import {getUniqueId} from 'synclets/utils';
 import {describeConnectorTests} from '../common.ts';
@@ -24,7 +24,7 @@ describeConnectorTests(
   'file',
   (depth: number, options: ConnectorOptions, {file}: {file: string}) =>
     createFileConnector(depth, join(file, getUniqueId()), options),
-  async (connector: Connector) => connector.getMeta(),
+  (synclet: Synclet) => synclet.getMeta(),
   async () => ({file: await mkdtemp(tmpdir() + sep)}),
   async ({file}: {file: string}) =>
     await rm(file, {recursive: true, force: true}),

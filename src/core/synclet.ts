@@ -56,23 +56,7 @@ import {
 const VERSION = 1;
 
 export const createSynclet: typeof createSyncletDecl = (async (
-  {
-    connect: connectorConnect,
-    disconnect: connectorDisconnect,
-    isConnected: connectorIsConnected,
-    _: [
-      connectorDepth,
-      connectorBind,
-      connectorReadAtom,
-      connectorReadTimestamp,
-      connectorReadHash,
-      connectorWriteAtom,
-      connectorWriteTimestamp,
-      connectorWriteHash,
-      connectorRemoveAtom,
-      connectorReadChildIds,
-    ],
-  }: ProtectedConnector,
+  connector: ProtectedConnector,
   transport: ProtectedTransport | ProtectedTransport[],
   {canReceiveMessage, getSendContext}: SyncletImplementations = {},
   options: SyncletOptions = {},
@@ -88,6 +72,19 @@ export const createSynclet: typeof createSyncletDecl = (async (
     }
   };
 
+  const [
+    connectorDepth,
+    connectorBind,
+    connectorReadAtom,
+    connectorReadTimestamp,
+    connectorReadHash,
+    connectorWriteAtom,
+    connectorWriteTimestamp,
+    connectorWriteHash,
+    connectorRemoveAtom,
+    connectorReadChildIds,
+  ] = connector._;
+
   const transports = isArray(transport) ? transport : [transport];
 
   const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id);
@@ -100,7 +97,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
-    if (!connectorIsConnected()) {
+    if (!connector.isConnected()) {
       return;
     }
     if (isUndefined(newTimestamp)) {
@@ -444,7 +441,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     start: async () => {
       if (!started) {
         log('start');
-        await connectorConnect();
+        await connector.connect();
         await promiseAll(
           arrayMap(transports, (transport) =>
             transport._[1]((message: Message, from: string) =>
@@ -461,7 +458,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       if (started) {
         log('stop');
         started = false;
-        await connectorDisconnect();
+        await connector.disconnect();
         await promiseAll(arrayMap(transports, (transport) => transport._[2]()));
       }
     },
@@ -469,6 +466,10 @@ export const createSynclet: typeof createSyncletDecl = (async (
     isStarted: () => started,
 
     sync,
+
+    getConnector: () => connector,
+
+    getTransports: () => [...transports],
 
     setAtom: (
       address: Address,

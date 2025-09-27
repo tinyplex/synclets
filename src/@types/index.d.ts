@@ -42,6 +42,8 @@ export interface Synclet {
   start(): Promise<void>;
   stop(): Promise<void>;
   isStarted(): boolean;
+  getConnector(): Connector;
+  getTransports(): Transport[];
   sync(address: Address): Promise<void>;
   setAtom(
     address: Address,
