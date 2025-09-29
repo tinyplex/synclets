@@ -451,18 +451,14 @@ export const createPooledTestSyncletsAndConnectors = async <
   const poolId = getUniqueId();
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
-      const logger = log ? console : undefined;
       const dataConnector = await createDataConnector();
       const metaConnector = await createMetaConnector();
-      const transport = await createMemoryTransport({poolId, logger});
+      const transport = await createMemoryTransport({poolId});
       const synclet = await createSynclet(
         dataConnector,
         metaConnector,
         transport,
-        {
-          id: 'synclet' + (i + 1),
-          logger,
-        },
+        {id: 'synclet' + (i + 1), logger: log ? console : undefined},
       );
       if (start) {
         await synclet.start();
@@ -486,7 +482,6 @@ export const createChainedTestSynclets = async <TestSynclet extends Synclet>(
   start = true,
   log = false,
 ): Promise<TestSynclet[]> => {
-  const logger = log ? console : undefined;
   const poolId = getUniqueId();
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
@@ -494,15 +489,12 @@ export const createChainedTestSynclets = async <TestSynclet extends Synclet>(
       const metaConnector = await createMetaConnector();
       const transports = [];
       if (i != 0 || loop) {
-        transports.push(
-          await createMemoryTransport({poolId: poolId + i, logger}),
-        );
+        transports.push(await createMemoryTransport({poolId: poolId + i}));
       }
       if (i != number - 1 || loop) {
         transports.push(
           await createMemoryTransport({
             poolId: poolId + (i == number - 1 ? 0 : i + 1),
-            logger,
           }),
         );
       }
@@ -510,10 +502,7 @@ export const createChainedTestSynclets = async <TestSynclet extends Synclet>(
         dataConnector,
         metaConnector,
         transports,
-        {
-          id: 'synclet' + (i + 1),
-          logger,
-        },
+        {id: 'synclet' + (i + 1), logger: log ? console : undefined},
       );
       if (start) {
         await synclet.start();

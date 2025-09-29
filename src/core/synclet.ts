@@ -504,9 +504,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
     _: [syncExcept],
   };
 
-  dataBind(synclet, id);
-  metaBind(synclet, id);
-  arrayForEach(transports, (transport) => transport._[0](synclet, id));
+  dataBind(synclet);
+  metaBind(synclet);
+  arrayForEach(transports, (transport) => transport._[0](synclet));
 
   return synclet;
 }) as any;

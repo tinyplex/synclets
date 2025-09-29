@@ -146,7 +146,6 @@ export function createMetaConnector(
 // --
 
 export interface Transport {
-  log(message: string, level?: LogLevel): void;
   isConnected(): boolean;
 }
 
@@ -157,8 +156,6 @@ export type TransportImplementations = {
 };
 
 export type TransportOptions = {
-  id?: string;
-  logger?: Logger;
   fragmentSize?: number;
 };
 

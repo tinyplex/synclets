@@ -37,7 +37,7 @@ export interface ProtectedSynclet extends Synclet {
 
 export interface ProtectedTransport extends Transport {
   _: [
-    bind: (synclet: ProtectedSynclet, syncletId: string) => void,
+    bind: (synclet: ProtectedSynclet) => void,
     connect: (receiveMessage: ReceiveMessage) => Promise<void>,
     disconnect: () => Promise<void>,
     sendMessage: (message: Message, to?: string) => Promise<void>,
@@ -47,7 +47,7 @@ export interface ProtectedTransport extends Transport {
 export interface ProtectedDataConnector extends DataConnector {
   _: [
     depth: number,
-    bind: (synclet: ProtectedSynclet, syncletId: string) => void,
+    bind: (synclet: ProtectedSynclet) => void,
     readAtom: (address: Address, context: Context) => Promise<Atom | undefined>,
     writeAtom: (
       address: Address,
@@ -66,7 +66,7 @@ export interface ProtectedDataConnector extends DataConnector {
 export interface ProtectedMetaConnector extends MetaConnector {
   _: [
     depth: number,
-    bind: (synclet: ProtectedSynclet, syncletId: string) => void,
+    bind: (synclet: ProtectedSynclet) => void,
     readTimestamp: (
       address: Address,
       context: Context,
