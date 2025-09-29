@@ -1,9 +1,10 @@
 import type {
   Address,
   Atom,
-  Connector,
   Context,
+  DataConnector,
   Hash,
+  MetaConnector,
   ProtocolNode,
   Synclet,
   Timestamp,
@@ -41,21 +42,33 @@ export interface ProtectedTransport extends Transport {
   ];
 }
 
-export interface ProtectedConnector extends Connector {
+export interface ProtectedDataConnector extends DataConnector {
   _: [
     depth: number,
     bind: (synclet: ProtectedSynclet, syncletId: string) => void,
     readAtom: (address: Address, context: Context) => Promise<Atom | undefined>,
-    readTimestamp: (
-      address: Address,
-      context: Context,
-    ) => Promise<Timestamp | undefined>,
-    readHash: (address: Address, context: Context) => Promise<Hash | undefined>,
     writeAtom: (
       address: Address,
       atom: Atom,
       context: Context,
     ) => Promise<void>,
+    removeAtom: (address: Address, context: Context) => Promise<void>,
+    readChildIds: (
+      address: Address,
+      context: Context,
+    ) => Promise<string[] | undefined>,
+  ];
+}
+
+export interface ProtectedMetaConnector extends MetaConnector {
+  _: [
+    depth: number,
+    bind: (synclet: ProtectedSynclet, syncletId: string) => void,
+    readTimestamp: (
+      address: Address,
+      context: Context,
+    ) => Promise<Timestamp | undefined>,
+    readHash: (address: Address, context: Context) => Promise<Hash | undefined>,
     writeTimestamp: (
       address: Address,
       timestamp: Timestamp,
@@ -66,7 +79,6 @@ export interface ProtectedConnector extends Connector {
       hash: Hash,
       context: Context,
     ) => Promise<void>,
-    removeAtom: (address: Address, context: Context) => Promise<void>,
     readChildIds: (
       address: Address,
       context: Context,

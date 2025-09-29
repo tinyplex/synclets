@@ -1,10 +1,15 @@
 import {ConnectorOptions, Synclet} from 'synclets';
-import {createMemoryConnector} from 'synclets/connector/memory';
+import {
+  createMemoryDataConnector,
+  createMemoryMetaConnector,
+} from 'synclets/connector/memory';
 import {describeConnectorTests} from '../common.ts';
 
 describeConnectorTests(
   'memory',
   (depth: number, options: ConnectorOptions) =>
-    createMemoryConnector(depth, options),
+    createMemoryDataConnector(depth, options),
+  (depth: number, options: ConnectorOptions) =>
+    createMemoryMetaConnector(depth, options),
   (synclet: Synclet) => synclet.getMeta(),
 );

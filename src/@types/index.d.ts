@@ -42,8 +42,9 @@ export interface Synclet {
   start(): Promise<void>;
   stop(): Promise<void>;
   isStarted(): boolean;
-  getConnector(): Connector;
-  getTransports(): Transport[];
+  getDataConnector(): DataConnector;
+  getMetaConnector(): MetaConnector;
+  getTransport(): Transport[];
   sync(address: Address): Promise<void>;
   setAtom(
     address: Address,
@@ -67,7 +68,8 @@ export type SyncletOptions = {
 };
 
 export function createSynclet(
-  connector: Connector,
+  dataConnector: DataConnector,
+  metaConnector: MetaConnector,
   transport: Transport | Transport[],
   implementations?: SyncletImplementations,
   options?: SyncletOptions,
@@ -75,46 +77,74 @@ export function createSynclet(
 
 // --
 
-export interface Connector {
+export type ConnectorOptions = {
+  id?: string;
+  logger?: Logger;
+};
+
+// --
+
+export interface DataConnector {
   log(message: string, level?: LogLevel): void;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
 }
 
-export type ConnectorImplementations = {
+export type DataConnectorImplementations = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
   readAtom: (address: Address, context: Context) => Promise<Atom | undefined>;
+  writeAtom: (address: Address, atom: Atom, context: Context) => Promise<void>;
+  removeAtom: (address: Address, context: Context) => Promise<void>;
+  readChildIds: (
+    address: Address,
+    context: Context,
+  ) => Promise<string[] | undefined>;
+  getData?: () => Promise<Data>;
+};
+
+export function createDataConnector(
+  depth: number,
+  implementations: DataConnectorImplementations,
+  options?: ConnectorOptions,
+): Promise<DataConnector>;
+
+// --
+
+export interface MetaConnector {
+  log(message: string, level?: LogLevel): void;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  isConnected(): boolean;
+}
+
+export type MetaConnectorImplementations = {
+  connect?: () => Promise<void>;
+  disconnect?: () => Promise<void>;
   readTimestamp: (
     address: Address,
     context: Context,
   ) => Promise<Timestamp | undefined>;
   readHash: (address: Address, context: Context) => Promise<Hash | undefined>;
-  writeAtom: (address: Address, atom: Atom, context: Context) => Promise<void>;
   writeTimestamp: (
     address: Address,
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
   writeHash: (address: Address, hash: Hash, context: Context) => Promise<void>;
-  removeAtom: (address: Address, context: Context) => Promise<void>;
   readChildIds: (
     address: Address,
     context: Context,
   ) => Promise<string[] | undefined>;
+  getMeta?: () => Promise<Meta>;
 };
 
-export type ConnectorOptions = {
-  id?: string;
-  logger?: Logger;
-};
-
-export function createConnector(
+export function createMetaConnector(
   depth: number,
-  implementations: ConnectorImplementations,
+  implementations: MetaConnectorImplementations,
   options?: ConnectorOptions,
-): Promise<Connector>;
+): Promise<MetaConnector>;
 
 // --
 

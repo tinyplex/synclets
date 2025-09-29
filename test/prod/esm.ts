@@ -1,6 +1,12 @@
-import {createConnector, createSynclet, createTransport} from 'synclets';
+import {
+  createDataConnector,
+  createMetaConnector,
+  createSynclet,
+  createTransport,
+} from 'synclets';
 
-const connector = await createConnector(1, {} as any);
+const dataConnector = await createDataConnector(1, {} as any);
+const metaConnector = await createMetaConnector(1, {} as any);
 const transport = await createTransport({} as any);
 
-await createSynclet(connector, transport);
+await createSynclet(dataConnector, metaConnector, transport);

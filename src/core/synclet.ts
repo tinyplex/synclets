@@ -26,6 +26,7 @@ import {combineHash, getHash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
 import {objKeys, objNotEmpty, objToArray} from '../common/object.ts';
 import {
+  errorNew,
   ifNotUndefined,
   isEmpty,
   isUndefined,
@@ -48,7 +49,8 @@ import {
 } from '../common/types.ts';
 import {
   Message,
-  ProtectedConnector,
+  ProtectedDataConnector,
+  ProtectedMetaConnector,
   ProtectedSynclet,
   ProtectedTransport,
 } from './types.js';
@@ -56,11 +58,34 @@ import {
 const VERSION = 1;
 
 export const createSynclet: typeof createSyncletDecl = (async (
-  connector: ProtectedConnector,
+  dataConnector: ProtectedDataConnector,
+  metaConnector: ProtectedMetaConnector,
   transport: ProtectedTransport | ProtectedTransport[],
   {canReceiveMessage, getSendContext}: SyncletImplementations = {},
   options: SyncletOptions = {},
 ): Promise<ProtectedSynclet> => {
+  const [
+    dataDepth,
+    dataBind,
+    dataReadAtom,
+    dataWriteAtom,
+    dataRemoveAtom,
+    dataReadChildIds,
+  ] = dataConnector._;
+  const [
+    metaDepth,
+    metaBind,
+    metaReadTimestamp,
+    metaReadHash,
+    metaWriteTimestamp,
+    metaWriteHash,
+    metaReadChildIds,
+  ] = metaConnector._;
+
+  if (dataDepth < 1 || metaDepth < 1 || dataDepth != metaDepth) {
+    errorNew('depths must be positive and equal');
+  }
+
   let started = false;
   const id = options.id ?? getUniqueId();
   const logger = options.logger ?? {};
@@ -71,19 +96,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
       await queue(actions);
     }
   };
-
-  const [
-    connectorDepth,
-    connectorBind,
-    connectorReadAtom,
-    connectorReadTimestamp,
-    connectorReadHash,
-    connectorWriteAtom,
-    connectorWriteTimestamp,
-    connectorWriteHash,
-    connectorRemoveAtom,
-    connectorReadChildIds,
-  ] = connector._;
 
   const transports = isArray(transport) ? transport : [transport];
 
@@ -97,7 +109,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
-    if (!connector.isConnected()) {
+    if (!dataConnector.isConnected()) {
       return;
     }
     if (isUndefined(newTimestamp)) {
@@ -106,13 +118,13 @@ export const createSynclet: typeof createSyncletDecl = (async (
       seenTimestamp(newTimestamp);
     }
     if (isUndefined(oldTimestamp)) {
-      oldTimestamp = await connectorReadTimestamp(address, context);
+      oldTimestamp = await metaReadTimestamp(address, context);
     }
     const tasks = [
       isUndefined(atomOrUndefined)
-        ? () => connectorRemoveAtom(address, context)
-        : () => connectorWriteAtom(address, atomOrUndefined, context),
-      () => connectorWriteTimestamp(address, newTimestamp, context),
+        ? () => dataRemoveAtom(address, context)
+        : () => dataWriteAtom(address, atomOrUndefined, context),
+      () => metaWriteTimestamp(address, newTimestamp, context),
     ];
     if (!isEmpty(address)) {
       const hashChange = combineHash(
@@ -123,12 +135,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
       while (!isEmpty(parentAddress)) {
         const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
         arrayPush(tasks, async () => {
-          await connectorWriteHash(
+          await metaWriteHash(
             queuedAddress,
-            combineHash(
-              await connectorReadHash(queuedAddress, context),
-              hashChange,
-            ),
+            combineHash(await metaReadHash(queuedAddress, context), hashChange),
             context,
           );
         });
@@ -144,17 +153,16 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const getData = async (address: Address): Promise<Data | undefined> => {
     const data = {} as {[id: string]: Data | Atom};
     await promiseAll(
-      arrayMap(
-        (await connectorReadChildIds(address, {})) ?? [],
-        async (childId) =>
-          ifNotUndefined(
-            await (
-              size(address) == connectorDepth - 1 ? connectorReadAtom : getData
-            )([...address, childId], {}),
-            (childData) => {
-              data[childId] = childData;
-            },
+      arrayMap((await dataReadChildIds(address, {})) ?? [], async (childId) =>
+        ifNotUndefined(
+          await (size(address) == dataDepth - 1 ? dataReadAtom : getData)(
+            [...address, childId],
+            {},
           ),
+          (childData) => {
+            data[childId] = childData;
+          },
+        ),
       ),
     );
     return objNotEmpty(data) ? data : (undefined as any);
@@ -163,45 +171,41 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const getMeta = async (
     address: Address,
   ): Promise<Meta | Timestamp | undefined> => {
-    const meta = [await connectorReadHash(address, {}), {}] as [
+    const meta = [await metaReadHash(address, {}), {}] as [
       Hash,
       {[id: string]: Meta | Timestamp},
     ];
     await promiseAll(
-      arrayMap(
-        (await connectorReadChildIds(address, {})) ?? [],
-        async (childId) => {
-          ifNotUndefined(
-            await (
-              size(address) == connectorDepth - 1
-                ? connectorReadTimestamp
-                : getMeta
-            )([...address, childId], {}),
-            (childData) => {
-              meta[1][childId] = childData;
-            },
-          );
-        },
-      ),
+      arrayMap((await metaReadChildIds(address, {})) ?? [], async (childId) => {
+        ifNotUndefined(
+          await (size(address) == dataDepth - 1 ? metaReadTimestamp : getMeta)(
+            [...address, childId],
+            {},
+          ),
+          (childData) => {
+            meta[1][childId] = childData;
+          },
+        );
+      }),
     );
     return !isUndefined(meta[0]) ? meta : undefined;
   };
 
   const readHashOrTimestamp = async (address: Address, context: Context) =>
-    size(address) < connectorDepth
-      ? ((await connectorReadHash(address, context)) ?? 0)
-      : ((await connectorReadTimestamp(address, context)) ?? EMPTY_STRING);
+    size(address) < dataDepth
+      ? ((await metaReadHash(address, context)) ?? 0)
+      : ((await metaReadTimestamp(address, context)) ?? EMPTY_STRING);
 
   const readFullNodesOrAtomAndTimestamp = async (
     address: Address,
     context: Context,
   ): Promise<ProtocolSubNodes | TimestampAndAtom | undefined> => {
-    if (size(address) < connectorDepth) {
+    if (size(address) < dataDepth) {
       return await readFullNodes(address, context);
     }
-    const timestamp = await connectorReadTimestamp(address, context);
+    const timestamp = await metaReadTimestamp(address, context);
     if (!isUndefined(timestamp)) {
-      return [timestamp, await connectorReadAtom(address, context)];
+      return [timestamp, await dataReadAtom(address, context)];
     }
   };
 
@@ -214,7 +218,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     await promiseAll(
       arrayMap(
         arrayDifference(
-          (await connectorReadChildIds(address, context)) ?? [],
+          (await metaReadChildIds(address, context)) ?? [],
           except,
         ),
         async (id) =>
@@ -261,7 +265,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       [
         VERSION,
         0,
-        connectorDepth,
+        dataDepth,
         address,
         node,
         (await getSendContext?.(receivedContext)) ?? {},
@@ -286,7 +290,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       if (type != 0) {
         return log(INVALID + 'type: ' + type, WARN);
       }
-      if (depth != connectorDepth) {
+      if (depth != dataDepth) {
         return log(INVALID + 'depth: ' + depth, WARN);
       }
       if (
@@ -331,13 +335,13 @@ export const createSynclet: typeof createSyncletDecl = (async (
     otherTimestamp: Timestamp,
     context: Context,
   ): Promise<ProtocolNode | undefined> => {
-    if (size(address) == connectorDepth) {
+    if (size(address) == dataDepth) {
       const myTimestamp =
-        (await connectorReadTimestamp(address, context)) ?? EMPTY_STRING;
+        (await metaReadTimestamp(address, context)) ?? EMPTY_STRING;
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
-        return [myTimestamp, await connectorReadAtom(address, context)];
+        return [myTimestamp, await dataReadAtom(address, context)];
       }
     } else {
       log(INVALID_NODE + ' Timestamp vs SubNodes: ' + address, WARN);
@@ -350,9 +354,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
     otherTimestampAndAtom: TimestampAndAtom,
     context: Context,
   ): Promise<ProtocolNode | undefined> => {
-    if (size(address) == connectorDepth) {
+    if (size(address) == dataDepth) {
       const myTimestamp =
-        (await connectorReadTimestamp(address, context)) ?? EMPTY_STRING;
+        (await metaReadTimestamp(address, context)) ?? EMPTY_STRING;
       const [otherTimestamp, otherAtom] = otherTimestampAndAtom;
       if (otherTimestamp > myTimestamp) {
         await setOrDelAtom(
@@ -364,7 +368,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
           myTimestamp,
         );
       } else if (otherTimestamp < myTimestamp) {
-        return [myTimestamp, await connectorReadAtom(address, context)];
+        return [myTimestamp, await dataReadAtom(address, context)];
       }
     } else {
       log(INVALID_NODE + ' TimestampAtom vs SubNodes: ' + address, WARN);
@@ -377,12 +381,12 @@ export const createSynclet: typeof createSyncletDecl = (async (
     otherHash: Hash,
     context: Context,
   ): Promise<ProtocolNode | undefined> => {
-    if (size(address) < connectorDepth) {
-      if (otherHash !== (await connectorReadHash(address, context))) {
+    if (size(address) < dataDepth) {
+      if (otherHash !== (await metaReadHash(address, context))) {
         const subNodeObj: {[id: string]: ProtocolNode} = {};
         await promiseAll(
           arrayMap(
-            (await connectorReadChildIds(address, context)) ?? [],
+            (await metaReadChildIds(address, context)) ?? [],
             async (id) => {
               subNodeObj[id] = await readHashOrTimestamp(
                 [...address, id],
@@ -404,7 +408,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     [otherSubNodeObj, partial]: ProtocolSubNodes,
     context: Context,
   ): Promise<ProtocolNode | undefined> => {
-    if (size(address) < connectorDepth) {
+    if (size(address) < dataDepth) {
       const mySubNodes: ProtocolSubNodes = partial
         ? [{}]
         : await readFullNodes(address, context, objKeys(otherSubNodeObj));
@@ -441,7 +445,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
     start: async () => {
       if (!started) {
         log('start');
-        await connector.connect();
+        await dataConnector.connect();
+        await metaConnector.connect();
         await promiseAll(
           arrayMap(transports, (transport) =>
             transport._[1]((message: Message, from: string) =>
@@ -458,7 +463,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
       if (started) {
         log('stop');
         started = false;
-        await connector.disconnect();
+        await dataConnector.disconnect();
+        await metaConnector.disconnect();
         await promiseAll(arrayMap(transports, (transport) => transport._[2]()));
       }
     },
@@ -467,9 +473,11 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
     sync,
 
-    getConnector: () => connector,
+    getDataConnector: () => dataConnector,
 
-    getTransports: () => [...transports],
+    getMetaConnector: () => metaConnector,
+
+    getTransport: () => [...transports],
 
     setAtom: (
       address: Address,
@@ -488,7 +496,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
     _: [syncExcept],
   };
 
-  connectorBind(synclet, id);
+  dataBind(synclet, id);
+  metaBind(synclet, id);
   arrayForEach(transports, (transport) => transport._[0](synclet, id));
 
   return synclet;

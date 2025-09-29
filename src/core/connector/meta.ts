@@ -1,33 +1,26 @@
 import type {
-  ConnectorImplementations,
   ConnectorOptions,
-  createConnector as createConnectorDecl,
+  createMetaConnector as createMetaConnectorDecl,
   LogLevel,
+  MetaConnectorImplementations,
 } from '@synclets/@types';
 import {getUniqueId} from '@synclets/utils';
-import {errorNew} from '../common/other.ts';
-import {ProtectedConnector, ProtectedSynclet} from './types.js';
+import {errorNew} from '../../common/other.ts';
+import {ProtectedMetaConnector, ProtectedSynclet} from '../types.js';
 
-export const createConnector: typeof createConnectorDecl = async (
+export const createMetaConnector: typeof createMetaConnectorDecl = async (
   depth,
   {
     connect,
     disconnect,
-    readAtom,
     readTimestamp,
     readHash,
-    writeAtom,
     writeTimestamp,
     writeHash,
-    removeAtom,
     readChildIds,
-  }: ConnectorImplementations,
+  }: MetaConnectorImplementations,
   options: ConnectorOptions = {},
-): Promise<ProtectedConnector> => {
-  if (depth < 1) {
-    errorNew('depth must be positive');
-  }
-
+): Promise<ProtectedMetaConnector> => {
   let connected = false;
   let boundSynclet: ProtectedSynclet | undefined;
   let id = options.id ?? getUniqueId();
@@ -35,11 +28,11 @@ export const createConnector: typeof createConnectorDecl = async (
   const logger = options.logger ?? {};
 
   const log = (string: string, level: LogLevel = 'info') =>
-    logger?.[level]?.(`[${id}/C] ${string}`);
+    logger?.[level]?.(`[${id}/MC] ${string}`);
 
   const bind = (synclet: ProtectedSynclet, syncletId: string) => {
     if (boundSynclet) {
-      errorNew('Connector is already attached to Synclet');
+      errorNew('Meta connector is already attached to Synclet');
     }
     boundSynclet = synclet;
     id = syncletId;
@@ -69,13 +62,10 @@ export const createConnector: typeof createConnectorDecl = async (
     _: [
       depth,
       bind,
-      readAtom,
       readTimestamp,
       readHash,
-      writeAtom,
       writeTimestamp,
       writeHash,
-      removeAtom,
       readChildIds,
     ],
   };

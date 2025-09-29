@@ -1,25 +1,27 @@
 /// connector/fs
 
-import type {Connector, ConnectorOptions} from '../../index.d.ts';
+import type {
+  ConnectorOptions,
+  DataConnector,
+  MetaConnector,
+} from '../../index.d.ts';
 
-export interface DirectoryConnector extends Connector {
-  getDirectory(): string;
-}
-
-export function createDirectoryConnector(
-  depth: number,
-  directory: string,
-  options?: ConnectorOptions,
-): Promise<DirectoryConnector>;
-
-// --
-
-export interface FileConnector extends Connector {
+export interface FileDataConnector extends DataConnector {
   getFile(): string;
 }
 
-export function createFileConnector(
+export function createFileDataConnector(
   depth: number,
   file: string,
   options?: ConnectorOptions,
-): Promise<FileConnector>;
+): Promise<FileDataConnector>;
+
+export interface FileMetaConnector extends MetaConnector {
+  getFile(): string;
+}
+
+export function createFileMetaConnector(
+  depth: number,
+  file: string,
+  options?: ConnectorOptions,
+): Promise<FileMetaConnector>;

@@ -1,8 +1,17 @@
 /// connector/memory
 
-import type {Connector, ConnectorOptions} from '../../index.d.ts';
+import type {
+  ConnectorOptions,
+  DataConnector,
+  MetaConnector,
+} from '../../index.d.ts';
 
-export function createMemoryConnector(
+export function createMemoryDataConnector(
   depth: number,
   options?: ConnectorOptions,
-): Promise<Connector>;
+): Promise<DataConnector>;
+
+export function createMemoryMetaConnector(
+  depth: number,
+  options?: ConnectorOptions,
+): Promise<MetaConnector>;
