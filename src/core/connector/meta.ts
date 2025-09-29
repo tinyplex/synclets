@@ -18,6 +18,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
     writeTimestamp,
     writeHash,
     readChildIds,
+    getMeta,
   }: MetaConnectorImplementations,
   options: ConnectorOptions = {},
 ): Promise<ProtectedMetaConnector> => {
@@ -67,6 +68,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
       writeTimestamp,
       writeHash,
       readChildIds,
+      getMeta,
     ],
   };
 };

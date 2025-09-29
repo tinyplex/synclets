@@ -71,6 +71,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     dataWriteAtom,
     dataRemoveAtom,
     dataReadChildIds,
+    dataGetData,
   ] = dataConnector._;
   const [
     metaDepth,
@@ -80,6 +81,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     metaWriteTimestamp,
     metaWriteHash,
     metaReadChildIds,
+    metaGetMeta,
   ] = metaConnector._;
 
   if (dataDepth < 1 || metaDepth < 1 || dataDepth != metaDepth) {
@@ -489,9 +491,11 @@ export const createSynclet: typeof createSyncletDecl = (async (
     delAtom: (address: Address, context?: Context, sync?: boolean) =>
       setOrDelAtom(address, undefined, context, sync),
 
-    getData: async () => ((await getData([])) ?? {}) as Data,
+    getData: async () =>
+      (await dataGetData?.()) ?? (((await getData([])) ?? {}) as Data),
 
-    getMeta: async () => (await getMeta([])) as Meta,
+    getMeta: async () =>
+      (await metaGetMeta?.()) ?? (((await getMeta([])) ?? {}) as Meta),
 
     _: [syncExcept],
   };

@@ -2,8 +2,10 @@ import type {
   Address,
   Atom,
   Context,
+  Data,
   DataConnector,
   Hash,
+  Meta,
   MetaConnector,
   ProtocolNode,
   Synclet,
@@ -57,6 +59,7 @@ export interface ProtectedDataConnector extends DataConnector {
       address: Address,
       context: Context,
     ) => Promise<string[] | undefined>,
+    getData?: () => Promise<Data>,
   ];
 }
 
@@ -83,5 +86,6 @@ export interface ProtectedMetaConnector extends MetaConnector {
       address: Address,
       context: Context,
     ) => Promise<string[] | undefined>,
+    getMeta?: () => Promise<Meta>,
   ];
 }
