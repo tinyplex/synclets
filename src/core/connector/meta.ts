@@ -3,6 +3,7 @@ import type {
   createMetaConnector as createMetaConnectorDecl,
   LogLevel,
   MetaConnectorImplementations,
+  MetaConnectorOptimizations,
 } from '@synclets/@types';
 import {getUniqueId} from '@synclets/utils';
 import {errorNew} from '../../common/other.ts';
@@ -18,9 +19,9 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
     writeTimestamp,
     writeHash,
     readChildIds,
-    getMeta,
   }: MetaConnectorImplementations,
   options: ConnectorOptions = {},
+  {getMeta}: MetaConnectorOptimizations = {},
 ): Promise<ProtectedMetaConnector> => {
   let connected = false;
   let boundSynclet: ProtectedSynclet | undefined;
@@ -68,7 +69,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
       writeTimestamp,
       writeHash,
       readChildIds,
-      getMeta,
     ],
+    $: [getMeta],
   };
 };

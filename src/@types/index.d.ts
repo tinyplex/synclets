@@ -101,6 +101,9 @@ export type DataConnectorImplementations = {
     address: Address,
     context: Context,
   ) => Promise<string[] | undefined>;
+};
+
+export type DataConnectorOptimizations = {
   getData?: () => Promise<Data>;
 };
 
@@ -108,6 +111,7 @@ export function createDataConnector(
   depth: number,
   implementations: DataConnectorImplementations,
   options?: ConnectorOptions,
+  optimizations?: DataConnectorOptimizations,
 ): Promise<DataConnector>;
 
 // --
@@ -137,6 +141,9 @@ export type MetaConnectorImplementations = {
     address: Address,
     context: Context,
   ) => Promise<string[] | undefined>;
+};
+
+export type MetaConnectorOptimizations = {
   getMeta?: () => Promise<Meta>;
 };
 
@@ -144,6 +151,7 @@ export function createMetaConnector(
   depth: number,
   implementations: MetaConnectorImplementations,
   options?: ConnectorOptions,
+  optimizations?: MetaConnectorOptimizations,
 ): Promise<MetaConnector>;
 
 // --

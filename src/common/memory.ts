@@ -107,10 +107,9 @@ export const createMemoryDataConnector = async (
           return objKeys(container[1]);
         }
       },
-
-      getData: async () => getData(root) as Data,
     },
     options,
+    {getData: async () => getData(root) as Data},
   );
 
   return {
@@ -198,10 +197,9 @@ export const createMemoryMetaConnector = async (
           return objKeys(container[1]);
         }
       },
-
-      getMeta: async () => getMeta(root) as Meta,
     },
     options,
+    {getMeta: async () => getMeta(root) as Meta},
   );
 
   return {

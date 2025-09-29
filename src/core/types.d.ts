@@ -59,8 +59,8 @@ export interface ProtectedDataConnector extends DataConnector {
       address: Address,
       context: Context,
     ) => Promise<string[] | undefined>,
-    getData?: () => Promise<Data>,
   ];
+  $: [getData?: () => Promise<Data>];
 }
 
 export interface ProtectedMetaConnector extends MetaConnector {
@@ -86,6 +86,6 @@ export interface ProtectedMetaConnector extends MetaConnector {
       address: Address,
       context: Context,
     ) => Promise<string[] | undefined>,
-    getMeta?: () => Promise<Meta>,
   ];
+  $: [getMeta?: () => Promise<Meta>];
 }

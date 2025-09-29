@@ -64,25 +64,29 @@ export const createSynclet: typeof createSyncletDecl = (async (
   {canReceiveMessage, getSendContext}: SyncletImplementations = {},
   options: SyncletOptions = {},
 ): Promise<ProtectedSynclet> => {
-  const [
-    dataDepth,
-    dataBind,
-    dataReadAtom,
-    dataWriteAtom,
-    dataRemoveAtom,
-    dataReadChildIds,
-    dataGetData,
-  ] = dataConnector._;
-  const [
-    metaDepth,
-    metaBind,
-    metaReadTimestamp,
-    metaReadHash,
-    metaWriteTimestamp,
-    metaWriteHash,
-    metaReadChildIds,
-    metaGetMeta,
-  ] = metaConnector._;
+  const {
+    _: [
+      dataDepth,
+      dataBind,
+      dataReadAtom,
+      dataWriteAtom,
+      dataRemoveAtom,
+      dataReadChildIds,
+    ],
+    $: [dataGetData],
+  } = dataConnector;
+  const {
+    _: [
+      metaDepth,
+      metaBind,
+      metaReadTimestamp,
+      metaReadHash,
+      metaWriteTimestamp,
+      metaWriteHash,
+      metaReadChildIds,
+    ],
+    $: [metaGetMeta],
+  } = metaConnector;
 
   if (dataDepth < 1 || metaDepth < 1 || dataDepth != metaDepth) {
     errorNew('depths must be positive and equal');

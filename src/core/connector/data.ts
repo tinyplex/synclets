@@ -2,6 +2,7 @@ import type {
   ConnectorOptions,
   createDataConnector as createDataConnectorDecl,
   DataConnectorImplementations,
+  DataConnectorOptimizations,
   LogLevel,
 } from '@synclets/@types';
 import {getUniqueId} from '@synclets/utils';
@@ -17,9 +18,9 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
     writeAtom,
     removeAtom,
     readChildIds,
-    getData,
   }: DataConnectorImplementations,
   options: ConnectorOptions = {},
+  {getData}: DataConnectorOptimizations = {},
 ): Promise<ProtectedDataConnector> => {
   let connected = false;
   let boundSynclet: ProtectedSynclet | undefined;
@@ -59,6 +60,7 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
 
     isConnected: () => connected,
 
-    _: [depth, bind, readAtom, writeAtom, removeAtom, readChildIds, getData],
+    _: [depth, bind, readAtom, writeAtom, removeAtom, readChildIds],
+    $: [getData],
   };
 };
