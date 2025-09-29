@@ -80,7 +80,6 @@ export function createSynclet(
 export interface DataConnector {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
-  isConnected(): boolean;
 }
 
 export type DataConnectorImplementations = {
@@ -110,7 +109,6 @@ export function createDataConnector(
 export interface MetaConnector {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
-  isConnected(): boolean;
 }
 
 export type MetaConnectorImplementations = {

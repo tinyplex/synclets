@@ -115,9 +115,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
-    if (!dataConnector.isConnected()) {
-      return;
-    }
     if (isUndefined(newTimestamp)) {
       newTimestamp = getNextTimestamp();
     } else {

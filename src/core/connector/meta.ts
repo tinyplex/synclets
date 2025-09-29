@@ -44,8 +44,6 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
       }
     },
 
-    isConnected: () => connected,
-
     _: [
       depth,
       bind,

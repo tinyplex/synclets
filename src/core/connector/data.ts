@@ -43,8 +43,6 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
       }
     },
 
-    isConnected: () => connected,
-
     _: [depth, bind, readAtom, writeAtom, removeAtom, readChildIds],
     $: [getData],
   };
