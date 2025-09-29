@@ -1,7 +1,7 @@
 import {mkdtemp, rm} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join, sep} from 'path';
-import {ConnectorOptions, Synclet} from 'synclets';
+import {Synclet} from 'synclets';
 import {
   createFileDataConnector,
   createFileMetaConnector,
@@ -29,10 +29,10 @@ test('file', async () => {
 
 describeConnectorTests(
   'file',
-  (depth: number, options: ConnectorOptions, {file}: {file: string}) =>
-    createFileDataConnector(depth, join(file, getUniqueId()), options),
-  (depth: number, options: ConnectorOptions, {file}: {file: string}) =>
-    createFileMetaConnector(depth, join(file, getUniqueId()), options),
+  (depth: number, {file}: {file: string}) =>
+    createFileDataConnector(depth, join(file, getUniqueId())),
+  (depth: number, {file}: {file: string}) =>
+    createFileMetaConnector(depth, join(file, getUniqueId())),
   (synclet: Synclet) => synclet.getMeta(),
   async () => ({file: await mkdtemp(tmpdir() + sep)}),
   async ({file}: {file: string}) =>

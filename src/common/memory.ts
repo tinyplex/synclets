@@ -2,7 +2,6 @@ import {createDataConnector, createMetaConnector} from '@synclets';
 import type {
   Address,
   Atom,
-  ConnectorOptions,
   Context,
   Data,
   DataConnector,
@@ -39,7 +38,6 @@ const getMeta = (dataAndMeta: HashContainer): Meta => [
 
 export const createMemoryDataConnector = async (
   depth: number,
-  options: ConnectorOptions = {},
   onChange?: (root: Root) => Promise<void>,
   initial?: Root,
 ): Promise<DataConnector> => {
@@ -108,7 +106,6 @@ export const createMemoryDataConnector = async (
         }
       },
     },
-    options,
     {getData: async () => getData(root) as Data},
   );
 
@@ -119,7 +116,6 @@ export const createMemoryDataConnector = async (
 
 export const createMemoryMetaConnector = async (
   depth: number,
-  options: ConnectorOptions = {},
   onChange?: (root: Root) => Promise<void>,
   initial?: Root,
 ): Promise<MetaConnector> => {
@@ -198,7 +194,6 @@ export const createMemoryMetaConnector = async (
         }
       },
     },
-    options,
     {getMeta: async () => getMeta(root) as Meta},
   );
 

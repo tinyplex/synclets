@@ -1,8 +1,4 @@
-import type {
-  ConnectorOptions,
-  DataConnector,
-  MetaConnector,
-} from '@synclets/@types';
+import type {DataConnector, MetaConnector} from '@synclets/@types';
 import type {
   createMemoryDataConnector as createMemoryDataConnectorDecl,
   createMemoryMetaConnector as createMemoryMetaConnectorDecl,
@@ -14,10 +10,8 @@ import {
 
 export const createMemoryDataConnector: typeof createMemoryDataConnectorDecl = (
   depth,
-  options?: ConnectorOptions,
-): Promise<DataConnector> => createMemoryDataConnectorImpl(depth, options);
+): Promise<DataConnector> => createMemoryDataConnectorImpl(depth);
 
 export const createMemoryMetaConnector: typeof createMemoryMetaConnectorDecl = (
   depth,
-  options?: ConnectorOptions,
-): Promise<MetaConnector> => createMemoryMetaConnectorImpl(depth, options);
+): Promise<MetaConnector> => createMemoryMetaConnectorImpl(depth);

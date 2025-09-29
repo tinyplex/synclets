@@ -1,4 +1,3 @@
-import type {ConnectorOptions} from '@synclets/@types';
 import type {
   createFileDataConnector as createFileDataConnectorDecl,
   createFileMetaConnector as createFileMetaConnectorDecl,
@@ -16,16 +15,11 @@ import {
 import {UTF8} from '../../common/string.ts';
 
 export const createFileDataConnector: typeof createFileDataConnectorDecl =
-  async (
-    depth,
-    file,
-    options: ConnectorOptions = {},
-  ): Promise<FileDataConnector> => {
+  async (depth, file): Promise<FileDataConnector> => {
     const path = await validateFile(file);
 
     const dataConnector = await createMemoryDataConnector(
       depth,
-      options,
       (root: Root) => writeFile(path, jsonString(root), UTF8),
       jsonParse(await readFile(path, UTF8)),
     );
@@ -40,16 +34,11 @@ export const createFileDataConnector: typeof createFileDataConnectorDecl =
   };
 
 export const createFileMetaConnector: typeof createFileMetaConnectorDecl =
-  async (
-    depth,
-    file,
-    options: ConnectorOptions = {},
-  ): Promise<FileMetaConnector> => {
+  async (depth, file): Promise<FileMetaConnector> => {
     const path = await validateFile(file);
 
     const metaConnector = await createMemoryMetaConnector(
       depth,
-      options,
       (root: Root) => writeFile(path, jsonString(root), UTF8),
       jsonParse(await readFile(path, UTF8)),
     );

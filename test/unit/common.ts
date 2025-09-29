@@ -1,7 +1,6 @@
 /* eslint-disable jest/no-export */
 import console from 'console';
 import {
-  ConnectorOptions,
   createDataConnector,
   createMetaConnector,
   createSynclet,
@@ -27,12 +26,10 @@ export const describeConnectorTests = (
   type: string,
   createDataConnector: (
     depth: number,
-    options: ConnectorOptions,
     environment: any,
   ) => Promise<DataConnector>,
   createMetaConnector: (
     depth: number,
-    options: ConnectorOptions,
     environment: any,
   ) => Promise<MetaConnector>,
   getUnderlyingMeta: (synclet: Synclet) => Promise<any>,
@@ -64,15 +61,11 @@ export const describeConnectorTests = (
         nearAddress: string[],
         farAddress?: string[],
       ) => {
-        const createTestDataConnector = (
-          options: ConnectorOptions = {},
-        ): Promise<DataConnector> =>
-          createDataConnector(depth, options, environment);
+        const createTestDataConnector = (): Promise<DataConnector> =>
+          createDataConnector(depth, environment);
 
-        const createTestMetaConnector = (
-          options: ConnectorOptions = {},
-        ): Promise<MetaConnector> =>
-          createMetaConnector(depth, options, environment);
+        const createTestMetaConnector = (): Promise<MetaConnector> =>
+          createMetaConnector(depth, environment);
 
         const createTestSynclet = async (
           dataConnector: DataConnector,
@@ -449,8 +442,8 @@ export const createPooledTestSyncletsAndConnectors = async <
     transport: Transport | Transport[],
     options?: SyncletOptions,
   ) => Promise<TestSynclet>,
-  createDataConnector: (options?: ConnectorOptions) => Promise<DataConnector>,
-  createMetaConnector: (options?: ConnectorOptions) => Promise<MetaConnector>,
+  createDataConnector: () => Promise<DataConnector>,
+  createMetaConnector: () => Promise<MetaConnector>,
   number: number,
   start = true,
   log = false,
@@ -459,8 +452,8 @@ export const createPooledTestSyncletsAndConnectors = async <
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
       const logger = log ? console : undefined;
-      const dataConnector = await createDataConnector({logger});
-      const metaConnector = await createMetaConnector({logger});
+      const dataConnector = await createDataConnector();
+      const metaConnector = await createMetaConnector();
       const transport = await createMemoryTransport({poolId, logger});
       const synclet = await createSynclet(
         dataConnector,
@@ -486,8 +479,8 @@ export const createChainedTestSynclets = async <TestSynclet extends Synclet>(
     transport: Transport | Transport[],
     options?: SyncletOptions,
   ) => Promise<TestSynclet>,
-  createDataConnector: (options?: ConnectorOptions) => Promise<DataConnector>,
-  createMetaConnector: (options?: ConnectorOptions) => Promise<MetaConnector>,
+  createDataConnector: () => Promise<DataConnector>,
+  createMetaConnector: () => Promise<MetaConnector>,
   number: number,
   loop = false,
   start = true,
@@ -497,8 +490,8 @@ export const createChainedTestSynclets = async <TestSynclet extends Synclet>(
   const poolId = getUniqueId();
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
-      const dataConnector = await createDataConnector({logger});
-      const metaConnector = await createMetaConnector({logger});
+      const dataConnector = await createDataConnector();
+      const metaConnector = await createMetaConnector();
       const transports = [];
       if (i != 0 || loop) {
         transports.push(

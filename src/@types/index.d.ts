@@ -77,15 +77,7 @@ export function createSynclet(
 
 // --
 
-export type ConnectorOptions = {
-  id?: string;
-  logger?: Logger;
-};
-
-// --
-
 export interface DataConnector {
-  log(message: string, level?: LogLevel): void;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
@@ -110,14 +102,12 @@ export type DataConnectorOptimizations = {
 export function createDataConnector(
   depth: number,
   implementations: DataConnectorImplementations,
-  options?: ConnectorOptions,
   optimizations?: DataConnectorOptimizations,
 ): Promise<DataConnector>;
 
 // --
 
 export interface MetaConnector {
-  log(message: string, level?: LogLevel): void;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
@@ -150,7 +140,6 @@ export type MetaConnectorOptimizations = {
 export function createMetaConnector(
   depth: number,
   implementations: MetaConnectorImplementations,
-  options?: ConnectorOptions,
   optimizations?: MetaConnectorOptimizations,
 ): Promise<MetaConnector>;
 
