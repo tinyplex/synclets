@@ -107,12 +107,15 @@ export const createTransport: typeof createTransportDecl = async (
   const [startBuffer, stopBuffer, receivePacket, sendPackets] =
     getPacketFunctions(sendPacket, options.fragmentSize ?? 4096);
 
-  // pass in log on bind
-  const bind = (synclet: ProtectedSynclet) => {
+  const attach = (synclet: ProtectedSynclet) => {
     if (boundSynclet) {
       errorNew('Transport is already attached to Synclet');
     }
     boundSynclet = synclet;
+  };
+
+  const detach = () => {
+    boundSynclet = undefined;
   };
 
   const connectImpl = async (receiveMessage: ReceiveMessage) => {
@@ -140,6 +143,6 @@ export const createTransport: typeof createTransportDecl = async (
   return {
     isConnected: () => connected,
 
-    _: [bind, connectImpl, disconnectImpl, sendMessage],
+    _: [attach, detach, connectImpl, disconnectImpl, sendMessage],
   };
 };

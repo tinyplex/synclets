@@ -37,7 +37,8 @@ export interface ProtectedSynclet extends Synclet {
 
 export interface ProtectedTransport extends Transport {
   _: [
-    bind: (synclet: ProtectedSynclet) => void,
+    attach: (synclet: ProtectedSynclet) => void,
+    detach: () => void,
     connect: (receiveMessage: ReceiveMessage) => Promise<void>,
     disconnect: () => Promise<void>,
     sendMessage: (message: Message, to?: string) => Promise<void>,

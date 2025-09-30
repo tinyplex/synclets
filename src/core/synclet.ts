@@ -57,6 +57,12 @@ import {
 
 const VERSION = 1;
 
+const ATTACH = 0;
+const DETACH = 1;
+const CONNECT = 2;
+const DISCONNECT = 3;
+const SEND_MESSAGE = 4;
+
 export const createSynclet: typeof createSyncletDecl = (async (
   dataConnector: ProtectedDataConnector,
   metaConnector: ProtectedMetaConnector,
@@ -266,7 +272,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     receivedContext: Context = {},
     to?: string,
   ) =>
-    await transport._[3](
+    await transport._[SEND_MESSAGE](
       [
         VERSION,
         0,
@@ -452,7 +458,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
         log('start');
         await promiseAll(
           arrayMap(transports, (transport) =>
-            transport._[1]((message: Message, from: string) =>
+            transport._[CONNECT]((message: Message, from: string) =>
               receiveMessage(transport, message, from),
             ),
           ),
@@ -466,7 +472,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
       if (started) {
         log('stop');
         started = false;
-        await promiseAll(arrayMap(transports, (transport) => transport._[2]()));
+        await promiseAll(
+          arrayMap(transports, (transport) => transport._[DISCONNECT]()),
+        );
       }
     },
 
@@ -477,6 +485,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       await synclet.stop();
       await dataDetach();
       await metaDetach();
+      arrayForEach(transports, (transport) => transport._[DETACH]());
     },
 
     getDataConnector: () => dataConnector,
@@ -508,7 +517,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   await dataAttach(synclet);
   await metaAttach(synclet);
-  arrayForEach(transports, (transport) => transport._[0](synclet));
+  arrayForEach(transports, (transport) => transport._[ATTACH](synclet));
 
   return synclet;
 }) as any;
