@@ -47,7 +47,8 @@ export interface ProtectedTransport extends Transport {
 export interface ProtectedDataConnector extends DataConnector {
   _: [
     depth: number,
-    bind: (synclet: ProtectedSynclet) => void,
+    attach: (synclet: ProtectedSynclet) => Promise<void>,
+    detach: () => Promise<void>,
     readAtom: (address: Address, context: Context) => Promise<Atom | undefined>,
     writeAtom: (
       address: Address,
@@ -66,7 +67,8 @@ export interface ProtectedDataConnector extends DataConnector {
 export interface ProtectedMetaConnector extends MetaConnector {
   _: [
     depth: number,
-    bind: (synclet: ProtectedSynclet) => void,
+    attach: (synclet: ProtectedSynclet) => Promise<void>,
+    detach: () => Promise<void>,
     readTimestamp: (
       address: Address,
       context: Context,

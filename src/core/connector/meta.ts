@@ -19,34 +19,27 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
   }: MetaConnectorImplementations,
   {getMeta}: MetaConnectorOptimizations = {},
 ): Promise<ProtectedMetaConnector> => {
-  let connected = false;
   let boundSynclet: ProtectedSynclet | undefined;
 
-  const bind = (synclet: ProtectedSynclet) => {
+  const attach = async (synclet: ProtectedSynclet) => {
     if (boundSynclet) {
       errorNew('Meta connector is already attached to Synclet');
     }
     boundSynclet = synclet;
+    await connect?.();
+  };
+
+  const detach = async () => {
+    await disconnect?.();
+    boundSynclet = undefined;
   };
 
   return {
-    connect: async () => {
-      if (!connected) {
-        await connect?.();
-        connected = true;
-      }
-    },
-
-    disconnect: async () => {
-      if (connected) {
-        await disconnect?.();
-        connected = false;
-      }
-    },
-
+    _brand: 'MetaConnector',
     _: [
       depth,
-      bind,
+      attach,
+      detach,
       readTimestamp,
       readHash,
       writeTimestamp,

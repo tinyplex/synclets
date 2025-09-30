@@ -67,7 +67,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const {
     _: [
       dataDepth,
-      dataBind,
+      dataAttach,
+      dataDetach,
       dataReadAtom,
       dataWriteAtom,
       dataRemoveAtom,
@@ -78,7 +79,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const {
     _: [
       metaDepth,
-      metaBind,
+      metaAttach,
+      metaDetach,
       metaReadTimestamp,
       metaReadHash,
       metaWriteTimestamp,
@@ -448,8 +450,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
     start: async () => {
       if (!started) {
         log('start');
-        await dataConnector.connect();
-        await metaConnector.connect();
         await promiseAll(
           arrayMap(transports, (transport) =>
             transport._[1]((message: Message, from: string) =>
@@ -466,21 +466,26 @@ export const createSynclet: typeof createSyncletDecl = (async (
       if (started) {
         log('stop');
         started = false;
-        await dataConnector.disconnect();
-        await metaConnector.disconnect();
         await promiseAll(arrayMap(transports, (transport) => transport._[2]()));
       }
     },
 
     isStarted: () => started,
 
-    sync,
+    destroy: async () => {
+      log('destroy');
+      await synclet.stop();
+      await dataDetach();
+      await metaDetach();
+    },
 
     getDataConnector: () => dataConnector,
 
     getMetaConnector: () => metaConnector,
 
     getTransport: () => [...transports],
+
+    sync,
 
     setAtom: (
       address: Address,
@@ -501,8 +506,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
     _: [syncExcept],
   };
 
-  dataBind(synclet);
-  metaBind(synclet);
+  await dataAttach(synclet);
+  await metaAttach(synclet);
   arrayForEach(transports, (transport) => transport._[0](synclet));
 
   return synclet;

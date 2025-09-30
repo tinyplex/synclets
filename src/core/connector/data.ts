@@ -18,32 +18,24 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
   }: DataConnectorImplementations,
   {getData}: DataConnectorOptimizations = {},
 ): Promise<ProtectedDataConnector> => {
-  let connected = false;
   let boundSynclet: ProtectedSynclet | undefined;
 
-  const bind = (synclet: ProtectedSynclet) => {
+  const attach = async (synclet: ProtectedSynclet) => {
     if (boundSynclet) {
       errorNew('Data connector is already attached to Synclet');
     }
     boundSynclet = synclet;
+    await connect?.();
+  };
+
+  const detach = async () => {
+    await disconnect?.();
+    boundSynclet = undefined;
   };
 
   return {
-    connect: async () => {
-      if (!connected) {
-        await connect?.();
-        connected = true;
-      }
-    },
-
-    disconnect: async () => {
-      if (connected) {
-        await disconnect?.();
-        connected = false;
-      }
-    },
-
-    _: [depth, bind, readAtom, writeAtom, removeAtom, readChildIds],
+    _brand: 'DataConnector',
+    _: [depth, attach, detach, readAtom, writeAtom, removeAtom, readChildIds],
     $: [getData],
   };
 };

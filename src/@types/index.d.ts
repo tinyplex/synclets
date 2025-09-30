@@ -42,6 +42,7 @@ export interface Synclet {
   start(): Promise<void>;
   stop(): Promise<void>;
   isStarted(): boolean;
+  destroy(): Promise<void>;
   getDataConnector(): DataConnector;
   getMetaConnector(): MetaConnector;
   getTransport(): Transport[];
@@ -78,8 +79,7 @@ export function createSynclet(
 // --
 
 export interface DataConnector {
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
+  _brand: 'DataConnector';
 }
 
 export type DataConnectorImplementations = {
@@ -107,8 +107,7 @@ export function createDataConnector(
 // --
 
 export interface MetaConnector {
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
+  _brand: 'MetaConnector';
 }
 
 export type MetaConnectorImplementations = {

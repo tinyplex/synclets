@@ -177,8 +177,6 @@ export const describeConnectorTests = (
               );
 
             await synclet2.start();
-            await synclet1.getDataConnector().connect();
-            await synclet1.getMetaConnector().connect();
             await synclet1.setAtomForTest('A');
             await expectDifferingSynclets(synclet1, synclet2);
 
@@ -203,8 +201,6 @@ export const describeConnectorTests = (
             await expectEquivalentSynclets([synclet1, synclet2]);
 
             await synclet1.stop();
-            await synclet1.getDataConnector().connect();
-            await synclet1.getMetaConnector().connect();
             await synclet1.setAtomForTest('B');
             await expectDifferingSynclets(synclet1, synclet2);
 
@@ -246,15 +242,11 @@ export const describeConnectorTests = (
                 false,
               );
 
-            await synclet1.getDataConnector().connect();
-            await synclet1.getMetaConnector().connect();
             await synclet1.setAtomForTest('A');
             await expectDifferingSynclets(synclet1, synclet2);
 
             await pause();
 
-            await synclet2.getDataConnector().connect();
-            await synclet2.getMetaConnector().connect();
             await synclet2.setAtomForTest('B');
             await expectDifferingSynclets(synclet1, synclet2);
 
@@ -302,10 +294,6 @@ export const describeConnectorTests = (
                 2,
                 false,
               );
-            await synclet1.getDataConnector().connect();
-            await synclet1.getMetaConnector().connect();
-            await synclet2.getDataConnector().connect();
-            await synclet2.getMetaConnector().connect();
             await synclet1.setAtomForTest('A');
             await synclet2.setNearAtomForTest('B');
             await synclet1.start();
@@ -323,10 +311,6 @@ export const describeConnectorTests = (
                   2,
                   false,
                 );
-              await synclet1.getDataConnector().connect();
-              await synclet1.getMetaConnector().connect();
-              await synclet2.getDataConnector().connect();
-              await synclet2.getMetaConnector().connect();
               await synclet1.setAtomForTest('A');
               await synclet2.setFarAtomForTest('B');
               await synclet1.start();
@@ -344,10 +328,6 @@ export const describeConnectorTests = (
                 2,
                 false,
               );
-            await synclet1.getDataConnector().connect();
-            await synclet1.getMetaConnector().connect();
-            await synclet2.getDataConnector().connect();
-            await synclet2.getMetaConnector().connect();
             await synclet1.setAtomForTest('A');
             await pause();
             await synclet1.setAtomForTest('B');
@@ -366,10 +346,6 @@ export const describeConnectorTests = (
                   2,
                   false,
                 );
-              await synclet1.getDataConnector().connect();
-              await synclet1.getMetaConnector().connect();
-              await synclet2.getDataConnector().connect();
-              await synclet2.getMetaConnector().connect();
               await synclet1.setAtomForTest('A');
               await synclet1.setNearAtomForTest('B');
               await pause();
