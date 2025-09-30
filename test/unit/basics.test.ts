@@ -73,29 +73,12 @@ test('error on reassigning meta connector', async () => {
 test('start & stop', async () => {
   const synclet = await createSynclet(dataConnector, metaConnector, transport);
   expect(synclet.isStarted()).toBe(false);
-  expect(transport.isConnected()).toBe(false);
 
   await synclet.start();
   expect(synclet.isStarted()).toBe(true);
-  expect(transport.isConnected()).toBe(true);
 
   await synclet.stop();
   expect(synclet.isStarted()).toBe(false);
-  expect(transport.isConnected()).toBe(false);
-
-  const transports = [await createMockTransport(), await createMockTransport()];
-  const synclet2 = await createSynclet(
-    await createMockDataConnector(),
-    await createMockMetaConnector(),
-    transports,
-  );
-  await synclet2.start();
-  expect(transports[0].isConnected()).toBe(true);
-  expect(transports[1].isConnected()).toBe(true);
-
-  await synclet2.stop();
-  expect(transports[0].isConnected()).toBe(false);
-  expect(transports[1].isConnected()).toBe(false);
 });
 
 describe('context', () => {

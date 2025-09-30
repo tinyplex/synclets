@@ -123,8 +123,7 @@ export const createTransport: typeof createTransportDecl = async (
   };
 
   return {
-    isConnected: () => connected,
-
+    _brand: 'Transport',
     _: [attach, detach, connectImpl, disconnectImpl, sendMessage],
   };
 };

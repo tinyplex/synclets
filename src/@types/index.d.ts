@@ -143,7 +143,7 @@ export function createMetaConnector(
 // --
 
 export interface Transport {
-  isConnected(): boolean;
+  _brand: 'Transport';
 }
 
 export type TransportImplementations = {

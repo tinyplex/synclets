@@ -470,10 +470,10 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const stop = async () => {
     if (started) {
       log('stop');
-      started = false;
       await promiseAll(
         arrayMap(transports, (transport) => transport._[DISCONNECT]()),
       );
+      started = false;
     }
   };
 
