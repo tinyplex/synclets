@@ -19,22 +19,22 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
   }: DataConnectorImplementations,
   {getData}: DataConnectorOptimizations = {},
 ): Promise<ProtectedDataConnector> => {
-  let boundSynclet: ProtectedSynclet | undefined;
+  let attachedSynclet: ProtectedSynclet | undefined;
 
   const log = (message: string, level?: LogLevel) =>
-    boundSynclet?.log(message, level);
+    attachedSynclet?.log(message, level);
 
   const attach = async (synclet: ProtectedSynclet) => {
-    if (boundSynclet) {
+    if (attachedSynclet) {
       errorNew('Data connector is already attached to Synclet');
     }
-    boundSynclet = synclet;
+    attachedSynclet = synclet;
     await connect?.();
   };
 
   const detach = async () => {
     await disconnect?.();
-    boundSynclet = undefined;
+    attachedSynclet = undefined;
   };
 
   return {
