@@ -10,22 +10,14 @@ import type {
   MetaConnector,
   Timestamp,
 } from '@synclets/@types';
-import {isObject, objKeys, objMap, objNotEmpty} from './object.ts';
+import {jsonParse, jsonString} from '../utils/json.ts';
+import {isObject, objDeepAction, objKeys, objMap, objNew} from './object.ts';
 import {isUndefined, size} from './other.ts';
-import {isAtom, isHash, isTimestamp} from './types.ts';
+import {isHash, isTimestamp} from './types.ts';
 
 export type Root = HashContainer;
 type HashContainer = [Hash, {[id: string]: HashContainer | TimestampContainer}];
 type TimestampContainer = [Timestamp, Atom | undefined];
-
-const getData = (dataAndMeta: HashContainer): Data =>
-  objMap(dataAndMeta[1], (child) => {
-    if (isTimestamp(child[0])) {
-      return (child as TimestampContainer)[1] as Atom;
-    }
-    const childData = getData(child as HashContainer);
-    return objNotEmpty(childData) ? childData : (undefined as any);
-  });
 
 const getMeta = (dataAndMeta: HashContainer): Meta => [
   dataAndMeta[0],
@@ -38,80 +30,49 @@ const getMeta = (dataAndMeta: HashContainer): Meta => [
 
 export const createMemoryDataConnector = async (
   depth: number,
-  onChange?: (root: Root) => Promise<void>,
-  initial?: Root,
+  onChange?: (data: Data) => Promise<void>,
+  initial?: Data,
 ): Promise<DataConnector> => {
-  const root: Root = initial || [0, {}];
+  const data: Data = initial || objNew();
 
-  const getContainer = (
-    container: HashContainer,
-    address: Address,
-    context: Context,
-    create = false,
-    recursionDepth = 0,
-  ): HashContainer | TimestampContainer | undefined => {
-    if (size(address) == recursionDepth) {
-      return container;
-    }
-    const children = container[1];
-    const nextId = address[recursionDepth];
-    if (isUndefined(children[nextId])) {
-      if (create) {
-        children[nextId] =
-          depth > recursionDepth + 1 ? [0, {}] : ['', undefined];
-      } else {
-        return undefined;
-      }
-    }
-    return getContainer(
-      children[nextId] as HashContainer,
+  const readAtom = async (address: Address, _context: Context) =>
+    objDeepAction(data, address, (parent, id) => parent[id]) as
+      | Atom
+      | undefined;
+
+  const writeAtom = async (address: Address, atom: Atom, _context: Context) =>
+    objDeepAction(
+      data,
       address,
-      context,
-      create,
-      recursionDepth + 1,
+      (parent, id) => {
+        parent[id] = atom;
+        onChange?.(data);
+      },
+      true,
     );
-  };
 
-  const writeAtom = async (
-    address: Address,
-    atom: Atom | undefined,
-    context: Context,
-  ) => {
-    const container = getContainer(root, address, context, true);
-    if (isTimestamp(container?.[0])) {
-      container[1] = atom;
-      await onChange?.(root);
-    }
-  };
+  const removeAtom = async (address: Address, _context: Context) =>
+    objDeepAction(
+      data,
+      address,
+      (parent, id) => {
+        delete parent[id];
+        onChange?.(data);
+      },
+      true,
+      true,
+    );
+
+  const readChildIds = async (address: Address, _context: Context) =>
+    objDeepAction(data, address, (parent, id) => objKeys(parent[id] as Data));
 
   const connector = await createDataConnector(
     depth,
-    {
-      readAtom: async (address: Address, context: Context) => {
-        const container = getContainer(root, address, context);
-        if (isTimestamp(container?.[0]) && isAtom(container[1])) {
-          return container[1];
-        }
-      },
-
-      writeAtom,
-
-      removeAtom: (address: Address, context: Context) =>
-        writeAtom(address, undefined, context),
-
-      readChildIds: async (address: Address, context: Context) => {
-        const container = getContainer(root, address, context);
-        if (isHash(container?.[0]) && isObject(container[1])) {
-          return objKeys(container[1]);
-        }
-      },
-    },
-    {getData: async () => getData(root) as Data},
+    {readAtom, writeAtom, removeAtom, readChildIds},
+    {getData: async () => jsonParse(jsonString(data))},
   );
 
-  return {
-    ...connector,
-  };
+  return connector;
 };
 
 export const createMemoryMetaConnector = async (
@@ -197,7 +158,5 @@ export const createMemoryMetaConnector = async (
     {getMeta: async () => getMeta(root) as Meta},
   );
 
-  return {
-    ...connector,
-  };
+  return connector;
 };

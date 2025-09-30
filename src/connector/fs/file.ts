@@ -1,3 +1,4 @@
+import type {Data} from '@synclets/@types';
 import type {
   createFileDataConnector as createFileDataConnectorDecl,
   createFileMetaConnector as createFileMetaConnectorDecl,
@@ -20,7 +21,7 @@ export const createFileDataConnector: typeof createFileDataConnectorDecl =
 
     const dataConnector = await createMemoryDataConnector(
       depth,
-      (root: Root) => writeFile(path, jsonString(root), UTF8),
+      (data: Data) => writeFile(path, jsonString(data), UTF8),
       jsonParse(await readFile(path, UTF8)),
     );
 

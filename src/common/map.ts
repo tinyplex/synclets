@@ -21,6 +21,10 @@ export const mapSet = <Key, Value>(
 export const mapDel = <Key, Value>(map: Map<Key, Value>, key: Key) =>
   map?.delete(key);
 
+export const mapKeys = <Key>(map: Map<Key, unknown> | undefined): Key[] => [
+  ...(map?.keys() ?? []),
+];
+
 export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,
   key: Key,

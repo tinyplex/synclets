@@ -42,7 +42,7 @@ export const arrayJoin = (
 ): string => fragments.join(separator);
 
 export const arraySlice = <Value>(
-  array: Value[],
+  array: Value[] | Readonly<Array<Value>>,
   start?: number,
   end?: number,
 ): Value[] => array.slice(start, end);

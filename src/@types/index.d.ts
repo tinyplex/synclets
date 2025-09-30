@@ -4,9 +4,9 @@ import type {Tomb} from './utils/index.d.ts';
 
 export type Atom = string | number | boolean | null | Tomb;
 
-export type Data = Readonly<{[id: string]: Data | Atom}>;
+export type Data = {[id: string]: Data | Atom};
 
-export type Meta = Readonly<[hash: Hash, {[id: string]: Meta | Timestamp}]>;
+export type Meta = [hash: Hash, {[id: string]: Meta | Timestamp}];
 
 export type Timestamp = string;
 
@@ -54,8 +54,8 @@ export interface Synclet {
     sync?: boolean,
   ): Promise<void>;
   delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
-  getData(): Promise<Data>;
-  getMeta(): Promise<Meta>;
+  getData(): Promise<Readonly<Data>>;
+  getMeta(): Promise<Readonly<Meta>>;
 }
 
 export type SyncletImplementations = {

@@ -1,8 +1,19 @@
+import {Address} from '@synclets/@types';
 import {arrayEvery} from './array.ts';
 import {ifNotUndefined, isEmpty, isUndefined} from './other.ts';
 
+type IdObj<Value = unknown> = {[id: string]: Value};
+
 export const object = Object;
 const getPrototypeOf = (obj: any) => object.getPrototypeOf(obj);
+
+export const objNew = <Value>(): IdObj<Value> => ({});
+
+export const objEnsure = <Value>(
+  obj: IdObj<Value>,
+  id: string,
+  create: () => Value,
+): Value => (isUndefined(obj[id]) ? (obj[id] = create()) : obj[id]);
 
 export const objKeys = object.keys;
 
@@ -45,3 +56,23 @@ export const objMap = <Value, Return>(
       .map(([id, value]) => [id, cb(value)])
       .filter(([, value]) => !isUndefined(value)),
   );
+
+export const objDeepAction = <Result>(
+  obj: IdObj,
+  [id, ...next]: Address,
+  action: (parent: IdObj, id: string) => Result,
+  create = false,
+  prune = false,
+): Result | undefined =>
+  isEmpty(next)
+    ? action(obj, id)
+    : ifNotUndefined(
+        (create ? objEnsure(obj, id, objNew) : obj[id]) as IdObj,
+        (child) => {
+          const result = objDeepAction(child, next, action, create, prune);
+          if (prune && !objNotEmpty(child)) {
+            delete obj[id];
+          }
+          return result;
+        },
+      );
