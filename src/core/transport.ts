@@ -19,27 +19,20 @@ type Pending = [fragments: string[], due: number];
 
 const PACKET = /^(.+) (.+) (\d+) (\d+) (.+)$/;
 
-const getPacketFunctions = (
-  sendPacket: (packet: string) => Promise<void>,
-  fragmentSize: number,
-): [
-  startBuffer: (receiveMessage: ReceiveMessage) => Promise<void>,
-  stopBuffer: () => void,
-  receivePacket: (packet: string) => Promise<void>,
-  sendPackets: (message: Message, to?: string) => Promise<void>,
-] => {
+export const createTransport: typeof createTransportDecl = async (
+  {connect, disconnect, sendPacket}: TransportImplementations,
+  options: TransportOptions = {},
+): Promise<ProtectedTransport> => {
+  let connected = false;
+  let boundSynclet: ProtectedSynclet | undefined;
   let receiveFinalMessage: ReceiveMessage | undefined;
 
-  const messageSplit = new RegExp(`(.{1,${fragmentSize}})`, 'g');
+  const messageSplit = new RegExp(
+    `(.{1,${options.fragmentSize ?? 4096}})`,
+    'g',
+  );
 
   const buffer: Map<string, Pending> = mapNew();
-
-  const startBuffer = async (receiveMessage: ReceiveMessage) => {
-    buffer.clear();
-    receiveFinalMessage = receiveMessage;
-  };
-
-  const stopBuffer = () => buffer.clear();
 
   const receivePacket = async (packet: string) => {
     const [, from, messageId, indexStr, totalStr, fragment] =
@@ -94,19 +87,6 @@ const getPacketFunctions = (
     }
   };
 
-  return [startBuffer, stopBuffer, receivePacket, sendPackets];
-};
-
-export const createTransport: typeof createTransportDecl = async (
-  {connect, disconnect, sendPacket}: TransportImplementations,
-  options: TransportOptions = {},
-): Promise<ProtectedTransport> => {
-  let connected = false;
-  let boundSynclet: ProtectedSynclet | undefined;
-
-  const [startBuffer, stopBuffer, receivePacket, sendPackets] =
-    getPacketFunctions(sendPacket, options.fragmentSize ?? 4096);
-
   const attach = (synclet: ProtectedSynclet) => {
     if (boundSynclet) {
       errorNew('Transport is already attached to Synclet');
@@ -120,7 +100,8 @@ export const createTransport: typeof createTransportDecl = async (
 
   const connectImpl = async (receiveMessage: ReceiveMessage) => {
     if (!connected) {
-      startBuffer(receiveMessage);
+      buffer.clear();
+      receiveFinalMessage = receiveMessage;
       await connect?.(receivePacket);
       connected = true;
     }
@@ -128,7 +109,8 @@ export const createTransport: typeof createTransportDecl = async (
 
   const disconnectImpl = async () => {
     if (connected) {
-      stopBuffer();
+      buffer.clear();
+      receiveFinalMessage = undefined;
       await disconnect?.();
       connected = false;
     }

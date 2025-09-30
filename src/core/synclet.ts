@@ -161,15 +161,16 @@ export const createSynclet: typeof createSyncletDecl = (async (
     await queue(...tasks);
   };
 
-  const getData = async (address: Address): Promise<Data | undefined> => {
+  const getDataForAddress = async (
+    address: Address,
+  ): Promise<Data | undefined> => {
     const data = {} as {[id: string]: Data | Atom};
     await promiseAll(
       arrayMap((await dataReadChildIds(address, {})) ?? [], async (childId) =>
         ifNotUndefined(
-          await (size(address) == dataDepth - 1 ? dataReadAtom : getData)(
-            [...address, childId],
-            {},
-          ),
+          await (
+            size(address) == dataDepth - 1 ? dataReadAtom : getDataForAddress
+          )([...address, childId], {}),
           (childData) => {
             data[childId] = childData;
           },
@@ -179,7 +180,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     return objNotEmpty(data) ? data : (undefined as any);
   };
 
-  const getMeta = async (
+  const getMetaForAddress = async (
     address: Address,
   ): Promise<Meta | Timestamp | undefined> => {
     const meta = [await metaReadHash(address, {}), {}] as [
@@ -189,10 +190,11 @@ export const createSynclet: typeof createSyncletDecl = (async (
     await promiseAll(
       arrayMap((await metaReadChildIds(address, {})) ?? [], async (childId) => {
         ifNotUndefined(
-          await (size(address) == dataDepth - 1 ? metaReadTimestamp : getMeta)(
-            [...address, childId],
-            {},
-          ),
+          await (
+            size(address) == dataDepth - 1
+              ? metaReadTimestamp
+              : getMetaForAddress
+          )([...address, childId], {}),
           (childData) => {
             meta[1][childId] = childData;
           },
@@ -243,8 +245,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
     );
     return [subNodeObj];
   };
-
-  const sync = (address: Address) => syncExcept(address);
 
   const syncExcept = async (
     address: Address,
@@ -447,71 +447,84 @@ export const createSynclet: typeof createSyncletDecl = (async (
     }
   };
 
+  // --
+
   const log = (string: string, level: LogLevel = 'info') =>
     logger?.[level]?.(`[${id}] ${string}`);
 
+  const start = async () => {
+    if (!started) {
+      log('start');
+      await promiseAll(
+        arrayMap(transports, (transport) =>
+          transport._[CONNECT]((message: Message, from: string) =>
+            receiveMessage(transport, message, from),
+          ),
+        ),
+      );
+      started = true;
+      await sync([]);
+    }
+  };
+
+  const stop = async () => {
+    if (started) {
+      log('stop');
+      started = false;
+      await promiseAll(
+        arrayMap(transports, (transport) => transport._[DISCONNECT]()),
+      );
+    }
+  };
+
+  const isStarted = () => started;
+
+  const destroy = async () => {
+    log('destroy');
+    await synclet.stop();
+    await dataDetach();
+    await metaDetach();
+    arrayForEach(transports, (transport) => transport._[DETACH]());
+  };
+
+  const getDataConnector = () => dataConnector;
+
+  const getMetaConnector = () => metaConnector;
+
+  const getTransport = () => [...transports];
+
+  const sync = (address: Address) => syncExcept(address);
+
+  const setAtom = (
+    address: Address,
+    atom: Atom,
+    context?: Context,
+    sync?: boolean,
+  ) => setOrDelAtom(address, atom, context, sync);
+
+  const delAtom = (address: Address, context?: Context, sync?: boolean) =>
+    setOrDelAtom(address, undefined, context, sync);
+
+  const getData = async () =>
+    (await dataGetData?.()) ?? (((await getDataForAddress([])) ?? {}) as Data);
+
+  const getMeta = async () =>
+    (await metaGetMeta?.()) ?? (((await getMetaForAddress([])) ?? {}) as Meta);
+
   const synclet: ProtectedSynclet = {
     log,
-
-    start: async () => {
-      if (!started) {
-        log('start');
-        await promiseAll(
-          arrayMap(transports, (transport) =>
-            transport._[CONNECT]((message: Message, from: string) =>
-              receiveMessage(transport, message, from),
-            ),
-          ),
-        );
-        started = true;
-        await sync([]);
-      }
-    },
-
-    stop: async () => {
-      if (started) {
-        log('stop');
-        started = false;
-        await promiseAll(
-          arrayMap(transports, (transport) => transport._[DISCONNECT]()),
-        );
-      }
-    },
-
-    isStarted: () => started,
-
-    destroy: async () => {
-      log('destroy');
-      await synclet.stop();
-      await dataDetach();
-      await metaDetach();
-      arrayForEach(transports, (transport) => transport._[DETACH]());
-    },
-
-    getDataConnector: () => dataConnector,
-
-    getMetaConnector: () => metaConnector,
-
-    getTransport: () => [...transports],
-
+    start,
+    stop,
+    isStarted,
+    destroy,
+    getDataConnector,
+    getMetaConnector,
+    getTransport,
     sync,
-
-    setAtom: (
-      address: Address,
-      atom: Atom,
-      context?: Context,
-      sync?: boolean,
-    ) => setOrDelAtom(address, atom, context, sync),
-
-    delAtom: (address: Address, context?: Context, sync?: boolean) =>
-      setOrDelAtom(address, undefined, context, sync),
-
-    getData: async () =>
-      (await dataGetData?.()) ?? (((await getData([])) ?? {}) as Data),
-
-    getMeta: async () =>
-      (await metaGetMeta?.()) ?? (((await getMeta([])) ?? {}) as Meta),
-
+    setAtom,
+    delAtom,
+    getData,
+    getMeta,
     _: [syncExcept],
   };
 
