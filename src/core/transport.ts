@@ -1,5 +1,6 @@
 import type {
   createTransport as createTransportDecl,
+  LogLevel,
   TransportImplementations,
   TransportOptions,
 } from '@synclets/@types';
@@ -56,11 +57,10 @@ export const createTransport: typeof createTransportDecl = async (
       if (pending[1] === 0) {
         buffer.delete(messageId);
         const allFragments = arrayJoin(fragments);
-        // log(
-        //   `recv: ${messageId} '${allFragments
-        // }', ${total} packets from ${from}`,
-        //   'debug',
-        // );
+        log(
+          `recv: ${messageId} '${allFragments}', ${total} packets from ${from}`,
+          'debug',
+        );
         await receiveFinalMessage?.(jsonParse(allFragments), from);
       }
     }
@@ -75,10 +75,10 @@ export const createTransport: typeof createTransportDecl = async (
       const allFragments = jsonString(message);
       const fragments = allFragments.match(messageSplit) ?? [];
       const total = size(fragments);
-      // log(
-      //   `send: ${messageId} '${allFragments}', ${total} packets to ${to}`,
-      //   'debug',
-      // );
+      log(
+        `send: ${messageId} '${allFragments}', ${total} packets to ${to}`,
+        'debug',
+      );
       await promiseAll(
         arrayMap(fragments, (fragment, index) =>
           sendPacket(arrayJoin([to, messageId, index, total, fragment], SPACE)),
@@ -86,6 +86,11 @@ export const createTransport: typeof createTransportDecl = async (
       );
     }
   };
+
+  // --
+
+  const log = (message: string, level?: LogLevel) =>
+    boundSynclet?.log(message, level);
 
   const attach = (synclet: ProtectedSynclet) => {
     if (boundSynclet) {
@@ -124,6 +129,7 @@ export const createTransport: typeof createTransportDecl = async (
 
   return {
     _brand: 'Transport',
+    log,
     _: [attach, detach, connectImpl, disconnectImpl, sendMessage],
   };
 };

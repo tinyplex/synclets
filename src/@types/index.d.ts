@@ -80,6 +80,7 @@ export function createSynclet(
 
 export interface DataConnector {
   _brand: 'DataConnector';
+  log(message: string, level?: LogLevel): void;
 }
 
 export type DataConnectorImplementations = {
@@ -108,6 +109,7 @@ export function createDataConnector(
 
 export interface MetaConnector {
   _brand: 'MetaConnector';
+  log(message: string, level?: LogLevel): void;
 }
 
 export type MetaConnectorImplementations = {
@@ -144,6 +146,7 @@ export function createMetaConnector(
 
 export interface Transport {
   _brand: 'Transport';
+  log(message: string, level?: LogLevel): void;
 }
 
 export type TransportImplementations = {

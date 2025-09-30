@@ -1,5 +1,6 @@
 import type {
   createMetaConnector as createMetaConnectorDecl,
+  LogLevel,
   MetaConnectorImplementations,
   MetaConnectorOptimizations,
 } from '@synclets/@types';
@@ -21,6 +22,9 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
 ): Promise<ProtectedMetaConnector> => {
   let boundSynclet: ProtectedSynclet | undefined;
 
+  const log = (message: string, level?: LogLevel) =>
+    boundSynclet?.log(message, level);
+
   const attach = async (synclet: ProtectedSynclet) => {
     if (boundSynclet) {
       errorNew('Meta connector is already attached to Synclet');
@@ -36,6 +40,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
 
   return {
     _brand: 'MetaConnector',
+    log,
     _: [
       depth,
       attach,
