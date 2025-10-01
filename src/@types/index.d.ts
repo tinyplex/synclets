@@ -1,21 +1,21 @@
 /// synclets
 
-type OneLonger<Than extends unknown[] = []> = [string, ...Than];
+type OneLonger<Than extends string[] = []> = [string, ...Than];
 type LeafAddressFor<
   Depth extends number,
-  Address extends unknown[] = [],
+  Address extends string[] = [],
 > = Address['length'] extends Depth
   ? Address
   : LeafAddressFor<Depth, OneLonger<Address>>;
 type ParentAddressFor<
   Depth extends number,
-  Address extends unknown[] = [],
+  Address extends string[] = [],
 > = OneLonger<Address>['length'] extends Depth
   ? Address
   : ParentAddressFor<Depth, OneLonger<Address>>;
 type AncestorAddressFor<
   Depth extends number,
-  Address extends unknown[] = [],
+  Address extends string[] = [],
 > = OneLonger<Address>['length'] extends Depth
   ? Address
   : Address | ParentAddressFor<Depth, [string, ...Address]>;
