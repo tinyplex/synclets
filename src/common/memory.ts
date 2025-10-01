@@ -15,11 +15,11 @@ import {jsonParse, jsonString} from '@synclets/utils';
 import {objDeepAction, objKeys} from './object.ts';
 import {isEmpty} from './other.ts';
 
-export const createMemoryDataConnector = async (
-  depth: number,
+export const createMemoryDataConnector = async <Depth extends number>(
+  depth: Depth,
   onChange?: (data: Data) => Promise<void>,
   initial?: Data,
-): Promise<DataConnector> => {
+): Promise<DataConnector<Depth>> => {
   const data: Data = initial ?? {};
 
   const readAtom = async (address: Address, _context: Context) =>
@@ -69,11 +69,11 @@ export const createMemoryDataConnector = async (
   return connector;
 };
 
-export const createMemoryMetaConnector = async (
-  depth: number,
+export const createMemoryMetaConnector = async <Depth extends number>(
+  depth: Depth,
   onChange?: (meta: Meta) => Promise<void>,
   initial?: Meta,
-): Promise<MetaConnector> => {
+): Promise<MetaConnector<Depth>> => {
   const meta: Meta = initial ?? {};
 
   const readTimestamp = async (address: Address, _context: Context) =>

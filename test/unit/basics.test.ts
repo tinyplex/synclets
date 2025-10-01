@@ -6,8 +6,8 @@ import {
   createMockTransport,
 } from './common.ts';
 
-let dataConnector: DataConnector;
-let metaConnector: MetaConnector;
+let dataConnector: DataConnector<1>;
+let metaConnector: MetaConnector<1>;
 let transport: Transport;
 
 beforeEach(async () => {

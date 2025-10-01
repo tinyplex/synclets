@@ -14,7 +14,7 @@ import {
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
 
-export interface TestSynclet extends Synclet {
+export interface TestSynclet<Depth extends number> extends Synclet<Depth> {
   setAtomForTest(value: string): Promise<void>;
   setNearAtomForTest(value: string): Promise<void>;
   setFarAtomForTest(value: string): Promise<void>;
@@ -24,15 +24,17 @@ export interface TestSynclet extends Synclet {
 
 export const describeConnectorTests = (
   type: string,
-  createDataConnector: (
-    depth: number,
+  createDataConnector: <Depth extends number>(
+    depth: Depth,
     environment: any,
-  ) => Promise<DataConnector>,
-  createMetaConnector: (
-    depth: number,
+  ) => Promise<DataConnector<Depth>>,
+  createMetaConnector: <Depth extends number>(
+    depth: Depth,
     environment: any,
-  ) => Promise<MetaConnector>,
-  getUnderlyingMeta: (synclet: Synclet) => Promise<any>,
+  ) => Promise<MetaConnector<Depth>>,
+  getUnderlyingMeta: <Depth extends number>(
+    synclet: Synclet<Depth>,
+  ) => Promise<any>,
   before?: () => Promise<any>,
   after?: (environment: any) => Promise<any>,
 ) =>
@@ -55,24 +57,24 @@ export const describeConnectorTests = (
       ],
     ])(
       '%d-depth',
-      (
-        depth: number,
+      <Depth extends number>(
+        depth: Depth,
         address: string[],
         nearAddress: string[],
         farAddress?: string[],
       ) => {
-        const createTestDataConnector = (): Promise<DataConnector> =>
+        const createTestDataConnector = (): Promise<DataConnector<Depth>> =>
           createDataConnector(depth, environment);
 
-        const createTestMetaConnector = (): Promise<MetaConnector> =>
+        const createTestMetaConnector = (): Promise<MetaConnector<Depth>> =>
           createMetaConnector(depth, environment);
 
         const createTestSynclet = async (
-          dataConnector: DataConnector,
-          metaConnector: MetaConnector,
+          dataConnector: DataConnector<Depth>,
+          metaConnector: MetaConnector<Depth>,
           transport: Transport | Transport[],
           options: SyncletOptions = {},
-        ): Promise<TestSynclet> => {
+        ): Promise<TestSynclet<Depth>> => {
           const synclet = await createSynclet(
             dataConnector,
             metaConnector,
@@ -402,16 +404,17 @@ export const pause = async (ms = 2) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export const createPooledTestSyncletsAndConnectors = async <
-  TestSynclet extends Synclet,
+  Depth extends number,
+  TestSynclet extends Synclet<Depth>,
 >(
   createSynclet: (
-    dataConnector: DataConnector,
-    metaConnector: MetaConnector,
+    dataConnector: DataConnector<Depth>,
+    metaConnector: MetaConnector<Depth>,
     transport: Transport | Transport[],
     options?: SyncletOptions,
   ) => Promise<TestSynclet>,
-  createDataConnector: () => Promise<DataConnector>,
-  createMetaConnector: () => Promise<MetaConnector>,
+  createDataConnector: () => Promise<DataConnector<Depth>>,
+  createMetaConnector: () => Promise<MetaConnector<Depth>>,
   number: number,
   start = true,
   log = false,
@@ -436,15 +439,18 @@ export const createPooledTestSyncletsAndConnectors = async <
   );
 };
 
-export const createChainedTestSynclets = async <TestSynclet extends Synclet>(
+export const createChainedTestSynclets = async <
+  Depth extends number,
+  TestSynclet extends Synclet<Depth>,
+>(
   createSynclet: (
-    dataConnector: DataConnector,
-    metaConnector: MetaConnector,
+    dataConnector: DataConnector<Depth>,
+    metaConnector: MetaConnector<Depth>,
     transport: Transport | Transport[],
     options?: SyncletOptions,
   ) => Promise<TestSynclet>,
-  createDataConnector: () => Promise<DataConnector>,
-  createMetaConnector: () => Promise<MetaConnector>,
+  createDataConnector: () => Promise<DataConnector<Depth>>,
+  createMetaConnector: () => Promise<MetaConnector<Depth>>,
   number: number,
   loop = false,
   start = true,
@@ -486,6 +492,7 @@ export const createMockDataConnector = () =>
     writeAtom: async () => {},
     removeAtom: async () => {},
     readChildIds: async () => [],
+    readAtoms: async () => ({}),
   });
 
 export const createMockMetaConnector = () =>
@@ -493,6 +500,7 @@ export const createMockMetaConnector = () =>
     readTimestamp: async () => '',
     writeTimestamp: async () => {},
     readChildIds: async () => [],
+    readTimestamps: async () => ({}),
   });
 
 export const createMockTransport = () =>
@@ -500,7 +508,9 @@ export const createMockTransport = () =>
     sendPacket: async () => {},
   });
 
-export const expectEquivalentSynclets = async (synclets: TestSynclet[]) => {
+export const expectEquivalentSynclets = async <Depth extends number>(
+  synclets: TestSynclet<Depth>[],
+) => {
   const data = await synclets[0].getData();
   const meta = await synclets[0].getMeta();
   expect(data).toMatchSnapshot('equivalent');
@@ -513,9 +523,9 @@ export const expectEquivalentSynclets = async (synclets: TestSynclet[]) => {
   );
 };
 
-export const expectDifferingSynclets = async (
-  synclet1: TestSynclet,
-  synclet2: TestSynclet,
+export const expectDifferingSynclets = async <Depth extends number>(
+  synclet1: TestSynclet<Depth>,
+  synclet2: TestSynclet<Depth>,
 ) => {
   const data1 = await synclet1.getData();
   const data2 = await synclet2.getData();

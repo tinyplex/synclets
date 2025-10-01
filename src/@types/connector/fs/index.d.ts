@@ -2,20 +2,22 @@
 
 import type {DataConnector, MetaConnector} from '../../index.d.ts';
 
-export interface FileDataConnector extends DataConnector {
+export interface FileDataConnector<Depth extends number>
+  extends DataConnector<Depth> {
   getFile(): string;
 }
 
-export function createFileDataConnector(
-  depth: number,
+export function createFileDataConnector<Depth extends number>(
+  depth: Depth,
   file: string,
-): Promise<FileDataConnector>;
+): Promise<FileDataConnector<Depth>>;
 
-export interface FileMetaConnector extends MetaConnector {
+export interface FileMetaConnector<Depth extends number>
+  extends MetaConnector<Depth> {
   getFile(): string;
 }
 
-export function createFileMetaConnector(
-  depth: number,
+export function createFileMetaConnector<Depth extends number>(
+  depth: Depth,
   file: string,
-): Promise<FileMetaConnector>;
+): Promise<FileMetaConnector<Depth>>;

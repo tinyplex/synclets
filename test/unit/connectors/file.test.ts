@@ -29,11 +29,11 @@ test('file', async () => {
 
 describeConnectorTests(
   'file',
-  (depth: number, {file}: {file: string}) =>
+  <Depth extends number>(depth: Depth, {file}: {file: string}) =>
     createFileDataConnector(depth, join(file, getUniqueId())),
-  (depth: number, {file}: {file: string}) =>
+  <Depth extends number>(depth: Depth, {file}: {file: string}) =>
     createFileMetaConnector(depth, join(file, getUniqueId())),
-  (synclet: Synclet) => synclet.getMeta(),
+  (synclet: Synclet<number>) => synclet.getMeta(),
   async () => ({file: await mkdtemp(tmpdir() + sep)}),
   async ({file}: {file: string}) =>
     await rm(file, {recursive: true, force: true}),

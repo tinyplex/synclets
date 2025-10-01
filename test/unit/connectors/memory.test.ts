@@ -7,7 +7,7 @@ import {describeConnectorTests} from '../common.ts';
 
 describeConnectorTests(
   'memory',
-  (depth: number) => createMemoryDataConnector(depth),
-  (depth: number) => createMemoryMetaConnector(depth),
-  (synclet: Synclet) => synclet.getMeta(),
+  <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
+  <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
+  (synclet: Synclet<number>) => synclet.getMeta(),
 );

@@ -15,7 +15,10 @@ import {
 import {UTF8} from '../../common/string.ts';
 
 export const createFileDataConnector: typeof createFileDataConnectorDecl =
-  async (depth, file): Promise<FileDataConnector> => {
+  async <Depth extends number>(
+    depth: Depth,
+    file: string,
+  ): Promise<FileDataConnector<Depth>> => {
     const path = await validateFile(file);
 
     const dataConnector = await createMemoryDataConnector(
@@ -34,7 +37,10 @@ export const createFileDataConnector: typeof createFileDataConnectorDecl =
   };
 
 export const createFileMetaConnector: typeof createFileMetaConnectorDecl =
-  async (depth, file): Promise<FileMetaConnector> => {
+  async <Depth extends number>(
+    depth: Depth,
+    file: string,
+  ): Promise<FileMetaConnector<Depth>> => {
     const path = await validateFile(file);
 
     const metaConnector = await createMemoryMetaConnector(
