@@ -23,13 +23,7 @@ import {
 } from '../common/array.ts';
 import {combineHash, getHash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
-import {
-  isObject,
-  objEvery,
-  objKeys,
-  objNotEmpty,
-  objToArray,
-} from '../common/object.ts';
+import {objKeys, objNotEmpty, objToArray} from '../common/object.ts';
 import {
   errorNew,
   ifNotUndefined,
@@ -46,14 +40,18 @@ import {
   WARN,
 } from '../common/string.ts';
 import {
+  isHash,
+  isProtocolSubNodes,
+  isTimestamp,
+  isTimestampAndAtom,
   Message,
   ProtectedDataConnector,
   ProtectedMetaConnector,
   ProtectedSynclet,
   ProtectedTransport,
-  ProtocolNode,
-  ProtocolSubNodes,
-} from './types.js';
+  type ProtocolNode,
+  type ProtocolSubNodes,
+} from './types.ts';
 
 const VERSION = 1;
 
@@ -62,36 +60,6 @@ const DETACH = 1;
 const CONNECT = 2;
 const DISCONNECT = 3;
 const SEND_MESSAGE = 4;
-
-const isProtocolNode = (thing: unknown): thing is ProtocolNode =>
-  isTimestamp(thing) ||
-  isTimestampAndAtom(thing) ||
-  isHash(thing) ||
-  isProtocolSubNodes(thing);
-
-const isTimestamp = (thing: unknown): thing is Timestamp =>
-  typeof thing === 'string';
-
-const isAtom = (thing: unknown): thing is Atom | undefined =>
-  thing === undefined ||
-  thing === null ||
-  typeof thing === 'number' ||
-  typeof thing === 'string' ||
-  typeof thing === 'boolean';
-
-const isTimestampAndAtom = (thing: unknown): thing is TimestampAndAtom =>
-  isArray(thing) &&
-  size(thing) == 2 &&
-  isTimestamp(thing[0]) &&
-  isAtom(thing[1]);
-
-const isHash = (thing: unknown): thing is Hash => typeof thing === 'number';
-
-const isProtocolSubNodes = (thing: unknown): thing is ProtocolSubNodes =>
-  isArray(thing) &&
-  isObject(thing[0]) &&
-  objEvery(thing[0], isProtocolNode) &&
-  (size(thing) == 1 || (size(thing) == 2 && thing[1] === 1));
 
 export const createSynclet: typeof createSyncletDecl = (async (
   dataConnector: ProtectedDataConnector,

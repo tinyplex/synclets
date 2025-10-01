@@ -12,10 +12,20 @@ import type {
   TimestampAndAtom,
   Transport,
 } from '@synclets/@types';
+import {isArray} from '../common/array.ts';
+import {isObject, objEvery} from '../common/object.ts';
+import {size} from '../common/other.ts';
 
-type ProtocolNode = Timestamp | TimestampAndAtom | Hash | ProtocolSubNodes;
+export type ProtocolNode =
+  | Timestamp
+  | TimestampAndAtom
+  | Hash
+  | ProtocolSubNodes;
 
-type ProtocolSubNodes = [subNodes: {[id: string]: ProtocolNode}, partial?: 1];
+export type ProtocolSubNodes = [
+  subNodes: {[id: string]: ProtocolNode},
+  partial?: 1,
+];
 
 export type MessageType = 0;
 
@@ -90,3 +100,34 @@ export interface ProtectedMetaConnector extends MetaConnector {
   ];
   $: [getMeta?: () => Promise<Meta>];
 }
+
+export const isProtocolNode = (thing: unknown): thing is ProtocolNode =>
+  isTimestamp(thing) ||
+  isTimestampAndAtom(thing) ||
+  isHash(thing) ||
+  isProtocolSubNodes(thing);
+
+export const isTimestamp = (thing: unknown): thing is Timestamp =>
+  typeof thing === 'string';
+
+export const isAtom = (thing: unknown): thing is Atom | undefined =>
+  thing === undefined ||
+  thing === null ||
+  typeof thing === 'number' ||
+  typeof thing === 'string' ||
+  typeof thing === 'boolean';
+
+export const isTimestampAndAtom = (thing: unknown): thing is TimestampAndAtom =>
+  isArray(thing) &&
+  size(thing) == 2 &&
+  isTimestamp(thing[0]) &&
+  isAtom(thing[1]);
+
+export const isHash = (thing: unknown): thing is Hash =>
+  typeof thing === 'number';
+
+export const isProtocolSubNodes = (thing: unknown): thing is ProtocolSubNodes =>
+  isArray(thing) &&
+  isObject(thing[0]) &&
+  objEvery(thing[0], isProtocolNode) &&
+  (size(thing) == 1 || (size(thing) == 2 && thing[1] === 1));
