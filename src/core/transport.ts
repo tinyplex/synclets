@@ -25,7 +25,7 @@ export const createTransport: typeof createTransportDecl = async (
   options: TransportOptions = {},
 ): Promise<ProtectedTransport> => {
   let connected = false;
-  let attachedSynclet: ProtectedSynclet | undefined;
+  let attachedSynclet: ProtectedSynclet<number> | undefined;
   let receiveFinalMessage: ReceiveMessage | undefined;
 
   const messageSplit = new RegExp(
@@ -92,7 +92,7 @@ export const createTransport: typeof createTransportDecl = async (
   const log = (message: string, level?: LogLevel) =>
     attachedSynclet?.log(message, level);
 
-  const attach = (synclet: ProtectedSynclet) => {
+  const attach = (synclet: ProtectedSynclet<number>) => {
     if (attachedSynclet) {
       errorNew('Transport is already attached to Synclet');
     }

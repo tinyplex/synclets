@@ -7,8 +7,10 @@ import type {
 import {errorNew} from '../../common/other.ts';
 import {ProtectedMetaConnector, ProtectedSynclet} from '../types.js';
 
-export const createMetaConnector: typeof createMetaConnectorDecl = async (
-  depth,
+export const createMetaConnector: typeof createMetaConnectorDecl = async <
+  Depth extends number,
+>(
+  depth: Depth,
   {
     connect,
     disconnect,
@@ -16,15 +18,15 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
     writeTimestamp,
     readChildIds,
     readTimestamps,
-  }: MetaConnectorImplementations,
+  }: MetaConnectorImplementations<Depth>,
   {getMeta}: MetaConnectorOptimizations = {},
-): Promise<ProtectedMetaConnector> => {
-  let attachedSynclet: ProtectedSynclet | undefined;
+): Promise<ProtectedMetaConnector<Depth>> => {
+  let attachedSynclet: ProtectedSynclet<Depth> | undefined;
 
   const log = (message: string, level?: LogLevel) =>
     attachedSynclet?.log(message, level);
 
-  const attach = async (synclet: ProtectedSynclet) => {
+  const attach = async (synclet: ProtectedSynclet<Depth>) => {
     if (attachedSynclet) {
       errorNew('Meta connector is already attached to Synclet');
     }
@@ -39,9 +41,9 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
 
   return {
     _brand: 'MetaConnector',
+    depth,
     log,
     _: [
-      depth,
       attach,
       detach,
       readTimestamp,

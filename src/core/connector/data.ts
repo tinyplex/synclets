@@ -7,8 +7,10 @@ import type {
 import {errorNew} from '../../common/other.ts';
 import {ProtectedDataConnector, ProtectedSynclet} from '../types.js';
 
-export const createDataConnector: typeof createDataConnectorDecl = async (
-  depth,
+export const createDataConnector: typeof createDataConnectorDecl = async <
+  Depth extends number,
+>(
+  depth: Depth,
   {
     connect,
     disconnect,
@@ -17,15 +19,15 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
     removeAtom,
     readChildIds,
     readAtoms,
-  }: DataConnectorImplementations,
+  }: DataConnectorImplementations<Depth>,
   {getData}: DataConnectorOptimizations = {},
-): Promise<ProtectedDataConnector> => {
-  let attachedSynclet: ProtectedSynclet | undefined;
+): Promise<ProtectedDataConnector<Depth>> => {
+  let attachedSynclet: ProtectedSynclet<Depth> | undefined;
 
   const log = (message: string, level?: LogLevel) =>
     attachedSynclet?.log(message, level);
 
-  const attach = async (synclet: ProtectedSynclet) => {
+  const attach = async (synclet: ProtectedSynclet<Depth>) => {
     if (attachedSynclet) {
       errorNew('Data connector is already attached to Synclet');
     }
@@ -40,9 +42,9 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
 
   return {
     _brand: 'DataConnector',
+    depth,
     log,
     _: [
-      depth,
       attach,
       detach,
       readAtom,

@@ -1,13 +1,17 @@
 import type {
   Address,
+  AncestorAddressFor,
+  AnyAddressFor,
   Atom,
   Atoms,
   Context,
   Data,
   DataConnector,
   Hash,
+  LeafAddressFor,
   Meta,
   MetaConnector,
+  ParentAddressFor,
   Synclet,
   Timestamp,
   TimestampAndAtom,
@@ -38,61 +42,84 @@ export type MessageSubNodes = [
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
-export interface ProtectedSynclet extends Synclet {
+export interface ProtectedSynclet<
+  Depth extends number,
+  AnyAddress = AnyAddressFor<Depth>,
+> extends Synclet<Depth> {
   _: [
     syncExcept: (
-      address: Address,
+      address: AnyAddress,
       transport?: ProtectedTransport,
     ) => Promise<void>,
   ];
 }
 
+export interface ProtectedDataConnector<
+  Depth extends number,
+  AtomAddress = LeafAddressFor<Depth>,
+  ParentAddress = ParentAddressFor<Depth>,
+  AncestorAddress = AncestorAddressFor<Depth>,
+> extends DataConnector<Depth> {
+  _: [
+    attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
+    detach: () => Promise<void>,
+    readAtom: (
+      address: AtomAddress,
+      context: Context,
+    ) => Promise<Atom | undefined>,
+    writeAtom: (
+      address: AtomAddress,
+      atom: Atom,
+      context: Context,
+    ) => Promise<void>,
+    removeAtom: (address: AtomAddress, context: Context) => Promise<void>,
+    readChildIds: (
+      address: AncestorAddress,
+      context: Context,
+    ) => Promise<string[]>,
+    readAtoms: (address: ParentAddress, context: Context) => Promise<Atoms>,
+  ];
+  $: [getData?: () => Promise<Data>];
+}
+
+export interface ProtectedMetaConnector<
+  Depth extends number,
+  TimestampAddress = LeafAddressFor<Depth>,
+  ParentAddress = ParentAddressFor<Depth>,
+  AncestorAddress = AncestorAddressFor<Depth>,
+> extends MetaConnector<Depth> {
+  _: [
+    attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
+    detach: () => Promise<void>,
+    readTimestamp: (
+      address: TimestampAddress,
+      context: Context,
+    ) => Promise<Timestamp | undefined>,
+    writeTimestamp: (
+      address: TimestampAddress,
+      timestamp: Timestamp,
+      context: Context,
+    ) => Promise<void>,
+    readChildIds: (
+      address: AncestorAddress,
+      context: Context,
+    ) => Promise<string[]>,
+    readTimestamps: (
+      address: ParentAddress,
+      context: Context,
+    ) => Promise<Timestamps>,
+  ];
+  $: [getMeta?: () => Promise<Meta>];
+}
+
 export interface ProtectedTransport extends Transport {
   _: [
-    attach: (synclet: ProtectedSynclet) => void,
+    attach: (synclet: ProtectedSynclet<number>) => void,
     detach: () => void,
     connect: (receiveMessage: ReceiveMessage) => Promise<void>,
     disconnect: () => Promise<void>,
     sendMessage: (message: Message, to?: string) => Promise<void>,
   ];
-}
-
-export interface ProtectedDataConnector extends DataConnector {
-  _: [
-    depth: number,
-    attach: (synclet: ProtectedSynclet) => Promise<void>,
-    detach: () => Promise<void>,
-    readAtom: (address: Address, context: Context) => Promise<Atom | undefined>,
-    writeAtom: (
-      address: Address,
-      atom: Atom,
-      context: Context,
-    ) => Promise<void>,
-    removeAtom: (address: Address, context: Context) => Promise<void>,
-    readChildIds: (address: Address, context: Context) => Promise<string[]>,
-    readAtoms: (address: Address, context: Context) => Promise<Atoms>,
-  ];
-  $: [getData?: () => Promise<Data>];
-}
-
-export interface ProtectedMetaConnector extends MetaConnector {
-  _: [
-    depth: number,
-    attach: (synclet: ProtectedSynclet) => Promise<void>,
-    detach: () => Promise<void>,
-    readTimestamp: (
-      address: Address,
-      context: Context,
-    ) => Promise<Timestamp | undefined>,
-    writeTimestamp: (
-      address: Address,
-      timestamp: Timestamp,
-      context: Context,
-    ) => Promise<void>,
-    readChildIds: (address: Address, context: Context) => Promise<string[]>,
-    readTimestamps: (address: Address, context: Context) => Promise<Timestamps>,
-  ];
-  $: [getMeta?: () => Promise<Meta>];
 }
 
 export const isProtocolNode = (thing: unknown): thing is MessageNode =>
