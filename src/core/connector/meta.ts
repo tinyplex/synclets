@@ -15,6 +15,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
     readTimestamp,
     writeTimestamp,
     readChildIds,
+    readTimestamps,
   }: MetaConnectorImplementations,
   {getMeta}: MetaConnectorOptimizations = {},
 ): Promise<ProtectedMetaConnector> => {
@@ -39,7 +40,15 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async (
   return {
     _brand: 'MetaConnector',
     log,
-    _: [depth, attach, detach, readTimestamp, writeTimestamp, readChildIds],
+    _: [
+      depth,
+      attach,
+      detach,
+      readTimestamp,
+      writeTimestamp,
+      readChildIds,
+      readTimestamps,
+    ],
     $: [getMeta],
   };
 };

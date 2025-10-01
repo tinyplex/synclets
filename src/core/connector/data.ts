@@ -16,6 +16,7 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
     writeAtom,
     removeAtom,
     readChildIds,
+    readAtoms,
   }: DataConnectorImplementations,
   {getData}: DataConnectorOptimizations = {},
 ): Promise<ProtectedDataConnector> => {
@@ -40,7 +41,16 @@ export const createDataConnector: typeof createDataConnectorDecl = async (
   return {
     _brand: 'DataConnector',
     log,
-    _: [depth, attach, detach, readAtom, writeAtom, removeAtom, readChildIds],
+    _: [
+      depth,
+      attach,
+      detach,
+      readAtom,
+      writeAtom,
+      removeAtom,
+      readChildIds,
+      readAtoms,
+    ],
     $: [getData],
   };
 };

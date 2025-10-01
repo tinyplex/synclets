@@ -23,7 +23,12 @@ import {
 } from '../common/array.ts';
 import {combineHash, getHash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
-import {objKeys, objNotEmpty, objToArray} from '../common/object.ts';
+import {
+  objFromEntries,
+  objKeys,
+  objNotEmpty,
+  objToArray,
+} from '../common/object.ts';
 import {
   errorNew,
   ifNotUndefined,
@@ -77,6 +82,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       dataWriteAtom,
       dataRemoveAtom,
       dataReadChildIds,
+      dataReadAtoms,
     ],
     $: [dataGetData],
   } = dataConnector;
@@ -88,6 +94,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       metaReadTimestamp,
       metaWriteTimestamp,
       metaReadChildIds,
+      metaReadTimestamps,
     ],
     $: [metaGetMeta],
   } = metaConnector;
@@ -141,45 +148,29 @@ export const createSynclet: typeof createSyncletDecl = (async (
     await queue(...tasks);
   };
 
-  const getDataForAddress = async (
-    address: Address,
-  ): Promise<Data | undefined> => {
-    const data: Data = {};
-    await promiseAll(
-      arrayMap((await dataReadChildIds(address, {})) ?? [], async (childId) =>
-        ifNotUndefined(
-          await (
-            size(address) == dataDepth - 1 ? dataReadAtom : getDataForAddress
-          )([...address, childId], {}),
-          (childData) => {
-            data[childId] = childData;
-          },
-        ),
-      ),
-    );
-    return objNotEmpty(data) ? data : (undefined as any);
-  };
-
-  const getMetaForAddress = async (
-    address: Address,
-  ): Promise<Meta | undefined> => {
-    const meta: Meta = {};
-    await promiseAll(
-      arrayMap((await metaReadChildIds(address, {})) ?? [], async (childId) => {
-        ifNotUndefined(
-          await (
-            size(address) == dataDepth - 1
-              ? metaReadTimestamp
-              : getMetaForAddress
-          )([...address, childId], {}),
-          (childMeta) => {
-            meta[childId] = childMeta;
-          },
+  const getDataForAddress = async (address: Address): Promise<Data> =>
+    size(address) == dataDepth
+      ? ((await dataReadAtoms(address, {})) ?? {})
+      : objFromEntries(
+          await promiseAll(
+            arrayMap(await dataReadChildIds(address, {}), async (childId) => [
+              childId,
+              await getDataForAddress([...address, childId]),
+            ]),
+          ),
         );
-      }),
-    );
-    return objNotEmpty(meta) ? meta : (undefined as any);
-  };
+
+  const getMetaForAddress = async (address: Address): Promise<Meta> =>
+    size(address) == dataDepth
+      ? ((await metaReadTimestamps(address, {})) ?? {})
+      : objFromEntries(
+          await promiseAll(
+            arrayMap(await metaReadChildIds(address, {}), async (childId) => [
+              childId,
+              await getMetaForAddress([...address, childId]),
+            ]),
+          ),
+        );
 
   const deriveHash = async (
     address: Address,

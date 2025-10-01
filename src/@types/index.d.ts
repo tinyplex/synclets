@@ -4,9 +4,13 @@ import type {Tomb} from './utils/index.d.ts';
 
 export type Atom = string | number | boolean | null | Tomb;
 
-export type Data = {[id: string]: Data | Atom};
+export type Atoms = {[id: string]: Atom};
 
-export type Meta = {[id: string]: Meta | Timestamp};
+export type Data = Atoms | {[id: string]: Data};
+
+export type Timestamps = {[id: string]: Timestamp};
+
+export type Meta = Timestamps | {[id: string]: Meta};
 
 export type Timestamp = string;
 
@@ -78,10 +82,8 @@ export type DataConnectorImplementations = {
   readAtom: (address: Address, context: Context) => Promise<Atom | undefined>;
   writeAtom: (address: Address, atom: Atom, context: Context) => Promise<void>;
   removeAtom: (address: Address, context: Context) => Promise<void>;
-  readChildIds: (
-    address: Address,
-    context: Context,
-  ) => Promise<string[] | undefined>;
+  readChildIds: (address: Address, context: Context) => Promise<string[]>;
+  readAtoms: (address: Address, context: Context) => Promise<Atoms>;
 };
 
 export type DataConnectorOptimizations = {
@@ -113,10 +115,8 @@ export type MetaConnectorImplementations = {
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
-  readChildIds: (
-    address: Address,
-    context: Context,
-  ) => Promise<string[] | undefined>;
+  readChildIds: (address: Address, context: Context) => Promise<string[]>;
+  readTimestamps: (address: Address, context: Context) => Promise<Timestamps>;
 };
 
 export type MetaConnectorOptimizations = {

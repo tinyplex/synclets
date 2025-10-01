@@ -1,6 +1,7 @@
 import type {
   Address,
   Atom,
+  Atoms,
   Context,
   Data,
   DataConnector,
@@ -10,6 +11,7 @@ import type {
   Synclet,
   Timestamp,
   TimestampAndAtom,
+  Timestamps,
   Transport,
 } from '@synclets/@types';
 import {isArray} from '../common/array.ts';
@@ -67,10 +69,8 @@ export interface ProtectedDataConnector extends DataConnector {
       context: Context,
     ) => Promise<void>,
     removeAtom: (address: Address, context: Context) => Promise<void>,
-    readChildIds: (
-      address: Address,
-      context: Context,
-    ) => Promise<string[] | undefined>,
+    readChildIds: (address: Address, context: Context) => Promise<string[]>,
+    readAtoms: (address: Address, context: Context) => Promise<Atoms>,
   ];
   $: [getData?: () => Promise<Data>];
 }
@@ -89,10 +89,8 @@ export interface ProtectedMetaConnector extends MetaConnector {
       timestamp: Timestamp,
       context: Context,
     ) => Promise<void>,
-    readChildIds: (
-      address: Address,
-      context: Context,
-    ) => Promise<string[] | undefined>,
+    readChildIds: (address: Address, context: Context) => Promise<string[]>,
+    readTimestamps: (address: Address, context: Context) => Promise<Timestamps>,
   ];
   $: [getMeta?: () => Promise<Meta>];
 }
