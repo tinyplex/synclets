@@ -7,11 +7,15 @@ import type {
   Hash,
   Meta,
   MetaConnector,
-  ProtocolNode,
   Synclet,
   Timestamp,
+  TimestampAndAtom,
   Transport,
 } from '@synclets/@types';
+
+type ProtocolNode = Timestamp | TimestampAndAtom | Hash | ProtocolSubNodes;
+
+type ProtocolSubNodes = [subNodes: {[id: string]: ProtocolNode}, partial?: 1];
 
 export type MessageType = 0;
 
@@ -74,15 +78,9 @@ export interface ProtectedMetaConnector extends MetaConnector {
       address: Address,
       context: Context,
     ) => Promise<Timestamp | undefined>,
-    readHash: (address: Address, context: Context) => Promise<Hash | undefined>,
     writeTimestamp: (
       address: Address,
       timestamp: Timestamp,
-      context: Context,
-    ) => Promise<void>,
-    writeHash: (
-      address: Address,
-      hash: Hash,
       context: Context,
     ) => Promise<void>,
     readChildIds: (

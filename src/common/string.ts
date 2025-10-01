@@ -1,7 +1,5 @@
-export const ROOT = '\u0000';
-export const ATOM_KEY = ROOT + 'a';
-export const TIMESTAMP_KEY = ROOT + 't';
-export const HASH_KEY = ROOT + 'h';
+export const RESERVED = '\u0000';
+export const TIMESTAMP_KEY = RESERVED + 't';
 
 export const EMPTY_STRING = '';
 export const SPACE = ' ';

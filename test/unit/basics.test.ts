@@ -32,7 +32,7 @@ test('log', async () => {
   );
   await synclet.start();
   expect(logger.info).toHaveBeenCalledWith('[synclet] start');
-  expect(logger.info).toHaveBeenCalledWith('[synclet] sync ');
+  expect(logger.info).toHaveBeenCalledWith('[synclet] sync (0) ');
   await synclet.stop();
   expect(logger.info).toHaveBeenCalledWith('[synclet] stop');
 });

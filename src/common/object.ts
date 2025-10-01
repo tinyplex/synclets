@@ -15,7 +15,9 @@ export const objEnsure = <Value>(
   create: () => Value,
 ): Value => (isUndefined(obj[id]) ? (obj[id] = create()) : obj[id]);
 
-export const objKeys = object.keys;
+export const objKeys = (obj: IdObj | undefined): string[] => [
+  ...object.keys(obj ?? {}),
+];
 
 export const objValues = object.values;
 

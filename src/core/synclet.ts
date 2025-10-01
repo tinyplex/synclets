@@ -7,8 +7,6 @@ import {
   Hash,
   LogLevel,
   Meta,
-  ProtocolNode,
-  ProtocolSubNodes,
   SyncletImplementations,
   SyncletOptions,
   Timestamp,
@@ -20,15 +18,21 @@ import {
   arrayForEach,
   arrayMap,
   arrayPush,
+  arrayReduce,
   isArray,
 } from '../common/array.ts';
 import {combineHash, getHash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
-import {objKeys, objNotEmpty, objToArray} from '../common/object.ts';
+import {
+  isObject,
+  objEvery,
+  objKeys,
+  objNotEmpty,
+  objToArray,
+} from '../common/object.ts';
 import {
   errorNew,
   ifNotUndefined,
-  isEmpty,
   isUndefined,
   promiseAll,
   size,
@@ -42,17 +46,13 @@ import {
   WARN,
 } from '../common/string.ts';
 import {
-  isHash,
-  isProtocolSubNodes,
-  isTimestamp,
-  isTimestampAndAtom,
-} from '../common/types.ts';
-import {
   Message,
   ProtectedDataConnector,
   ProtectedMetaConnector,
   ProtectedSynclet,
   ProtectedTransport,
+  ProtocolNode,
+  ProtocolSubNodes,
 } from './types.js';
 
 const VERSION = 1;
@@ -62,6 +62,36 @@ const DETACH = 1;
 const CONNECT = 2;
 const DISCONNECT = 3;
 const SEND_MESSAGE = 4;
+
+const isProtocolNode = (thing: unknown): thing is ProtocolNode =>
+  isTimestamp(thing) ||
+  isTimestampAndAtom(thing) ||
+  isHash(thing) ||
+  isProtocolSubNodes(thing);
+
+const isTimestamp = (thing: unknown): thing is Timestamp =>
+  typeof thing === 'string';
+
+const isAtom = (thing: unknown): thing is Atom | undefined =>
+  thing === undefined ||
+  thing === null ||
+  typeof thing === 'number' ||
+  typeof thing === 'string' ||
+  typeof thing === 'boolean';
+
+const isTimestampAndAtom = (thing: unknown): thing is TimestampAndAtom =>
+  isArray(thing) &&
+  size(thing) == 2 &&
+  isTimestamp(thing[0]) &&
+  isAtom(thing[1]);
+
+const isHash = (thing: unknown): thing is Hash => typeof thing === 'number';
+
+const isProtocolSubNodes = (thing: unknown): thing is ProtocolSubNodes =>
+  isArray(thing) &&
+  isObject(thing[0]) &&
+  objEvery(thing[0], isProtocolNode) &&
+  (size(thing) == 1 || (size(thing) == 2 && thing[1] === 1));
 
 export const createSynclet: typeof createSyncletDecl = (async (
   dataConnector: ProtectedDataConnector,
@@ -88,9 +118,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
       metaAttach,
       metaDetach,
       metaReadTimestamp,
-      metaReadHash,
       metaWriteTimestamp,
-      metaWriteHash,
       metaReadChildIds,
     ],
     $: [metaGetMeta],
@@ -123,6 +151,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
+    log(`set ${address} ${atomOrUndefined}`);
     if (isUndefined(newTimestamp)) {
       newTimestamp = getNextTimestamp();
     } else {
@@ -137,23 +166,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
         : () => dataWriteAtom(address, atomOrUndefined, context),
       () => metaWriteTimestamp(address, newTimestamp, context),
     ];
-    if (!isEmpty(address)) {
-      const hashChange = combineHash(
-        getHash(oldTimestamp),
-        getHash(newTimestamp),
-      );
-      let parentAddress = [...address];
-      while (!isEmpty(parentAddress)) {
-        const queuedAddress = (parentAddress = parentAddress.slice(0, -1));
-        arrayPush(tasks, async () => {
-          await metaWriteHash(
-            queuedAddress,
-            combineHash(await metaReadHash(queuedAddress, context), hashChange),
-            context,
-          );
-        });
-      }
-    }
     if (syncOrFromTransport) {
       arrayPush(tasks, () => syncExcept(address, syncOrFromTransport));
     }
@@ -161,10 +173,31 @@ export const createSynclet: typeof createSyncletDecl = (async (
     await queue(...tasks);
   };
 
+  const metaReadHash = async (
+    address: Address,
+    context: Context,
+  ): Promise<Hash> =>
+    arrayReduce(
+      await promiseAll(
+        arrayMap(
+          (await metaReadChildIds(address, context)) ?? [],
+          async (childId) =>
+            size(address) == metaDepth - 1
+              ? getHash(
+                  (await metaReadTimestamp([...address, childId], context)) ??
+                    '',
+                )
+              : await metaReadHash([...address, childId], context),
+        ),
+      ),
+      (runningHash, hash) => combineHash(runningHash, hash),
+      0,
+    );
+
   const getDataForAddress = async (
     address: Address,
   ): Promise<Data | undefined> => {
-    const data = {} as {[id: string]: Data | Atom};
+    const data: Data = {};
     await promiseAll(
       arrayMap((await dataReadChildIds(address, {})) ?? [], async (childId) =>
         ifNotUndefined(
@@ -182,11 +215,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
 
   const getMetaForAddress = async (
     address: Address,
-  ): Promise<Meta | Timestamp | undefined> => {
-    const meta = [await metaReadHash(address, {}), {}] as [
-      Hash,
-      {[id: string]: Meta | Timestamp},
-    ];
+  ): Promise<Meta | undefined> => {
+    const meta: Meta = {};
     await promiseAll(
       arrayMap((await metaReadChildIds(address, {})) ?? [], async (childId) => {
         ifNotUndefined(
@@ -195,13 +225,13 @@ export const createSynclet: typeof createSyncletDecl = (async (
               ? metaReadTimestamp
               : getMetaForAddress
           )([...address, childId], {}),
-          (childData) => {
-            meta[1][childId] = childData;
+          (childMeta) => {
+            meta[childId] = childMeta;
           },
         );
       }),
     );
-    return !isUndefined(meta[0]) ? meta : undefined;
+    return objNotEmpty(meta) ? meta : (undefined as any);
   };
 
   const readHashOrTimestamp = async (address: Address, context: Context) =>
@@ -251,11 +281,11 @@ export const createSynclet: typeof createSyncletDecl = (async (
     exceptTransport?: ProtectedTransport | boolean,
   ) => {
     if (started) {
-      log(`sync ` + address);
       const hashOrTimestamp = await readHashOrTimestamp(address, {});
       const tasks: Task[] = [];
-      arrayForEach(transports, (transport) => {
+      arrayForEach(transports, (transport, t) => {
         if (transport !== exceptTransport) {
+          log(`sync (${t}) ` + address);
           arrayPush(tasks, () =>
             sendNodeMessage(transport, address, hashOrTimestamp),
           );

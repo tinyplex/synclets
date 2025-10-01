@@ -6,24 +6,13 @@ export type Atom = string | number | boolean | null | Tomb;
 
 export type Data = {[id: string]: Data | Atom};
 
-export type Meta = [hash: Hash, {[id: string]: Meta | Timestamp}];
+export type Meta = {[id: string]: Meta | Timestamp};
 
 export type Timestamp = string;
 
 export type Hash = number;
 
 export type Address = Readonly<string[]>;
-
-export type ProtocolNode =
-  | Timestamp
-  | TimestampAndAtom
-  | Hash
-  | ProtocolSubNodes;
-
-export type ProtocolSubNodes = [
-  subNodes: {[id: string]: ProtocolNode},
-  partial?: 1,
-];
 
 export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom | undefined];
 
@@ -119,13 +108,11 @@ export type MetaConnectorImplementations = {
     address: Address,
     context: Context,
   ) => Promise<Timestamp | undefined>;
-  readHash: (address: Address, context: Context) => Promise<Hash | undefined>;
   writeTimestamp: (
     address: Address,
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
-  writeHash: (address: Address, hash: Hash, context: Context) => Promise<void>;
   readChildIds: (
     address: Address,
     context: Context,

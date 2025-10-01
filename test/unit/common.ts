@@ -191,11 +191,7 @@ export const describeConnectorTests = (
                 createTestDataConnector,
                 createTestMetaConnector,
                 2,
-                false,
               );
-
-            await synclet1.start();
-            await synclet2.start();
 
             await synclet1.setAtomForTest('A');
             await expectEquivalentSynclets([synclet1, synclet2]);
@@ -215,11 +211,7 @@ export const describeConnectorTests = (
                 createTestDataConnector,
                 createTestMetaConnector,
                 2,
-                false,
               );
-
-            await synclet1.start();
-            await synclet2.start();
 
             await synclet1.setAtomForTest('A');
             await expectEquivalentSynclets([synclet1, synclet2]);
@@ -499,9 +491,7 @@ export const createMockDataConnector = () =>
 export const createMockMetaConnector = () =>
   createMetaConnector(1, {
     readTimestamp: async () => '',
-    readHash: async () => 0,
     writeTimestamp: async () => {},
-    writeHash: async () => {},
     readChildIds: async () => [],
   });
 

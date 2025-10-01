@@ -1,4 +1,4 @@
-import type {Data} from '@synclets/@types';
+import type {Data, Meta} from '@synclets/@types';
 import type {
   createFileDataConnector as createFileDataConnectorDecl,
   createFileMetaConnector as createFileMetaConnectorDecl,
@@ -11,7 +11,6 @@ import {validateFile} from '../../common/fs.ts';
 import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
-  Root,
 } from '../../common/memory.ts';
 import {UTF8} from '../../common/string.ts';
 
@@ -40,7 +39,7 @@ export const createFileMetaConnector: typeof createFileMetaConnectorDecl =
 
     const metaConnector = await createMemoryMetaConnector(
       depth,
-      (root: Root) => writeFile(path, jsonString(root), UTF8),
+      (meta: Meta) => writeFile(path, jsonString(meta), UTF8),
       jsonParse(await readFile(path, UTF8)),
     );
 
