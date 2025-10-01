@@ -17,43 +17,41 @@ import {UTF8} from '../../common/string.ts';
 export const createFileDataConnector: typeof createFileDataConnectorDecl =
   async <Depth extends number>(
     depth: Depth,
-    file: string,
+    path: string,
   ): Promise<FileDataConnector<Depth>> => {
-    const path = await validateFile(file);
+    const file = await validateFile(path);
 
     const dataConnector = await createMemoryDataConnector(
       depth,
-      (data: Data) => writeFile(path, jsonString(data), UTF8),
-      jsonParse(await readFile(path, UTF8)),
+      (data: Data) => writeFile(file, jsonString(data), UTF8),
+      jsonParse(await readFile(file, UTF8)),
     );
 
-    // --
+    const getFile = () => file;
 
     return {
       ...dataConnector,
-
-      getFile: () => file,
+      getFile,
     };
   };
 
 export const createFileMetaConnector: typeof createFileMetaConnectorDecl =
   async <Depth extends number>(
     depth: Depth,
-    file: string,
+    path: string,
   ): Promise<FileMetaConnector<Depth>> => {
-    const path = await validateFile(file);
+    const file = await validateFile(path);
 
     const metaConnector = await createMemoryMetaConnector(
       depth,
-      (meta: Meta) => writeFile(path, jsonString(meta), UTF8),
-      jsonParse(await readFile(path, UTF8)),
+      (meta: Meta) => writeFile(file, jsonString(meta), UTF8),
+      jsonParse(await readFile(file, UTF8)),
     );
 
-    // --
+    const getFile = () => file;
 
     return {
       ...metaConnector,
-
-      getFile: () => file,
+      getFile,
     };
   };
