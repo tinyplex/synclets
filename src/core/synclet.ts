@@ -49,8 +49,8 @@ import {
   ProtectedMetaConnector,
   ProtectedSynclet,
   ProtectedTransport,
-  type ProtocolNode,
-  type ProtocolSubNodes,
+  type MessageNode,
+  type MessageSubNodes,
 } from './types.ts';
 
 const VERSION = 1;
@@ -141,27 +141,6 @@ export const createSynclet: typeof createSyncletDecl = (async (
     await queue(...tasks);
   };
 
-  const metaReadHash = async (
-    address: Address,
-    context: Context,
-  ): Promise<Hash> =>
-    arrayReduce(
-      await promiseAll(
-        arrayMap(
-          (await metaReadChildIds(address, context)) ?? [],
-          async (childId) =>
-            size(address) == metaDepth - 1
-              ? getHash(
-                  (await metaReadTimestamp([...address, childId], context)) ??
-                    '',
-                )
-              : await metaReadHash([...address, childId], context),
-        ),
-      ),
-      (runningHash, hash) => combineHash(runningHash, hash),
-      0,
-    );
-
   const getDataForAddress = async (
     address: Address,
   ): Promise<Data | undefined> => {
@@ -202,15 +181,36 @@ export const createSynclet: typeof createSyncletDecl = (async (
     return objNotEmpty(meta) ? meta : (undefined as any);
   };
 
+  const deriveHash = async (
+    address: Address,
+    context: Context,
+  ): Promise<Hash> =>
+    arrayReduce(
+      await promiseAll(
+        arrayMap(
+          (await metaReadChildIds(address, context)) ?? [],
+          async (childId) =>
+            size(address) == metaDepth - 1
+              ? getHash(
+                  (await metaReadTimestamp([...address, childId], context)) ??
+                    '',
+                )
+              : await deriveHash([...address, childId], context),
+        ),
+      ),
+      (previousHash, hash) => combineHash(previousHash, hash),
+      0,
+    );
+
   const readHashOrTimestamp = async (address: Address, context: Context) =>
     size(address) < dataDepth
-      ? ((await metaReadHash(address, context)) ?? 0)
+      ? ((await deriveHash(address, context)) ?? 0)
       : ((await metaReadTimestamp(address, context)) ?? EMPTY_STRING);
 
   const readFullNodesOrAtomAndTimestamp = async (
     address: Address,
     context: Context,
-  ): Promise<ProtocolSubNodes | TimestampAndAtom | undefined> => {
+  ): Promise<MessageSubNodes | TimestampAndAtom | undefined> => {
     if (size(address) < dataDepth) {
       return await readFullNodes(address, context);
     }
@@ -224,8 +224,8 @@ export const createSynclet: typeof createSyncletDecl = (async (
     address: Address,
     context: Context,
     except: string[] = [],
-  ): Promise<ProtocolSubNodes> => {
-    const subNodeObj: {[id: string]: ProtocolNode} = {};
+  ): Promise<MessageSubNodes> => {
+    const subNodeObj: {[id: string]: MessageNode} = {};
     await promiseAll(
       arrayMap(
         arrayDifference(
@@ -266,7 +266,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const sendNodeMessage = async (
     transport: ProtectedTransport,
     address: Address,
-    node: ProtocolNode,
+    node: MessageNode,
     receivedContext: Context = {},
     to?: string,
   ) =>
@@ -317,9 +317,9 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const transformNode = async (
     transport: ProtectedTransport,
     address: Address,
-    node: ProtocolNode,
+    node: MessageNode,
     context: Context,
-    ifTransformedToDefined: (newNode: ProtocolNode) => Promise<void> | void,
+    ifTransformedToDefined: (newNode: MessageNode) => Promise<void> | void,
     ifTransformedToUndefined: () => void = () => {},
   ) =>
     await ifNotUndefined(
@@ -343,7 +343,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     address: Address,
     otherTimestamp: Timestamp,
     context: Context,
-  ): Promise<ProtocolNode | undefined> => {
+  ): Promise<MessageNode | undefined> => {
     if (size(address) == dataDepth) {
       const myTimestamp =
         (await metaReadTimestamp(address, context)) ?? EMPTY_STRING;
@@ -362,7 +362,7 @@ export const createSynclet: typeof createSyncletDecl = (async (
     address: Address,
     otherTimestampAndAtom: TimestampAndAtom,
     context: Context,
-  ): Promise<ProtocolNode | undefined> => {
+  ): Promise<MessageNode | undefined> => {
     if (size(address) == dataDepth) {
       const myTimestamp =
         (await metaReadTimestamp(address, context)) ?? EMPTY_STRING;
@@ -389,10 +389,10 @@ export const createSynclet: typeof createSyncletDecl = (async (
     address: Address,
     otherHash: Hash,
     context: Context,
-  ): Promise<ProtocolNode | undefined> => {
+  ): Promise<MessageNode | undefined> => {
     if (size(address) < dataDepth) {
-      if (otherHash !== (await metaReadHash(address, context))) {
-        const subNodeObj: {[id: string]: ProtocolNode} = {};
+      if (otherHash !== (await deriveHash(address, context))) {
+        const subNodeObj: {[id: string]: MessageNode} = {};
         await promiseAll(
           arrayMap(
             (await metaReadChildIds(address, context)) ?? [],
@@ -414,11 +414,11 @@ export const createSynclet: typeof createSyncletDecl = (async (
   const transformSubNodes = async (
     transport: ProtectedTransport,
     address: Address,
-    [otherSubNodeObj, partial]: ProtocolSubNodes,
+    [otherSubNodeObj, partial]: MessageSubNodes,
     context: Context,
-  ): Promise<ProtocolNode | undefined> => {
+  ): Promise<MessageNode | undefined> => {
     if (size(address) < dataDepth) {
-      const mySubNodes: ProtocolSubNodes = partial
+      const mySubNodes: MessageSubNodes = partial
         ? [{}]
         : await readFullNodes(address, context, objKeys(otherSubNodeObj));
       await promiseAll(

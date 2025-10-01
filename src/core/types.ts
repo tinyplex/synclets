@@ -16,17 +16,6 @@ import {isArray} from '../common/array.ts';
 import {isObject, objEvery} from '../common/object.ts';
 import {size} from '../common/other.ts';
 
-export type ProtocolNode =
-  | Timestamp
-  | TimestampAndAtom
-  | Hash
-  | ProtocolSubNodes;
-
-export type ProtocolSubNodes = [
-  subNodes: {[id: string]: ProtocolNode},
-  partial?: 1,
-];
-
 export type MessageType = 0;
 
 export type Message = [
@@ -34,8 +23,15 @@ export type Message = [
   type: MessageType,
   depth: number,
   address: Address,
-  node: ProtocolNode,
+  node: MessageNode,
   context: Context,
+];
+
+export type MessageNode = Timestamp | TimestampAndAtom | Hash | MessageSubNodes;
+
+export type MessageSubNodes = [
+  subNodes: {[id: string]: MessageNode},
+  partial?: 1,
 ];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
@@ -101,7 +97,7 @@ export interface ProtectedMetaConnector extends MetaConnector {
   $: [getMeta?: () => Promise<Meta>];
 }
 
-export const isProtocolNode = (thing: unknown): thing is ProtocolNode =>
+export const isProtocolNode = (thing: unknown): thing is MessageNode =>
   isTimestamp(thing) ||
   isTimestampAndAtom(thing) ||
   isHash(thing) ||
@@ -126,7 +122,7 @@ export const isTimestampAndAtom = (thing: unknown): thing is TimestampAndAtom =>
 export const isHash = (thing: unknown): thing is Hash =>
   typeof thing === 'number';
 
-export const isProtocolSubNodes = (thing: unknown): thing is ProtocolSubNodes =>
+export const isProtocolSubNodes = (thing: unknown): thing is MessageSubNodes =>
   isArray(thing) &&
   isObject(thing[0]) &&
   objEvery(thing[0], isProtocolNode) &&
