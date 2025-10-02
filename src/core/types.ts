@@ -18,6 +18,7 @@ import type {
   Timestamps,
   Transport,
 } from '@synclets/@types';
+import {isAtom, isTimestamp} from '@synclets/utils';
 import {isArray} from '../common/array.ts';
 import {isObject, objEvery} from '../common/object.ts';
 import {size} from '../common/other.ts';
@@ -127,16 +128,6 @@ export const isProtocolNode = (thing: unknown): thing is MessageNode =>
   isTimestampAndAtom(thing) ||
   isHash(thing) ||
   isProtocolSubNodes(thing);
-
-export const isTimestamp = (thing: unknown): thing is Timestamp =>
-  typeof thing === 'string';
-
-export const isAtom = (thing: unknown): thing is Atom | undefined =>
-  thing === undefined ||
-  thing === null ||
-  typeof thing === 'number' ||
-  typeof thing === 'string' ||
-  typeof thing === 'boolean';
 
 export const isTimestampAndAtom = (thing: unknown): thing is TimestampAndAtom =>
   isArray(thing) &&

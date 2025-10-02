@@ -1,3 +1,3 @@
-import {Tomb} from '@synclets/@types/utils';
+import {Undefined} from '@synclets/@types/utils';
 
-export const TOMB: Tomb = '\uFFFC';
+export const UNDEFINED: Undefined = '\uFFFC';

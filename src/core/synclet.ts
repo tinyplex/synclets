@@ -16,7 +16,7 @@ import {
   Timestamp,
   TimestampAndAtom,
 } from '@synclets/@types';
-import {getUniqueId} from '@synclets/utils';
+import {getUniqueId, isTimestamp} from '@synclets/utils';
 import {
   arrayDifference,
   arrayForEach,
@@ -51,7 +51,6 @@ import {
 import {
   isHash,
   isProtocolSubNodes,
-  isTimestamp,
   isTimestampAndAtom,
   Message,
   ProtectedDataConnector,

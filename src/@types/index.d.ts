@@ -23,11 +23,11 @@ type AnyAddressFor<Depth extends number> =
   | LeafAddressFor<Depth>
   | AncestorAddressFor<Depth>;
 
-import type {Tomb} from './utils/index.d.ts';
+import type {Undefined} from './utils/index.d.ts';
 
 export type Address = string[];
 
-export type Atom = string | number | boolean | null | Tomb;
+export type Atom = string | number | boolean | null | Undefined;
 
 export type Atoms = {[id: string]: Atom};
 

@@ -16,7 +16,7 @@ import type {
   DirectoryDataConnector,
   DirectoryMetaConnector,
 } from '@synclets/@types/connector/fs';
-import {jsonParse, jsonString} from '@synclets/utils';
+import {isAtom, isTimestamp, jsonParse, jsonString} from '@synclets/utils';
 import {arrayMap} from '../../common/array.ts';
 import {
   getDirectoryContents,
@@ -27,7 +27,6 @@ import {
 } from '../../common/fs.ts';
 import {objFromEntries} from '../../common/object.ts';
 import {promiseAll} from '../../common/other.ts';
-import {isAtom, isTimestamp} from '../../core/types.ts';
 
 export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDecl =
   async <Depth extends number>(
