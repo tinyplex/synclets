@@ -1,3 +1,4 @@
+import {jsonParse, jsonString} from '@synclets/utils';
 import {
   access,
   constants,
@@ -29,27 +30,26 @@ const validateReadWrite = async (path: string) => {
   }
 };
 
-export const readPossibleFile = async (
+export const readFileJson = async (
   root: string,
   paths: string[],
-): Promise<string> => {
+): Promise<unknown> => {
   try {
-    return await readFile(resolve(root, ...paths), UTF8);
+    return jsonParse(await readFile(resolve(root, ...paths), UTF8));
   } catch {}
-  return '';
 };
 
-export const writeEnsuredFile = async (
+export const writeFileJson = async (
   root: string,
   paths: string[],
-  content: string,
+  content: unknown,
 ) => {
   const file = resolve(root, ...paths);
   await makeDirectory(dirname(file));
-  await writeFile(file, content, UTF8);
+  await writeFile(file, jsonString(content), UTF8);
 };
 
-export const removePossibleFile = async (
+export const removeFileAndAncestors = async (
   root: string,
   paths: string[],
 ): Promise<void> => {

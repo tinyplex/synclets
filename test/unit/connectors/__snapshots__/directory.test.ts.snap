@@ -2,7 +2,7 @@
 
 exports[`directory connector 1-depth 2-way connected, deletion: equivalent 1`] = `
 {
-  "a": ""A"",
+  "a": "A",
 }
 `;
 
@@ -12,40 +12,40 @@ exports[`directory connector 1-depth 2-way connected, initial: equivalent 1`] = 
 
 exports[`directory connector 1-depth 2-way connected, near atom: equivalent 1`] = `
 {
-  "a": ""A"",
-  "b": ""B"",
+  "a": "A",
+  "b": "B",
 }
 `;
 
 exports[`directory connector 1-depth 2-way connected: equivalent 1`] = `
 {
-  "a": ""A"",
+  "a": "A",
 }
 `;
 
 exports[`directory connector 1-depth 2-way connected: equivalent 2`] = `
 {
-  "a": ""B"",
+  "a": "B",
 }
 `;
 
 exports[`directory connector 1-depth 2-way disconnected, conflicting values: equivalent 1`] = `
 {
-  "a": ""B"",
+  "a": "B",
 }
 `;
 
 exports[`directory connector 1-depth 2-way disconnected, near atom: equivalent 1`] = `
 {
-  "a": ""A"",
-  "b": ""B"",
+  "a": "A",
+  "b": "B",
 }
 `;
 
 exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
 [
   {
-    "a": ""A"",
+    "a": "A",
   },
   {},
 ]
@@ -54,24 +54,24 @@ exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: diffe
 exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
 [
   {
-    "a": ""A"",
+    "a": "A",
   },
   {
-    "a": ""B"",
+    "a": "B",
   },
 ]
 `;
 
 exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
 {
-  "a": ""B"",
+  "a": "B",
 }
 `;
 
 exports[`directory connector 1-depth 2-way start 1, set 1, start 2: differing 1`] = `
 [
   {
-    "a": ""A"",
+    "a": "A",
   },
   {},
 ]
@@ -79,14 +79,14 @@ exports[`directory connector 1-depth 2-way start 1, set 1, start 2: differing 1`
 
 exports[`directory connector 1-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
 {
-  "a": ""A"",
+  "a": "A",
 }
 `;
 
 exports[`directory connector 1-depth 2-way start 2, set 1, start 1: differing 1`] = `
 [
   {
-    "a": ""A"",
+    "a": "A",
   },
   {},
 ]
@@ -94,294 +94,294 @@ exports[`directory connector 1-depth 2-way start 2, set 1, start 1: differing 1`
 
 exports[`directory connector 1-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
 {
-  "a": ""A"",
+  "a": "A",
 }
 `;
 
 exports[`directory connector 1-depth 2-way stop 1, set 1, start 1: differing 1`] = `
 [
   {
-    "a": ""B"",
+    "a": "B",
   },
   {
-    "a": ""A"",
+    "a": "A",
   },
 ]
 `;
 
 exports[`directory connector 1-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
 {
-  "a": ""A"",
+  "a": "A",
 }
 `;
 
 exports[`directory connector 1-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
 {
-  "a": ""B"",
+  "a": "B",
 }
 `;
 
 exports[`directory connector 1-depth 2-way stop 1, set 2, start 1: differing 1`] = `
 [
   {
-    "a": ""A"",
+    "a": "A",
   },
   {
-    "a": ""B"",
+    "a": "B",
   },
 ]
 `;
 
 exports[`directory connector 1-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
 {
-  "a": ""A"",
+  "a": "A",
 }
 `;
 
 exports[`directory connector 1-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
 {
-  "a": ""B"",
+  "a": "B",
 }
 `;
 
 exports[`directory connector 1-depth 3-way chain: equivalent 1`] = `
 {
-  "a": ""A1"",
+  "a": "A1",
 }
 `;
 
 exports[`directory connector 1-depth 3-way chain: equivalent 2`] = `
 {
-  "a": ""A2"",
+  "a": "A2",
 }
 `;
 
 exports[`directory connector 1-depth 3-way chain: equivalent 3`] = `
 {
-  "a": ""A3"",
+  "a": "A3",
 }
 `;
 
 exports[`directory connector 1-depth 3-way pool: equivalent 1`] = `
 {
-  "a": ""A1"",
+  "a": "A1",
 }
 `;
 
 exports[`directory connector 1-depth 3-way pool: equivalent 2`] = `
 {
-  "a": ""A2"",
+  "a": "A2",
 }
 `;
 
 exports[`directory connector 1-depth 3-way pool: equivalent 3`] = `
 {
-  "a": ""A3"",
+  "a": "A3",
 }
 `;
 
 exports[`directory connector 1-depth 3-way ring: equivalent 1`] = `
 {
-  "a": ""A1"",
+  "a": "A1",
 }
 `;
 
 exports[`directory connector 1-depth 3-way ring: equivalent 2`] = `
 {
-  "a": ""A2"",
+  "a": "A2",
 }
 `;
 
 exports[`directory connector 1-depth 3-way ring: equivalent 3`] = `
 {
-  "a": ""A3"",
+  "a": "A3",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 1`] = `
 {
-  "a": ""A1"",
+  "a": "A1",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 2`] = `
 {
-  "a": ""A2"",
+  "a": "A2",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 3`] = `
 {
-  "a": ""A3"",
+  "a": "A3",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 4`] = `
 {
-  "a": ""A4"",
+  "a": "A4",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 5`] = `
 {
-  "a": ""A5"",
+  "a": "A5",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 6`] = `
 {
-  "a": ""A6"",
+  "a": "A6",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 7`] = `
 {
-  "a": ""A7"",
+  "a": "A7",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 8`] = `
 {
-  "a": ""A8"",
+  "a": "A8",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 9`] = `
 {
-  "a": ""A9"",
+  "a": "A9",
 }
 `;
 
 exports[`directory connector 1-depth 10-way chain: equivalent 10`] = `
 {
-  "a": ""A10"",
+  "a": "A10",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 1`] = `
 {
-  "a": ""A1"",
+  "a": "A1",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 2`] = `
 {
-  "a": ""A2"",
+  "a": "A2",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 3`] = `
 {
-  "a": ""A3"",
+  "a": "A3",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 4`] = `
 {
-  "a": ""A4"",
+  "a": "A4",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 5`] = `
 {
-  "a": ""A5"",
+  "a": "A5",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 6`] = `
 {
-  "a": ""A6"",
+  "a": "A6",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 7`] = `
 {
-  "a": ""A7"",
+  "a": "A7",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 8`] = `
 {
-  "a": ""A8"",
+  "a": "A8",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 9`] = `
 {
-  "a": ""A9"",
+  "a": "A9",
 }
 `;
 
 exports[`directory connector 1-depth 10-way pool: equivalent 10`] = `
 {
-  "a": ""A10"",
+  "a": "A10",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 1`] = `
 {
-  "a": ""A1"",
+  "a": "A1",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 2`] = `
 {
-  "a": ""A2"",
+  "a": "A2",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 3`] = `
 {
-  "a": ""A3"",
+  "a": "A3",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 4`] = `
 {
-  "a": ""A4"",
+  "a": "A4",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 5`] = `
 {
-  "a": ""A5"",
+  "a": "A5",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 6`] = `
 {
-  "a": ""A6"",
+  "a": "A6",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 7`] = `
 {
-  "a": ""A7"",
+  "a": "A7",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 8`] = `
 {
-  "a": ""A8"",
+  "a": "A8",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 9`] = `
 {
-  "a": ""A9"",
+  "a": "A9",
 }
 `;
 
 exports[`directory connector 1-depth 10-way ring: equivalent 10`] = `
 {
-  "a": ""A10"",
+  "a": "A10",
 }
 `;
 
 exports[`directory connector 2-depth 2-way connected, deletion: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
+    "aa": "A",
   },
 }
 `;
@@ -395,10 +395,10 @@ exports[`directory connector 2-depth 2-way connected, deletion: equivalent 2`] =
 exports[`directory connector 2-depth 2-way connected, far atom: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
+    "aa": "A",
   },
   "b": {
-    "ba": ""B"",
+    "ba": "B",
   },
 }
 `;
@@ -408,8 +408,8 @@ exports[`directory connector 2-depth 2-way connected, initial: equivalent 1`] = 
 exports[`directory connector 2-depth 2-way connected, near atom: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
-    "ab": ""B"",
+    "aa": "A",
+    "ab": "B",
   },
 }
 `;
@@ -417,7 +417,7 @@ exports[`directory connector 2-depth 2-way connected, near atom: equivalent 1`] 
 exports[`directory connector 2-depth 2-way connected: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
+    "aa": "A",
   },
 }
 `;
@@ -425,7 +425,7 @@ exports[`directory connector 2-depth 2-way connected: equivalent 1`] = `
 exports[`directory connector 2-depth 2-way connected: equivalent 2`] = `
 {
   "a": {
-    "aa": ""B"",
+    "aa": "B",
   },
 }
 `;
@@ -433,11 +433,11 @@ exports[`directory connector 2-depth 2-way connected: equivalent 2`] = `
 exports[`directory connector 2-depth 2-way disconnected, conflicting values 2: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
-    "ab": ""C"",
+    "aa": "A",
+    "ab": "C",
   },
   "b": {
-    "ba": ""D"",
+    "ba": "D",
   },
 }
 `;
@@ -445,7 +445,7 @@ exports[`directory connector 2-depth 2-way disconnected, conflicting values 2: e
 exports[`directory connector 2-depth 2-way disconnected, conflicting values: equivalent 1`] = `
 {
   "a": {
-    "aa": ""B"",
+    "aa": "B",
   },
 }
 `;
@@ -453,10 +453,10 @@ exports[`directory connector 2-depth 2-way disconnected, conflicting values: equ
 exports[`directory connector 2-depth 2-way disconnected, far atom: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
+    "aa": "A",
   },
   "b": {
-    "ba": ""B"",
+    "ba": "B",
   },
 }
 `;
@@ -464,8 +464,8 @@ exports[`directory connector 2-depth 2-way disconnected, far atom: equivalent 1`
 exports[`directory connector 2-depth 2-way disconnected, near atom: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
-    "ab": ""B"",
+    "aa": "A",
+    "ab": "B",
   },
 }
 `;
@@ -474,7 +474,7 @@ exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: diffe
 [
   {
     "a": {
-      "aa": ""A"",
+      "aa": "A",
     },
   },
   {},
@@ -485,12 +485,12 @@ exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: diffe
 [
   {
     "a": {
-      "aa": ""A"",
+      "aa": "A",
     },
   },
   {
     "a": {
-      "aa": ""B"",
+      "aa": "B",
     },
   },
 ]
@@ -499,7 +499,7 @@ exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: diffe
 exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
 {
   "a": {
-    "aa": ""B"",
+    "aa": "B",
   },
 }
 `;
@@ -508,7 +508,7 @@ exports[`directory connector 2-depth 2-way start 1, set 1, start 2: differing 1`
 [
   {
     "a": {
-      "aa": ""A"",
+      "aa": "A",
     },
   },
   {},
@@ -518,7 +518,7 @@ exports[`directory connector 2-depth 2-way start 1, set 1, start 2: differing 1`
 exports[`directory connector 2-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
+    "aa": "A",
   },
 }
 `;
@@ -527,7 +527,7 @@ exports[`directory connector 2-depth 2-way start 2, set 1, start 1: differing 1`
 [
   {
     "a": {
-      "aa": ""A"",
+      "aa": "A",
     },
   },
   {},
@@ -537,7 +537,7 @@ exports[`directory connector 2-depth 2-way start 2, set 1, start 1: differing 1`
 exports[`directory connector 2-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
+    "aa": "A",
   },
 }
 `;
@@ -546,12 +546,12 @@ exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: differing 1`]
 [
   {
     "a": {
-      "aa": ""B"",
+      "aa": "B",
     },
   },
   {
     "a": {
-      "aa": ""A"",
+      "aa": "A",
     },
   },
 ]
@@ -560,7 +560,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: differing 1`]
 exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
+    "aa": "A",
   },
 }
 `;
@@ -568,7 +568,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 1`
 exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
 {
   "a": {
-    "aa": ""B"",
+    "aa": "B",
   },
 }
 `;
@@ -577,12 +577,12 @@ exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: differing 1`]
 [
   {
     "a": {
-      "aa": ""A"",
+      "aa": "A",
     },
   },
   {
     "a": {
-      "aa": ""B"",
+      "aa": "B",
     },
   },
 ]
@@ -591,7 +591,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: differing 1`]
 exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A"",
+    "aa": "A",
   },
 }
 `;
@@ -599,7 +599,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 1`
 exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
 {
   "a": {
-    "aa": ""B"",
+    "aa": "B",
   },
 }
 `;
@@ -607,7 +607,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 2`
 exports[`directory connector 2-depth 3-way chain: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A1"",
+    "aa": "A1",
   },
 }
 `;
@@ -615,7 +615,7 @@ exports[`directory connector 2-depth 3-way chain: equivalent 1`] = `
 exports[`directory connector 2-depth 3-way chain: equivalent 2`] = `
 {
   "a": {
-    "aa": ""A2"",
+    "aa": "A2",
   },
 }
 `;
@@ -623,7 +623,7 @@ exports[`directory connector 2-depth 3-way chain: equivalent 2`] = `
 exports[`directory connector 2-depth 3-way chain: equivalent 3`] = `
 {
   "a": {
-    "aa": ""A3"",
+    "aa": "A3",
   },
 }
 `;
@@ -631,7 +631,7 @@ exports[`directory connector 2-depth 3-way chain: equivalent 3`] = `
 exports[`directory connector 2-depth 3-way pool: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A1"",
+    "aa": "A1",
   },
 }
 `;
@@ -639,7 +639,7 @@ exports[`directory connector 2-depth 3-way pool: equivalent 1`] = `
 exports[`directory connector 2-depth 3-way pool: equivalent 2`] = `
 {
   "a": {
-    "aa": ""A2"",
+    "aa": "A2",
   },
 }
 `;
@@ -647,7 +647,7 @@ exports[`directory connector 2-depth 3-way pool: equivalent 2`] = `
 exports[`directory connector 2-depth 3-way pool: equivalent 3`] = `
 {
   "a": {
-    "aa": ""A3"",
+    "aa": "A3",
   },
 }
 `;
@@ -655,7 +655,7 @@ exports[`directory connector 2-depth 3-way pool: equivalent 3`] = `
 exports[`directory connector 2-depth 3-way ring: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A1"",
+    "aa": "A1",
   },
 }
 `;
@@ -663,7 +663,7 @@ exports[`directory connector 2-depth 3-way ring: equivalent 1`] = `
 exports[`directory connector 2-depth 3-way ring: equivalent 2`] = `
 {
   "a": {
-    "aa": ""A2"",
+    "aa": "A2",
   },
 }
 `;
@@ -671,7 +671,7 @@ exports[`directory connector 2-depth 3-way ring: equivalent 2`] = `
 exports[`directory connector 2-depth 3-way ring: equivalent 3`] = `
 {
   "a": {
-    "aa": ""A3"",
+    "aa": "A3",
   },
 }
 `;
@@ -679,7 +679,7 @@ exports[`directory connector 2-depth 3-way ring: equivalent 3`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A1"",
+    "aa": "A1",
   },
 }
 `;
@@ -687,7 +687,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 1`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 2`] = `
 {
   "a": {
-    "aa": ""A2"",
+    "aa": "A2",
   },
 }
 `;
@@ -695,7 +695,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 2`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 3`] = `
 {
   "a": {
-    "aa": ""A3"",
+    "aa": "A3",
   },
 }
 `;
@@ -703,7 +703,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 3`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 4`] = `
 {
   "a": {
-    "aa": ""A4"",
+    "aa": "A4",
   },
 }
 `;
@@ -711,7 +711,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 4`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 5`] = `
 {
   "a": {
-    "aa": ""A5"",
+    "aa": "A5",
   },
 }
 `;
@@ -719,7 +719,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 5`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 6`] = `
 {
   "a": {
-    "aa": ""A6"",
+    "aa": "A6",
   },
 }
 `;
@@ -727,7 +727,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 6`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 7`] = `
 {
   "a": {
-    "aa": ""A7"",
+    "aa": "A7",
   },
 }
 `;
@@ -735,7 +735,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 7`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 8`] = `
 {
   "a": {
-    "aa": ""A8"",
+    "aa": "A8",
   },
 }
 `;
@@ -743,7 +743,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 8`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 9`] = `
 {
   "a": {
-    "aa": ""A9"",
+    "aa": "A9",
   },
 }
 `;
@@ -751,7 +751,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 9`] = `
 exports[`directory connector 2-depth 10-way chain: equivalent 10`] = `
 {
   "a": {
-    "aa": ""A10"",
+    "aa": "A10",
   },
 }
 `;
@@ -759,7 +759,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 10`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A1"",
+    "aa": "A1",
   },
 }
 `;
@@ -767,7 +767,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 1`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 2`] = `
 {
   "a": {
-    "aa": ""A2"",
+    "aa": "A2",
   },
 }
 `;
@@ -775,7 +775,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 2`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 3`] = `
 {
   "a": {
-    "aa": ""A3"",
+    "aa": "A3",
   },
 }
 `;
@@ -783,7 +783,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 3`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 4`] = `
 {
   "a": {
-    "aa": ""A4"",
+    "aa": "A4",
   },
 }
 `;
@@ -791,7 +791,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 4`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 5`] = `
 {
   "a": {
-    "aa": ""A5"",
+    "aa": "A5",
   },
 }
 `;
@@ -799,7 +799,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 5`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 6`] = `
 {
   "a": {
-    "aa": ""A6"",
+    "aa": "A6",
   },
 }
 `;
@@ -807,7 +807,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 6`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 7`] = `
 {
   "a": {
-    "aa": ""A7"",
+    "aa": "A7",
   },
 }
 `;
@@ -815,7 +815,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 7`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 8`] = `
 {
   "a": {
-    "aa": ""A8"",
+    "aa": "A8",
   },
 }
 `;
@@ -823,7 +823,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 8`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 9`] = `
 {
   "a": {
-    "aa": ""A9"",
+    "aa": "A9",
   },
 }
 `;
@@ -831,7 +831,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 9`] = `
 exports[`directory connector 2-depth 10-way pool: equivalent 10`] = `
 {
   "a": {
-    "aa": ""A10"",
+    "aa": "A10",
   },
 }
 `;
@@ -839,7 +839,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 10`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 1`] = `
 {
   "a": {
-    "aa": ""A1"",
+    "aa": "A1",
   },
 }
 `;
@@ -847,7 +847,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 1`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 2`] = `
 {
   "a": {
-    "aa": ""A2"",
+    "aa": "A2",
   },
 }
 `;
@@ -855,7 +855,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 2`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 3`] = `
 {
   "a": {
-    "aa": ""A3"",
+    "aa": "A3",
   },
 }
 `;
@@ -863,7 +863,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 3`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 4`] = `
 {
   "a": {
-    "aa": ""A4"",
+    "aa": "A4",
   },
 }
 `;
@@ -871,7 +871,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 4`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 5`] = `
 {
   "a": {
-    "aa": ""A5"",
+    "aa": "A5",
   },
 }
 `;
@@ -879,7 +879,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 5`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 6`] = `
 {
   "a": {
-    "aa": ""A6"",
+    "aa": "A6",
   },
 }
 `;
@@ -887,7 +887,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 6`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 7`] = `
 {
   "a": {
-    "aa": ""A7"",
+    "aa": "A7",
   },
 }
 `;
@@ -895,7 +895,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 7`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 8`] = `
 {
   "a": {
-    "aa": ""A8"",
+    "aa": "A8",
   },
 }
 `;
@@ -903,7 +903,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 8`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 9`] = `
 {
   "a": {
-    "aa": ""A9"",
+    "aa": "A9",
   },
 }
 `;
@@ -911,7 +911,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 9`] = `
 exports[`directory connector 2-depth 10-way ring: equivalent 10`] = `
 {
   "a": {
-    "aa": ""A10"",
+    "aa": "A10",
   },
 }
 `;
@@ -920,7 +920,7 @@ exports[`directory connector 3-depth 2-way connected, deletion: equivalent 1`] =
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
+      "aaa": "A",
     },
   },
 }
@@ -938,12 +938,12 @@ exports[`directory connector 3-depth 2-way connected, far atom: equivalent 1`] =
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
+      "aaa": "A",
     },
   },
   "b": {
     "ba": {
-      "baa": ""B"",
+      "baa": "B",
     },
   },
 }
@@ -955,8 +955,8 @@ exports[`directory connector 3-depth 2-way connected, near atom: equivalent 1`] 
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
-      "aab": ""B"",
+      "aaa": "A",
+      "aab": "B",
     },
   },
 }
@@ -966,7 +966,7 @@ exports[`directory connector 3-depth 2-way connected: equivalent 1`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
+      "aaa": "A",
     },
   },
 }
@@ -976,7 +976,7 @@ exports[`directory connector 3-depth 2-way connected: equivalent 2`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""B"",
+      "aaa": "B",
     },
   },
 }
@@ -986,13 +986,13 @@ exports[`directory connector 3-depth 2-way disconnected, conflicting values 2: e
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
-      "aab": ""C"",
+      "aaa": "A",
+      "aab": "C",
     },
   },
   "b": {
     "ba": {
-      "baa": ""D"",
+      "baa": "D",
     },
   },
 }
@@ -1002,7 +1002,7 @@ exports[`directory connector 3-depth 2-way disconnected, conflicting values: equ
 {
   "a": {
     "aa": {
-      "aaa": ""B"",
+      "aaa": "B",
     },
   },
 }
@@ -1012,12 +1012,12 @@ exports[`directory connector 3-depth 2-way disconnected, far atom: equivalent 1`
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
+      "aaa": "A",
     },
   },
   "b": {
     "ba": {
-      "baa": ""B"",
+      "baa": "B",
     },
   },
 }
@@ -1027,8 +1027,8 @@ exports[`directory connector 3-depth 2-way disconnected, near atom: equivalent 1
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
-      "aab": ""B"",
+      "aaa": "A",
+      "aab": "B",
     },
   },
 }
@@ -1039,7 +1039,7 @@ exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: diffe
   {
     "a": {
       "aa": {
-        "aaa": ""A"",
+        "aaa": "A",
       },
     },
   },
@@ -1052,14 +1052,14 @@ exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: diffe
   {
     "a": {
       "aa": {
-        "aaa": ""A"",
+        "aaa": "A",
       },
     },
   },
   {
     "a": {
       "aa": {
-        "aaa": ""B"",
+        "aaa": "B",
       },
     },
   },
@@ -1070,7 +1070,7 @@ exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: equiv
 {
   "a": {
     "aa": {
-      "aaa": ""B"",
+      "aaa": "B",
     },
   },
 }
@@ -1081,7 +1081,7 @@ exports[`directory connector 3-depth 2-way start 1, set 1, start 2: differing 1`
   {
     "a": {
       "aa": {
-        "aaa": ""A"",
+        "aaa": "A",
       },
     },
   },
@@ -1093,7 +1093,7 @@ exports[`directory connector 3-depth 2-way start 1, set 1, start 2: equivalent 1
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
+      "aaa": "A",
     },
   },
 }
@@ -1104,7 +1104,7 @@ exports[`directory connector 3-depth 2-way start 2, set 1, start 1: differing 1`
   {
     "a": {
       "aa": {
-        "aaa": ""A"",
+        "aaa": "A",
       },
     },
   },
@@ -1116,7 +1116,7 @@ exports[`directory connector 3-depth 2-way start 2, set 1, start 1: equivalent 1
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
+      "aaa": "A",
     },
   },
 }
@@ -1127,14 +1127,14 @@ exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: differing 1`]
   {
     "a": {
       "aa": {
-        "aaa": ""B"",
+        "aaa": "B",
       },
     },
   },
   {
     "a": {
       "aa": {
-        "aaa": ""A"",
+        "aaa": "A",
       },
     },
   },
@@ -1145,7 +1145,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: equivalent 1`
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
+      "aaa": "A",
     },
   },
 }
@@ -1155,7 +1155,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: equivalent 2`
 {
   "a": {
     "aa": {
-      "aaa": ""B"",
+      "aaa": "B",
     },
   },
 }
@@ -1166,14 +1166,14 @@ exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: differing 1`]
   {
     "a": {
       "aa": {
-        "aaa": ""A"",
+        "aaa": "A",
       },
     },
   },
   {
     "a": {
       "aa": {
-        "aaa": ""B"",
+        "aaa": "B",
       },
     },
   },
@@ -1184,7 +1184,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: equivalent 1`
 {
   "a": {
     "aa": {
-      "aaa": ""A"",
+      "aaa": "A",
     },
   },
 }
@@ -1194,7 +1194,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: equivalent 2`
 {
   "a": {
     "aa": {
-      "aaa": ""B"",
+      "aaa": "B",
     },
   },
 }
@@ -1204,7 +1204,7 @@ exports[`directory connector 3-depth 3-way chain: equivalent 1`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A1"",
+      "aaa": "A1",
     },
   },
 }
@@ -1214,7 +1214,7 @@ exports[`directory connector 3-depth 3-way chain: equivalent 2`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A2"",
+      "aaa": "A2",
     },
   },
 }
@@ -1224,7 +1224,7 @@ exports[`directory connector 3-depth 3-way chain: equivalent 3`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A3"",
+      "aaa": "A3",
     },
   },
 }
@@ -1234,7 +1234,7 @@ exports[`directory connector 3-depth 3-way pool: equivalent 1`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A1"",
+      "aaa": "A1",
     },
   },
 }
@@ -1244,7 +1244,7 @@ exports[`directory connector 3-depth 3-way pool: equivalent 2`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A2"",
+      "aaa": "A2",
     },
   },
 }
@@ -1254,7 +1254,7 @@ exports[`directory connector 3-depth 3-way pool: equivalent 3`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A3"",
+      "aaa": "A3",
     },
   },
 }
@@ -1264,7 +1264,7 @@ exports[`directory connector 3-depth 3-way ring: equivalent 1`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A1"",
+      "aaa": "A1",
     },
   },
 }
@@ -1274,7 +1274,7 @@ exports[`directory connector 3-depth 3-way ring: equivalent 2`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A2"",
+      "aaa": "A2",
     },
   },
 }
@@ -1284,7 +1284,7 @@ exports[`directory connector 3-depth 3-way ring: equivalent 3`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A3"",
+      "aaa": "A3",
     },
   },
 }
@@ -1294,7 +1294,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 1`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A1"",
+      "aaa": "A1",
     },
   },
 }
@@ -1304,7 +1304,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 2`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A2"",
+      "aaa": "A2",
     },
   },
 }
@@ -1314,7 +1314,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 3`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A3"",
+      "aaa": "A3",
     },
   },
 }
@@ -1324,7 +1324,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 4`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A4"",
+      "aaa": "A4",
     },
   },
 }
@@ -1334,7 +1334,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 5`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A5"",
+      "aaa": "A5",
     },
   },
 }
@@ -1344,7 +1344,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 6`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A6"",
+      "aaa": "A6",
     },
   },
 }
@@ -1354,7 +1354,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 7`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A7"",
+      "aaa": "A7",
     },
   },
 }
@@ -1364,7 +1364,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 8`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A8"",
+      "aaa": "A8",
     },
   },
 }
@@ -1374,7 +1374,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 9`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A9"",
+      "aaa": "A9",
     },
   },
 }
@@ -1384,7 +1384,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 10`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A10"",
+      "aaa": "A10",
     },
   },
 }
@@ -1394,7 +1394,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 1`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A1"",
+      "aaa": "A1",
     },
   },
 }
@@ -1404,7 +1404,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 2`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A2"",
+      "aaa": "A2",
     },
   },
 }
@@ -1414,7 +1414,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 3`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A3"",
+      "aaa": "A3",
     },
   },
 }
@@ -1424,7 +1424,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 4`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A4"",
+      "aaa": "A4",
     },
   },
 }
@@ -1434,7 +1434,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 5`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A5"",
+      "aaa": "A5",
     },
   },
 }
@@ -1444,7 +1444,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 6`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A6"",
+      "aaa": "A6",
     },
   },
 }
@@ -1454,7 +1454,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 7`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A7"",
+      "aaa": "A7",
     },
   },
 }
@@ -1464,7 +1464,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 8`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A8"",
+      "aaa": "A8",
     },
   },
 }
@@ -1474,7 +1474,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 9`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A9"",
+      "aaa": "A9",
     },
   },
 }
@@ -1484,7 +1484,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 10`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A10"",
+      "aaa": "A10",
     },
   },
 }
@@ -1494,7 +1494,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 1`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A1"",
+      "aaa": "A1",
     },
   },
 }
@@ -1504,7 +1504,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 2`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A2"",
+      "aaa": "A2",
     },
   },
 }
@@ -1514,7 +1514,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 3`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A3"",
+      "aaa": "A3",
     },
   },
 }
@@ -1524,7 +1524,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 4`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A4"",
+      "aaa": "A4",
     },
   },
 }
@@ -1534,7 +1534,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 5`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A5"",
+      "aaa": "A5",
     },
   },
 }
@@ -1544,7 +1544,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 6`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A6"",
+      "aaa": "A6",
     },
   },
 }
@@ -1554,7 +1554,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 7`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A7"",
+      "aaa": "A7",
     },
   },
 }
@@ -1564,7 +1564,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 8`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A8"",
+      "aaa": "A8",
     },
   },
 }
@@ -1574,7 +1574,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 9`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A9"",
+      "aaa": "A9",
     },
   },
 }
@@ -1584,7 +1584,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 10`] = `
 {
   "a": {
     "aa": {
-      "aaa": ""A10"",
+      "aaa": "A10",
     },
   },
 }
@@ -1595,7 +1595,7 @@ exports[`directory connector 4-depth 2-way connected, deletion: equivalent 1`] =
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
+        "aaaa": "A",
       },
     },
   },
@@ -1617,14 +1617,14 @@ exports[`directory connector 4-depth 2-way connected, far atom: equivalent 1`] =
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
+        "aaaa": "A",
       },
     },
   },
   "b": {
     "ba": {
       "baa": {
-        "baaa": ""B"",
+        "baaa": "B",
       },
     },
   },
@@ -1638,8 +1638,8 @@ exports[`directory connector 4-depth 2-way connected, near atom: equivalent 1`] 
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
-        "aaab": ""B"",
+        "aaaa": "A",
+        "aaab": "B",
       },
     },
   },
@@ -1651,7 +1651,7 @@ exports[`directory connector 4-depth 2-way connected: equivalent 1`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
+        "aaaa": "A",
       },
     },
   },
@@ -1663,7 +1663,7 @@ exports[`directory connector 4-depth 2-way connected: equivalent 2`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""B"",
+        "aaaa": "B",
       },
     },
   },
@@ -1675,15 +1675,15 @@ exports[`directory connector 4-depth 2-way disconnected, conflicting values 2: e
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
-        "aaab": ""C"",
+        "aaaa": "A",
+        "aaab": "C",
       },
     },
   },
   "b": {
     "ba": {
       "baa": {
-        "baaa": ""D"",
+        "baaa": "D",
       },
     },
   },
@@ -1695,7 +1695,7 @@ exports[`directory connector 4-depth 2-way disconnected, conflicting values: equ
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""B"",
+        "aaaa": "B",
       },
     },
   },
@@ -1707,14 +1707,14 @@ exports[`directory connector 4-depth 2-way disconnected, far atom: equivalent 1`
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
+        "aaaa": "A",
       },
     },
   },
   "b": {
     "ba": {
       "baa": {
-        "baaa": ""B"",
+        "baaa": "B",
       },
     },
   },
@@ -1726,8 +1726,8 @@ exports[`directory connector 4-depth 2-way disconnected, near atom: equivalent 1
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
-        "aaab": ""B"",
+        "aaaa": "A",
+        "aaab": "B",
       },
     },
   },
@@ -1740,7 +1740,7 @@ exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: diffe
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""A"",
+          "aaaa": "A",
         },
       },
     },
@@ -1755,7 +1755,7 @@ exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: diffe
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""A"",
+          "aaaa": "A",
         },
       },
     },
@@ -1764,7 +1764,7 @@ exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: diffe
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""B"",
+          "aaaa": "B",
         },
       },
     },
@@ -1777,7 +1777,7 @@ exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: equiv
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""B"",
+        "aaaa": "B",
       },
     },
   },
@@ -1790,7 +1790,7 @@ exports[`directory connector 4-depth 2-way start 1, set 1, start 2: differing 1`
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""A"",
+          "aaaa": "A",
         },
       },
     },
@@ -1804,7 +1804,7 @@ exports[`directory connector 4-depth 2-way start 1, set 1, start 2: equivalent 1
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
+        "aaaa": "A",
       },
     },
   },
@@ -1817,7 +1817,7 @@ exports[`directory connector 4-depth 2-way start 2, set 1, start 1: differing 1`
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""A"",
+          "aaaa": "A",
         },
       },
     },
@@ -1831,7 +1831,7 @@ exports[`directory connector 4-depth 2-way start 2, set 1, start 1: equivalent 1
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
+        "aaaa": "A",
       },
     },
   },
@@ -1844,7 +1844,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: differing 1`]
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""B"",
+          "aaaa": "B",
         },
       },
     },
@@ -1853,7 +1853,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: differing 1`]
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""A"",
+          "aaaa": "A",
         },
       },
     },
@@ -1866,7 +1866,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: equivalent 1`
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
+        "aaaa": "A",
       },
     },
   },
@@ -1878,7 +1878,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: equivalent 2`
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""B"",
+        "aaaa": "B",
       },
     },
   },
@@ -1891,7 +1891,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: differing 1`]
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""A"",
+          "aaaa": "A",
         },
       },
     },
@@ -1900,7 +1900,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: differing 1`]
     "a": {
       "aa": {
         "aaa": {
-          "aaaa": ""B"",
+          "aaaa": "B",
         },
       },
     },
@@ -1913,7 +1913,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: equivalent 1`
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A"",
+        "aaaa": "A",
       },
     },
   },
@@ -1925,7 +1925,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: equivalent 2`
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""B"",
+        "aaaa": "B",
       },
     },
   },
@@ -1937,7 +1937,7 @@ exports[`directory connector 4-depth 3-way chain: equivalent 1`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A1"",
+        "aaaa": "A1",
       },
     },
   },
@@ -1949,7 +1949,7 @@ exports[`directory connector 4-depth 3-way chain: equivalent 2`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A2"",
+        "aaaa": "A2",
       },
     },
   },
@@ -1961,7 +1961,7 @@ exports[`directory connector 4-depth 3-way chain: equivalent 3`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A3"",
+        "aaaa": "A3",
       },
     },
   },
@@ -1973,7 +1973,7 @@ exports[`directory connector 4-depth 3-way pool: equivalent 1`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A1"",
+        "aaaa": "A1",
       },
     },
   },
@@ -1985,7 +1985,7 @@ exports[`directory connector 4-depth 3-way pool: equivalent 2`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A2"",
+        "aaaa": "A2",
       },
     },
   },
@@ -1997,7 +1997,7 @@ exports[`directory connector 4-depth 3-way pool: equivalent 3`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A3"",
+        "aaaa": "A3",
       },
     },
   },
@@ -2009,7 +2009,7 @@ exports[`directory connector 4-depth 3-way ring: equivalent 1`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A1"",
+        "aaaa": "A1",
       },
     },
   },
@@ -2021,7 +2021,7 @@ exports[`directory connector 4-depth 3-way ring: equivalent 2`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A2"",
+        "aaaa": "A2",
       },
     },
   },
@@ -2033,7 +2033,7 @@ exports[`directory connector 4-depth 3-way ring: equivalent 3`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A3"",
+        "aaaa": "A3",
       },
     },
   },
@@ -2045,7 +2045,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 1`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A1"",
+        "aaaa": "A1",
       },
     },
   },
@@ -2057,7 +2057,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 2`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A2"",
+        "aaaa": "A2",
       },
     },
   },
@@ -2069,7 +2069,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 3`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A3"",
+        "aaaa": "A3",
       },
     },
   },
@@ -2081,7 +2081,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 4`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A4"",
+        "aaaa": "A4",
       },
     },
   },
@@ -2093,7 +2093,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 5`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A5"",
+        "aaaa": "A5",
       },
     },
   },
@@ -2105,7 +2105,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 6`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A6"",
+        "aaaa": "A6",
       },
     },
   },
@@ -2117,7 +2117,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 7`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A7"",
+        "aaaa": "A7",
       },
     },
   },
@@ -2129,7 +2129,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 8`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A8"",
+        "aaaa": "A8",
       },
     },
   },
@@ -2141,7 +2141,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 9`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A9"",
+        "aaaa": "A9",
       },
     },
   },
@@ -2153,7 +2153,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 10`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A10"",
+        "aaaa": "A10",
       },
     },
   },
@@ -2165,7 +2165,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 1`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A1"",
+        "aaaa": "A1",
       },
     },
   },
@@ -2177,7 +2177,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 2`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A2"",
+        "aaaa": "A2",
       },
     },
   },
@@ -2189,7 +2189,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 3`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A3"",
+        "aaaa": "A3",
       },
     },
   },
@@ -2201,7 +2201,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 4`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A4"",
+        "aaaa": "A4",
       },
     },
   },
@@ -2213,7 +2213,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 5`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A5"",
+        "aaaa": "A5",
       },
     },
   },
@@ -2225,7 +2225,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 6`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A6"",
+        "aaaa": "A6",
       },
     },
   },
@@ -2237,7 +2237,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 7`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A7"",
+        "aaaa": "A7",
       },
     },
   },
@@ -2249,7 +2249,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 8`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A8"",
+        "aaaa": "A8",
       },
     },
   },
@@ -2261,7 +2261,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 9`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A9"",
+        "aaaa": "A9",
       },
     },
   },
@@ -2273,7 +2273,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 10`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A10"",
+        "aaaa": "A10",
       },
     },
   },
@@ -2285,7 +2285,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 1`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A1"",
+        "aaaa": "A1",
       },
     },
   },
@@ -2297,7 +2297,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 2`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A2"",
+        "aaaa": "A2",
       },
     },
   },
@@ -2309,7 +2309,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 3`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A3"",
+        "aaaa": "A3",
       },
     },
   },
@@ -2321,7 +2321,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 4`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A4"",
+        "aaaa": "A4",
       },
     },
   },
@@ -2333,7 +2333,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 5`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A5"",
+        "aaaa": "A5",
       },
     },
   },
@@ -2345,7 +2345,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 6`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A6"",
+        "aaaa": "A6",
       },
     },
   },
@@ -2357,7 +2357,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 7`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A7"",
+        "aaaa": "A7",
       },
     },
   },
@@ -2369,7 +2369,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 8`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A8"",
+        "aaaa": "A8",
       },
     },
   },
@@ -2381,7 +2381,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 9`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A9"",
+        "aaaa": "A9",
       },
     },
   },
@@ -2393,7 +2393,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 10`] = `
   "a": {
     "aa": {
       "aaa": {
-        "aaaa": ""A10"",
+        "aaaa": "A10",
       },
     },
   },
