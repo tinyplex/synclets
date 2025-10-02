@@ -1,6 +1,3 @@
-export const RESERVED = '\u0000';
-export const TIMESTAMP_KEY = RESERVED + 't';
-
 export const EMPTY_STRING = '';
 export const SPACE = ' ';
 export const ASTERISK = '*';

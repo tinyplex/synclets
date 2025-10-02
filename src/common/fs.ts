@@ -1,6 +1,18 @@
-import {access, constants, mkdir, stat, writeFile} from 'fs/promises';
+import {
+  access,
+  constants,
+  mkdir,
+  readdir,
+  readFile,
+  rm,
+  stat,
+  writeFile,
+} from 'fs/promises';
 import {dirname, resolve} from 'path';
-import {errorNew} from './other.ts';
+import {arraySlice} from './array.ts';
+import {errorNew, isEmpty} from './other.ts';
+import {UTF8} from './string.ts';
+export {resolve} from 'path';
 
 const {R_OK, W_OK} = constants;
 const IS_NOT = ' is not ';
@@ -14,6 +26,57 @@ const validateReadWrite = async (path: string) => {
     await access(path, R_OK | W_OK);
   } catch {
     errorNew(`${path}${IS_NOT}read-write`);
+  }
+};
+
+export const readPossibleFile = async (
+  root: string,
+  paths: string[],
+): Promise<string> => {
+  try {
+    return await readFile(resolve(root, ...paths), UTF8);
+  } catch {}
+  return '';
+};
+
+export const writeEnsuredFile = async (
+  root: string,
+  paths: string[],
+  content: string,
+) => {
+  const file = resolve(root, ...paths);
+  await makeDirectory(dirname(file));
+  await writeFile(file, content, UTF8);
+};
+
+export const removePossibleFile = async (
+  root: string,
+  paths: string[],
+): Promise<void> => {
+  try {
+    await rm(resolve(root, ...paths), {force: true});
+    await pruneEmptyAncestors(root, paths);
+  } catch {}
+};
+
+export const pruneEmptyAncestors = async (root: string, paths: string[]) => {
+  if (!isEmpty(paths)) {
+    const directory = resolve(root, ...paths);
+    if (isEmpty(await readdir(directory))) {
+      await rm(directory, {recursive: false, force: true});
+      await pruneEmptyAncestors(root, arraySlice(paths, 0, -1));
+    }
+  }
+};
+
+export const getDirectoryContents = async (
+  root: string,
+  paths: string[],
+): Promise<string[]> => {
+  try {
+    return await readdir(resolve(root, ...paths));
+  } catch {
+    return [];
   }
 };
 

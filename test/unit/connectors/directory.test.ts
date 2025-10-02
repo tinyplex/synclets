@@ -3,32 +3,32 @@ import {tmpdir} from 'os';
 import {join, sep} from 'path';
 import {Synclet} from 'synclets';
 import {
-  createFileDataConnector,
-  createFileMetaConnector,
+  createDirectoryDataConnector,
+  createDirectoryMetaConnector,
 } from 'synclets/connector/fs';
 import {getUniqueId} from 'synclets/utils';
 import {describeConnectorTests} from '../common.ts';
 
-test('file', async () => {
+test('directory', async () => {
   const tmp = await mkdtemp(tmpdir() + sep);
 
-  const dataFile = join(tmp, '42.data');
-  const dataConnector = await createFileDataConnector(1, dataFile);
-  expect(dataConnector.getFile()).toBe(dataFile);
+  const dataDir = join(tmp, '42.data');
+  const dataConnector = await createDirectoryDataConnector(1, dataDir);
+  expect(dataConnector.getDirectory()).toBe(dataDir);
 
-  const metaFile = join(tmp, '42.meta');
-  const metaConnector = await createFileDataConnector(1, metaFile);
-  expect(metaConnector.getFile()).toBe(metaFile);
+  const metaDir = join(tmp, '42.meta');
+  const metaConnector = await createDirectoryMetaConnector(1, metaDir);
+  expect(metaConnector.getDirectory()).toBe(metaDir);
 
   await rm(tmp, {recursive: true, force: true});
 });
 
 describeConnectorTests(
-  'file',
+  'directory',
   <Depth extends number>(depth: Depth, {file}: {file: string}) =>
-    createFileDataConnector(depth, join(file, getUniqueId())),
+    createDirectoryDataConnector(depth, join(file, getUniqueId())),
   <Depth extends number>(depth: Depth, {file}: {file: string}) =>
-    createFileMetaConnector(depth, join(file, getUniqueId())),
+    createDirectoryMetaConnector(depth, join(file, getUniqueId())),
   (synclet: Synclet<number>) => synclet.getMeta(),
   async () => ({file: await mkdtemp(tmpdir() + sep)}),
   async ({file}: {file: string}) =>
