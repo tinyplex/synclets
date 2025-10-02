@@ -53,14 +53,18 @@ export type Logger = {
 };
 export type LogLevel = keyof Logger;
 
-export interface Synclet<Depth extends number> {
+export interface Synclet<
+  Depth extends number,
+  DataConnectorType extends DataConnector<Depth> = DataConnector<Depth>,
+  MetaConnectorType extends MetaConnector<Depth> = MetaConnector<Depth>,
+> {
   log(message: string, level?: LogLevel): void;
   start(): Promise<void>;
   stop(): Promise<void>;
   isStarted(): boolean;
   destroy(): Promise<void>;
-  getDataConnector(): DataConnector<Depth>;
-  getMetaConnector(): MetaConnector<Depth>;
+  getDataConnector(): DataConnectorType;
+  getMetaConnector(): MetaConnectorType;
   getTransport(): Transport[];
   sync(address: Address): Promise<void>;
   setAtom(
@@ -84,13 +88,19 @@ export type SyncletOptions = {
   logger?: Logger;
 };
 
-export function createSynclet<Depth extends number>(
-  dataConnector: DataConnector<Depth>,
-  metaConnector: NoInfer<MetaConnector<Depth>>,
+export function createSynclet<
+  Depth extends number,
+  DataConnectorType extends DataConnector<Depth>,
+  MetaConnectorType extends MetaConnector<
+    DataConnectorType extends DataConnector<infer Depth> ? Depth : never
+  >,
+>(
+  dataConnector: DataConnectorType,
+  metaConnector: MetaConnectorType,
   transport: Transport | Transport[],
   implementations?: SyncletImplementations,
   options?: SyncletOptions,
-): Promise<Synclet<Depth>>;
+): Promise<Synclet<Depth, DataConnectorType, MetaConnectorType>>;
 
 // --
 

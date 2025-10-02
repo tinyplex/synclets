@@ -71,9 +71,11 @@ const SEND_MESSAGE = 4;
 
 export const createSynclet: typeof createSyncletDecl = (async <
   Depth extends number,
+  ProtectedDataConnectorType extends ProtectedDataConnector<Depth>,
+  ProtectedMetaConnectorType extends ProtectedMetaConnector<Depth>,
 >(
-  dataConnector: ProtectedDataConnector<Depth>,
-  metaConnector: NoInfer<ProtectedMetaConnector<Depth>>,
+  dataConnector: ProtectedDataConnectorType,
+  metaConnector: ProtectedMetaConnectorType,
   transport: ProtectedTransport | ProtectedTransport[],
   {canReceiveMessage, getSendContext}: SyncletImplementations = {},
   options: SyncletOptions = {},
