@@ -22,28 +22,32 @@ export interface TestSynclet<Depth extends number> extends Synclet<Depth> {
   getUnderlyingMetaForTest(): Promise<any>;
 }
 
-export const describeConnectorTests = (
+export const describeConnectorTests = <
+  DataConnectorType extends DataConnector<number>,
+  MetaConnectorType extends MetaConnector<number>,
+  Environment,
+>(
   type: string,
-  createDataConnector: <Depth extends number>(
-    depth: Depth,
-    environment: any,
-  ) => Promise<DataConnector<Depth>>,
-  createMetaConnector: <Depth extends number>(
-    depth: Depth,
-    environment: any,
-  ) => Promise<MetaConnector<Depth>>,
-  getUnderlyingMeta: <Depth extends number>(
-    synclet: Synclet<Depth>,
+  before: () => Promise<Environment>,
+  after: (environment: Environment) => Promise<void>,
+  createDataConnector: (
+    depth: number,
+    environment: Environment,
+  ) => Promise<DataConnectorType>,
+  createMetaConnector: (
+    depth: number,
+    environment: Environment,
+  ) => Promise<MetaConnectorType>,
+  getUnderlyingMeta: (
+    synclet: Synclet<number, DataConnectorType, MetaConnectorType>,
   ) => Promise<any>,
-  before?: () => Promise<any>,
-  after?: (environment: any) => Promise<any>,
 ) =>
   describe(`${type} connector`, () => {
-    let environment: any;
+    let environment: Environment;
 
-    beforeAll(async () => (environment = await before?.()));
+    beforeAll(async () => (environment = await before()));
 
-    afterAll(async () => await after?.(environment));
+    afterAll(async () => await after(environment));
 
     describe.each([
       [1, ['a'], ['b']],
@@ -63,15 +67,15 @@ export const describeConnectorTests = (
         nearAddress: string[],
         farAddress?: string[],
       ) => {
-        const createTestDataConnector = (): Promise<DataConnector<Depth>> =>
+        const createTestDataConnector = (): Promise<DataConnectorType> =>
           createDataConnector(depth, environment);
 
-        const createTestMetaConnector = (): Promise<MetaConnector<Depth>> =>
+        const createTestMetaConnector = (): Promise<MetaConnectorType> =>
           createMetaConnector(depth, environment);
 
         const createTestSynclet = async (
-          dataConnector: DataConnector<Depth>,
-          metaConnector: MetaConnector<Depth>,
+          dataConnector: any,
+          metaConnector: any,
           transport: Transport | Transport[],
           options: SyncletOptions = {},
         ): Promise<TestSynclet<Depth>> => {
