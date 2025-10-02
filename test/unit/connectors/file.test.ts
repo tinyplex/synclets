@@ -1,4 +1,4 @@
-import {mkdtemp, rm} from 'fs/promises';
+import {mkdtemp, readFile, rm} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join, sep} from 'path';
 import {Synclet} from 'synclets';
@@ -25,12 +25,19 @@ test('file', async () => {
 
 describeConnectorTests(
   'file',
-  <Depth extends number>(depth: Depth, {file}: {file: string}) =>
-    createFileDataConnector(depth, join(file, getUniqueId())),
-  <Depth extends number>(depth: Depth, {file}: {file: string}) =>
-    createFileMetaConnector(depth, join(file, getUniqueId())),
-  (synclet: Synclet<number>) => synclet.getMeta(),
-  async () => ({file: await mkdtemp(tmpdir() + sep)}),
-  async ({file}: {file: string}) =>
-    await rm(file, {recursive: true, force: true}),
+  <Depth extends number>(depth: Depth, {tempDir}: {tempDir: string}) =>
+    createFileDataConnector(depth, join(tempDir, getUniqueId())),
+  <Depth extends number>(depth: Depth, {tempDir}: {tempDir: string}) =>
+    createFileMetaConnector(depth, join(tempDir, getUniqueId())),
+  async (synclet: Synclet<number>) => {
+    try {
+      return JSON.parse(
+        await readFile(synclet.getMetaConnector().getFile(), 'utf-8'),
+      );
+    } catch {}
+    return {};
+  },
+  async () => ({tempDir: await mkdtemp(tmpdir() + sep)}),
+  async ({tempDir}: {tempDir: string}) =>
+    await rm(tempDir, {recursive: true, force: true}),
 );

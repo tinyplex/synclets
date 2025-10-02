@@ -513,12 +513,15 @@ export const expectEquivalentSynclets = async <Depth extends number>(
 ) => {
   const data = await synclets[0].getData();
   const meta = await synclets[0].getMeta();
+  const getUnderlyingMeta = await synclets[0].getUnderlyingMetaForTest();
   expect(data).toMatchSnapshot('equivalent');
   await Promise.all(
     synclets.map(async (synclet) => {
       expect(await synclet.getData()).toEqual(data);
       expect(await synclet.getMeta()).toEqual(meta);
-      expect(await synclet.getUnderlyingMetaForTest()).toEqual(meta);
+      expect(await synclet.getUnderlyingMetaForTest()).toEqual(
+        getUnderlyingMeta,
+      );
     }),
   );
 };
@@ -532,4 +535,8 @@ export const expectDifferingSynclets = async <Depth extends number>(
   expect(data1).not.toEqual(data2);
   expect([data1, data2]).toMatchSnapshot('differing');
   expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
+  expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
+  expect(await synclet1.getUnderlyingMetaForTest()).not.toEqual(
+    await synclet2.getUnderlyingMetaForTest(),
+  );
 };
