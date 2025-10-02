@@ -1,8 +1,10 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.json", "test"],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.json"],
   "words": [
+    "aaab",
     "atrule",
     "attw",
+    "baaa",
     "onwarn",
     "Pearce",
     "Shantell",

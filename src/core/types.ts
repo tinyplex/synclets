@@ -1,27 +1,30 @@
 import type {
   Address,
-  AncestorAddressFor,
-  AnyAddressFor,
+  AnyAddress,
+  AnyParentAddress,
   Atom,
+  AtomAddress,
   Atoms,
+  AtomsAddress,
   Context,
   Data,
   DataConnector,
-  Hash,
-  LeafAddressFor,
   Meta,
   MetaConnector,
-  ParentAddressFor,
   Synclet,
   Timestamp,
-  TimestampAndAtom,
+  TimestampAddress,
   Timestamps,
+  TimestampsAddress,
   Transport,
 } from '@synclets/@types';
 import {isAtom, isTimestamp} from '@synclets/utils';
 import {isArray} from '../common/array.ts';
+import {Hash} from '../common/codec.ts';
 import {isObject, objEvery} from '../common/object.ts';
 import {size} from '../common/other.ts';
+
+export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom | undefined];
 
 export type MessageType = 0;
 
@@ -43,70 +46,65 @@ export type MessageSubNodes = [
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
-export interface ProtectedSynclet<
-  Depth extends number,
-  AnyAddress = AnyAddressFor<Depth>,
-> extends Synclet<Depth> {
+export interface ProtectedSynclet<Depth extends number> extends Synclet<Depth> {
   _: [
     syncExcept: (
-      address: AnyAddress,
+      address: AnyAddress<Depth>,
       transport?: ProtectedTransport,
     ) => Promise<void>,
   ];
 }
 
-export interface ProtectedDataConnector<
-  Depth extends number,
-  AtomAddress = LeafAddressFor<Depth>,
-  ParentAddress = ParentAddressFor<Depth>,
-  AncestorAddress = AncestorAddressFor<Depth>,
-> extends DataConnector<Depth> {
+export interface ProtectedDataConnector<Depth extends number>
+  extends DataConnector<Depth> {
   _: [
     attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
     detach: () => Promise<void>,
     readAtom: (
-      address: AtomAddress,
+      address: AtomAddress<Depth>,
       context: Context,
     ) => Promise<Atom | undefined>,
     writeAtom: (
-      address: AtomAddress,
+      address: AtomAddress<Depth>,
       atom: Atom,
       context: Context,
     ) => Promise<void>,
-    removeAtom: (address: AtomAddress, context: Context) => Promise<void>,
+    removeAtom: (
+      address: AtomAddress<Depth>,
+      context: Context,
+    ) => Promise<void>,
     readChildIds: (
-      address: AncestorAddress,
+      address: AnyParentAddress<Depth>,
       context: Context,
     ) => Promise<string[]>,
-    readAtoms: (address: ParentAddress, context: Context) => Promise<Atoms>,
+    readAtoms: (
+      address: AtomsAddress<Depth>,
+      context: Context,
+    ) => Promise<Atoms>,
   ];
   $: [getData?: () => Promise<Data>];
 }
 
-export interface ProtectedMetaConnector<
-  Depth extends number,
-  TimestampAddress = LeafAddressFor<Depth>,
-  ParentAddress = ParentAddressFor<Depth>,
-  AncestorAddress = AncestorAddressFor<Depth>,
-> extends MetaConnector<Depth> {
+export interface ProtectedMetaConnector<Depth extends number>
+  extends MetaConnector<Depth> {
   _: [
     attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
     detach: () => Promise<void>,
     readTimestamp: (
-      address: TimestampAddress,
+      address: TimestampAddress<Depth>,
       context: Context,
     ) => Promise<Timestamp | undefined>,
     writeTimestamp: (
-      address: TimestampAddress,
+      address: TimestampAddress<Depth>,
       timestamp: Timestamp,
       context: Context,
     ) => Promise<void>,
     readChildIds: (
-      address: AncestorAddress,
+      address: AnyParentAddress<Depth>,
       context: Context,
     ) => Promise<string[]>,
     readTimestamps: (
-      address: ParentAddress,
+      address: TimestampsAddress<Depth>,
       context: Context,
     ) => Promise<Timestamps>,
   ];
@@ -115,7 +113,7 @@ export interface ProtectedMetaConnector<
 
 export interface ProtectedTransport extends Transport {
   _: [
-    attach: (synclet: ProtectedSynclet<number>) => void,
+    attach: (synclet: ProtectedSynclet<any>) => void,
     detach: () => void,
     connect: (receiveMessage: ReceiveMessage) => Promise<void>,
     disconnect: () => Promise<void>,

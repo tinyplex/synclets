@@ -7,8 +7,27 @@ import {Page} from './ui/Page.tsx';
 import {Readme} from './ui/Readme.tsx';
 
 const GROUPS = ['Interfaces', '*', 'Type aliases'];
-const CATEGORIES = ['*'];
-const REFLECTIONS = ['synclets', /^get/, /^set/, '*', /^del/];
+const CATEGORIES = [
+  /Synclet/,
+  /DataConnector/,
+  /MetaConnector/,
+  /Transport/,
+  '*',
+];
+const REFLECTIONS = [
+  'synclets',
+  /Synclet/,
+  /DataConnector/,
+  /MetaConnector/,
+  /Transport/,
+  'utils',
+  /^connector/,
+  /^transport/,
+  /^get/,
+  /^set/,
+  '*',
+  /^del/,
+];
 
 export const build = async (
   outDir: string,

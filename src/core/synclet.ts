@@ -1,20 +1,20 @@
 import {
   Address,
-  AncestorAddressFor,
-  AnyAddressFor,
+  AnyAddress,
+  AnyParentAddress,
   Atom,
+  AtomAddress,
+  AtomsAddress,
   Context,
   createSynclet as createSyncletDecl,
   Data,
-  Hash,
-  LeafAddressFor,
   LogLevel,
   Meta,
-  ParentAddressFor,
   SyncletImplementations,
   SyncletOptions,
   Timestamp,
-  TimestampAndAtom,
+  TimestampAddress,
+  TimestampsAddress,
 } from '@synclets/@types';
 import {getUniqueId, isTimestamp} from '@synclets/utils';
 import {
@@ -25,7 +25,7 @@ import {
   arrayReduce,
   isArray,
 } from '../common/array.ts';
-import {combineHash, getHash} from '../common/codec.ts';
+import {combineHash, getHash, Hash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
 import {
   objFromEntries,
@@ -57,6 +57,7 @@ import {
   ProtectedMetaConnector,
   ProtectedSynclet,
   ProtectedTransport,
+  TimestampAndAtom,
   type MessageNode,
   type MessageSubNodes,
 } from './types.ts';
@@ -80,11 +81,6 @@ export const createSynclet: typeof createSyncletDecl = (async <
   {canReceiveMessage, getSendContext}: SyncletImplementations = {},
   options: SyncletOptions = {},
 ): Promise<ProtectedSynclet<Depth>> => {
-  type LeafAddress = LeafAddressFor<Depth>;
-  type ParentAddress = ParentAddressFor<Depth>;
-  type AncestorAddress = AncestorAddressFor<Depth>;
-  type AnyAddress = AnyAddressFor<Depth>;
-
   const {
     depth: dataDepth,
     _: [
@@ -130,14 +126,17 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
   const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id);
 
-  const isAncestorAddress = (address: AnyAddress): address is AncestorAddress =>
-    size(address) < dataDepth;
+  const isAnyParentAddress = (
+    address: AnyAddress<Depth>,
+  ): address is AnyParentAddress<Depth> => size(address) < dataDepth;
 
-  const isParentAddress = (address: AnyAddress): address is ParentAddress =>
+  const isAtomsOrTimestampsParentAddress = (
+    address: AnyAddress<Depth>,
+  ): address is AtomsAddress<Depth> & TimestampsAddress<Depth> =>
     size(address) == dataDepth - 1;
 
   const setOrDelAtom = async (
-    address: LeafAddress,
+    address: AtomAddress<Depth>,
     atomOrUndefined: Atom | undefined,
     context: Context = {},
     syncOrFromTransport: boolean | ProtectedTransport = true,
@@ -167,9 +166,9 @@ export const createSynclet: typeof createSyncletDecl = (async <
   };
 
   const getDataForAddress = async (
-    address: AncestorAddress = [] as AncestorAddress,
-  ): Promise<Data> =>
-    isParentAddress(address)
+    address: AnyParentAddress<Depth> = [] as AnyParentAddress<Depth>,
+  ): Promise<Data> => {
+    return isAtomsOrTimestampsParentAddress(address)
       ? ((await dataReadAtoms(address, {})) ?? {})
       : objFromEntries(
           await promiseAll(
@@ -178,13 +177,16 @@ export const createSynclet: typeof createSyncletDecl = (async <
               await getDataForAddress([
                 ...(address as Address),
                 childId,
-              ] as AncestorAddress),
+              ] as AnyParentAddress<Depth>),
             ]),
           ),
         );
+  };
 
-  const getMetaForAddress = async (address: AncestorAddress): Promise<Meta> =>
-    isParentAddress(address)
+  const getMetaForAddress = async (
+    address: AnyParentAddress<Depth> = [] as AnyParentAddress<Depth>,
+  ): Promise<Meta> =>
+    isAtomsOrTimestampsParentAddress(address)
       ? ((await metaReadTimestamps(address, {})) ?? {})
       : objFromEntries(
           await promiseAll(
@@ -193,13 +195,13 @@ export const createSynclet: typeof createSyncletDecl = (async <
               await getMetaForAddress([
                 ...(address as Address),
                 childId,
-              ] as AncestorAddress),
+              ] as AnyParentAddress<Depth>),
             ]),
           ),
         );
 
   const deriveHash = async (
-    address: AncestorAddress,
+    address: AnyParentAddress<Depth>,
     context: Context,
   ): Promise<Hash> =>
     arrayReduce(
@@ -207,15 +209,18 @@ export const createSynclet: typeof createSyncletDecl = (async <
         arrayMap(
           (await metaReadChildIds(address, context)) ?? [],
           async (childId) =>
-            size(address) == metaDepth - 1
+            isAtomsOrTimestampsParentAddress(address)
               ? getHash(
                   (await metaReadTimestamp(
-                    [...(address as Address), childId] as LeafAddress,
+                    [
+                      ...(address as Address),
+                      childId,
+                    ] as TimestampAddress<Depth>,
                     context,
                   )) ?? '',
                 )
               : await deriveHash(
-                  [...(address as Address), childId] as AncestorAddress,
+                  [...(address as Address), childId] as AnyParentAddress<Depth>,
                   context,
                 ),
         ),
@@ -224,16 +229,19 @@ export const createSynclet: typeof createSyncletDecl = (async <
       0,
     );
 
-  const readHashOrTimestamp = async (address: AnyAddress, context: Context) =>
-    isAncestorAddress(address)
+  const readHashOrTimestamp = async (
+    address: AnyAddress<Depth>,
+    context: Context,
+  ) =>
+    isAnyParentAddress(address)
       ? ((await deriveHash(address, context)) ?? 0)
       : ((await metaReadTimestamp(address, context)) ?? EMPTY_STRING);
 
   const readFullNodesOrAtomAndTimestamp = async (
-    address: AnyAddress,
+    address: AnyAddress<Depth>,
     context: Context,
   ): Promise<MessageSubNodes | TimestampAndAtom | undefined> => {
-    if (isAncestorAddress(address)) {
+    if (isAnyParentAddress(address)) {
       return await readFullNodes(address, context);
     }
     const timestamp = await metaReadTimestamp(address, context);
@@ -243,7 +251,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
   };
 
   const readFullNodes = async (
-    address: AncestorAddress,
+    address: AnyParentAddress<Depth>,
     context: Context,
     except: string[] = [],
   ): Promise<MessageSubNodes> => {
@@ -257,7 +265,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
         async (id) =>
           ifNotUndefined(
             await readFullNodesOrAtomAndTimestamp(
-              [...(address as Address), id] as AnyAddress,
+              [...(address as Address), id] as AnyAddress<Depth>,
               context,
             ),
             (fullNodesOrAtomAndTimestamp) => {
@@ -270,7 +278,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
   };
 
   const syncExcept = async (
-    address: AnyAddress,
+    address: AnyAddress<Depth>,
     exceptTransport?: ProtectedTransport | boolean,
   ) => {
     if (started) {
@@ -336,7 +344,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
       await transformNode(
         transport,
-        address as AnyAddress,
+        address as AnyAddress<Depth>,
         node,
         context,
         (newNode) =>
@@ -346,7 +354,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
   const transformNode = async (
     transport: ProtectedTransport,
-    address: AnyAddress,
+    address: AnyAddress<Depth>,
     node: MessageNode,
     context: Context,
     ifTransformedToDefined: (newNode: MessageNode) => Promise<void> | void,
@@ -370,7 +378,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
   const transformTimestamp = async (
     _transport: ProtectedTransport,
-    address: LeafAddress,
+    address: TimestampAddress<Depth>,
     otherTimestamp: Timestamp,
     context: Context,
   ): Promise<MessageNode | undefined> => {
@@ -389,7 +397,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
   const transformTimestampAndAtom = async (
     transport: ProtectedTransport,
-    address: LeafAddress,
+    address: TimestampAddress<Depth>,
     otherTimestampAndAtom: TimestampAndAtom,
     context: Context,
   ): Promise<MessageNode | undefined> => {
@@ -416,7 +424,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
   const transformHash = async (
     _transport: ProtectedTransport,
-    address: AncestorAddress,
+    address: AnyParentAddress<Depth>,
     otherHash: Hash,
     context: Context,
   ): Promise<MessageNode | undefined> => {
@@ -428,7 +436,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
             (await metaReadChildIds(address, context)) ?? [],
             async (id) => {
               subNodeObj[id] = await readHashOrTimestamp(
-                [...(address as Address), id] as AnyAddress,
+                [...(address as Address), id] as AnyAddress<Depth>,
                 context,
               );
             },
@@ -443,7 +451,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
   const transformSubNodes = async (
     transport: ProtectedTransport,
-    address: AncestorAddress,
+    address: AnyParentAddress<Depth>,
     [otherSubNodeObj, partial]: MessageSubNodes,
     context: Context,
   ): Promise<MessageNode | undefined> => {
@@ -455,7 +463,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
         objToArray(otherSubNodeObj, (id, otherSubNode) =>
           transformNode(
             transport,
-            [...(address as Address), id] as AnyAddress,
+            [...(address as Address), id] as AnyAddress<Depth>,
             otherSubNode,
             context,
             (newNode) => {
@@ -491,7 +499,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
         ),
       );
       started = true;
-      await sync([] as AncestorAddress);
+      await sync([] as AnyAddress<Depth>);
     }
   };
 
@@ -521,25 +529,26 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
   const getTransport = () => [...transports];
 
-  const sync = (address: AnyAddress) => syncExcept(address);
+  const sync = (address: AnyAddress<Depth>) => syncExcept(address);
 
   const setAtom = (
-    address: LeafAddress,
+    address: AtomAddress<Depth>,
     atom: Atom,
     context?: Context,
     sync?: boolean,
   ) => setOrDelAtom(address, atom, context, sync);
 
-  const delAtom = (address: LeafAddress, context?: Context, sync?: boolean) =>
-    setOrDelAtom(address, undefined, context, sync);
+  const delAtom = (
+    address: AtomAddress<Depth>,
+    context?: Context,
+    sync?: boolean,
+  ) => setOrDelAtom(address, undefined, context, sync);
 
   const getData = async () =>
-    (await dataGetData?.()) ??
-    (((await getDataForAddress([] as AncestorAddress)) ?? {}) as Data);
+    (await dataGetData?.()) ?? (((await getDataForAddress()) ?? {}) as Data);
 
   const getMeta = async () =>
-    (await metaGetMeta?.()) ??
-    (((await getMetaForAddress([] as AncestorAddress)) ?? {}) as Meta);
+    (await metaGetMeta?.()) ?? (((await getMetaForAddress()) ?? {}) as Meta);
 
   const synclet: ProtectedSynclet<Depth> = {
     log,

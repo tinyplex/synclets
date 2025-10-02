@@ -15,3 +15,7 @@ export function getUniqueId(length?: number): string;
 export function isTimestamp(thing: unknown): thing is Timestamp;
 
 export function isAtom(thing: unknown): thing is Atom;
+
+export function getPartsFromPacket(packet: string): [to: string, body: string];
+
+export function getPacketFromParts(to: string, body: string): string;

@@ -1,58 +1,65 @@
 /// synclets
 
-type OneLonger<Than extends string[] = []> = [string, ...Than];
-type LeafAddressFor<
-  Depth extends number,
-  Address extends string[] = [],
-> = Address['length'] extends Depth
-  ? Address
-  : LeafAddressFor<Depth, OneLonger<Address>>;
-type ParentAddressFor<
-  Depth extends number,
-  Address extends string[] = [],
-> = OneLonger<Address>['length'] extends Depth
-  ? Address
-  : ParentAddressFor<Depth, OneLonger<Address>>;
-type AncestorAddressFor<
-  Depth extends number,
-  Address extends string[] = [],
-> = OneLonger<Address>['length'] extends Depth
-  ? Address
-  : Address | ParentAddressFor<Depth, [string, ...Address]>;
-type AnyAddressFor<Depth extends number> =
-  | LeafAddressFor<Depth>
-  | AncestorAddressFor<Depth>;
-
 import type {Undefined} from './utils/index.d.ts';
 
+/// Address
 export type Address = string[];
 
+/// AtomAddress
+export type AtomAddress<Depth extends number> = LeafAddressFor<Depth>;
+
+/// AtomsAddress
+export type AtomsAddress<Depth extends number> = LeafParentAddressFor<Depth>;
+
+/// TimestampAddress
+export type TimestampAddress<Depth extends number> = LeafAddressFor<Depth>;
+
+/// TimestampsAddress
+export type TimestampsAddress<Depth extends number> =
+  LeafParentAddressFor<Depth>;
+
+/// AnyParentAddress
+export type AnyParentAddress<Depth extends number> = AnyParentAddressFor<Depth>;
+
+/// AnyAddress
+export type AnyAddress<Depth extends number> =
+  | AtomAddress<Depth>
+  | TimestampAddress<Depth>
+  | AnyParentAddress<Depth>;
+
+/// Atom
 export type Atom = string | number | boolean | null | Undefined;
 
+/// Atoms
 export type Atoms = {[id: string]: Atom};
 
+/// Data
 export type Data = Atoms | {[id: string]: Data};
 
-export type Timestamps = {[id: string]: Timestamp};
-
-export type Meta = Timestamps | {[id: string]: Meta};
-
+/// Timestamp
 export type Timestamp = string;
 
-export type Hash = number;
+/// Timestamps
+export type Timestamps = {[id: string]: Timestamp};
 
-export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom | undefined];
+/// Meta
+export type Meta = Timestamps | {[id: string]: Meta};
 
+/// Context
 export type Context = {[key: string]: Atom};
 
+/// Logger
 export type Logger = {
   error?: (string: string) => void;
   warn?: (string: string) => void;
   info?: (string: string) => void;
   debug?: (string: string) => void;
 };
+
+/// LogLevel
 export type LogLevel = keyof Logger;
 
+/// Synclet
 export interface Synclet<
   Depth extends number,
   DataConnectorType extends DataConnector<Depth> = DataConnector<Depth>,
@@ -78,16 +85,19 @@ export interface Synclet<
   getMeta(): Promise<Readonly<Meta>>;
 }
 
+/// SyncletImplementations
 export type SyncletImplementations = {
   canReceiveMessage?: (context: Context) => Promise<boolean>;
   getSendContext?: (receivedContext?: Context) => Promise<Context>;
 };
 
+/// SyncletOptions
 export type SyncletOptions = {
   id?: string;
   logger?: Logger;
 };
 
+/// createSynclet
 export function createSynclet<
   Depth extends number,
   DataConnectorType extends DataConnector<Depth>,
@@ -104,41 +114,40 @@ export function createSynclet<
 
 // --
 
+/// DataConnector
 export interface DataConnector<Depth extends number> {
   _brand: 'DataConnector';
   depth: Depth;
   log(message: string, level?: LogLevel): void;
 }
 
-export type DataConnectorImplementations<
-  Depth extends number,
-  AtomAddress = LeafAddressFor<Depth>,
-  ParentAddress = ParentAddressFor<Depth>,
-  AncestorAddress = AncestorAddressFor<Depth>,
-> = {
+/// DataConnectorImplementations
+export type DataConnectorImplementations<Depth extends number> = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
   readAtom: (
-    address: AtomAddress,
+    address: AtomAddress<Depth>,
     context: Context,
   ) => Promise<Atom | undefined>;
   writeAtom: (
-    address: AtomAddress,
+    address: AtomAddress<Depth>,
     atom: Atom,
     context: Context,
   ) => Promise<void>;
-  removeAtom: (address: AtomAddress, context: Context) => Promise<void>;
+  removeAtom: (address: AtomAddress<Depth>, context: Context) => Promise<void>;
   readChildIds: (
-    address: AncestorAddress,
+    address: AnyParentAddress<Depth>,
     context: Context,
   ) => Promise<string[]>;
-  readAtoms: (address: ParentAddress, context: Context) => Promise<Atoms>;
+  readAtoms: (address: AtomsAddress<Depth>, context: Context) => Promise<Atoms>;
 };
 
+/// DataConnectorOptimizations
 export type DataConnectorOptimizations = {
   getData?: () => Promise<Data>;
 };
 
+/// createDataConnector
 export function createDataConnector<Depth extends number>(
   depth: Depth,
   implementations: DataConnectorImplementations<Depth>,
@@ -147,43 +156,42 @@ export function createDataConnector<Depth extends number>(
 
 // --
 
+/// MetaConnector
 export interface MetaConnector<Depth extends number> {
   _brand: 'MetaConnector';
   depth: Depth;
   log(message: string, level?: LogLevel): void;
 }
 
-export type MetaConnectorImplementations<
-  Depth extends number,
-  TimestampAddress = LeafAddressFor<Depth>,
-  ParentAddress = ParentAddressFor<Depth>,
-  AncestorAddress = AncestorAddressFor<Depth>,
-> = {
+/// MetaConnectorImplementations
+export type MetaConnectorImplementations<Depth extends number> = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
   readTimestamp: (
-    address: TimestampAddress,
+    address: TimestampAddress<Depth>,
     context: Context,
   ) => Promise<Timestamp | undefined>;
   writeTimestamp: (
-    address: TimestampAddress,
+    address: TimestampAddress<Depth>,
     timestamp: Timestamp,
     context: Context,
   ) => Promise<void>;
   readChildIds: (
-    address: AncestorAddress,
+    address: AnyParentAddress<Depth>,
     context: Context,
   ) => Promise<string[]>;
   readTimestamps: (
-    address: ParentAddress,
+    address: TimestampsAddress<Depth>,
     context: Context,
   ) => Promise<Timestamps>;
 };
 
+/// MetaConnectorOptimizations
 export type MetaConnectorOptimizations = {
   getMeta?: () => Promise<Meta>;
 };
 
+/// createMetaConnector
 export function createMetaConnector<Depth extends number>(
   depth: Depth,
   implementations: MetaConnectorImplementations<Depth>,
@@ -192,26 +200,26 @@ export function createMetaConnector<Depth extends number>(
 
 // --
 
+/// Transport
 export interface Transport {
   _brand: 'Transport';
   log(message: string, level?: LogLevel): void;
 }
 
+/// TransportImplementations
 export type TransportImplementations = {
   connect?: (receivePacket: (string: string) => Promise<void>) => Promise<void>;
   disconnect?: () => Promise<void>;
   sendPacket: (string: string) => Promise<void>;
 };
 
+/// TransportOptions
 export type TransportOptions = {
   fragmentSize?: number;
 };
 
+/// createTransport
 export function createTransport(
   implementations: TransportImplementations,
   options?: TransportOptions,
 ): Promise<Transport>;
-
-export function getPartsFromPacket(packet: string): [to: string, body: string];
-
-export function getPacketFromParts(to: string, body: string): string;
