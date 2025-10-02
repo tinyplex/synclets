@@ -38,23 +38,23 @@ export const createMemoryDataConnector = async <Depth extends number>(
     atom: Atom,
     _context: Context,
   ) =>
-    objDeepAction(
+    await objDeepAction(
       data,
       address,
-      (parent, id) => {
+      async (parent, id) => {
         parent[id] = atom;
-        onChange?.(data);
+        await onChange?.(data);
       },
       true,
     );
 
   const removeAtom = async (address: AtomAddress, _context: Context) =>
-    objDeepAction(
+    await objDeepAction(
       data,
       address,
-      (parent, id) => {
+      async (parent, id) => {
         delete parent[id];
-        onChange?.(data);
+        await onChange?.(data);
       },
       true,
       true,
