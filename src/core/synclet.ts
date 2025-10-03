@@ -78,7 +78,11 @@ export const createSynclet: typeof createSyncletDecl = (async <
   dataConnector: ProtectedDataConnectorType,
   metaConnector: ProtectedMetaConnectorType,
   transport: ProtectedTransport | ProtectedTransport[],
-  {canReceiveMessage, getSendContext}: SyncletImplementations = {},
+  {
+    onSetAtom,
+    canReceiveMessage,
+    getSendContext,
+  }: SyncletImplementations<Depth> = {},
   options: SyncletOptions = {},
 ): Promise<ProtectedSynclet<Depth>> => {
   const {
@@ -153,10 +157,13 @@ export const createSynclet: typeof createSyncletDecl = (async <
       oldTimestamp = await metaReadTimestamp(address, context);
     }
     const tasks = [
-      isUndefined(atomOrUndefined)
-        ? () => dataRemoveAtom(address, context)
-        : () => dataWriteAtom(address, atomOrUndefined, context),
-      () => metaWriteTimestamp(address, newTimestamp, context),
+      async () => {
+        await (isUndefined(atomOrUndefined)
+          ? dataRemoveAtom(address, context)
+          : dataWriteAtom(address, atomOrUndefined, context));
+        await metaWriteTimestamp(address, newTimestamp, context);
+        await onSetAtom?.(address);
+      },
     ];
     if (syncOrFromTransport) {
       arrayPush(tasks, () => syncExcept(address, syncOrFromTransport));

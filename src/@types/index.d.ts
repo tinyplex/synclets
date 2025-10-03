@@ -86,7 +86,8 @@ export interface Synclet<
 }
 
 /// SyncletImplementations
-export type SyncletImplementations = {
+export type SyncletImplementations<Depth extends number> = {
+  onSetAtom?: (address: AtomAddress<Depth>) => Promise<void>;
   canReceiveMessage?: (context: Context) => Promise<boolean>;
   getSendContext?: (receivedContext?: Context) => Promise<Context>;
 };
@@ -108,7 +109,7 @@ export function createSynclet<
   dataConnector: DataConnectorType,
   metaConnector: MetaConnectorType,
   transport: Transport | Transport[],
-  implementations?: SyncletImplementations,
+  implementations?: SyncletImplementations<Depth>,
   options?: SyncletOptions,
 ): Promise<Synclet<Depth, DataConnectorType, MetaConnectorType>>;
 
