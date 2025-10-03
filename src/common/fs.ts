@@ -43,9 +43,12 @@ export const writeFileJson = async (
   root: string,
   paths: string[],
   content: unknown,
+  ensureDirectory: boolean = true,
 ) => {
   const file = resolve(root, ...paths);
-  await makeDirectory(dirname(file));
+  if (ensureDirectory) {
+    await makeDirectory(dirname(file));
+  }
   await writeFile(file, jsonString(content), UTF8);
 };
 

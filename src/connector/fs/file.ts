@@ -5,14 +5,11 @@ import type {
   FileDataConnector,
   FileMetaConnector,
 } from '@synclets/@types/connector/fs';
-import {jsonParse, jsonString} from '@synclets/utils';
-import {readFile, writeFile} from 'fs/promises';
-import {validateFile} from '../../common/fs.ts';
+import {readFileJson, validateFile, writeFileJson} from '../../common/fs.ts';
 import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from '../../common/memory.ts';
-import {UTF8} from '../../common/string.ts';
 
 export const createFileDataConnector: typeof createFileDataConnectorDecl =
   async <Depth extends number>(
@@ -23,8 +20,8 @@ export const createFileDataConnector: typeof createFileDataConnectorDecl =
 
     const dataConnector = await createMemoryDataConnector(
       depth,
-      (data: Data) => writeFile(file, jsonString(data), UTF8),
-      jsonParse(await readFile(file, UTF8)),
+      (data: Data) => writeFileJson(file, [], data, false),
+      (await readFileJson(file, [])) as Data | undefined,
     );
 
     const getFile = () => file;
@@ -44,8 +41,8 @@ export const createFileMetaConnector: typeof createFileMetaConnectorDecl =
 
     const metaConnector = await createMemoryMetaConnector(
       depth,
-      (meta: Meta) => writeFile(file, jsonString(meta), UTF8),
-      jsonParse(await readFile(file, UTF8)),
+      (meta: Meta) => writeFileJson(file, [], meta, false),
+      (await readFileJson(file, [])) as Meta | undefined,
     );
 
     const getFile = () => file;
