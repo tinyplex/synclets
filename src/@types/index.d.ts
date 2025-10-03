@@ -87,6 +87,9 @@ export interface Synclet<
 
 /// SyncletImplementations
 export type SyncletImplementations<Depth extends number> = {
+  onStart?: () => Promise<void>;
+  onStop?: () => Promise<void>;
+  onSync?: (address: AnyAddress<Depth>) => Promise<void>;
   onSetAtom?: (address: AtomAddress<Depth>) => Promise<void>;
   canReceiveMessage?: (context: Context) => Promise<boolean>;
   getSendContext?: (receivedContext?: Context) => Promise<Context>;

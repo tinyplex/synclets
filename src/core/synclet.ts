@@ -79,6 +79,9 @@ export const createSynclet: typeof createSyncletDecl = (async <
   metaConnector: ProtectedMetaConnectorType,
   transport: ProtectedTransport | ProtectedTransport[],
   {
+    onStart,
+    onStop,
+    onSync,
     onSetAtom,
     canReceiveMessage,
     getSendContext,
@@ -291,14 +294,19 @@ export const createSynclet: typeof createSyncletDecl = (async <
     if (started) {
       const hashOrTimestamp = await readHashOrTimestamp(address, {});
       const tasks: Task[] = [];
+      let didSync = false;
       arrayForEach(transports, (transport, t) => {
         if (transport !== exceptTransport) {
           log(`sync (${t}) ` + address);
+          didSync = true;
           arrayPush(tasks, () =>
             sendNodeMessage(transport, address, hashOrTimestamp),
           );
         }
       });
+      if (didSync) {
+        await onSync?.(address);
+      }
       await queue(...tasks);
     }
   };
@@ -506,6 +514,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
         ),
       );
       started = true;
+      await onStart?.();
       await sync([] as AnyAddress<Depth>);
     }
   };
@@ -517,6 +526,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
         arrayMap(transports, (transport) => transport._[DISCONNECT]()),
       );
       started = false;
+      await onStop?.();
     }
   };
 
