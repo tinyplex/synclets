@@ -126,6 +126,13 @@
 /// Synclet
 
 /**
+ * The /// SyncletComponents type.
+ * @category Synclet
+ * @since v0.0.0
+ */
+/// SyncletComponents
+
+/**
  * The SyncletImplementations type.
  * @category Synclet
  * @since v0.0.0

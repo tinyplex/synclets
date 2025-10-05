@@ -17,16 +17,14 @@ beforeEach(async () => {
 });
 
 test('createSynclet', () => {
-  const synclet = createSynclet(dataConnector, metaConnector, transport);
+  const synclet = createSynclet({dataConnector, metaConnector, transport});
   expect(synclet).toBeDefined();
 });
 
 test('log', async () => {
   const logger = {info: jest.fn()};
   const synclet = await createSynclet(
-    dataConnector,
-    metaConnector,
-    transport,
+    {dataConnector, metaConnector, transport},
     {},
     {id: 'synclet', logger},
   );
@@ -38,40 +36,44 @@ test('log', async () => {
 });
 
 test('error on reassigning transport', async () => {
-  await createSynclet(dataConnector, metaConnector, transport, {});
+  await createSynclet({dataConnector, metaConnector, transport});
   await expect(async () => {
-    await createSynclet(
-      createMockDataConnector(),
-      createMockMetaConnector(),
+    await createSynclet({
+      dataConnector: createMockDataConnector(),
+      metaConnector: createMockMetaConnector(),
       transport,
-    );
+    });
   }).rejects.toThrow('Transport is already attached to Synclet');
 });
 
 test('error on reassigning data connector', async () => {
-  await createSynclet(dataConnector, metaConnector, transport, {});
+  await createSynclet({dataConnector, metaConnector, transport});
   await expect(async () => {
-    await createSynclet(
+    await createSynclet({
       dataConnector,
-      createMockMetaConnector(),
-      createMockTransport(),
-    );
+      metaConnector: createMockMetaConnector(),
+      transport: createMockTransport(),
+    });
   }).rejects.toThrow('Data connector is already attached to Synclet');
 });
 
 test('error on reassigning meta connector', async () => {
-  await createSynclet(dataConnector, metaConnector, transport, {});
+  await createSynclet({dataConnector, metaConnector, transport});
   await expect(async () => {
-    await createSynclet(
-      createMockDataConnector(),
+    await createSynclet({
+      dataConnector: createMockDataConnector(),
       metaConnector,
-      createMockTransport(),
-    );
+      transport: createMockTransport(),
+    });
   }).rejects.toThrow('Meta connector is already attached to Synclet');
 });
 
 test('start & stop', async () => {
-  const synclet = await createSynclet(dataConnector, metaConnector, transport);
+  const synclet = await createSynclet({
+    dataConnector,
+    metaConnector,
+    transport,
+  });
   expect(synclet.isStarted()).toBe(false);
 
   await synclet.start();
@@ -85,15 +87,17 @@ describe('context', () => {
   test('send message', async () => {
     const canReceiveMessage = jest.fn();
 
-    const synclet1 = await createSynclet(
-      createMockDataConnector(),
-      createMockMetaConnector(),
-      createMemoryTransport({poolId: 'pool1'}),
-    );
+    const synclet1 = await createSynclet({
+      dataConnector: createMockDataConnector(),
+      metaConnector: createMockMetaConnector(),
+      transport: createMemoryTransport({poolId: 'pool1'}),
+    });
     const synclet2 = await createSynclet(
-      createMockDataConnector(),
-      createMockMetaConnector(),
-      createMemoryTransport({poolId: 'pool1'}),
+      {
+        dataConnector: createMockDataConnector(),
+        metaConnector: createMockMetaConnector(),
+        transport: createMemoryTransport({poolId: 'pool1'}),
+      },
       {canReceiveMessage},
     );
     await synclet2.start();
@@ -107,15 +111,19 @@ describe('context', () => {
     const canReceiveMessage = jest.fn();
 
     const synclet1 = await createSynclet(
-      createMockDataConnector(),
-      createMockMetaConnector(),
-      createMemoryTransport({poolId: 'pool1'}),
+      {
+        dataConnector: createMockDataConnector(),
+        metaConnector: createMockMetaConnector(),
+        transport: createMemoryTransport({poolId: 'pool1'}),
+      },
       {getSendContext},
     );
     const synclet2 = await createSynclet(
-      createMockDataConnector(),
-      createMockMetaConnector(),
-      await createMemoryTransport({poolId: 'pool1'}),
+      {
+        dataConnector: createMockDataConnector(),
+        metaConnector: createMockMetaConnector(),
+        transport: createMemoryTransport({poolId: 'pool1'}),
+      },
       {canReceiveMessage},
     );
     await synclet2.start();

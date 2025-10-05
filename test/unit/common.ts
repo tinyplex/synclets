@@ -76,9 +76,7 @@ export const describeConnectorTests = <
           options: SyncletOptions = {},
         ): Promise<TestSynclet> => {
           const synclet = await createSynclet(
-            dataConnector,
-            metaConnector,
-            transport,
+            {dataConnector, metaConnector, transport},
             {},
             options,
           );

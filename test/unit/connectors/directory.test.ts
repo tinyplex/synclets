@@ -18,7 +18,7 @@ test('directory', async () => {
   const metaDir = join(tmp, '42.meta');
   const metaConnector = createDirectoryMetaConnector(1, metaDir);
 
-  const synclet = await createSynclet(dataConnector, metaConnector, []);
+  const synclet = await createSynclet({dataConnector, metaConnector});
 
   expect(dataConnector.getDirectory()).toBe(dataDir);
   expect(synclet.getDataConnector().getDirectory()).toBe(dataDir);

@@ -9,4 +9,4 @@ const dataConnector = createDataConnector(1, {} as any);
 const metaConnector = createMetaConnector(1, {} as any);
 const transport = createTransport({} as any);
 
-await createSynclet(dataConnector, metaConnector, transport);
+await createSynclet({dataConnector, metaConnector, transport});

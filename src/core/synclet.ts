@@ -6,7 +6,6 @@ import {
   AtomAddress,
   AtomsAddress,
   Context,
-  createSynclet as createSyncletDecl,
   Data,
   LogLevel,
   Meta,
@@ -16,6 +15,11 @@ import {
   TimestampAddress,
   TimestampsAddress,
 } from '@synclets/@types';
+import {
+  createMemoryDataConnector,
+  createMemoryMetaConnector,
+} from '@synclets/connector/memory';
+import {createMemoryTransport} from '@synclets/transport/memory';
 import {getUniqueId, isTimestamp} from '@synclets/utils';
 import {
   arrayDifference,
@@ -71,14 +75,20 @@ const CONNECT = 2;
 const DISCONNECT = 3;
 const SEND_MESSAGE = 4;
 
-export const createSynclet: typeof createSyncletDecl = (async <
+export const createSynclet = async <
   Depth extends number,
   ProtectedDataConnectorType extends ProtectedDataConnector<Depth>,
   ProtectedMetaConnectorType extends ProtectedMetaConnector<Depth>,
 >(
-  dataConnector: ProtectedDataConnectorType,
-  metaConnector: ProtectedMetaConnectorType,
-  transport: ProtectedTransport | ProtectedTransport[],
+  {
+    dataConnector = createMemoryDataConnector(1) as ProtectedDataConnectorType,
+    metaConnector = createMemoryMetaConnector(
+      dataConnector?.depth ?? 1,
+    ) as ProtectedMetaConnectorType,
+    transport = createMemoryTransport() as
+      | ProtectedTransport
+      | ProtectedTransport[],
+  } = {},
   {
     onStart,
     onStop,
@@ -147,7 +157,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
     address: AtomAddress<Depth>,
     atomOrUndefined: Atom | undefined,
     context: Context = {},
-    syncOrFromTransport: boolean | ProtectedTransport = true,
+    syncOrFromProtectedTransport: boolean | ProtectedTransport = true,
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
@@ -169,8 +179,8 @@ export const createSynclet: typeof createSyncletDecl = (async <
         await onSetAtom?.(address);
       },
     ];
-    if (syncOrFromTransport) {
-      arrayPush(tasks, () => syncExcept(address, syncOrFromTransport));
+    if (syncOrFromProtectedTransport) {
+      arrayPush(tasks, () => syncExcept(address, syncOrFromProtectedTransport));
     }
 
     await queue(...tasks);
@@ -290,14 +300,14 @@ export const createSynclet: typeof createSyncletDecl = (async <
 
   const syncExcept = async (
     address: AnyAddress<Depth>,
-    exceptTransport?: ProtectedTransport | boolean,
+    exceptProtectedTransport?: ProtectedTransport | boolean,
   ) => {
     if (started) {
       const hashOrTimestamp = await readHashOrTimestamp(address, {});
       const tasks: Task[] = [];
       let didSync = false;
       arrayForEach(transports, (transport, t) => {
-        if (transport !== exceptTransport) {
+        if (transport !== exceptProtectedTransport) {
           log(`sync (${t}) ` + address);
           didSync = true;
           arrayPush(tasks, () =>
@@ -589,4 +599,4 @@ export const createSynclet: typeof createSyncletDecl = (async <
   arrayForEach(transports, (transport) => transport._[ATTACH](synclet));
 
   return objFreeze(synclet);
-}) as any;
+};

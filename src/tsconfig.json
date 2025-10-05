@@ -17,6 +17,8 @@
     "paths": {
       "@synclets": ["./index.ts"],
       "@synclets/utils": ["./utils/index.ts"],
+      "@synclets/connector/memory": ["./connector/memory/index.ts"],
+      "@synclets/transport/memory": ["./transport/memory/index.ts"],
 
       "@synclets/@types": ["./@types/index.d.ts"],
       "@synclets/@types/utils": ["./@types/utils/index.d.ts"],

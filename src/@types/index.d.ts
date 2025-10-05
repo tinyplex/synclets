@@ -85,6 +85,17 @@ export interface Synclet<
   getMeta(): Promise<Readonly<Meta>>;
 }
 
+/// SyncletComponents
+export type SyncletComponents<
+  Depth extends number,
+  DataConnectorType extends DataConnector<Depth>,
+  MetaConnectorType extends MetaConnector<Depth>,
+> = {
+  dataConnector?: DataConnectorType;
+  metaConnector?: MetaConnectorType;
+  transport?: Transport | Transport[];
+};
+
 /// SyncletImplementations
 export type SyncletImplementations<Depth extends number> = {
   onStart?: () => Promise<void>;
@@ -109,9 +120,7 @@ export function createSynclet<
     DataConnectorType extends DataConnector<infer Depth> ? Depth : never
   >,
 >(
-  dataConnector: DataConnectorType,
-  metaConnector: MetaConnectorType,
-  transport: Transport | Transport[],
+  components?: SyncletComponents<Depth, DataConnectorType, MetaConnectorType>,
   implementations?: SyncletImplementations<Depth>,
   options?: SyncletOptions,
 ): Promise<Synclet<Depth, DataConnectorType, MetaConnectorType>>;

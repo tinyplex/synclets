@@ -18,7 +18,7 @@ test('file', async () => {
   const metaFile = join(tmp, '42.meta');
   const metaConnector = createFileMetaConnector(1, metaFile);
 
-  const synclet = await createSynclet(dataConnector, metaConnector, []);
+  const synclet = await createSynclet({dataConnector, metaConnector});
 
   expect(dataConnector.getFile()).toBe(dataFile);
   expect(synclet.getDataConnector().getFile()).toBe(dataFile);
