@@ -1,8 +1,15 @@
 export const GLOBAL = globalThis;
 
+const promise = Promise;
 export const promiseAll = <Return>(promises: Promise<Return>[]) =>
-  Promise.all(promises);
-export const promiseResolve = Promise.resolve;
+  promise.all(promises);
+export const promiseResolve = promise.resolve;
+export const promiseNew = <Value>(
+  resolver: (
+    resolve: (value: Value) => void,
+    reject: (reason?: any) => void,
+  ) => void,
+): Promise<Value> => new promise(resolver);
 
 export const math = Math;
 export const mathFloor = math.floor;

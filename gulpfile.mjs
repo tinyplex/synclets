@@ -18,6 +18,7 @@ const TEST_MODULES = [
   'connector/memory',
   'server/ws',
   'transport/memory',
+  'transport/ws',
 ];
 const ALL_MODULES = [...TEST_MODULES];
 const ALL_DEFINITIONS = [...ALL_MODULES];
