@@ -22,14 +22,14 @@ test('Two synclets on single server', async () => {
   const synclet1 = await createSynclet(
     createMemoryDataConnector(1),
     createMemoryMetaConnector(1),
-    await createWsTransport(new WebSocket(`ws://localhost:9000`)),
+    createWsTransport(new WebSocket(`ws://localhost:9000`)),
   );
   await synclet1.start();
 
   const synclet2 = await createSynclet(
     createMemoryDataConnector(1),
     createMemoryMetaConnector(1),
-    await createWsTransport(new WebSocket(`ws://localhost:9000`)),
+    createWsTransport(new WebSocket(`ws://localhost:9000`)),
   );
   await synclet2.start();
 

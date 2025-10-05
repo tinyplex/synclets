@@ -13,4 +13,4 @@ export interface WsTransport<WebSocketType extends WebSocketTypes>
 export function createWsTransport<WebSocketType extends WebSocketTypes>(
   webSocket: WebSocketType,
   options?: TransportOptions,
-): Promise<WsTransport<WebSocketType>>;
+): WsTransport<WebSocketType>;

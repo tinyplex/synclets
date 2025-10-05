@@ -21,10 +21,10 @@ type Pending = [fragments: string[], due: number];
 
 const PACKET = /^(.+) (.+) (\d+) (\d+) (.+)$/;
 
-export const createTransport: typeof createTransportDecl = async (
+export const createTransport: typeof createTransportDecl = (
   {connect, disconnect, sendPacket}: TransportImplementations,
   options: TransportOptions = {},
-): Promise<ProtectedTransport> => {
+): ProtectedTransport => {
   let connected = false;
   let attachedSynclet: ProtectedSynclet<number> | undefined;
   let receiveFinalMessage: ReceiveMessage | undefined;

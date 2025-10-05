@@ -420,9 +420,9 @@ export const createPooledTestSyncletsAndConnectors = async <
   const poolId = getUniqueId();
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
-      const dataConnector = await createDataConnector();
-      const metaConnector = await createMetaConnector();
-      const transport = await createMemoryTransport({poolId});
+      const dataConnector = createDataConnector();
+      const metaConnector = createMetaConnector();
+      const transport = createMemoryTransport({poolId});
       const synclet = await createSynclet(
         dataConnector,
         metaConnector,
@@ -457,15 +457,15 @@ export const createChainedTestSynclets = async <
   const poolId = getUniqueId();
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
-      const dataConnector = await createDataConnector();
-      const metaConnector = await createMetaConnector();
+      const dataConnector = createDataConnector();
+      const metaConnector = createMetaConnector();
       const transports = [];
       if (i != 0 || loop) {
-        transports.push(await createMemoryTransport({poolId: poolId + i}));
+        transports.push(createMemoryTransport({poolId: poolId + i}));
       }
       if (i != number - 1 || loop) {
         transports.push(
-          await createMemoryTransport({
+          createMemoryTransport({
             poolId: poolId + (i == number - 1 ? 0 : i + 1),
           }),
         );

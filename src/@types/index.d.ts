@@ -226,4 +226,4 @@ export type TransportOptions = {
 export function createTransport(
   implementations: TransportImplementations,
   options?: TransportOptions,
-): Promise<Transport>;
+): Transport;

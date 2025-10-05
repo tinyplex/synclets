@@ -9,12 +9,12 @@ import {objFreeze} from '../../common/object.ts';
 import {promiseNew} from '../../common/other.ts';
 import {UTF8} from '../../common/string.ts';
 
-export const createWsTransport: typeof createWsTransportDecl = async <
+export const createWsTransport: typeof createWsTransportDecl = <
   WebSocketType extends WebSocketTypes,
 >(
   webSocket: WebSocketType,
   options?: TransportOptions,
-): Promise<WsTransport<WebSocketType>> => {
+): WsTransport<WebSocketType> => {
   let messageListener: (() => void) | undefined;
 
   const addEventListener = (
@@ -31,6 +31,23 @@ export const createWsTransport: typeof createWsTransportDecl = async <
     messageListener = addEventListener('message', ({data}) =>
       receivePacket(data.toString(UTF8)),
     );
+    return promiseNew((resolve, reject) => {
+      if (webSocket.readyState != webSocket.OPEN) {
+        const onAttempt = (error?: any) => {
+          if (error) {
+            reject(error);
+          } else {
+            removeOpenListener();
+            removeErrorListener();
+            resolve();
+          }
+        };
+        const removeOpenListener = addEventListener('open', () => onAttempt());
+        const removeErrorListener = addEventListener('error', onAttempt);
+      } else {
+        resolve();
+      }
+    });
   };
 
   const disconnect = async (): Promise<void> => messageListener?.();
@@ -38,33 +55,10 @@ export const createWsTransport: typeof createWsTransportDecl = async <
   const sendPacket = async (packet: string): Promise<void> =>
     webSocket.send(packet);
 
-  const transport = await createTransport(
-    {connect, disconnect, sendPacket},
-    options,
-  );
+  const transport = createTransport({connect, disconnect, sendPacket}, options);
 
-  const wsTransport = objFreeze({
+  return objFreeze({
     ...transport,
     getWebSocket: () => webSocket,
   }) as WsTransport<WebSocketType>;
-
-  return promiseNew((resolve, reject) => {
-    if (webSocket.readyState != webSocket.OPEN) {
-      const onAttempt = (error?: any) => {
-        if (error) {
-          reject(error);
-        } else {
-          removeOpenListener();
-          removeErrorListener();
-          resolve(wsTransport);
-        }
-      };
-      const removeOpenListener = addEventListener('open', () => onAttempt());
-      const removeErrorListener = addEventListener('error', onAttempt);
-    } else {
-      resolve(wsTransport);
-    }
-  });
-
-  return wsTransport;
 };
