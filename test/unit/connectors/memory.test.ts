@@ -1,4 +1,3 @@
-import {Synclet} from 'synclets';
 import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
@@ -11,5 +10,4 @@ describeConnectorTests(
   async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
-  (synclet: Synclet<number>) => synclet.getMeta(),
 );

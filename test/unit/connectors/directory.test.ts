@@ -1,7 +1,7 @@
 import {mkdtemp, rm} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join, sep} from 'path';
-import {createSynclet, Synclet} from 'synclets';
+import {createSynclet} from 'synclets';
 import {
   createDirectoryDataConnector,
   createDirectoryMetaConnector,
@@ -37,5 +37,4 @@ describeConnectorTests(
     createDirectoryDataConnector(depth, join(file, getUniqueId())),
   (depth: number, {file}: {file: string}) =>
     createDirectoryMetaConnector(depth, join(file, getUniqueId())),
-  (synclet: Synclet<number>) => synclet.getMeta(),
 );

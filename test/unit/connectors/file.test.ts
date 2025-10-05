@@ -1,4 +1,4 @@
-import {mkdtemp, readFile, rm} from 'fs/promises';
+import {mkdtemp, rm} from 'fs/promises';
 import {tmpdir} from 'os';
 import {join, sep} from 'path';
 import {createSynclet} from 'synclets';
@@ -36,12 +36,4 @@ describeConnectorTests(
     createFileDataConnector(depth, join(tempDir, getUniqueId())),
   (depth: number, {tempDir}) =>
     createFileMetaConnector(depth, join(tempDir, getUniqueId())),
-  async (synclet) => {
-    try {
-      return JSON.parse(
-        await readFile(synclet.getMetaConnector().getFile(), 'utf-8'),
-      );
-    } catch {}
-    return {};
-  },
 );

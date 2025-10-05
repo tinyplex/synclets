@@ -14,14 +14,6 @@ import {
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
 
-export interface TestSynclet<Depth extends number> extends Synclet<Depth> {
-  setAtomForTest(value: string): Promise<void>;
-  setNearAtomForTest(value: string): Promise<void>;
-  setFarAtomForTest(value: string): Promise<void>;
-  delAtomForTest(): Promise<void>;
-  getUnderlyingMetaForTest(): Promise<any>;
-}
-
 export const describeConnectorTests = <
   DataConnectorType extends DataConnector<number>,
   MetaConnectorType extends MetaConnector<number>,
@@ -38,9 +30,6 @@ export const describeConnectorTests = <
     depth: number,
     environment: Environment,
   ) => Promise<MetaConnectorType>,
-  getUnderlyingMeta: (
-    synclet: Synclet<number, DataConnectorType, MetaConnectorType>,
-  ) => Promise<any>,
 ) =>
   describe(`${type} connector`, () => {
     let environment: Environment;
@@ -67,6 +56,13 @@ export const describeConnectorTests = <
         nearAddress: string[],
         farAddress?: string[],
       ) => {
+        interface TestSynclet extends Synclet<Depth> {
+          setAtomForTest(value: string): Promise<void>;
+          setNearAtomForTest(value: string): Promise<void>;
+          setFarAtomForTest(value: string): Promise<void>;
+          delAtomForTest(): Promise<void>;
+        }
+
         const createTestDataConnector = (): Promise<DataConnectorType> =>
           createDataConnector(depth, environment);
 
@@ -78,7 +74,7 @@ export const describeConnectorTests = <
           metaConnector: any,
           transport: Transport | Transport[],
           options: SyncletOptions = {},
-        ): Promise<TestSynclet<Depth>> => {
+        ): Promise<TestSynclet> => {
           const synclet = await createSynclet(
             dataConnector,
             metaConnector,
@@ -101,8 +97,6 @@ export const describeConnectorTests = <
             },
 
             delAtomForTest: () => synclet.delAtom(address),
-
-            getUnderlyingMetaForTest: () => getUnderlyingMeta(synclet),
           };
         };
 
@@ -513,26 +507,22 @@ export const createMockTransport = () =>
   });
 
 export const expectEquivalentSynclets = async <Depth extends number>(
-  synclets: TestSynclet<Depth>[],
+  synclets: Synclet<Depth>[],
 ) => {
   const data = await synclets[0].getData();
   const meta = await synclets[0].getMeta();
-  const getUnderlyingMeta = await synclets[0].getUnderlyingMetaForTest();
   expect(data).toMatchSnapshot('equivalent');
   await Promise.all(
     synclets.map(async (synclet) => {
       expect(await synclet.getData()).toEqual(data);
       expect(await synclet.getMeta()).toEqual(meta);
-      expect(await synclet.getUnderlyingMetaForTest()).toEqual(
-        getUnderlyingMeta,
-      );
     }),
   );
 };
 
 export const expectDifferingSynclets = async <Depth extends number>(
-  synclet1: TestSynclet<Depth>,
-  synclet2: TestSynclet<Depth>,
+  synclet1: Synclet<Depth>,
+  synclet2: Synclet<Depth>,
 ) => {
   const data1 = await synclet1.getData();
   const data2 = await synclet2.getData();
@@ -540,7 +530,4 @@ export const expectDifferingSynclets = async <Depth extends number>(
   expect([data1, data2]).toMatchSnapshot('differing');
   expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
   expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
-  expect(await synclet1.getUnderlyingMetaForTest()).not.toEqual(
-    await synclet2.getUnderlyingMetaForTest(),
-  );
 };
