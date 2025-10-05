@@ -59,34 +59,40 @@ const readLeaves = async <Leaf extends Atom | Timestamp>(
 export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDecl =
   async <Depth extends number>(
     depth: Depth,
-    path: string,
+    directory: string,
   ): Promise<DirectoryDataConnector<Depth>> => {
-    const directory = await validateDirectory(path);
+    let validatedDirectory: string;
+
+    const connect = async () => {
+      validatedDirectory = await validateDirectory(directory);
+    };
 
     const readAtom = async (
       address: AtomAddress<Depth>,
-    ): Promise<Atom | undefined> => readLeaf(directory, address, isAtom);
+    ): Promise<Atom | undefined> =>
+      readLeaf(validatedDirectory, address, isAtom);
 
     const writeAtom = (
       address: AtomAddress<Depth>,
       atom: Atom,
       _context: Context,
-    ) => writeFileJson(directory, address, atom);
+    ) => writeFileJson(validatedDirectory, address, atom);
 
     const removeAtom = (address: AtomAddress<Depth>, _context: Context) =>
-      removeFileAndAncestors(directory, address);
+      removeFileAndAncestors(validatedDirectory, address);
 
     const readChildIds = (
       address: AnyParentAddress<Depth>,
       _context: Context,
-    ) => getDirectoryContents(directory, address);
+    ) => getDirectoryContents(validatedDirectory, address);
 
     const readAtoms = async (
       address: AtomsAddress<Depth>,
       _context: Context,
-    ): Promise<Atoms> => readLeaves(directory, address, isAtom);
+    ): Promise<Atoms> => readLeaves(validatedDirectory, address, isAtom);
 
     const dataConnector = await createDataConnector(depth, {
+      connect,
       readAtom,
       writeAtom,
       removeAtom,
@@ -94,50 +100,60 @@ export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDe
       readAtoms,
     });
 
+    const getDirectory = () => directory;
+
     return objFreeze({
       ...dataConnector,
-      getDirectory: () => directory,
+      getDirectory,
     });
   };
 
 export const createDirectoryMetaConnector: typeof createDirectoryMetaConnectorDecl =
   async <Depth extends number>(
     depth: Depth,
-    path: string,
+    directory: string,
   ): Promise<DirectoryMetaConnector<Depth>> => {
-    const directory = await validateDirectory(path);
+    let validatedDirectory: string;
+
+    const connect = async () => {
+      validatedDirectory = await validateDirectory(directory);
+    };
 
     const readTimestamp = async (
       address: TimestampAddress<Depth>,
       _context: Context,
     ): Promise<Timestamp | undefined> =>
-      readLeaf(directory, address, isTimestamp);
+      readLeaf(validatedDirectory, address, isTimestamp);
 
     const writeTimestamp = async (
       address: TimestampAddress<Depth>,
       timestamp: Timestamp,
       _context: Context,
-    ) => writeFileJson(directory, address, timestamp);
+    ) => writeFileJson(validatedDirectory, address, timestamp);
 
     const readChildIds = async (
       address: AnyParentAddress<Depth>,
       _context: Context,
-    ) => getDirectoryContents(directory, address);
+    ) => getDirectoryContents(validatedDirectory, address);
 
     const readTimestamps = async (
       address: TimestampsAddress<Depth>,
       _context: Context,
-    ): Promise<Timestamps> => readLeaves(directory, address, isTimestamp);
+    ): Promise<Timestamps> =>
+      readLeaves(validatedDirectory, address, isTimestamp);
 
     const metaConnector = await createMetaConnector(depth, {
+      connect,
       readTimestamp,
       writeTimestamp,
       readChildIds,
       readTimestamps,
     });
 
+    const getDirectory = () => directory;
+
     return objFreeze({
       ...metaConnector,
-      getDirectory: () => directory,
+      getDirectory,
     });
   };

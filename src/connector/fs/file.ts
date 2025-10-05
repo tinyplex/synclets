@@ -15,14 +15,23 @@ import {objFreeze} from '../../common/object.ts';
 export const createFileDataConnector: typeof createFileDataConnectorDecl =
   async <Depth extends number>(
     depth: Depth,
-    path: string,
+    file: string,
   ): Promise<FileDataConnector<Depth>> => {
-    const file = await validateFile(path);
+    let validatedFile: string;
+
+    const connect = async () => {
+      validatedFile = await validateFile(file);
+    };
+
+    const getInitialDataAfterConnect = (): Promise<Data | undefined> =>
+      readFileJson(validatedFile, []) as Promise<Data | undefined>;
 
     const dataConnector = await createMemoryDataConnector(
       depth,
-      (data: Data) => writeFileJson(file, [], data, false),
-      (await readFileJson(file, [])) as Data | undefined,
+      connect,
+      undefined,
+      (data: Data) => writeFileJson(validatedFile, [], data, false),
+      getInitialDataAfterConnect,
     );
 
     const getFile = () => file;
@@ -36,14 +45,23 @@ export const createFileDataConnector: typeof createFileDataConnectorDecl =
 export const createFileMetaConnector: typeof createFileMetaConnectorDecl =
   async <Depth extends number>(
     depth: Depth,
-    path: string,
+    file: string,
   ): Promise<FileMetaConnector<Depth>> => {
-    const file = await validateFile(path);
+    let validatedFile: string;
+
+    const connect = async () => {
+      validatedFile = await validateFile(file);
+    };
+
+    const getInitialMetaAfterConnect = (): Promise<Meta | undefined> =>
+      readFileJson(validatedFile, []) as Promise<Meta | undefined>;
 
     const metaConnector = await createMemoryMetaConnector(
       depth,
-      (meta: Meta) => writeFileJson(file, [], meta, false),
-      (await readFileJson(file, [])) as Meta | undefined,
+      connect,
+      undefined,
+      (meta: Meta) => writeFileJson(validatedFile, [], meta, false),
+      getInitialMetaAfterConnect,
     );
 
     const getFile = () => file;

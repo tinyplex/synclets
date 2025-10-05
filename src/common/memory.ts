@@ -20,10 +20,17 @@ import {isEmpty} from './other.ts';
 
 export const createMemoryDataConnector = async <Depth extends number>(
   depth: Depth,
+  connectImpl?: () => Promise<void>,
+  disconnect?: () => Promise<void>,
   onChange?: (data: Data) => Promise<void>,
-  initial?: Data,
+  getInitialDataAfterConnect?: () => Promise<Data | undefined>,
 ): Promise<DataConnector<Depth>> => {
-  const data: Data = initial ?? {};
+  let data: Data = {};
+
+  const connect = async () => {
+    await connectImpl?.();
+    data = (await getInitialDataAfterConnect?.()) ?? data;
+  };
 
   const readAtom = async (
     address: TimestampAddress<Depth>,
@@ -78,17 +85,32 @@ export const createMemoryDataConnector = async <Depth extends number>(
 
   return await createDataConnector<Depth>(
     depth,
-    {readAtom, writeAtom, removeAtom, readChildIds, readAtoms},
+    {
+      connect,
+      disconnect,
+      readAtom,
+      writeAtom,
+      removeAtom,
+      readChildIds,
+      readAtoms,
+    },
     {getData: async () => jsonParse(jsonString(data))},
   );
 };
 
 export const createMemoryMetaConnector = async <Depth extends number>(
   depth: Depth,
+  connectImpl?: () => Promise<void>,
+  disconnect?: () => Promise<void>,
   onChange?: (meta: Meta) => Promise<void>,
-  initial?: Meta,
+  getInitialMetaAfterConnect?: () => Promise<Meta | undefined>,
 ): Promise<MetaConnector<Depth>> => {
-  const meta: Meta = initial ?? {};
+  let meta: Meta = {};
+
+  const connect = async () => {
+    await connectImpl?.();
+    meta = (await getInitialMetaAfterConnect?.()) ?? meta;
+  };
 
   const readTimestamp = async (
     address: TimestampAddress<Depth>,
@@ -136,7 +158,14 @@ export const createMemoryMetaConnector = async <Depth extends number>(
 
   return await createMetaConnector(
     depth,
-    {readTimestamp, writeTimestamp, readChildIds, readTimestamps},
+    {
+      connect,
+      disconnect,
+      readTimestamp,
+      writeTimestamp,
+      readChildIds,
+      readTimestamps,
+    },
     {getMeta: async () => jsonParse(jsonString(meta))},
   );
 };
