@@ -4,6 +4,7 @@ import type {
   DataConnectorOptimizations,
   LogLevel,
 } from '@synclets/@types';
+import {objFreeze} from '../../common/object.ts';
 import {errorNew} from '../../common/other.ts';
 import {ProtectedDataConnector, ProtectedSynclet} from '../types.js';
 
@@ -40,7 +41,7 @@ export const createDataConnector: typeof createDataConnectorDecl = async <
     attachedSynclet = undefined;
   };
 
-  return {
+  return objFreeze({
     _brand: 'DataConnector',
     depth,
     log,
@@ -54,5 +55,5 @@ export const createDataConnector: typeof createDataConnectorDecl = async <
       readAtoms,
     ],
     $: [getData],
-  };
+  }) as ProtectedDataConnector<Depth>;
 };

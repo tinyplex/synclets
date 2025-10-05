@@ -10,6 +10,7 @@ import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from '../../common/memory.ts';
+import {objFreeze} from '../../common/object.ts';
 
 export const createFileDataConnector: typeof createFileDataConnectorDecl =
   async <Depth extends number>(
@@ -26,10 +27,10 @@ export const createFileDataConnector: typeof createFileDataConnectorDecl =
 
     const getFile = () => file;
 
-    return {
+    return objFreeze({
       ...dataConnector,
       getFile,
-    };
+    });
   };
 
 export const createFileMetaConnector: typeof createFileMetaConnectorDecl =
@@ -47,8 +48,8 @@ export const createFileMetaConnector: typeof createFileMetaConnectorDecl =
 
     const getFile = () => file;
 
-    return {
+    return objFreeze({
       ...metaConnector,
       getFile,
-    };
+    });
   };

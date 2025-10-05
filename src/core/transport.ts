@@ -7,6 +7,7 @@ import type {
 import {getUniqueId, jsonParse, jsonString} from '@synclets/utils';
 import {arrayJoin, arrayMap} from '../common/array.ts';
 import {mapEnsure, mapNew} from '../common/map.ts';
+import {objFreeze} from '../common/object.ts';
 import {errorNew, promiseAll, size} from '../common/other.ts';
 import {ASTERISK, SPACE} from '../common/string.ts';
 import {
@@ -127,9 +128,9 @@ export const createTransport: typeof createTransportDecl = async (
     }
   };
 
-  return {
+  return objFreeze({
     _brand: 'Transport',
     log,
     _: [attach, detach, connectImpl, disconnectImpl, sendMessage],
-  };
+  }) as ProtectedTransport;
 };

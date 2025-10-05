@@ -28,6 +28,7 @@ import {
 import {combineHash, getHash, Hash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
 import {
+  objFreeze,
   objFromEntries,
   objKeys,
   objNotEmpty,
@@ -588,5 +589,5 @@ export const createSynclet: typeof createSyncletDecl = (async <
   await metaAttach(synclet);
   arrayForEach(transports, (transport) => transport._[ATTACH](synclet));
 
-  return synclet;
+  return objFreeze(synclet);
 }) as any;

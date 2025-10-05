@@ -4,6 +4,7 @@ import type {
   MetaConnectorImplementations,
   MetaConnectorOptimizations,
 } from '@synclets/@types';
+import {objFreeze} from '../../common/object.ts';
 import {errorNew} from '../../common/other.ts';
 import {ProtectedMetaConnector, ProtectedSynclet} from '../types.js';
 
@@ -39,7 +40,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async <
     attachedSynclet = undefined;
   };
 
-  return {
+  return objFreeze({
     _brand: 'MetaConnector',
     depth,
     log,
@@ -52,5 +53,5 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async <
       readTimestamps,
     ],
     $: [getMeta],
-  };
+  }) as ProtectedMetaConnector<Depth>;
 };

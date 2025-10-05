@@ -76,13 +76,11 @@ export const createMemoryDataConnector = async <Depth extends number>(
   const readAtoms = async (address: AtomsAddress<Depth>, _context: Context) =>
     objDeepAction(data, address, (parent, id) => parent[id] ?? {}) as Atoms;
 
-  const connector = await createDataConnector<Depth>(
+  return await createDataConnector<Depth>(
     depth,
     {readAtom, writeAtom, removeAtom, readChildIds, readAtoms},
     {getData: async () => jsonParse(jsonString(data))},
   );
-
-  return connector;
 };
 
 export const createMemoryMetaConnector = async <Depth extends number>(
@@ -136,11 +134,9 @@ export const createMemoryMetaConnector = async <Depth extends number>(
       (parent, id) => parent[id] ?? {},
     ) as Timestamps;
 
-  const connector = await createMetaConnector(
+  return await createMetaConnector(
     depth,
     {readTimestamp, writeTimestamp, readChildIds, readTimestamps},
     {getMeta: async () => jsonParse(jsonString(meta))},
   );
-
-  return connector;
 };

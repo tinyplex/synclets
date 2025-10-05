@@ -5,7 +5,10 @@ import {ifNotUndefined, isEmpty, isUndefined} from './other.ts';
 type IdObj<Value = unknown> = {[id: string]: Value};
 
 export const object = Object;
+
 const getPrototypeOf = (obj: any) => object.getPrototypeOf(obj);
+
+export const objFreeze = object.freeze;
 
 export const objNew = <Value>(): IdObj<Value> => ({});
 

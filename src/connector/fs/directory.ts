@@ -27,6 +27,7 @@ import {
   validateDirectory,
   writeFileJson,
 } from '../../common/fs.ts';
+import {objFreeze} from '../../common/object.ts';
 import {isUndefined, promiseAll} from '../../common/other.ts';
 
 const readLeaf = async <Leaf extends Atom | Timestamp>(
@@ -93,10 +94,10 @@ export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDe
       readAtoms,
     });
 
-    return {
+    return objFreeze({
       ...dataConnector,
       getDirectory: () => directory,
-    };
+    });
   };
 
 export const createDirectoryMetaConnector: typeof createDirectoryMetaConnectorDecl =
@@ -135,8 +136,8 @@ export const createDirectoryMetaConnector: typeof createDirectoryMetaConnectorDe
       readTimestamps,
     });
 
-    return {
+    return objFreeze({
       ...metaConnector,
       getDirectory: () => directory,
-    };
+    });
   };
