@@ -61,6 +61,14 @@
       "onFail": "warn"
     }
   },
+  "peerDependencies": {
+    "ws": "^8.18.3"
+  },
+  "peerDependenciesMeta": {
+    "ws": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.1",
     "@babel/cli": "^7.27.2",
@@ -78,6 +86,7 @@
     "@types/node": "^22.15.19",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^29.7.0",
@@ -112,6 +121,7 @@
     "tinydocs": "^0.1.57",
     "ts-unused-exports": "^11.0.1",
     "typescript": "5.8.3",
-    "typescript-eslint": "^8.32.1"
+    "typescript-eslint": "^8.32.1",
+    "ws": "^8.18.3"
   }
 }
