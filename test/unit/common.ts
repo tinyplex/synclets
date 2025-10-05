@@ -25,11 +25,11 @@ export const describeConnectorTests = <
   createDataConnector: (
     depth: number,
     environment: Environment,
-  ) => Promise<DataConnectorType>,
+  ) => DataConnectorType,
   createMetaConnector: (
     depth: number,
     environment: Environment,
-  ) => Promise<MetaConnectorType>,
+  ) => MetaConnectorType,
 ) =>
   describe(`${type} connector`, () => {
     let environment: Environment;
@@ -63,10 +63,10 @@ export const describeConnectorTests = <
           delAtomForTest(): Promise<void>;
         }
 
-        const createTestDataConnector = (): Promise<DataConnectorType> =>
+        const createTestDataConnector = (): DataConnectorType =>
           createDataConnector(depth, environment);
 
-        const createTestMetaConnector = (): Promise<MetaConnectorType> =>
+        const createTestMetaConnector = (): MetaConnectorType =>
           createMetaConnector(depth, environment);
 
         const createTestSynclet = async (
@@ -411,8 +411,8 @@ export const createPooledTestSyncletsAndConnectors = async <
     transport: Transport | Transport[],
     options?: SyncletOptions,
   ) => Promise<TestSynclet>,
-  createDataConnector: () => Promise<DataConnector<Depth>>,
-  createMetaConnector: () => Promise<MetaConnector<Depth>>,
+  createDataConnector: () => DataConnector<Depth>,
+  createMetaConnector: () => MetaConnector<Depth>,
   number: number,
   start = true,
   log = false,
@@ -447,8 +447,8 @@ export const createChainedTestSynclets = async <
     transport: Transport | Transport[],
     options?: SyncletOptions,
   ) => Promise<TestSynclet>,
-  createDataConnector: () => Promise<DataConnector<Depth>>,
-  createMetaConnector: () => Promise<MetaConnector<Depth>>,
+  createDataConnector: () => DataConnector<Depth>,
+  createMetaConnector: () => MetaConnector<Depth>,
   number: number,
   loop = false,
   start = true,

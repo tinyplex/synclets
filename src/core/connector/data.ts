@@ -8,7 +8,7 @@ import {objFreeze} from '../../common/object.ts';
 import {errorNew} from '../../common/other.ts';
 import {ProtectedDataConnector, ProtectedSynclet} from '../types.js';
 
-export const createDataConnector: typeof createDataConnectorDecl = async <
+export const createDataConnector: typeof createDataConnectorDecl = <
   Depth extends number,
 >(
   depth: Depth,
@@ -22,7 +22,7 @@ export const createDataConnector: typeof createDataConnectorDecl = async <
     readAtoms,
   }: DataConnectorImplementations<Depth>,
   {getData}: DataConnectorOptimizations = {},
-): Promise<ProtectedDataConnector<Depth>> => {
+): ProtectedDataConnector<Depth> => {
   let attachedSynclet: ProtectedSynclet<Depth> | undefined;
 
   const log = (message: string, level?: LogLevel) =>

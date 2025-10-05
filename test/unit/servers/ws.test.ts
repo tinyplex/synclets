@@ -20,15 +20,15 @@ test('Two synclets on single server', async () => {
   const wsServer = createWsServer(wss);
 
   const synclet1 = await createSynclet(
-    await createMemoryDataConnector(1),
-    await createMemoryMetaConnector(1),
+    createMemoryDataConnector(1),
+    createMemoryMetaConnector(1),
     await createWsTransport(new WebSocket(`ws://localhost:9000`)),
   );
   await synclet1.start();
 
   const synclet2 = await createSynclet(
-    await createMemoryDataConnector(1),
-    await createMemoryMetaConnector(1),
+    createMemoryDataConnector(1),
+    createMemoryMetaConnector(1),
     await createWsTransport(new WebSocket(`ws://localhost:9000`)),
   );
   await synclet2.start();

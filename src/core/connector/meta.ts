@@ -8,7 +8,7 @@ import {objFreeze} from '../../common/object.ts';
 import {errorNew} from '../../common/other.ts';
 import {ProtectedMetaConnector, ProtectedSynclet} from '../types.js';
 
-export const createMetaConnector: typeof createMetaConnectorDecl = async <
+export const createMetaConnector: typeof createMetaConnectorDecl = <
   Depth extends number,
 >(
   depth: Depth,
@@ -21,7 +21,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = async <
     readTimestamps,
   }: MetaConnectorImplementations<Depth>,
   {getMeta}: MetaConnectorOptimizations = {},
-): Promise<ProtectedMetaConnector<Depth>> => {
+): ProtectedMetaConnector<Depth> => {
   let attachedSynclet: ProtectedSynclet<Depth> | undefined;
 
   const log = (message: string, level?: LogLevel) =>

@@ -156,7 +156,7 @@ export function createDataConnector<Depth extends number>(
   depth: Depth,
   implementations: DataConnectorImplementations<Depth>,
   optimizations?: DataConnectorOptimizations,
-): Promise<DataConnector<Depth>>;
+): DataConnector<Depth>;
 
 // --
 
@@ -200,7 +200,7 @@ export function createMetaConnector<Depth extends number>(
   depth: Depth,
   implementations: MetaConnectorImplementations<Depth>,
   optimizations?: MetaConnectorOptimizations,
-): Promise<MetaConnector<Depth>>;
+): MetaConnector<Depth>;
 
 // --
 

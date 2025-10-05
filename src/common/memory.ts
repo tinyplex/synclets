@@ -18,13 +18,13 @@ import {jsonParse, jsonString} from '@synclets/utils';
 import {objDeepAction, objKeys} from './object.ts';
 import {isEmpty} from './other.ts';
 
-export const createMemoryDataConnector = async <Depth extends number>(
+export const createMemoryDataConnector = <Depth extends number>(
   depth: Depth,
   connectImpl?: () => Promise<void>,
   disconnect?: () => Promise<void>,
   onChange?: (data: Data) => Promise<void>,
   getInitialDataAfterConnect?: () => Promise<Data | undefined>,
-): Promise<DataConnector<Depth>> => {
+): DataConnector<Depth> => {
   let data: Data = {};
 
   const connect = async () => {
@@ -83,7 +83,7 @@ export const createMemoryDataConnector = async <Depth extends number>(
   const readAtoms = async (address: AtomsAddress<Depth>, _context: Context) =>
     objDeepAction(data, address, (parent, id) => parent[id] ?? {}) as Atoms;
 
-  return await createDataConnector<Depth>(
+  return createDataConnector<Depth>(
     depth,
     {
       connect,
@@ -98,13 +98,13 @@ export const createMemoryDataConnector = async <Depth extends number>(
   );
 };
 
-export const createMemoryMetaConnector = async <Depth extends number>(
+export const createMemoryMetaConnector = <Depth extends number>(
   depth: Depth,
   connectImpl?: () => Promise<void>,
   disconnect?: () => Promise<void>,
   onChange?: (meta: Meta) => Promise<void>,
   getInitialMetaAfterConnect?: () => Promise<Meta | undefined>,
-): Promise<MetaConnector<Depth>> => {
+): MetaConnector<Depth> => {
   let meta: Meta = {};
 
   const connect = async () => {
@@ -156,7 +156,7 @@ export const createMemoryMetaConnector = async <Depth extends number>(
       (parent, id) => parent[id] ?? {},
     ) as Timestamps;
 
-  return await createMetaConnector(
+  return createMetaConnector(
     depth,
     {
       connect,

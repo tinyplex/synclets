@@ -12,10 +12,10 @@ export const createMemoryDataConnector: typeof createMemoryDataConnectorDecl = <
   Depth extends number,
 >(
   depth: Depth,
-): Promise<DataConnector<Depth>> => createMemoryDataConnectorImpl(depth);
+): DataConnector<Depth> => createMemoryDataConnectorImpl(depth);
 
 export const createMemoryMetaConnector: typeof createMemoryMetaConnectorDecl = <
   Depth extends number,
 >(
   depth: Depth,
-): Promise<MetaConnector<Depth>> => createMemoryMetaConnectorImpl(depth);
+): MetaConnector<Depth> => createMemoryMetaConnectorImpl(depth);

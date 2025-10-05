@@ -11,8 +11,8 @@ let metaConnector: MetaConnector<1>;
 let transport: Transport;
 
 beforeEach(async () => {
-  dataConnector = await createMockDataConnector();
-  metaConnector = await createMockMetaConnector();
+  dataConnector = createMockDataConnector();
+  metaConnector = createMockMetaConnector();
   transport = await createMockTransport();
 });
 
@@ -41,8 +41,8 @@ test('error on reassigning transport', async () => {
   await createSynclet(dataConnector, metaConnector, transport, {});
   await expect(async () => {
     await createSynclet(
-      await createMockDataConnector(),
-      await createMockMetaConnector(),
+      createMockDataConnector(),
+      createMockMetaConnector(),
       transport,
     );
   }).rejects.toThrow('Transport is already attached to Synclet');
@@ -53,7 +53,7 @@ test('error on reassigning data connector', async () => {
   await expect(async () => {
     await createSynclet(
       dataConnector,
-      await createMockMetaConnector(),
+      createMockMetaConnector(),
       await createMockTransport(),
     );
   }).rejects.toThrow('Data connector is already attached to Synclet');
@@ -63,7 +63,7 @@ test('error on reassigning meta connector', async () => {
   await createSynclet(dataConnector, metaConnector, transport, {});
   await expect(async () => {
     await createSynclet(
-      await createMockDataConnector(),
+      createMockDataConnector(),
       metaConnector,
       await createMockTransport(),
     );
@@ -86,13 +86,13 @@ describe('context', () => {
     const canReceiveMessage = jest.fn();
 
     const synclet1 = await createSynclet(
-      await createMockDataConnector(),
-      await createMockMetaConnector(),
+      createMockDataConnector(),
+      createMockMetaConnector(),
       await createMemoryTransport({poolId: 'pool1'}),
     );
     const synclet2 = await createSynclet(
-      await createMockDataConnector(),
-      await createMockMetaConnector(),
+      createMockDataConnector(),
+      createMockMetaConnector(),
       await createMemoryTransport({poolId: 'pool1'}),
       {canReceiveMessage},
     );
@@ -107,14 +107,14 @@ describe('context', () => {
     const canReceiveMessage = jest.fn();
 
     const synclet1 = await createSynclet(
-      await createMockDataConnector(),
-      await createMockMetaConnector(),
+      createMockDataConnector(),
+      createMockMetaConnector(),
       await createMemoryTransport({poolId: 'pool1'}),
       {getSendContext},
     );
     const synclet2 = await createSynclet(
-      await createMockDataConnector(),
-      await createMockMetaConnector(),
+      createMockDataConnector(),
+      createMockMetaConnector(),
       await createMemoryTransport({poolId: 'pool1'}),
       {canReceiveMessage},
     );

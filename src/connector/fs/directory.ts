@@ -57,10 +57,10 @@ const readLeaves = async <Leaf extends Atom | Timestamp>(
 };
 
 export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDecl =
-  async <Depth extends number>(
+  <Depth extends number>(
     depth: Depth,
     directory: string,
-  ): Promise<DirectoryDataConnector<Depth>> => {
+  ): DirectoryDataConnector<Depth> => {
     let validatedDirectory: string;
 
     const connect = async () => {
@@ -91,7 +91,7 @@ export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDe
       _context: Context,
     ): Promise<Atoms> => readLeaves(validatedDirectory, address, isAtom);
 
-    const dataConnector = await createDataConnector(depth, {
+    const dataConnector = createDataConnector(depth, {
       connect,
       readAtom,
       writeAtom,
@@ -109,10 +109,10 @@ export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDe
   };
 
 export const createDirectoryMetaConnector: typeof createDirectoryMetaConnectorDecl =
-  async <Depth extends number>(
+  <Depth extends number>(
     depth: Depth,
     directory: string,
-  ): Promise<DirectoryMetaConnector<Depth>> => {
+  ): DirectoryMetaConnector<Depth> => {
     let validatedDirectory: string;
 
     const connect = async () => {
@@ -142,7 +142,7 @@ export const createDirectoryMetaConnector: typeof createDirectoryMetaConnectorDe
     ): Promise<Timestamps> =>
       readLeaves(validatedDirectory, address, isTimestamp);
 
-    const metaConnector = await createMetaConnector(depth, {
+    const metaConnector = createMetaConnector(depth, {
       connect,
       readTimestamp,
       writeTimestamp,

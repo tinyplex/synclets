@@ -13,10 +13,10 @@ test('directory', async () => {
   const tmp = await mkdtemp(tmpdir() + sep);
 
   const dataDir = join(tmp, '42.data');
-  const dataConnector = await createDirectoryDataConnector(1, dataDir);
+  const dataConnector = createDirectoryDataConnector(1, dataDir);
 
   const metaDir = join(tmp, '42.meta');
-  const metaConnector = await createDirectoryMetaConnector(1, metaDir);
+  const metaConnector = createDirectoryMetaConnector(1, metaDir);
 
   const synclet = await createSynclet(dataConnector, metaConnector, []);
 

@@ -13,10 +13,10 @@ test('file', async () => {
   const tmp = await mkdtemp(tmpdir() + sep);
 
   const dataFile = join(tmp, '42.data');
-  const dataConnector = await createFileDataConnector(1, dataFile);
+  const dataConnector = createFileDataConnector(1, dataFile);
 
   const metaFile = join(tmp, '42.meta');
-  const metaConnector = await createFileMetaConnector(1, metaFile);
+  const metaConnector = createFileMetaConnector(1, metaFile);
 
   const synclet = await createSynclet(dataConnector, metaConnector, []);
 
