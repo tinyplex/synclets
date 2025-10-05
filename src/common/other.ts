@@ -23,3 +23,9 @@ export const ifNotUndefined = <Value, Return>(
   then: (value: Value) => Return,
   otherwise?: () => Return,
 ): Return | undefined => (isUndefined(value) ? otherwise?.() : then(value));
+
+export const slice = <ArrayOrString extends string | any[]>(
+  arrayOrString: ArrayOrString,
+  start: number,
+  end?: number,
+): ArrayOrString => arrayOrString.slice(start, end) as ArrayOrString;

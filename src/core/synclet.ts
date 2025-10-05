@@ -301,7 +301,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
           log(`sync (${t}) ` + address);
           didSync = true;
           arrayPush(tasks, () =>
-            sendNodeMessage(transport, address, hashOrTimestamp),
+            sendMessage(transport, address, hashOrTimestamp),
           );
         }
       });
@@ -312,7 +312,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
     }
   };
 
-  const sendNodeMessage = async (
+  const sendMessage = async (
     transport: ProtectedTransport,
     address: Address,
     node: MessageNode,
@@ -363,8 +363,7 @@ export const createSynclet: typeof createSyncletDecl = (async <
         address as AnyAddress<Depth>,
         node,
         context,
-        (newNode) =>
-          sendNodeMessage(transport, address, newNode, context, from),
+        (newNode) => sendMessage(transport, address, newNode, context, from),
       );
     });
 

@@ -21,9 +21,15 @@ export const mapSet = <Key, Value>(
 export const mapDel = <Key, Value>(map: Map<Key, Value>, key: Key) =>
   map?.delete(key);
 
+export const mapClear = (map: Map<unknown, unknown> | undefined) =>
+  map?.clear();
+
 export const mapKeys = <Key>(map: Map<Key, unknown> | undefined): Key[] => [
   ...(map?.keys() ?? []),
 ];
+
+export const mapIsEmpty = (map: Map<unknown, unknown> | undefined): boolean =>
+  (map?.size ?? 0) === 0;
 
 export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,

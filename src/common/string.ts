@@ -12,3 +12,6 @@ export const strSplit = (
   separator: string | RegExp = EMPTY_STRING,
   limit?: number,
 ): string[] => str.split(separator, limit);
+
+export const strMatch = (str: string | undefined, regex: RegExp) =>
+  str?.match(regex) ?? undefined;

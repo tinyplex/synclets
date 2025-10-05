@@ -29,6 +29,9 @@
         "./@types/connector/memory/index.d.ts"
       ],
 
+      "@synclets/server/ws": ["./server/ws/index.ts"],
+      "@synclets/@types/server/ws": ["./@types/server/ws/index.d.ts"],
+
       "@synclets/transport/memory": ["./transport/memory/index.ts"],
       "@synclets/@types/transport/memory": [
         "./@types/transport/memory/index.d.ts"
