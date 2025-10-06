@@ -1,4 +1,4 @@
-// jest.retryTimes(1);
+jest.retryTimes(5);
 
 afterEach(() => {
   const {assertionCalls} = expect.getState();

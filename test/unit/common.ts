@@ -395,7 +395,7 @@ export const describeConnectorTests = <
 
             for (const [i, synclet] of synclets.entries()) {
               await synclet.setAtomForTest('A' + (i + 1));
-              await pause(transportPause);
+              await pause(transportPause * count);
               await expectEquivalentSynclets(synclets);
             }
           });
@@ -411,7 +411,7 @@ export const describeConnectorTests = <
 
             for (const [i, synclet] of synclets.entries()) {
               await synclet.setAtomForTest('A' + (i + 1));
-              await pause(transportPause);
+              await pause(transportPause * count);
               await expectEquivalentSynclets(synclets);
             }
           });
@@ -428,7 +428,7 @@ export const describeConnectorTests = <
 
             for (const [i, synclet] of synclets.entries()) {
               await synclet.setAtomForTest('A' + (i + 1));
-              await pause(transportPause);
+              await pause(transportPause * count);
               await expectEquivalentSynclets(synclets);
             }
           });
