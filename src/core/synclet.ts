@@ -94,8 +94,12 @@ export const createSynclet = async <
     onStop,
     onSync,
     onSetAtom,
-    canReceiveMessage,
     getSendContext,
+    canReceiveMessage,
+    canReadAtom,
+    canWriteAtom,
+    canRemoveAtom,
+    filterChildIds,
   }: SyncletImplementations<Depth> = {},
   options: SyncletOptions = {},
 ): Promise<ProtectedSynclet<Depth>> => {
@@ -153,6 +157,45 @@ export const createSynclet = async <
   ): address is AtomsAddress<Depth> & TimestampsAddress<Depth> =>
     size(address) == dataDepth - 1;
 
+  const readAtom = isUndefined(canReadAtom)
+    ? dataReadAtom
+    : async (address: AtomAddress<Depth>, context: Context = {}) =>
+        (await canReadAtom(address, context))
+          ? await dataReadAtom(address, context)
+          : undefined;
+
+  const writeAtom = isUndefined(canWriteAtom)
+    ? dataWriteAtom
+    : async (address: AtomAddress<Depth>, atom: Atom, context: Context = {}) =>
+        (await canWriteAtom(address, atom, context))
+          ? await dataWriteAtom(address, atom, context)
+          : undefined;
+
+  const removeAtom = isUndefined(canRemoveAtom)
+    ? dataRemoveAtom
+    : async (address: AtomAddress<Depth>, context: Context = {}) =>
+        (await canRemoveAtom(address, context))
+          ? await dataRemoveAtom(address, context)
+          : undefined;
+
+  const readDataChildIds = isUndefined(filterChildIds)
+    ? dataReadChildIds
+    : async (address: AnyParentAddress<Depth>, context: Context = {}) =>
+        await filterChildIds(
+          address,
+          (await dataReadChildIds(address, context)) ?? [],
+          context,
+        );
+
+  const readMetaChildIds = isUndefined(filterChildIds)
+    ? metaReadChildIds
+    : async (address: AnyParentAddress<Depth>, context: Context = {}) =>
+        await filterChildIds(
+          address,
+          (await metaReadChildIds(address, context)) ?? [],
+          context,
+        );
+
   const setOrDelAtom = async (
     address: AtomAddress<Depth>,
     atomOrUndefined: Atom | undefined,
@@ -173,8 +216,8 @@ export const createSynclet = async <
     const tasks = [
       async () => {
         await (isUndefined(atomOrUndefined)
-          ? dataRemoveAtom(address, context)
-          : dataWriteAtom(address, atomOrUndefined, context));
+          ? removeAtom(address, context)
+          : writeAtom(address, atomOrUndefined, context));
         await metaWriteTimestamp(address, newTimestamp, context);
         await onSetAtom?.(address);
       },
@@ -193,7 +236,7 @@ export const createSynclet = async <
       ? ((await dataReadAtoms(address, {})) ?? {})
       : objFromEntries(
           await promiseAll(
-            arrayMap(await dataReadChildIds(address, {}), async (childId) => [
+            arrayMap(await readDataChildIds(address, {}), async (childId) => [
               childId,
               await getDataForAddress([
                 ...(address as Address),
@@ -211,7 +254,7 @@ export const createSynclet = async <
       ? ((await metaReadTimestamps(address, {})) ?? {})
       : objFromEntries(
           await promiseAll(
-            arrayMap(await metaReadChildIds(address, {}), async (childId) => [
+            arrayMap(await readMetaChildIds(address, {}), async (childId) => [
               childId,
               await getMetaForAddress([
                 ...(address as Address),
@@ -228,7 +271,7 @@ export const createSynclet = async <
     arrayReduce(
       await promiseAll(
         arrayMap(
-          (await metaReadChildIds(address, context)) ?? [],
+          (await readMetaChildIds(address, context)) ?? [],
           async (childId) =>
             isAtomsOrTimestampsParentAddress(address)
               ? getHash(
@@ -267,7 +310,7 @@ export const createSynclet = async <
     }
     const timestamp = await metaReadTimestamp(address, context);
     if (!isUndefined(timestamp)) {
-      return [timestamp, await dataReadAtom(address, context)];
+      return [timestamp, await readAtom(address, context)];
     }
   };
 
@@ -280,7 +323,7 @@ export const createSynclet = async <
     await promiseAll(
       arrayMap(
         arrayDifference(
-          (await metaReadChildIds(address, context)) ?? [],
+          (await readMetaChildIds(address, context)) ?? [],
           except,
         ),
         async (id) =>
@@ -413,7 +456,7 @@ export const createSynclet = async <
       if (otherTimestamp > myTimestamp) {
         return myTimestamp;
       } else if (otherTimestamp < myTimestamp) {
-        return [myTimestamp, await dataReadAtom(address, context)];
+        return [myTimestamp, await readAtom(address, context)];
       }
     } else {
       log(INVALID_NODE + ' Timestamp vs SubNodes: ' + address, WARN);
@@ -440,7 +483,7 @@ export const createSynclet = async <
           myTimestamp,
         );
       } else if (otherTimestamp < myTimestamp) {
-        return [myTimestamp, await dataReadAtom(address, context)];
+        return [myTimestamp, await readAtom(address, context)];
       }
     } else {
       log(INVALID_NODE + ' TimestampAtom vs SubNodes: ' + address, WARN);
@@ -458,7 +501,7 @@ export const createSynclet = async <
         const subNodeObj: {[id: string]: MessageNode} = {};
         await promiseAll(
           arrayMap(
-            (await metaReadChildIds(address, context)) ?? [],
+            (await readMetaChildIds(address, context)) ?? [],
             async (id) => {
               subNodeObj[id] = await readHashOrTimestamp(
                 [...(address as Address), id] as AnyAddress<Depth>,

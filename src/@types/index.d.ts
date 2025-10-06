@@ -102,8 +102,26 @@ export type SyncletImplementations<Depth extends number> = {
   onStop?: () => Promise<void>;
   onSync?: (address: AnyAddress<Depth>) => Promise<void>;
   onSetAtom?: (address: AtomAddress<Depth>) => Promise<void>;
-  canReceiveMessage?: (context: Context) => Promise<boolean>;
   getSendContext?: (receivedContext?: Context) => Promise<Context>;
+  canReceiveMessage?: (context: Context) => Promise<boolean>;
+  canReadAtom?: (
+    address: AtomAddress<Depth>,
+    context: Context,
+  ) => Promise<boolean>;
+  canWriteAtom?: (
+    address: AtomAddress<Depth>,
+    atom: Atom,
+    context: Context,
+  ) => Promise<boolean>;
+  canRemoveAtom?: (
+    address: AtomAddress<Depth>,
+    context: Context,
+  ) => Promise<boolean>;
+  filterChildIds?: (
+    address: AnyParentAddress<Depth>,
+    childIds: string[],
+    context: Context,
+  ) => Promise<string[]>;
 };
 
 /// SyncletOptions
