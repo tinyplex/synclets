@@ -6,6 +6,7 @@ import {
   createFileDataConnector,
   createFileMetaConnector,
 } from 'synclets/connector/fs';
+import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
 import {describeConnectorTests} from '../common.ts';
 
@@ -36,4 +37,5 @@ describeConnectorTests(
     createFileDataConnector(depth, join(tempDir, getUniqueId())),
   (depth: number, {tempDir}) =>
     createFileMetaConnector(depth, join(tempDir, getUniqueId())),
+  (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
 );
