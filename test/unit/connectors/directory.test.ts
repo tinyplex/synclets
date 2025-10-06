@@ -30,7 +30,7 @@ test('directory', async () => {
 });
 
 describeConnectorTests(
-  'directory',
+  'directory over memory',
   async () => ({file: await mkdtemp(tmpdir() + sep)}),
   async ({file}: {file: string}) =>
     await rm(file, {recursive: true, force: true}),

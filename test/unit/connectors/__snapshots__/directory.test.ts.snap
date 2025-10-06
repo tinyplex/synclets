@@ -1,48 +1,48 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`directory connector 1-depth 2-way connected, deletion: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 2-way connected, deletion: equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`directory connector 1-depth 2-way connected, deletion: equivalent 2`] = `{}`;
+exports[`directory over memory connector 1-depth 2-way connected, deletion: equivalent 2`] = `{}`;
 
-exports[`directory connector 1-depth 2-way connected, initial: equivalent 1`] = `{}`;
+exports[`directory over memory connector 1-depth 2-way connected, initial: equivalent 1`] = `{}`;
 
-exports[`directory connector 1-depth 2-way connected, near atom: equivalent 1`] = `
-{
-  "a": "A",
-  "b": "B",
-}
-`;
-
-exports[`directory connector 1-depth 2-way connected: equivalent 1`] = `
-{
-  "a": "A",
-}
-`;
-
-exports[`directory connector 1-depth 2-way connected: equivalent 2`] = `
-{
-  "a": "B",
-}
-`;
-
-exports[`directory connector 1-depth 2-way disconnected, conflicting values: equivalent 1`] = `
-{
-  "a": "B",
-}
-`;
-
-exports[`directory connector 1-depth 2-way disconnected, near atom: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 2-way connected, near atom: equivalent 1`] = `
 {
   "a": "A",
   "b": "B",
 }
 `;
 
-exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
+exports[`directory over memory connector 1-depth 2-way connected: equivalent 1`] = `
+{
+  "a": "A",
+}
+`;
+
+exports[`directory over memory connector 1-depth 2-way connected: equivalent 2`] = `
+{
+  "a": "B",
+}
+`;
+
+exports[`directory over memory connector 1-depth 2-way disconnected, conflicting values: equivalent 1`] = `
+{
+  "a": "B",
+}
+`;
+
+exports[`directory over memory connector 1-depth 2-way disconnected, near atom: equivalent 1`] = `
+{
+  "a": "A",
+  "b": "B",
+}
+`;
+
+exports[`directory over memory connector 1-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
 [
   {
     "a": "A",
@@ -51,7 +51,7 @@ exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: diffe
 ]
 `;
 
-exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
+exports[`directory over memory connector 1-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
 [
   {
     "a": "A",
@@ -62,13 +62,13 @@ exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: diffe
 ]
 `;
 
-exports[`directory connector 1-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`directory connector 1-depth 2-way start 1, set 1, start 2: differing 1`] = `
+exports[`directory over memory connector 1-depth 2-way start 1, set 1, start 2: differing 1`] = `
 [
   {
     "a": "A",
@@ -77,13 +77,13 @@ exports[`directory connector 1-depth 2-way start 1, set 1, start 2: differing 1`
 ]
 `;
 
-exports[`directory connector 1-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`directory connector 1-depth 2-way start 2, set 1, start 1: differing 1`] = `
+exports[`directory over memory connector 1-depth 2-way start 2, set 1, start 1: differing 1`] = `
 [
   {
     "a": "A",
@@ -92,13 +92,13 @@ exports[`directory connector 1-depth 2-way start 2, set 1, start 1: differing 1`
 ]
 `;
 
-exports[`directory connector 1-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`directory connector 1-depth 2-way stop 1, set 1, start 1: differing 1`] = `
+exports[`directory over memory connector 1-depth 2-way stop 1, set 1, start 1: differing 1`] = `
 [
   {
     "a": "B",
@@ -109,19 +109,19 @@ exports[`directory connector 1-depth 2-way stop 1, set 1, start 1: differing 1`]
 ]
 `;
 
-exports[`directory connector 1-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`directory connector 1-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
+exports[`directory over memory connector 1-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`directory connector 1-depth 2-way stop 1, set 2, start 1: differing 1`] = `
+exports[`directory over memory connector 1-depth 2-way stop 1, set 2, start 1: differing 1`] = `
 [
   {
     "a": "A",
@@ -132,253 +132,253 @@ exports[`directory connector 1-depth 2-way stop 1, set 2, start 1: differing 1`]
 ]
 `;
 
-exports[`directory connector 1-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`directory connector 1-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
+exports[`directory over memory connector 1-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`directory connector 1-depth 3-way chain: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 3-way chain: equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`directory connector 1-depth 3-way chain: equivalent 2`] = `
+exports[`directory over memory connector 1-depth 3-way chain: equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`directory connector 1-depth 3-way chain: equivalent 3`] = `
+exports[`directory over memory connector 1-depth 3-way chain: equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`directory connector 1-depth 3-way pool: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 3-way pool: equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`directory connector 1-depth 3-way pool: equivalent 2`] = `
+exports[`directory over memory connector 1-depth 3-way pool: equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`directory connector 1-depth 3-way pool: equivalent 3`] = `
+exports[`directory over memory connector 1-depth 3-way pool: equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`directory connector 1-depth 3-way ring: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 3-way ring: equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`directory connector 1-depth 3-way ring: equivalent 2`] = `
+exports[`directory over memory connector 1-depth 3-way ring: equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`directory connector 1-depth 3-way ring: equivalent 3`] = `
+exports[`directory over memory connector 1-depth 3-way ring: equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 2`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 3`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 4`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 5`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 6`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 7`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 8`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 9`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`directory connector 1-depth 10-way chain: equivalent 10`] = `
+exports[`directory over memory connector 1-depth 10-way chain: equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 2`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 3`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 4`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 5`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 6`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 7`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 8`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 9`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`directory connector 1-depth 10-way pool: equivalent 10`] = `
+exports[`directory over memory connector 1-depth 10-way pool: equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 1`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 2`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 3`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 4`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 5`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 6`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 7`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 8`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 9`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`directory connector 1-depth 10-way ring: equivalent 10`] = `
+exports[`directory over memory connector 1-depth 10-way ring: equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`directory connector 2-depth 2-way connected, deletion: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way connected, deletion: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -386,13 +386,13 @@ exports[`directory connector 2-depth 2-way connected, deletion: equivalent 1`] =
 }
 `;
 
-exports[`directory connector 2-depth 2-way connected, deletion: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 2-way connected, deletion: equivalent 2`] = `
 {
   "a": {},
 }
 `;
 
-exports[`directory connector 2-depth 2-way connected, far atom: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way connected, far atom: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -403,9 +403,9 @@ exports[`directory connector 2-depth 2-way connected, far atom: equivalent 1`] =
 }
 `;
 
-exports[`directory connector 2-depth 2-way connected, initial: equivalent 1`] = `{}`;
+exports[`directory over memory connector 2-depth 2-way connected, initial: equivalent 1`] = `{}`;
 
-exports[`directory connector 2-depth 2-way connected, near atom: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way connected, near atom: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -414,7 +414,7 @@ exports[`directory connector 2-depth 2-way connected, near atom: equivalent 1`] 
 }
 `;
 
-exports[`directory connector 2-depth 2-way connected: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way connected: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -422,7 +422,7 @@ exports[`directory connector 2-depth 2-way connected: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 2-depth 2-way connected: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 2-way connected: equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -430,7 +430,7 @@ exports[`directory connector 2-depth 2-way connected: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 2-depth 2-way disconnected, conflicting values 2: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way disconnected, conflicting values 2: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -442,7 +442,7 @@ exports[`directory connector 2-depth 2-way disconnected, conflicting values 2: e
 }
 `;
 
-exports[`directory connector 2-depth 2-way disconnected, conflicting values: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way disconnected, conflicting values: equivalent 1`] = `
 {
   "a": {
     "aa": "B",
@@ -450,7 +450,7 @@ exports[`directory connector 2-depth 2-way disconnected, conflicting values: equ
 }
 `;
 
-exports[`directory connector 2-depth 2-way disconnected, far atom: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way disconnected, far atom: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -461,7 +461,7 @@ exports[`directory connector 2-depth 2-way disconnected, far atom: equivalent 1`
 }
 `;
 
-exports[`directory connector 2-depth 2-way disconnected, near atom: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way disconnected, near atom: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -470,7 +470,7 @@ exports[`directory connector 2-depth 2-way disconnected, near atom: equivalent 1
 }
 `;
 
-exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
+exports[`directory over memory connector 2-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -481,7 +481,7 @@ exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: diffe
 ]
 `;
 
-exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
+exports[`directory over memory connector 2-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
 [
   {
     "a": {
@@ -496,7 +496,7 @@ exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: diffe
 ]
 `;
 
-exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": "B",
@@ -504,7 +504,7 @@ exports[`directory connector 2-depth 2-way set 1, set 2, start 2, start 1: equiv
 }
 `;
 
-exports[`directory connector 2-depth 2-way start 1, set 1, start 2: differing 1`] = `
+exports[`directory over memory connector 2-depth 2-way start 1, set 1, start 2: differing 1`] = `
 [
   {
     "a": {
@@ -515,7 +515,7 @@ exports[`directory connector 2-depth 2-way start 1, set 1, start 2: differing 1`
 ]
 `;
 
-exports[`directory connector 2-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -523,7 +523,7 @@ exports[`directory connector 2-depth 2-way start 1, set 1, start 2: equivalent 1
 }
 `;
 
-exports[`directory connector 2-depth 2-way start 2, set 1, start 1: differing 1`] = `
+exports[`directory over memory connector 2-depth 2-way start 2, set 1, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -534,7 +534,7 @@ exports[`directory connector 2-depth 2-way start 2, set 1, start 1: differing 1`
 ]
 `;
 
-exports[`directory connector 2-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -542,7 +542,7 @@ exports[`directory connector 2-depth 2-way start 2, set 1, start 1: equivalent 1
 }
 `;
 
-exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: differing 1`] = `
+exports[`directory over memory connector 2-depth 2-way stop 1, set 1, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -557,7 +557,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: differing 1`]
 ]
 `;
 
-exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -565,7 +565,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 1`
 }
 `;
 
-exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -573,7 +573,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 1, start 1: equivalent 2`
 }
 `;
 
-exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: differing 1`] = `
+exports[`directory over memory connector 2-depth 2-way stop 1, set 2, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -588,7 +588,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: differing 1`]
 ]
 `;
 
-exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -596,7 +596,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 1`
 }
 `;
 
-exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -604,7 +604,7 @@ exports[`directory connector 2-depth 2-way stop 1, set 2, start 1: equivalent 2`
 }
 `;
 
-exports[`directory connector 2-depth 3-way chain: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 3-way chain: equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -612,7 +612,7 @@ exports[`directory connector 2-depth 3-way chain: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 2-depth 3-way chain: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 3-way chain: equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -620,7 +620,7 @@ exports[`directory connector 2-depth 3-way chain: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 2-depth 3-way chain: equivalent 3`] = `
+exports[`directory over memory connector 2-depth 3-way chain: equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -628,7 +628,7 @@ exports[`directory connector 2-depth 3-way chain: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 2-depth 3-way pool: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 3-way pool: equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -636,7 +636,7 @@ exports[`directory connector 2-depth 3-way pool: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 2-depth 3-way pool: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 3-way pool: equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -644,7 +644,7 @@ exports[`directory connector 2-depth 3-way pool: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 2-depth 3-way pool: equivalent 3`] = `
+exports[`directory over memory connector 2-depth 3-way pool: equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -652,7 +652,7 @@ exports[`directory connector 2-depth 3-way pool: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 2-depth 3-way ring: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 3-way ring: equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -660,7 +660,7 @@ exports[`directory connector 2-depth 3-way ring: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 2-depth 3-way ring: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 3-way ring: equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -668,7 +668,7 @@ exports[`directory connector 2-depth 3-way ring: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 2-depth 3-way ring: equivalent 3`] = `
+exports[`directory over memory connector 2-depth 3-way ring: equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -676,7 +676,7 @@ exports[`directory connector 2-depth 3-way ring: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -684,7 +684,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -692,7 +692,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 3`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -700,7 +700,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 4`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -708,7 +708,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 5`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -716,7 +716,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 6`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -724,7 +724,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 7`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -732,7 +732,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 8`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -740,7 +740,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 9`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -748,7 +748,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way chain: equivalent 10`] = `
+exports[`directory over memory connector 2-depth 10-way chain: equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -756,7 +756,7 @@ exports[`directory connector 2-depth 10-way chain: equivalent 10`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -764,7 +764,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -772,7 +772,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 3`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -780,7 +780,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 4`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -788,7 +788,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 5`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -796,7 +796,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 6`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -804,7 +804,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 7`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -812,7 +812,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 8`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -820,7 +820,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 9`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -828,7 +828,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way pool: equivalent 10`] = `
+exports[`directory over memory connector 2-depth 10-way pool: equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -836,7 +836,7 @@ exports[`directory connector 2-depth 10-way pool: equivalent 10`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 1`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -844,7 +844,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 2`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -852,7 +852,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 3`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -860,7 +860,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 4`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -868,7 +868,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 5`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -876,7 +876,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 6`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -884,7 +884,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 7`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -892,7 +892,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 8`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -900,7 +900,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 9`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -908,7 +908,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 2-depth 10-way ring: equivalent 10`] = `
+exports[`directory over memory connector 2-depth 10-way ring: equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -916,7 +916,7 @@ exports[`directory connector 2-depth 10-way ring: equivalent 10`] = `
 }
 `;
 
-exports[`directory connector 3-depth 2-way connected, deletion: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way connected, deletion: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -926,7 +926,7 @@ exports[`directory connector 3-depth 2-way connected, deletion: equivalent 1`] =
 }
 `;
 
-exports[`directory connector 3-depth 2-way connected, deletion: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 2-way connected, deletion: equivalent 2`] = `
 {
   "a": {
     "aa": {},
@@ -934,7 +934,7 @@ exports[`directory connector 3-depth 2-way connected, deletion: equivalent 2`] =
 }
 `;
 
-exports[`directory connector 3-depth 2-way connected, far atom: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way connected, far atom: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -949,9 +949,9 @@ exports[`directory connector 3-depth 2-way connected, far atom: equivalent 1`] =
 }
 `;
 
-exports[`directory connector 3-depth 2-way connected, initial: equivalent 1`] = `{}`;
+exports[`directory over memory connector 3-depth 2-way connected, initial: equivalent 1`] = `{}`;
 
-exports[`directory connector 3-depth 2-way connected, near atom: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way connected, near atom: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -962,7 +962,7 @@ exports[`directory connector 3-depth 2-way connected, near atom: equivalent 1`] 
 }
 `;
 
-exports[`directory connector 3-depth 2-way connected: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way connected: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -972,7 +972,7 @@ exports[`directory connector 3-depth 2-way connected: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 3-depth 2-way connected: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 2-way connected: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -982,7 +982,7 @@ exports[`directory connector 3-depth 2-way connected: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 3-depth 2-way disconnected, conflicting values 2: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way disconnected, conflicting values 2: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -998,7 +998,7 @@ exports[`directory connector 3-depth 2-way disconnected, conflicting values 2: e
 }
 `;
 
-exports[`directory connector 3-depth 2-way disconnected, conflicting values: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way disconnected, conflicting values: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1008,7 +1008,7 @@ exports[`directory connector 3-depth 2-way disconnected, conflicting values: equ
 }
 `;
 
-exports[`directory connector 3-depth 2-way disconnected, far atom: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way disconnected, far atom: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1023,7 +1023,7 @@ exports[`directory connector 3-depth 2-way disconnected, far atom: equivalent 1`
 }
 `;
 
-exports[`directory connector 3-depth 2-way disconnected, near atom: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way disconnected, near atom: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1034,7 +1034,7 @@ exports[`directory connector 3-depth 2-way disconnected, near atom: equivalent 1
 }
 `;
 
-exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
+exports[`directory over memory connector 3-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -1047,7 +1047,7 @@ exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: diffe
 ]
 `;
 
-exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
+exports[`directory over memory connector 3-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
 [
   {
     "a": {
@@ -1066,7 +1066,7 @@ exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: diffe
 ]
 `;
 
-exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1076,7 +1076,7 @@ exports[`directory connector 3-depth 2-way set 1, set 2, start 2, start 1: equiv
 }
 `;
 
-exports[`directory connector 3-depth 2-way start 1, set 1, start 2: differing 1`] = `
+exports[`directory over memory connector 3-depth 2-way start 1, set 1, start 2: differing 1`] = `
 [
   {
     "a": {
@@ -1089,7 +1089,7 @@ exports[`directory connector 3-depth 2-way start 1, set 1, start 2: differing 1`
 ]
 `;
 
-exports[`directory connector 3-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1099,7 +1099,7 @@ exports[`directory connector 3-depth 2-way start 1, set 1, start 2: equivalent 1
 }
 `;
 
-exports[`directory connector 3-depth 2-way start 2, set 1, start 1: differing 1`] = `
+exports[`directory over memory connector 3-depth 2-way start 2, set 1, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -1112,7 +1112,7 @@ exports[`directory connector 3-depth 2-way start 2, set 1, start 1: differing 1`
 ]
 `;
 
-exports[`directory connector 3-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1122,7 +1122,7 @@ exports[`directory connector 3-depth 2-way start 2, set 1, start 1: equivalent 1
 }
 `;
 
-exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: differing 1`] = `
+exports[`directory over memory connector 3-depth 2-way stop 1, set 1, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -1141,7 +1141,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: differing 1`]
 ]
 `;
 
-exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1151,7 +1151,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: equivalent 1`
 }
 `;
 
-exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1161,7 +1161,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 1, start 1: equivalent 2`
 }
 `;
 
-exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: differing 1`] = `
+exports[`directory over memory connector 3-depth 2-way stop 1, set 2, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -1180,7 +1180,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: differing 1`]
 ]
 `;
 
-exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1190,7 +1190,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: equivalent 1`
 }
 `;
 
-exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1200,7 +1200,7 @@ exports[`directory connector 3-depth 2-way stop 1, set 2, start 1: equivalent 2`
 }
 `;
 
-exports[`directory connector 3-depth 3-way chain: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 3-way chain: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1210,7 +1210,7 @@ exports[`directory connector 3-depth 3-way chain: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 3-depth 3-way chain: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 3-way chain: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1220,7 +1220,7 @@ exports[`directory connector 3-depth 3-way chain: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 3-depth 3-way chain: equivalent 3`] = `
+exports[`directory over memory connector 3-depth 3-way chain: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1230,7 +1230,7 @@ exports[`directory connector 3-depth 3-way chain: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 3-depth 3-way pool: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 3-way pool: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1240,7 +1240,7 @@ exports[`directory connector 3-depth 3-way pool: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 3-depth 3-way pool: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 3-way pool: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1250,7 +1250,7 @@ exports[`directory connector 3-depth 3-way pool: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 3-depth 3-way pool: equivalent 3`] = `
+exports[`directory over memory connector 3-depth 3-way pool: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1260,7 +1260,7 @@ exports[`directory connector 3-depth 3-way pool: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 3-depth 3-way ring: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 3-way ring: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1270,7 +1270,7 @@ exports[`directory connector 3-depth 3-way ring: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 3-depth 3-way ring: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 3-way ring: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1280,7 +1280,7 @@ exports[`directory connector 3-depth 3-way ring: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 3-depth 3-way ring: equivalent 3`] = `
+exports[`directory over memory connector 3-depth 3-way ring: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1290,7 +1290,7 @@ exports[`directory connector 3-depth 3-way ring: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1300,7 +1300,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1310,7 +1310,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 3`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1320,7 +1320,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 4`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -1330,7 +1330,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 5`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -1340,7 +1340,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 6`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -1350,7 +1350,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 7`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -1360,7 +1360,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 8`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -1370,7 +1370,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 9`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -1380,7 +1380,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way chain: equivalent 10`] = `
+exports[`directory over memory connector 3-depth 10-way chain: equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -1390,7 +1390,7 @@ exports[`directory connector 3-depth 10-way chain: equivalent 10`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1400,7 +1400,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1410,7 +1410,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 3`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1420,7 +1420,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 4`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -1430,7 +1430,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 5`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -1440,7 +1440,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 6`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -1450,7 +1450,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 7`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -1460,7 +1460,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 8`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -1470,7 +1470,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 9`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -1480,7 +1480,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way pool: equivalent 10`] = `
+exports[`directory over memory connector 3-depth 10-way pool: equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -1490,7 +1490,7 @@ exports[`directory connector 3-depth 10-way pool: equivalent 10`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 1`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1500,7 +1500,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 2`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1510,7 +1510,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 3`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1520,7 +1520,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 4`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -1530,7 +1530,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 5`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -1540,7 +1540,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 6`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -1550,7 +1550,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 7`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -1560,7 +1560,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 8`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -1570,7 +1570,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 9`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -1580,7 +1580,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 3-depth 10-way ring: equivalent 10`] = `
+exports[`directory over memory connector 3-depth 10-way ring: equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -1590,7 +1590,7 @@ exports[`directory connector 3-depth 10-way ring: equivalent 10`] = `
 }
 `;
 
-exports[`directory connector 4-depth 2-way connected, deletion: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way connected, deletion: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1602,7 +1602,7 @@ exports[`directory connector 4-depth 2-way connected, deletion: equivalent 1`] =
 }
 `;
 
-exports[`directory connector 4-depth 2-way connected, deletion: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 2-way connected, deletion: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1612,7 +1612,7 @@ exports[`directory connector 4-depth 2-way connected, deletion: equivalent 2`] =
 }
 `;
 
-exports[`directory connector 4-depth 2-way connected, far atom: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way connected, far atom: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1631,9 +1631,9 @@ exports[`directory connector 4-depth 2-way connected, far atom: equivalent 1`] =
 }
 `;
 
-exports[`directory connector 4-depth 2-way connected, initial: equivalent 1`] = `{}`;
+exports[`directory over memory connector 4-depth 2-way connected, initial: equivalent 1`] = `{}`;
 
-exports[`directory connector 4-depth 2-way connected, near atom: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way connected, near atom: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1646,7 +1646,7 @@ exports[`directory connector 4-depth 2-way connected, near atom: equivalent 1`] 
 }
 `;
 
-exports[`directory connector 4-depth 2-way connected: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way connected: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1658,7 +1658,7 @@ exports[`directory connector 4-depth 2-way connected: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 4-depth 2-way connected: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 2-way connected: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1670,7 +1670,7 @@ exports[`directory connector 4-depth 2-way connected: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 4-depth 2-way disconnected, conflicting values 2: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way disconnected, conflicting values 2: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1690,7 +1690,7 @@ exports[`directory connector 4-depth 2-way disconnected, conflicting values 2: e
 }
 `;
 
-exports[`directory connector 4-depth 2-way disconnected, conflicting values: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way disconnected, conflicting values: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1702,7 +1702,7 @@ exports[`directory connector 4-depth 2-way disconnected, conflicting values: equ
 }
 `;
 
-exports[`directory connector 4-depth 2-way disconnected, far atom: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way disconnected, far atom: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1721,7 +1721,7 @@ exports[`directory connector 4-depth 2-way disconnected, far atom: equivalent 1`
 }
 `;
 
-exports[`directory connector 4-depth 2-way disconnected, near atom: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way disconnected, near atom: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1734,7 +1734,7 @@ exports[`directory connector 4-depth 2-way disconnected, near atom: equivalent 1
 }
 `;
 
-exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
+exports[`directory over memory connector 4-depth 2-way set 1, set 2, start 2, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -1749,7 +1749,7 @@ exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: diffe
 ]
 `;
 
-exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
+exports[`directory over memory connector 4-depth 2-way set 1, set 2, start 2, start 1: differing 2`] = `
 [
   {
     "a": {
@@ -1772,7 +1772,7 @@ exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: diffe
 ]
 `;
 
-exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way set 1, set 2, start 2, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1784,7 +1784,7 @@ exports[`directory connector 4-depth 2-way set 1, set 2, start 2, start 1: equiv
 }
 `;
 
-exports[`directory connector 4-depth 2-way start 1, set 1, start 2: differing 1`] = `
+exports[`directory over memory connector 4-depth 2-way start 1, set 1, start 2: differing 1`] = `
 [
   {
     "a": {
@@ -1799,7 +1799,7 @@ exports[`directory connector 4-depth 2-way start 1, set 1, start 2: differing 1`
 ]
 `;
 
-exports[`directory connector 4-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way start 1, set 1, start 2: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1811,7 +1811,7 @@ exports[`directory connector 4-depth 2-way start 1, set 1, start 2: equivalent 1
 }
 `;
 
-exports[`directory connector 4-depth 2-way start 2, set 1, start 1: differing 1`] = `
+exports[`directory over memory connector 4-depth 2-way start 2, set 1, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -1826,7 +1826,7 @@ exports[`directory connector 4-depth 2-way start 2, set 1, start 1: differing 1`
 ]
 `;
 
-exports[`directory connector 4-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way start 2, set 1, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1838,7 +1838,7 @@ exports[`directory connector 4-depth 2-way start 2, set 1, start 1: equivalent 1
 }
 `;
 
-exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: differing 1`] = `
+exports[`directory over memory connector 4-depth 2-way stop 1, set 1, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -1861,7 +1861,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: differing 1`]
 ]
 `;
 
-exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way stop 1, set 1, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1873,7 +1873,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: equivalent 1`
 }
 `;
 
-exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 2-way stop 1, set 1, start 1: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1885,7 +1885,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 1, start 1: equivalent 2`
 }
 `;
 
-exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: differing 1`] = `
+exports[`directory over memory connector 4-depth 2-way stop 1, set 2, start 1: differing 1`] = `
 [
   {
     "a": {
@@ -1908,7 +1908,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: differing 1`]
 ]
 `;
 
-exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 2-way stop 1, set 2, start 1: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1920,7 +1920,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: equivalent 1`
 }
 `;
 
-exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 2-way stop 1, set 2, start 1: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1932,7 +1932,7 @@ exports[`directory connector 4-depth 2-way stop 1, set 2, start 1: equivalent 2`
 }
 `;
 
-exports[`directory connector 4-depth 3-way chain: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 3-way chain: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1944,7 +1944,7 @@ exports[`directory connector 4-depth 3-way chain: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 4-depth 3-way chain: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 3-way chain: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1956,7 +1956,7 @@ exports[`directory connector 4-depth 3-way chain: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 4-depth 3-way chain: equivalent 3`] = `
+exports[`directory over memory connector 4-depth 3-way chain: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1968,7 +1968,7 @@ exports[`directory connector 4-depth 3-way chain: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 4-depth 3-way pool: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 3-way pool: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1980,7 +1980,7 @@ exports[`directory connector 4-depth 3-way pool: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 4-depth 3-way pool: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 3-way pool: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1992,7 +1992,7 @@ exports[`directory connector 4-depth 3-way pool: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 4-depth 3-way pool: equivalent 3`] = `
+exports[`directory over memory connector 4-depth 3-way pool: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2004,7 +2004,7 @@ exports[`directory connector 4-depth 3-way pool: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 4-depth 3-way ring: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 3-way ring: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -2016,7 +2016,7 @@ exports[`directory connector 4-depth 3-way ring: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 4-depth 3-way ring: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 3-way ring: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -2028,7 +2028,7 @@ exports[`directory connector 4-depth 3-way ring: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 4-depth 3-way ring: equivalent 3`] = `
+exports[`directory over memory connector 4-depth 3-way ring: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2040,7 +2040,7 @@ exports[`directory connector 4-depth 3-way ring: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -2052,7 +2052,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -2064,7 +2064,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 3`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2076,7 +2076,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 4`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -2088,7 +2088,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 5`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -2100,7 +2100,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 6`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -2112,7 +2112,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 7`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -2124,7 +2124,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 8`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -2136,7 +2136,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 9`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -2148,7 +2148,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way chain: equivalent 10`] = `
+exports[`directory over memory connector 4-depth 10-way chain: equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -2160,7 +2160,7 @@ exports[`directory connector 4-depth 10-way chain: equivalent 10`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -2172,7 +2172,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -2184,7 +2184,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 3`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2196,7 +2196,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 4`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -2208,7 +2208,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 5`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -2220,7 +2220,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 6`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -2232,7 +2232,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 7`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -2244,7 +2244,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 8`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -2256,7 +2256,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 9`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -2268,7 +2268,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way pool: equivalent 10`] = `
+exports[`directory over memory connector 4-depth 10-way pool: equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -2280,7 +2280,7 @@ exports[`directory connector 4-depth 10-way pool: equivalent 10`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 1`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -2292,7 +2292,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 1`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 2`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -2304,7 +2304,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 2`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 3`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2316,7 +2316,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 3`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 4`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -2328,7 +2328,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 4`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 5`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -2340,7 +2340,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 5`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 6`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -2352,7 +2352,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 6`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 7`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -2364,7 +2364,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 7`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 8`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -2376,7 +2376,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 8`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 9`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -2388,7 +2388,7 @@ exports[`directory connector 4-depth 10-way ring: equivalent 9`] = `
 }
 `;
 
-exports[`directory connector 4-depth 10-way ring: equivalent 10`] = `
+exports[`directory over memory connector 4-depth 10-way ring: equivalent 10`] = `
 {
   "a": {
     "aa": {

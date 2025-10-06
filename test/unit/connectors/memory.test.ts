@@ -9,7 +9,7 @@ import {WebSocketServer} from 'ws';
 import {describeConnectorTests} from '../common.ts';
 
 describeConnectorTests(
-  'memory',
+  'memory over memory',
   async () => {},
   async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
