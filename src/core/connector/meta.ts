@@ -18,9 +18,8 @@ export const createMetaConnector: typeof createMetaConnectorDecl = <
     readTimestamp,
     writeTimestamp,
     readChildIds,
-    readTimestamps,
   }: MetaConnectorImplementations<Depth>,
-  {getMeta}: MetaConnectorOptimizations = {},
+  {readTimestamps, getMeta}: MetaConnectorOptimizations<Depth> = {},
 ): ProtectedMetaConnector<Depth> => {
   let attachedSynclet: ProtectedSynclet<Depth> | undefined;
 
@@ -44,14 +43,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = <
     _brand: 'MetaConnector',
     depth,
     log,
-    _: [
-      attach,
-      detach,
-      readTimestamp,
-      writeTimestamp,
-      readChildIds,
-      readTimestamps,
-    ],
-    $: [getMeta],
+    _: [attach, detach, readTimestamp, writeTimestamp, readChildIds],
+    $: [readTimestamps, getMeta],
   }) as ProtectedMetaConnector<Depth>;
 };

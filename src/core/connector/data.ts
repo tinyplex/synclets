@@ -19,9 +19,8 @@ export const createDataConnector: typeof createDataConnectorDecl = <
     writeAtom,
     removeAtom,
     readChildIds,
-    readAtoms,
   }: DataConnectorImplementations<Depth>,
-  {getData}: DataConnectorOptimizations = {},
+  {readAtoms, getData}: DataConnectorOptimizations<Depth> = {},
 ): ProtectedDataConnector<Depth> => {
   let attachedSynclet: ProtectedSynclet<Depth> | undefined;
 
@@ -45,15 +44,7 @@ export const createDataConnector: typeof createDataConnectorDecl = <
     _brand: 'DataConnector',
     depth,
     log,
-    _: [
-      attach,
-      detach,
-      readAtom,
-      writeAtom,
-      removeAtom,
-      readChildIds,
-      readAtoms,
-    ],
-    $: [getData],
+    _: [attach, detach, readAtom, writeAtom, removeAtom, readChildIds],
+    $: [readAtoms, getData],
   }) as ProtectedDataConnector<Depth>;
 };

@@ -77,12 +77,14 @@ export interface ProtectedDataConnector<Depth extends number>
       address: AnyParentAddress<Depth>,
       context: Context,
     ) => Promise<string[]>,
-    readAtoms: (
+  ];
+  $: [
+    readAtoms?: (
       address: AtomsAddress<Depth>,
       context: Context,
     ) => Promise<Atoms>,
+    getData?: () => Promise<Data>,
   ];
-  $: [getData?: () => Promise<Data>];
 }
 
 export interface ProtectedMetaConnector<Depth extends number>
@@ -103,12 +105,14 @@ export interface ProtectedMetaConnector<Depth extends number>
       address: AnyParentAddress<Depth>,
       context: Context,
     ) => Promise<string[]>,
-    readTimestamps: (
+  ];
+  $: [
+    readTimestamps?: (
       address: TimestampsAddress<Depth>,
       context: Context,
     ) => Promise<Timestamps>,
+    getMeta?: () => Promise<Meta>,
   ];
-  $: [getMeta?: () => Promise<Meta>];
 }
 
 export interface ProtectedTransport extends Transport {

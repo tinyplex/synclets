@@ -170,11 +170,14 @@ export type DataConnectorImplementations<Depth extends number> = {
     address: AnyParentAddress<Depth>,
     context: Context,
   ) => Promise<string[]>;
-  readAtoms: (address: AtomsAddress<Depth>, context: Context) => Promise<Atoms>;
 };
 
 /// DataConnectorOptimizations
-export type DataConnectorOptimizations = {
+export type DataConnectorOptimizations<Depth extends number> = {
+  readAtoms?: (
+    address: AtomsAddress<Depth>,
+    context: Context,
+  ) => Promise<Atoms>;
   getData?: () => Promise<Data>;
 };
 
@@ -182,7 +185,7 @@ export type DataConnectorOptimizations = {
 export function createDataConnector<Depth extends number>(
   depth: Depth,
   implementations: DataConnectorImplementations<Depth>,
-  optimizations?: DataConnectorOptimizations,
+  optimizations?: DataConnectorOptimizations<Depth>,
 ): DataConnector<Depth>;
 
 // --
@@ -211,14 +214,14 @@ export type MetaConnectorImplementations<Depth extends number> = {
     address: AnyParentAddress<Depth>,
     context: Context,
   ) => Promise<string[]>;
-  readTimestamps: (
-    address: TimestampsAddress<Depth>,
-    context: Context,
-  ) => Promise<Timestamps>;
 };
 
 /// MetaConnectorOptimizations
-export type MetaConnectorOptimizations = {
+export type MetaConnectorOptimizations<Depth extends number> = {
+  readTimestamps?: (
+    address: TimestampsAddress<Depth>,
+    context: Context,
+  ) => Promise<Timestamps>;
   getMeta?: () => Promise<Meta>;
 };
 
@@ -226,7 +229,7 @@ export type MetaConnectorOptimizations = {
 export function createMetaConnector<Depth extends number>(
   depth: Depth,
   implementations: MetaConnectorImplementations<Depth>,
-  optimizations?: MetaConnectorOptimizations,
+  optimizations?: MetaConnectorOptimizations<Depth>,
 ): MetaConnector<Depth>;
 
 // --

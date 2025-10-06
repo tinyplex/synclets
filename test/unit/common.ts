@@ -488,7 +488,6 @@ export const createMockDataConnector = () =>
     writeAtom: async () => {},
     removeAtom: async () => {},
     readChildIds: async () => [],
-    readAtoms: async () => ({}),
   });
 
 export const createMockMetaConnector = () =>
@@ -496,7 +495,6 @@ export const createMockMetaConnector = () =>
     readTimestamp: async () => '',
     writeTimestamp: async () => {},
     readChildIds: async () => [],
-    readTimestamps: async () => ({}),
   });
 
 export const createMockTransport = () =>

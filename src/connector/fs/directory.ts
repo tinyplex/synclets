@@ -91,14 +91,17 @@ export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDe
       _context: Context,
     ): Promise<Atoms> => readLeaves(validatedDirectory, address, isAtom);
 
-    const dataConnector = createDataConnector(depth, {
-      connect,
-      readAtom,
-      writeAtom,
-      removeAtom,
-      readChildIds,
-      readAtoms,
-    });
+    const dataConnector = createDataConnector(
+      depth,
+      {
+        connect,
+        readAtom,
+        writeAtom,
+        removeAtom,
+        readChildIds,
+      },
+      {readAtoms},
+    );
 
     const getDirectory = () => directory;
 
@@ -142,13 +145,16 @@ export const createDirectoryMetaConnector: typeof createDirectoryMetaConnectorDe
     ): Promise<Timestamps> =>
       readLeaves(validatedDirectory, address, isTimestamp);
 
-    const metaConnector = createMetaConnector(depth, {
-      connect,
-      readTimestamp,
-      writeTimestamp,
-      readChildIds,
-      readTimestamps,
-    });
+    const metaConnector = createMetaConnector(
+      depth,
+      {
+        connect,
+        readTimestamp,
+        writeTimestamp,
+        readChildIds,
+      },
+      {readTimestamps},
+    );
 
     const getDirectory = () => directory;
 
