@@ -58,7 +58,7 @@ export const removeFileAndAncestors = async (
 ): Promise<void> => {
   try {
     await rm(resolve(root, ...paths), {force: true});
-    await pruneEmptyAncestors(root, paths);
+    await pruneEmptyAncestors(root, arraySlice(paths, 0, -1));
   } catch {}
 };
 
@@ -66,7 +66,7 @@ export const pruneEmptyAncestors = async (root: string, paths: string[]) => {
   if (!isEmpty(paths)) {
     const directory = resolve(root, ...paths);
     if (isEmpty(await readdir(directory))) {
-      await rm(directory, {recursive: false, force: true});
+      await rm(directory, {recursive: true, force: true});
       await pruneEmptyAncestors(root, arraySlice(paths, 0, -1));
     }
   }
