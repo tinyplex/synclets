@@ -4,7 +4,7 @@ import {
   createMockDataConnector,
   createMockMetaConnector,
   createMockTransport,
-} from './common.ts';
+} from '../common.ts';
 
 let dataConnector: DataConnector<1>;
 let metaConnector: MetaConnector<1>;

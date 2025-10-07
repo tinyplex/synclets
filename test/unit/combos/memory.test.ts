@@ -6,9 +6,11 @@ import {createWsServer} from 'synclets/server/ws';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {createWsTransport} from 'synclets/transport/ws';
 import {WebSocketServer} from 'ws';
-import {describeConnectorTests} from '../common.ts';
+import {describeSyncletTests} from '../common.ts';
 
-describeConnectorTests(
+const WS_PORT = 9000;
+
+describeSyncletTests(
   'memory over memory',
   async () => {},
   async () => {},
@@ -17,13 +19,15 @@ describeConnectorTests(
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
 );
 
-describeConnectorTests(
+describeSyncletTests(
   'memory over ws',
-  async () => createWsServer(new WebSocketServer({port: 9000})),
+  async () => createWsServer(new WebSocketServer({port: WS_PORT})),
   async (wsServer) => wsServer.destroy(),
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
   (uniqueId: string) =>
-    createWsTransport(new WebSocket('ws://localhost:9000/' + uniqueId)),
+    createWsTransport(
+      new WebSocket('ws://localhost:' + WS_PORT + '/' + uniqueId),
+    ),
   5,
 );

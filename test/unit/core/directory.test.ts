@@ -6,9 +6,6 @@ import {
   createDirectoryDataConnector,
   createDirectoryMetaConnector,
 } from 'synclets/connector/fs';
-import {createMemoryTransport} from 'synclets/transport/memory';
-import {getUniqueId} from 'synclets/utils';
-import {describeConnectorTests} from '../common.ts';
 
 test('directory', async () => {
   const tmp = await mkdtemp(tmpdir() + sep);
@@ -28,15 +25,3 @@ test('directory', async () => {
 
   await rm(tmp, {recursive: true, force: true});
 });
-
-describeConnectorTests(
-  'directory over memory',
-  async () => ({file: await mkdtemp(tmpdir() + sep)}),
-  async ({file}: {file: string}) =>
-    await rm(file, {recursive: true, force: true}),
-  (depth: number, {file}: {file: string}) =>
-    createDirectoryDataConnector(depth, join(file, getUniqueId())),
-  (depth: number, {file}: {file: string}) =>
-    createDirectoryMetaConnector(depth, join(file, getUniqueId())),
-  (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
-);

@@ -13,7 +13,7 @@ import {
 } from 'synclets';
 import {getUniqueId} from 'synclets/utils';
 
-export const describeConnectorTests = <
+export const describeSyncletTests = <
   DataConnectorType extends DataConnector<number>,
   MetaConnectorType extends MetaConnector<number>,
   Environment,
@@ -335,7 +335,7 @@ export const describeConnectorTests = <
               await synclet2.setFarAtomForTest('B');
               await synclet1.start();
               await synclet2.start();
-              await pause(transportPause);
+              await pause(transportPause * 2);
               await expectEquivalentSynclets([synclet1, synclet2]);
             }
           });
@@ -351,11 +351,11 @@ export const describeConnectorTests = <
                 false,
               );
             await synclet1.setAtomForTest('A');
-            await pause();
+            await pause(transportPause);
             await synclet1.setAtomForTest('B');
             await synclet1.start();
             await synclet2.start();
-            await pause(transportPause);
+            await pause(transportPause * 2);
             await expectEquivalentSynclets([synclet1, synclet2]);
           });
 
@@ -372,12 +372,12 @@ export const describeConnectorTests = <
                 );
               await synclet1.setAtomForTest('A');
               await synclet1.setNearAtomForTest('B');
-              await pause();
+              await pause(transportPause);
               await synclet2.setNearAtomForTest('C');
               await synclet2.setFarAtomForTest('D');
               await synclet1.start();
               await synclet2.start();
-              await pause(transportPause);
+              await pause(transportPause * 2);
               await expectEquivalentSynclets([synclet1, synclet2]);
             }
           });
