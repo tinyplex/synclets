@@ -7,7 +7,7 @@ import {
   createFileMetaConnector,
 } from 'synclets/connector/fs';
 
-test('file', async () => {
+test('getFile', async () => {
   const tmp = await mkdtemp(tmpdir() + sep);
 
   const dataFile = join(tmp, '42.data');

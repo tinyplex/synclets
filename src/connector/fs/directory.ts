@@ -4,13 +4,9 @@ import type {
   AnyParentAddress,
   Atom,
   AtomAddress,
-  Atoms,
-  AtomsAddress,
   Context,
   Timestamp,
   TimestampAddress,
-  Timestamps,
-  TimestampsAddress,
 } from '@synclets/@types';
 import type {
   createDirectoryDataConnector as createDirectoryDataConnectorDecl,
@@ -19,8 +15,9 @@ import type {
   DirectoryMetaConnector,
 } from '@synclets/@types/connector/fs';
 import {isAtom, isTimestamp} from '@synclets/utils';
-import {arrayMap} from '../../common/array.ts';
 import {
+  decodePaths,
+  encodePaths,
   getDirectoryContents,
   readFileJson,
   removeFileAndAncestors,
@@ -28,32 +25,14 @@ import {
   writeFileJson,
 } from '../../common/fs.ts';
 import {objFreeze} from '../../common/object.ts';
-import {isUndefined, promiseAll} from '../../common/other.ts';
 
 const readLeaf = async <Leaf extends Atom | Timestamp>(
   directory: string,
   address: Address,
   isLeaf: (leaf: unknown) => leaf is Leaf | undefined,
 ): Promise<Leaf | undefined> => {
-  const leaf = await readFileJson(directory, address);
+  const leaf = await readFileJson(directory, encodePaths(address));
   return isLeaf(leaf) ? leaf : undefined;
-};
-
-const readLeaves = async <Leaf extends Atom | Timestamp>(
-  directory: string,
-  address: Address,
-  isLeaf: (leaf: unknown) => leaf is Leaf | undefined,
-): Promise<{[id: string]: Leaf}> => {
-  const leaves: {[id: string]: Leaf} = {};
-  await promiseAll(
-    arrayMap(await getDirectoryContents(directory, address), async (id) => {
-      const leaf = await readFileJson(directory, [...(address as Address), id]);
-      if (isLeaf(leaf) && !isUndefined(leaf)) {
-        leaves[id] = leaf;
-      }
-    }),
-  );
-  return leaves;
 };
 
 export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDecl =
@@ -67,41 +46,33 @@ export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDe
       validatedDirectory = await validateDirectory(directory);
     };
 
-    const readAtom = async (
-      address: AtomAddress<Depth>,
-    ): Promise<Atom | undefined> =>
+    const readAtom = (address: AtomAddress<Depth>): Promise<Atom | undefined> =>
       readLeaf(validatedDirectory, address, isAtom);
 
     const writeAtom = (
       address: AtomAddress<Depth>,
       atom: Atom,
       _context: Context,
-    ) => writeFileJson(validatedDirectory, address, atom);
+    ) => writeFileJson(validatedDirectory, encodePaths(address), atom);
 
     const removeAtom = (address: AtomAddress<Depth>, _context: Context) =>
-      removeFileAndAncestors(validatedDirectory, address);
+      removeFileAndAncestors(validatedDirectory, encodePaths(address));
 
-    const readChildIds = (
+    const readChildIds = async (
       address: AnyParentAddress<Depth>,
       _context: Context,
-    ) => getDirectoryContents(validatedDirectory, address);
+    ) =>
+      decodePaths(
+        await getDirectoryContents(validatedDirectory, encodePaths(address)),
+      );
 
-    const readAtoms = async (
-      address: AtomsAddress<Depth>,
-      _context: Context,
-    ): Promise<Atoms> => readLeaves(validatedDirectory, address, isAtom);
-
-    const dataConnector = createDataConnector(
-      depth,
-      {
-        connect,
-        readAtom,
-        writeAtom,
-        removeAtom,
-        readChildIds,
-      },
-      {readAtoms},
-    );
+    const dataConnector = createDataConnector(depth, {
+      connect,
+      readAtom,
+      writeAtom,
+      removeAtom,
+      readChildIds,
+    });
 
     const getDirectory = () => directory;
 
@@ -122,39 +93,32 @@ export const createDirectoryMetaConnector: typeof createDirectoryMetaConnectorDe
       validatedDirectory = await validateDirectory(directory);
     };
 
-    const readTimestamp = async (
+    const readTimestamp = (
       address: TimestampAddress<Depth>,
       _context: Context,
     ): Promise<Timestamp | undefined> =>
       readLeaf(validatedDirectory, address, isTimestamp);
 
-    const writeTimestamp = async (
+    const writeTimestamp = (
       address: TimestampAddress<Depth>,
       timestamp: Timestamp,
       _context: Context,
-    ) => writeFileJson(validatedDirectory, address, timestamp);
+    ) => writeFileJson(validatedDirectory, encodePaths(address), timestamp);
 
     const readChildIds = async (
       address: AnyParentAddress<Depth>,
       _context: Context,
-    ) => getDirectoryContents(validatedDirectory, address);
+    ) =>
+      decodePaths(
+        await getDirectoryContents(validatedDirectory, encodePaths(address)),
+      );
 
-    const readTimestamps = async (
-      address: TimestampsAddress<Depth>,
-      _context: Context,
-    ): Promise<Timestamps> =>
-      readLeaves(validatedDirectory, address, isTimestamp);
-
-    const metaConnector = createMetaConnector(
-      depth,
-      {
-        connect,
-        readTimestamp,
-        writeTimestamp,
-        readChildIds,
-      },
-      {readTimestamps},
-    );
+    const metaConnector = createMetaConnector(depth, {
+      connect,
+      readTimestamp,
+      writeTimestamp,
+      readChildIds,
+    });
 
     const getDirectory = () => directory;
 

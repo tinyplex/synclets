@@ -10,14 +10,42 @@ import {
   writeFile,
 } from 'fs/promises';
 import {dirname, resolve} from 'path';
-import {arraySlice} from './array.ts';
+import {arrayMap, arrayReduce, arraySlice} from './array.ts';
 import {errorNew, isEmpty} from './other.ts';
-import {UTF8} from './string.ts';
+import {stringReplaceAll, UTF8} from './string.ts';
 export {resolve} from 'path';
 
 const {R_OK, W_OK} = constants;
 const IS_NOT = ' is not ';
 const CANT_MAKE = `Can't make `;
+
+const EXTRA_ENCODES = [
+  ['*', '%2A'],
+  ['.', '%2E'],
+  ['~', '%7E'],
+];
+
+export const encodePath = (path: string) =>
+  arrayReduce(
+    EXTRA_ENCODES,
+    (str, [char, code]) => stringReplaceAll(str, char, code),
+    encodeURIComponent(path),
+  );
+
+export const decodePath = (path: string) =>
+  decodeURIComponent(
+    arrayReduce(
+      EXTRA_ENCODES,
+      (str, [char, code]) => stringReplaceAll(str, code, char),
+      path,
+    ),
+  );
+
+export const encodePaths = (paths: string[]): string[] =>
+  arrayMap(paths, encodePath);
+
+export const decodePaths = (paths: string[]): string[] =>
+  arrayMap(paths, decodePath);
 
 const makeDirectory = (directory: string) =>
   mkdir(directory, {recursive: true, mode: 0o755});
