@@ -2,7 +2,7 @@ import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/connector/memory';
-import {createWsServer} from 'synclets/server/ws';
+import {createStatelessWsServer} from 'synclets/server/stateless-ws';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {createWsTransport} from 'synclets/transport/ws';
 import {WebSocketServer} from 'ws';
@@ -21,7 +21,7 @@ describeSyncletTests(
 
 describeSyncletTests(
   'memory over ws',
-  async () => createWsServer(new WebSocketServer({port: WS_PORT})),
+  async () => createStatelessWsServer(new WebSocketServer({port: WS_PORT})),
   async (wsServer) => wsServer.destroy(),
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),

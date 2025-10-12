@@ -16,7 +16,7 @@ const TEST_MODULES = [
   'utils',
   'connector/fs',
   'connector/memory',
-  'server/ws',
+  'server/stateless-ws',
   'transport/memory',
   'transport/ws',
 ];

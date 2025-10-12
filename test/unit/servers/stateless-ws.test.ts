@@ -1,19 +1,19 @@
 import {createSynclet} from 'synclets';
-import {createWsServer} from 'synclets/server/ws';
+import {createStatelessWsServer} from 'synclets/server/stateless-ws';
 import {createWsTransport} from 'synclets/transport/ws';
 import {WebSocketServer} from 'ws';
 import {pause} from '../common.ts';
 
 test('getWebSocketServer', async () => {
   const wss = new WebSocketServer({port: 0});
-  const wsServer = createWsServer(wss);
+  const wsServer = createStatelessWsServer(wss);
   expect(wsServer.getWebSocketServer()).toEqual(wss);
   wsServer.destroy();
 });
 
 test('Two synclets on single server', async () => {
   const wss = new WebSocketServer({port: 9000});
-  const wsServer = createWsServer(wss);
+  const wsServer = createStatelessWsServer(wss);
 
   const synclet1 = await createSynclet({
     transport: createWsTransport(new WebSocket(`ws://localhost:9000`)),

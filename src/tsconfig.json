@@ -26,7 +26,9 @@
       "@synclets/@types/connector/memory": [
         "./@types/connector/memory/index.d.ts"
       ],
-      "@synclets/@types/server/ws": ["./@types/server/ws/index.d.ts"],
+      "@synclets/@types/server/stateless-ws": [
+        "@types/server/stateless-ws/index.d.ts"
+      ],
       "@synclets/@types/transport/memory": [
         "./@types/transport/memory/index.d.ts"
       ],

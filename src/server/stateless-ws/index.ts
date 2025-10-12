@@ -1,7 +1,7 @@
 import type {
-  WsServer,
-  createWsServer as createWsServerDecl,
-} from '@synclets/@types/server/ws';
+  StatelessWsServer,
+  createStatelessWsServer as createStatelessWsServerDecl,
+} from '@synclets/@types/server/stateless-ws';
 import {WebSocket, WebSocketServer} from 'ws';
 import {
   mapClear,
@@ -19,7 +19,7 @@ import {ASTERISK, SPACE, UTF8, strMatch} from '../../common/string.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
 
-export const createWsServer = ((webSocketServer: WebSocketServer) => {
+export const createStatelessWsServer = ((webSocketServer: WebSocketServer) => {
   const syncletsByPath: Map<string, Map<string, WebSocket>> = mapNew();
 
   webSocketServer.on('connection', (synclet, request) =>
@@ -71,5 +71,5 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
     destroy,
   };
 
-  return objFreeze(wsServer as WsServer);
-}) as typeof createWsServerDecl;
+  return objFreeze(wsServer as StatelessWsServer);
+}) as typeof createStatelessWsServerDecl;

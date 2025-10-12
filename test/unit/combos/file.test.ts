@@ -5,7 +5,7 @@ import {
   createFileDataConnector,
   createFileMetaConnector,
 } from 'synclets/connector/fs';
-import {createWsServer} from 'synclets/server/ws';
+import {createStatelessWsServer} from 'synclets/server/stateless-ws';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {createWsTransport} from 'synclets/transport/ws';
 import {getUniqueId} from 'synclets/utils';
@@ -29,7 +29,7 @@ describeSyncletTests(
   'file over ws',
   async () => ({
     tempDir: await mkdtemp(tmpdir() + sep),
-    wsServer: createWsServer(new WebSocketServer({port: WS_PORT})),
+    wsServer: createStatelessWsServer(new WebSocketServer({port: WS_PORT})),
   }),
   async ({tempDir, wsServer}) => {
     await rm(tempDir, {recursive: true, force: true});
