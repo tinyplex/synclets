@@ -1,17 +1,17 @@
-/* eslint-disable jest/no-export */
 import console from 'console';
 import {
   createDataConnector,
   createMetaConnector,
   createSynclet,
   createTransport,
-  DataConnector,
-  MetaConnector,
-  Synclet,
-  SyncletOptions,
-  Transport,
+  type DataConnector,
+  type MetaConnector,
+  type Synclet,
+  type SyncletOptions,
+  type Transport,
 } from 'synclets';
 import {getUniqueId} from 'synclets/utils';
+import {afterAll, beforeAll, describe, expect, test} from 'vitest';
 
 export const describeSyncletTests = <
   DataConnectorType extends DataConnector<number>,
@@ -30,7 +30,7 @@ export const describeSyncletTests = <
     environment: Environment,
   ) => MetaConnectorType,
   createTransport: (uniqueId: string) => Transport,
-  transportPause = 2,
+  transportPause = 0,
 ) =>
   describe(`${type} connector`, () => {
     let environment: Environment;
@@ -437,7 +437,7 @@ export const describeSyncletTests = <
     );
   });
 
-export const pause = async (ms = 2) =>
+export const pause = async (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export const createPooledTestSyncletsAndConnectors = async <

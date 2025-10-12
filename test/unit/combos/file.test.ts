@@ -9,7 +9,7 @@ import {createStatelessWsServer} from 'synclets/server/stateless-ws';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {createWsTransport} from 'synclets/transport/ws';
 import {getUniqueId} from 'synclets/utils';
-import {WebSocketServer} from 'ws';
+import {WebSocket, WebSocketServer} from 'ws';
 import {describeSyncletTests} from '../common.ts';
 
 const WS_PORT = 9001;

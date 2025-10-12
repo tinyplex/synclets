@@ -7,6 +7,7 @@ import {
   createDirectoryMetaConnector,
 } from 'synclets/connector/fs';
 import {getUniqueId} from 'synclets/utils';
+import {afterEach, beforeEach, expect, test} from 'vitest';
 
 let tmpDir: string;
 

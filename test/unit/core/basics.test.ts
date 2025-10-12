@@ -1,5 +1,11 @@
-import {createSynclet, DataConnector, MetaConnector, Transport} from 'synclets';
+import {
+  createSynclet,
+  type DataConnector,
+  type MetaConnector,
+  type Transport,
+} from 'synclets';
 import {createMemoryTransport} from 'synclets/transport/memory';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 import {
   createMockDataConnector,
   createMockMetaConnector,
@@ -22,7 +28,7 @@ test('createSynclet', () => {
 });
 
 test('log', async () => {
-  const logger = {info: jest.fn()};
+  const logger = {info: vi.fn()};
   const synclet = await createSynclet(
     {dataConnector, metaConnector, transport},
     {},
@@ -85,7 +91,7 @@ test('start & stop', async () => {
 
 describe('context', () => {
   test('send message', async () => {
-    const canReceiveMessage = jest.fn();
+    const canReceiveMessage = vi.fn();
 
     const synclet1 = await createSynclet({
       dataConnector: createMockDataConnector(),
@@ -107,8 +113,8 @@ describe('context', () => {
   });
 
   test('add context', async () => {
-    const getSendContext = jest.fn(async () => ({foo: 42}));
-    const canReceiveMessage = jest.fn();
+    const getSendContext = vi.fn(async () => ({foo: 42}));
+    const canReceiveMessage = vi.fn();
 
     const synclet1 = await createSynclet(
       {

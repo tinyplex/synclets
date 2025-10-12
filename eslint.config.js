@@ -1,6 +1,5 @@
 import jsLint from '@eslint/js';
 import importLint from 'eslint-plugin-import';
-import jestLint from 'eslint-plugin-jest';
 import jsdocLint from 'eslint-plugin-jsdoc';
 import reactLint from 'eslint-plugin-react';
 import hooksLint from 'eslint-plugin-react-hooks';
@@ -20,7 +19,6 @@ export default tsLint.config(
 
   jsLint.configs.recommended,
   importLint.flatConfigs.recommended,
-  jestLint.configs['flat/recommended'],
   jsdocLint.configs['flat/recommended'],
   reactLint.configs.flat.recommended,
   reactLint.configs.flat['jsx-runtime'],
@@ -30,10 +28,7 @@ export default tsLint.config(
   {
     settings: {
       react: {version: 'detect'},
-      'import/resolver': {
-        typescript: {},
-        node: {extensions: ['.js', '.jsx', '.ts', '.tsx']},
-      },
+      'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},
       'import/core-modules': ['expo-sqlite'],
     },
 
@@ -75,10 +70,14 @@ export default tsLint.config(
         2,
         {
           ignore: [
-            '^@.*',
             '^\\./generated/client$',
+            '^custom-remote-handlers$',
+            '^electric-sql/(client/model|notifiers|wa-sqlite)$',
+            '^cloudflare:workers$',
             'eslint/config',
             'typescript-eslint',
+            'bun:sqlite',
+            'vitest/*',
           ],
         },
       ],
@@ -116,6 +115,7 @@ export default tsLint.config(
       'react/jsx-props-no-spreading': 0,
       'react/jsx-sort-props': 0,
       'react/no-arrow-function-lifecycle': 2,
+      'react/prefer-read-only-props': 2,
       'react/no-find-dom-node': 0,
       'react/no-multi-comp': [2, {ignoreStateless: true}],
       'react/no-set-state': 0,
@@ -140,11 +140,6 @@ export default tsLint.config(
 
       'react-hooks/exhaustive-deps': 2,
       'react-hooks/rules-of-hooks': 2,
-
-      // --
-
-      'jest/expect-expect': [2, {assertFunctionNames: ['expect*']}],
-      'jest/no-conditional-expect': 2,
     },
   },
 

@@ -12,4 +12,5 @@ describeSyncletTests(
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
+  0,
 );

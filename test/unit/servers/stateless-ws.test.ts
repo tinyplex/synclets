@@ -1,7 +1,8 @@
 import {createSynclet} from 'synclets';
 import {createStatelessWsServer} from 'synclets/server/stateless-ws';
 import {createWsTransport} from 'synclets/transport/ws';
-import {WebSocketServer} from 'ws';
+import {expect, test} from 'vitest';
+import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../common.ts';
 
 test('getWebSocketServer', async () => {

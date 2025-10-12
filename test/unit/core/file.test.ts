@@ -6,6 +6,7 @@ import {
   createFileDataConnector,
   createFileMetaConnector,
 } from 'synclets/connector/fs';
+import {expect, test} from 'vitest';
 
 test('getFile', async () => {
   const tmp = await mkdtemp(tmpdir() + sep);
