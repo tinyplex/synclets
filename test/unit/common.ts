@@ -523,20 +523,20 @@ export const createChainedTestSynclets = async <
   );
 };
 
-export const createMockDataConnector = () =>
-  createDataConnector(1, {
+export const createMockDataConnector = <Depth extends number>(depth: Depth) =>
+  createDataConnector(depth, {
     readAtom: async () => 0,
     writeAtom: async () => {},
     removeAtom: async () => {},
     readChildIds: async () => [],
-  });
+  }) as DataConnector<Depth>;
 
-export const createMockMetaConnector = () =>
-  createMetaConnector(1, {
+export const createMockMetaConnector = <Depth extends number>(depth: Depth) =>
+  createMetaConnector(depth, {
     readTimestamp: async () => '',
     writeTimestamp: async () => {},
     readChildIds: async () => [],
-  });
+  }) as MetaConnector<Depth>;
 
 export const createMockTransport = () =>
   createTransport({
