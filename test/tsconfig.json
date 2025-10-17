@@ -12,7 +12,7 @@
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "types": ["asciichart", "node", "http-server", "bun-types"],
+    "types": ["node", "http-server"],
     "composite": true,
     "skipLibCheck": true,
     "allowJs": true
