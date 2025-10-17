@@ -60,29 +60,13 @@ export interface ProtectedDataConnector<Depth extends number>
   _: [
     attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
     detach: () => Promise<void>,
-    readAtom: (
-      address: AtomAddress<Depth>,
-      context: Context,
-    ) => Promise<Atom | undefined>,
-    writeAtom: (
-      address: AtomAddress<Depth>,
-      atom: Atom,
-      context: Context,
-    ) => Promise<void>,
-    removeAtom: (
-      address: AtomAddress<Depth>,
-      context: Context,
-    ) => Promise<void>,
-    readChildIds: (
-      address: AnyParentAddress<Depth>,
-      context: Context,
-    ) => Promise<string[]>,
+    readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>,
+    writeAtom: (address: AtomAddress<Depth>, atom: Atom) => Promise<void>,
+    removeAtom: (address: AtomAddress<Depth>) => Promise<void>,
+    readChildIds: (address: AnyParentAddress<Depth>) => Promise<string[]>,
   ];
   $: [
-    readAtoms?: (
-      address: AtomsAddress<Depth>,
-      context: Context,
-    ) => Promise<Atoms>,
+    readAtoms?: (address: AtomsAddress<Depth>) => Promise<Atoms>,
     getData?: () => Promise<Data>,
   ];
 }
@@ -94,23 +78,15 @@ export interface ProtectedMetaConnector<Depth extends number>
     detach: () => Promise<void>,
     readTimestamp: (
       address: TimestampAddress<Depth>,
-      context: Context,
     ) => Promise<Timestamp | undefined>,
     writeTimestamp: (
       address: TimestampAddress<Depth>,
       timestamp: Timestamp,
-      context: Context,
     ) => Promise<void>,
-    readChildIds: (
-      address: AnyParentAddress<Depth>,
-      context: Context,
-    ) => Promise<string[]>,
+    readChildIds: (address: AnyParentAddress<Depth>) => Promise<string[]>,
   ];
   $: [
-    readTimestamps?: (
-      address: TimestampsAddress<Depth>,
-      context: Context,
-    ) => Promise<Timestamps>,
+    readTimestamps?: (address: TimestampsAddress<Depth>) => Promise<Timestamps>,
     getMeta?: () => Promise<Meta>,
   ];
 }

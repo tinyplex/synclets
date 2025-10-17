@@ -156,28 +156,15 @@ export interface DataConnector<Depth extends number> {
 export type DataConnectorImplementations<Depth extends number> = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
-  readAtom: (
-    address: AtomAddress<Depth>,
-    context: Context,
-  ) => Promise<Atom | undefined>;
-  writeAtom: (
-    address: AtomAddress<Depth>,
-    atom: Atom,
-    context: Context,
-  ) => Promise<void>;
-  removeAtom: (address: AtomAddress<Depth>, context: Context) => Promise<void>;
-  readChildIds: (
-    address: AnyParentAddress<Depth>,
-    context: Context,
-  ) => Promise<string[]>;
+  readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>;
+  writeAtom: (address: AtomAddress<Depth>, atom: Atom) => Promise<void>;
+  removeAtom: (address: AtomAddress<Depth>) => Promise<void>;
+  readChildIds: (address: AnyParentAddress<Depth>) => Promise<string[]>;
 };
 
 /// DataConnectorOptimizations
 export type DataConnectorOptimizations<Depth extends number> = {
-  readAtoms?: (
-    address: AtomsAddress<Depth>,
-    context: Context,
-  ) => Promise<Atoms>;
+  readAtoms?: (address: AtomsAddress<Depth>) => Promise<Atoms>;
   getData?: () => Promise<Data>;
 };
 
@@ -203,25 +190,17 @@ export type MetaConnectorImplementations<Depth extends number> = {
   disconnect?: () => Promise<void>;
   readTimestamp: (
     address: TimestampAddress<Depth>,
-    context: Context,
   ) => Promise<Timestamp | undefined>;
   writeTimestamp: (
     address: TimestampAddress<Depth>,
     timestamp: Timestamp,
-    context: Context,
   ) => Promise<void>;
-  readChildIds: (
-    address: AnyParentAddress<Depth>,
-    context: Context,
-  ) => Promise<string[]>;
+  readChildIds: (address: AnyParentAddress<Depth>) => Promise<string[]>;
 };
 
 /// MetaConnectorOptimizations
 export type MetaConnectorOptimizations<Depth extends number> = {
-  readTimestamps?: (
-    address: TimestampsAddress<Depth>,
-    context: Context,
-  ) => Promise<Timestamps>;
+  readTimestamps?: (address: TimestampsAddress<Depth>) => Promise<Timestamps>;
   getMeta?: () => Promise<Meta>;
 };
 

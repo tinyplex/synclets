@@ -4,13 +4,14 @@ import type {
   Atom,
   Atoms,
   AtomsAddress,
-  Context,
   Data,
   DataConnector,
   Meta,
   MetaConnector,
   Timestamp,
   TimestampAddress,
+  Timestamps,
+  TimestampsAddress,
 } from '@synclets/@types';
 import {jsonParse, jsonString} from '@synclets/utils';
 import {objDeepAction, objKeys} from './object.ts';
@@ -30,19 +31,12 @@ export const createMemoryDataConnector = <Depth extends number>(
     data = (await getInitialDataAfterConnect?.()) ?? data;
   };
 
-  const readAtom = async (
-    address: TimestampAddress<Depth>,
-    _context: Context,
-  ) =>
+  const readAtom = async (address: TimestampAddress<Depth>) =>
     objDeepAction(data, address, (parent, id) => parent[id]) as
       | Atom
       | undefined;
 
-  const writeAtom = async (
-    address: LeafAddressFor<Depth>,
-    atom: Atom,
-    _context: Context,
-  ) =>
+  const writeAtom = async (address: LeafAddressFor<Depth>, atom: Atom) =>
     await objDeepAction(
       data,
       address,
@@ -53,10 +47,7 @@ export const createMemoryDataConnector = <Depth extends number>(
       true,
     );
 
-  const removeAtom = async (
-    address: LeafAddressFor<Depth>,
-    _context: Context,
-  ) =>
+  const removeAtom = async (address: LeafAddressFor<Depth>) =>
     await objDeepAction(
       data,
       address,
@@ -68,17 +59,14 @@ export const createMemoryDataConnector = <Depth extends number>(
       true,
     );
 
-  const readChildIds = async (
-    address: AnyParentAddress<Depth>,
-    _context: Context,
-  ) =>
+  const readChildIds = async (address: AnyParentAddress<Depth>) =>
     isEmpty(address)
       ? objKeys(data)
       : (objDeepAction(data, address, (parent, id) =>
           objKeys(parent[id] as Data),
         ) ?? []);
 
-  const readAtoms = async (address: AtomsAddress<Depth>, _context: Context) =>
+  const readAtoms = async (address: AtomsAddress<Depth>) =>
     objDeepAction(
       data,
       address,
@@ -115,10 +103,7 @@ export const createMemoryMetaConnector = <Depth extends number>(
     meta = (await getInitialMetaAfterConnect?.()) ?? meta;
   };
 
-  const readTimestamp = async (
-    address: TimestampAddress<Depth>,
-    _context: Context,
-  ) =>
+  const readTimestamp = async (address: TimestampAddress<Depth>) =>
     objDeepAction(meta, address, (parent, id) => parent[id]) as
       | Timestamp
       | undefined;
@@ -126,7 +111,6 @@ export const createMemoryMetaConnector = <Depth extends number>(
   const writeTimestamp = async (
     address: TimestampAddress<Depth>,
     timestamp: Timestamp,
-    _context: Context,
   ) =>
     objDeepAction(
       meta,
@@ -139,26 +123,19 @@ export const createMemoryMetaConnector = <Depth extends number>(
       true,
     );
 
-  const readChildIds = async (
-    address: AnyParentAddress<Depth>,
-    _context: Context,
-  ) =>
+  const readChildIds = async (address: AnyParentAddress<Depth>) =>
     isEmpty(address)
       ? objKeys(meta)
       : (objDeepAction(meta, address, (parent, id) =>
           objKeys(parent[id] as Meta),
         ) ?? []);
 
-  const readTimestamps = undefined;
-  // async (
-  //   address: TimestampsAddress<Depth>,
-  //   _context: Context,
-  // ) =>
-  //   objDeepAction(
-  //     meta,
-  //     address,
-  //     (parent, id) => parent[id] ?? {},
-  //   ) as Timestamps;
+  const readTimestamps = async (address: TimestampsAddress<Depth>) =>
+    objDeepAction(
+      meta,
+      address,
+      (parent, id) => parent[id] ?? {},
+    ) as Timestamps;
 
   const getMeta = async () => jsonParse(jsonString(meta));
 
