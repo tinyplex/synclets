@@ -84,6 +84,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/utils/index.d.ts')
     .addApiFile('dist/@types/connector/fs/index.d.ts')
     .addApiFile('dist/@types/connector/memory/index.d.ts')
+    .addApiFile('dist/@types/connector/pglite/index.d.ts')
     .addApiFile('dist/@types/server/stateless-ws/index.d.ts')
     .addApiFile('dist/@types/transport/memory/index.d.ts')
     .addApiFile('dist/@types/transport/ws/index.d.ts');

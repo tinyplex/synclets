@@ -16,6 +16,7 @@ const TEST_MODULES = [
   'utils',
   'connector/fs',
   'connector/memory',
+  'connector/pglite',
   'server/stateless-ws',
   'transport/memory',
   'transport/ws',
@@ -30,7 +31,12 @@ const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 
-const EXTERNAL = ['fs/promises', 'path'];
+const EXTERNAL = [
+  'fs/promises',
+  'path',
+  '@electric-sql/pglite',
+  '@electric-sql/pglite/template',
+];
 const MODULE_REPLACEMENTS = {};
 const MIN_MODULE_REPLACEMENTS = {};
 ALL_MODULES.forEach((module) => {

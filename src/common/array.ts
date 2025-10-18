@@ -3,6 +3,9 @@ import {EMPTY_STRING} from './string.ts';
 
 export const isArray = Array.isArray;
 
+export const arrayNew = <Value>(length: number, fill?: Value): Value[] =>
+  new Array(length).fill(fill);
+
 export const arrayMap = <Value, Return>(
   array: Value[],
   cb: (value: Value, index: number, array: Value[]) => Return,
@@ -23,6 +26,9 @@ export const arrayPush = <Value>(array: Value[], ...values: Value[]): void => {
   array.push(...values);
 };
 
+export const arrayPop = <Value>(array: Value[]): Value | undefined =>
+  array.pop();
+
 export const arrayShift = <Value>(array: Value[]): Value | undefined =>
   array.shift();
 
@@ -30,6 +36,11 @@ export const arrayEvery = <Value>(
   array: Value[],
   test: (value: Value, index: number, array: Value[]) => boolean,
 ): boolean => array.every(test);
+
+export const arraySome = <Value>(
+  array: Value[],
+  test: (value: Value, index: number, array: Value[]) => boolean,
+): boolean => array.some(test);
 
 export const arrayDifference = (array1: string[], array2: string[]) => {
   const exclude = setNew(array2);
