@@ -65,13 +65,13 @@ test('error on reassigning data connector', async () => {
 
 test('error on reassigning meta connector', async () => {
   await createSynclet({dataConnector, metaConnector, transport});
-  await expect(async () => {
-    await createSynclet({
+  await expect(() =>
+    createSynclet({
       dataConnector: createMockDataConnector(1),
       metaConnector,
       transport: createMockTransport(),
-    });
-  }).rejects.toThrow('Meta connector is already attached to Synclet');
+    }),
+  ).rejects.toThrow('Meta connector is already attached to Synclet');
 });
 
 test('start & stop', async () => {
