@@ -13,7 +13,6 @@
     "composite": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "baseUrl": ".",
     "paths": {
       "@synclets": ["./index.ts"],
       "@synclets/utils": ["./utils/index.ts"],
@@ -26,8 +25,11 @@
       "@synclets/@types/connector/memory": [
         "./@types/connector/memory/index.d.ts"
       ],
+      "@synclets/@types/connector/pglite": [
+        "./@types/connector/pglite/index.d.ts"
+      ],
       "@synclets/@types/server/stateless-ws": [
-        "@types/server/stateless-ws/index.d.ts"
+        "./@types/server/stateless-ws/index.d.ts"
       ],
       "@synclets/@types/transport/memory": [
         "./@types/transport/memory/index.d.ts"
