@@ -1,6 +1,6 @@
 import {Address} from '@synclets/@types';
 import {arrayEvery} from './array.ts';
-import {ifNotUndefined, isEmpty, isUndefined} from './other.ts';
+import {ifNotUndefined, isEmpty, isUndefined, size} from './other.ts';
 
 type IdObj<Value = unknown> = {[id: string]: Value};
 
@@ -38,6 +38,19 @@ export const isObject = (obj: unknown): obj is {[id: string]: unknown} =>
     /*! istanbul ignore next */
     () => true,
   ) as boolean);
+
+export const objIsEqual = (
+  obj1: IdObj<unknown>,
+  obj2: IdObj<unknown>,
+): boolean => {
+  const entries1 = objEntries(obj1);
+  return (
+    size(entries1) === objSize(obj2) &&
+    arrayEvery(entries1, ([index, value1]) => obj2[index] === value1)
+  );
+};
+
+export const objSize = (obj: IdObj<unknown>): number => size(objKeys(obj));
 
 export const objNotEmpty = (obj: {[id: string]: unknown}): boolean =>
   !isEmpty(objKeys(obj));

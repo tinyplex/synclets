@@ -7,16 +7,14 @@ import type {
   PgliteMetaConnector,
 } from '@synclets/@types/connector/pglite';
 import {jsonString} from '@synclets/utils';
+import {arrayMap, arrayNew, arrayReduce} from '../../common/array.ts';
 import {
-  arrayMap,
-  arrayNew,
-  arrayPop,
-  arrayReduce,
-  arrayShift,
-  arraySome,
-} from '../../common/array.ts';
-import {objFreeze} from '../../common/object.ts';
-import {errorNew, isEmpty, promiseAll, size} from '../../common/other.ts';
+  objFreeze,
+  objFromEntries,
+  objIsEqual,
+  objNotEmpty,
+} from '../../common/object.ts';
+import {errorNew, promiseAll, size} from '../../common/other.ts';
 
 type Options = {
   tableName?: string;
@@ -42,23 +40,44 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
 
   const tableId = identifier`${tableName}`;
   const addressColumnId = identifier`${addressColumnName}`;
-  const addressPartColumnIds = arrayMap(
+  const addressPartColumns = arrayMap(
     arrayNew(depth),
-    (_, i) => identifier`${addressColumnName}${i + 1}`,
+    (_, i) => `${addressColumnName}${i + 1}`,
+  );
+  const addressPartColumnIds = arrayMap(
+    addressPartColumns,
+    (column) => identifier`${column}`,
   );
   const timestampColumnId = identifier`${timestampColumnName}`;
 
   const connect = async () => {
-    const {rows: columnSchema} = await pglite.sql<{name: string; type: string}>`
-      SELECT column_name AS name, data_type AS type 
-      FROM information_schema.columns 
-      WHERE table_name=${tableName} 
-      ORDER BY column_name
-    `;
+    const schema = objFromEntries(
+      (
+        await pglite.sql<{name: string; type: string}>`
+          SELECT column_name AS name, data_type AS type 
+          FROM information_schema.columns 
+          WHERE table_name=${tableName} 
+          ORDER BY column_name
+        `
+      ).rows.map(({name, type}) => [name, type]),
+    );
 
-    if (isEmpty(columnSchema)) {
+    const targetSchema = {
+      [addressColumnName]: 'text',
+      [timestampColumnName]: 'text',
+      ...objFromEntries(
+        arrayMap(addressPartColumns, (column) => [column, 'text']),
+      ),
+    };
+
+    if (objNotEmpty(schema)) {
+      if (!objIsEqual(schema, targetSchema)) {
+        errorNew(
+          `Table ${tableId.str} needs correct schema, ${JSON.stringify(schema)}, ${JSON.stringify(targetSchema)}`,
+        );
+      }
+    } else {
       metaConnector.log(`Creating table ${tableId.str}`);
-
       await pglite.transaction(async (tx: Transaction) => {
         const createColumns = arrayReduce(
           addressPartColumnIds,
@@ -76,14 +95,6 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
           }),
         );
       });
-    } else if (
-      size(columnSchema) != depth + 2 ||
-      arraySome(columnSchema, ({type}) => type != 'text') ||
-      arrayShift(columnSchema)?.name != 'address' ||
-      arrayPop(columnSchema)?.name != 'timestamp' ||
-      arraySome(columnSchema, ({name}, c) => name != `address${c + 1}`)
-    ) {
-      errorNew(`Table ${tableId.str} needs correct schema`);
     }
   };
 
