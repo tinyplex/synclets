@@ -1,11 +1,12 @@
 import type {PGlite, Transaction} from '@electric-sql/pglite';
-import {identifier, raw} from '@electric-sql/pglite/template';
+import {identifier, raw, sql} from '@electric-sql/pglite/template';
 import {createMetaConnector} from '@synclets';
 import {AnyParentAddress, AtomAddress, Timestamp} from '@synclets/@types';
 import type {
   createPgliteMetaConnector as createPgliteMetaConnectorDecl,
   PgliteMetaConnector,
 } from '@synclets/@types/connector/pglite';
+import {jsonString} from '@synclets/utils';
 import {
   arrayJoin,
   arrayMap,
@@ -26,27 +27,36 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
   table: string,
 ): PgliteMetaConnector<Depth> => {
   const escapedTable = identifier`${table}`;
+  const columns = arrayMap(arrayNew(depth), (_, i) => `address${i + 1}`);
 
   const connect = async () => {
-    const {rows: columnSchema}: {rows: Array<{name: string; type: string}>} =
-      await pglite.sql`SELECT column_name AS name, data_type AS type FROM information_schema.columns WHERE table_name=${table} ORDER BY column_name`;
+    const {rows: columnSchema} = await pglite.sql<{name: string; type: string}>`
+      SELECT column_name AS name, data_type AS type 
+      FROM information_schema.columns 
+      WHERE table_name=${table} 
+      ORDER BY column_name
+    `;
 
     if (isEmpty(columnSchema)) {
       metaConnector.log(`Creating table ${escapedTable.str}`);
 
       await pglite.transaction(async (tx: Transaction) => {
-        const columns = arrayMap(arrayNew(depth), (_, i) => `address${i + 1}`);
         const createColumns =
           'address TEXT PRIMARY KEY, ' +
           arrayJoin(arrayMap(columns, (column) => `${column} TEXT, `)) +
           'timestamp TEXT';
-        await tx.sql`CREATE TABLE ${escapedTable} (${raw`${createColumns}`});`;
+        await tx.sql`
+          CREATE TABLE ${escapedTable} (${raw`${createColumns}`})
+        `;
 
         const indexColumns: string[] = [];
         await promiseAll(
           arrayMap(columns, (column, c) => {
             arrayPush(indexColumns, column);
-            return tx.sql`CREATE INDEX ${raw`index${c + 1}`} ON ${escapedTable} (${raw`${indexColumns.join(', ')}`})`;
+            return tx.sql`
+              CREATE INDEX ${raw`index${c + 1}`} 
+              ON ${escapedTable} (${raw`${indexColumns.join(', ')}`})
+            `;
           }),
         );
       });
@@ -61,17 +71,39 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
     }
   };
 
-  const readTimestamp = async (address: AtomAddress<Depth>) => {
-    return '';
-  };
+  const readTimestamp = async (address: AtomAddress<Depth>) =>
+    (
+      await pglite.sql<{timestamp: string}>`
+        SELECT timestamp FROM ${escapedTable} 
+        WHERE address=${jsonString(address)}
+      `
+    ).rows[0]?.timestamp;
 
   const writeTimestamp = async (
     address: AtomAddress<Depth>,
     timestamp: Timestamp,
-  ) => {};
+  ) => {
+    const addressParts = arrayMap(address, (part) => raw`${sql`${part}`}, `);
+    await pglite.sql`
+      INSERT INTO ${escapedTable} 
+      (address, ${raw`${arrayJoin(columns, ', ')}`}, timestamp) 
+      VALUES (${jsonString(address)}, ${addressParts} ${timestamp})
+      ON CONFLICT(address) 
+      DO UPDATE SET timestamp=excluded.timestamp
+    `;
+  };
 
   const readChildIds = async (address: AnyParentAddress<Depth>) => {
-    return [];
+    const addressParts = arrayMap(
+      address,
+      (part, p) => raw`address${p + 1}=${sql`${part}`} AND `,
+    );
+    const {rows} = await pglite.sql<{id: string}>`
+      SELECT DISTINCT ${raw`address${size(address) + 1}`} AS id 
+      FROM ${escapedTable} 
+      WHERE ${addressParts} 1=1
+    `;
+    return arrayMap(rows, ({id}) => id);
   };
 
   const metaConnector = createMetaConnector(depth, {
