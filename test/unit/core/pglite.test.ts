@@ -1,6 +1,9 @@
 import {PGlite} from '@electric-sql/pglite';
 import {createSynclet} from 'synclets';
+import {createMemoryDataConnector} from 'synclets/connector/memory';
 import {createPgliteMetaConnector} from 'synclets/connector/pglite';
+import {createMemoryTransport} from 'synclets/transport/memory';
+import {getUniqueId} from 'synclets/utils';
 import {
   afterAll,
   afterEach,
@@ -10,23 +13,13 @@ import {
   test,
   vi,
 } from 'vitest';
-import {createMockDataConnector} from '../common.ts';
+import {createMockDataConnector, describeSyncletTests} from '../common.ts';
 
 const TEXT = 25;
 
-let metaPglite: PGlite;
-
-beforeAll(async () => {
-  metaPglite = await PGlite.create();
-});
-
-afterEach(async () => await metaPglite.sql`DROP TABLE meta;`);
-
-afterAll(async () => {
-  await metaPglite.close();
-});
-
 test('getPglite', async () => {
+  const metaPglite = await PGlite.create();
+
   const dataConnector = createMockDataConnector(1);
 
   const metaConnector = createPgliteMetaConnector(1, metaPglite, 'meta');
@@ -34,15 +27,29 @@ test('getPglite', async () => {
 
   expect(metaConnector.getPglite()).toBe(metaPglite);
   expect(synclet.getMetaConnector().getPglite()).toBe(metaPglite);
+
+  await metaPglite.close();
 });
 
 describe('meta schema checks', async () => {
+  let pglite: PGlite;
+
+  beforeAll(async () => {
+    pglite = await PGlite.create();
+  });
+
+  afterEach(async () => await pglite.sql`DROP TABLE meta;`);
+
+  afterAll(async () => {
+    await pglite.close();
+  });
+
   test('create if table missing', async () => {
     const logger = {info: vi.fn()};
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, metaPglite, 'meta');
+    const metaConnector = createPgliteMetaConnector(3, pglite, 'meta');
     await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-    expect((await metaPglite.sql`SELECT * FROM meta;`).fields).toEqual([
+    expect((await pglite.sql`SELECT * FROM meta;`).fields).toEqual([
       {name: 'address', dataTypeID: TEXT},
       {name: 'address1', dataTypeID: TEXT},
       {name: 'address2', dataTypeID: TEXT},
@@ -53,54 +60,66 @@ describe('meta schema checks', async () => {
   });
 
   test('no error if table is correct', async () => {
-    await metaPglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, timestamp TEXT);`;
+    await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, metaPglite, 'meta');
+    const metaConnector = createPgliteMetaConnector(3, pglite, 'meta');
     await createSynclet({dataConnector, metaConnector});
   });
 
   test('error if table has wrong number of columns', async () => {
-    await metaPglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, timestamp TEXT);`;
+    await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, metaPglite, 'meta');
+    const metaConnector = createPgliteMetaConnector(3, pglite, 'meta');
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
   });
 
   test('error if table has wrong type of columns', async () => {
-    await metaPglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 INTEGER, timestamp TEXT);`;
+    await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 INTEGER, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, metaPglite, 'meta');
+    const metaConnector = createPgliteMetaConnector(3, pglite, 'meta');
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
   });
 
   test('error if table needs address', async () => {
-    await metaPglite.sql`CREATE TABLE meta (whoops TEXT, address1 TEXT, address2 TEXT, address3 TEXT, timestamp TEXT);`;
+    await pglite.sql`CREATE TABLE meta (whoops TEXT, address1 TEXT, address2 TEXT, address3 TEXT, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, metaPglite, 'meta');
+    const metaConnector = createPgliteMetaConnector(3, pglite, 'meta');
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
   });
 
   test('error if table needs timestamp', async () => {
-    await metaPglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, whoops TEXT);`;
+    await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, whoops TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, metaPglite, 'meta');
+    const metaConnector = createPgliteMetaConnector(3, pglite, 'meta');
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
   });
 
   test('error if table needs addressN', async () => {
-    await metaPglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, whoops TEXT, timestamp TEXT);`;
+    await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, whoops TEXT, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, metaPglite, 'meta');
+    const metaConnector = createPgliteMetaConnector(3, pglite, 'meta');
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
   });
 });
+
+const pglite = await PGlite.create();
+describeSyncletTests(
+  'memory/pglite over memory',
+  async () => {},
+  async () => {},
+  <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
+  <Depth extends number>(depth: Depth) =>
+    createPgliteMetaConnector(depth, pglite, 'meta' + getUniqueId()),
+  (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
+  0,
+);

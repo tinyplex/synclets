@@ -13,6 +13,7 @@ import {
   arrayNew,
   arrayPop,
   arrayPush,
+  arrayReduce,
   arrayShift,
   arraySome,
 } from '../../common/array.ts';
@@ -54,8 +55,8 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
           arrayMap(columns, (column, c) => {
             arrayPush(indexColumns, column);
             return tx.sql`
-              CREATE INDEX ${raw`index${c + 1}`} 
-              ON ${escapedTable} (${raw`${indexColumns.join(', ')}`})
+              CREATE INDEX ON ${escapedTable} 
+              (${raw`${indexColumns.join(', ')}`})
             `;
           }),
         );
@@ -83,25 +84,35 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
     address: AtomAddress<Depth>,
     timestamp: Timestamp,
   ) => {
-    const addressParts = arrayMap(address, (part) => raw`${sql`${part}`}, `);
+    const [columns, values] = arrayReduce(
+      address,
+      ([columns, values], addressPart, a) => [
+        `${columns}, address${a + 1}`,
+        sql`${values}, ${addressPart}`,
+      ],
+      ['address, timestamp', sql`${jsonString(address)}, ${timestamp}`],
+    );
     await pglite.sql`
       INSERT INTO ${escapedTable} 
-      (address, ${raw`${arrayJoin(columns, ', ')}`}, timestamp) 
-      VALUES (${jsonString(address)}, ${addressParts} ${timestamp})
+      (${raw`${columns}`}) 
+      VALUES (${values})
       ON CONFLICT(address) 
       DO UPDATE SET timestamp=excluded.timestamp
     `;
   };
 
   const readChildIds = async (address: AnyParentAddress<Depth>) => {
-    const addressParts = arrayMap(
+    const where = arrayReduce(
       address,
-      (part, p) => raw`address${p + 1}=${sql`${part}`} AND `,
+      (where, addressPart, a) =>
+        sql`${where} AND address${raw`${a + 1}`}=${sql`${addressPart}`}`,
+      sql`1=1`,
     );
+
     const {rows} = await pglite.sql<{id: string}>`
       SELECT DISTINCT ${raw`address${size(address) + 1}`} AS id 
       FROM ${escapedTable} 
-      WHERE ${addressParts} 1=1
+      WHERE ${where}
     `;
     return arrayMap(rows, ({id}) => id);
   };

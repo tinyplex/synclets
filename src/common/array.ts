@@ -13,7 +13,7 @@ export const arrayMap = <Value, Return>(
 
 export const arrayReduce = <Value, Result>(
   array: Value[],
-  cb: (previous: Result, current: Value) => Result,
+  cb: (previous: Result, current: Value, index: number) => Result,
   initial: Result,
 ): Result => array.reduce(cb, initial);
 
