@@ -62,9 +62,7 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
 
     if (objNotEmpty(schema)) {
       if (!objIsEqual(schema, targetSchema)) {
-        errorNew(
-          `Table ${tableId.str} needs correct schema, ${JSON.stringify(schema)}, ${JSON.stringify(targetSchema)}`,
-        );
+        errorNew(`Table ${tableId.str} needs correct schema`);
       }
     } else {
       metaConnector.log(`Creating table ${tableId.str}`);
