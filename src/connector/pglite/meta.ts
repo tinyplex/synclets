@@ -4,6 +4,7 @@ import {createMetaConnector} from '@synclets';
 import {AnyParentAddress, AtomAddress, Timestamp} from '@synclets/@types';
 import type {
   createPgliteMetaConnector as createPgliteMetaConnectorDecl,
+  DatabaseMetaOptions,
   PgliteMetaConnector,
 } from '@synclets/@types/connector/pglite';
 import {jsonString} from '@synclets/utils';
@@ -16,39 +17,28 @@ import {
 } from '../../common/object.ts';
 import {errorNew, promiseAll, size} from '../../common/other.ts';
 
-type Options = {
-  tableName?: string;
-  addressColumnPrefix?: string;
-};
-
 export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
   Depth extends number,
 >(
   depth: Depth,
   pglite: PGlite,
-  table: string,
+  {
+    table = 'meta',
+    addressColumn = 'address',
+    timestampColumn = 'timestamp',
+  }: DatabaseMetaOptions = {},
 ): PgliteMetaConnector<Depth> => {
-  const defaultOptions = {
-    tableName: table,
-    addressColumnName: 'address',
-    timestampColumnName: 'timestamp',
-  };
-
-  const {tableName, addressColumnName, timestampColumnName} = {
-    ...defaultOptions,
-  };
-
-  const tableId = identifier`${tableName}`;
-  const addressColumnId = identifier`${addressColumnName}`;
+  const tableId = identifier`${table}`;
+  const addressColumnId = identifier`${addressColumn}`;
   const addressPartColumns = arrayMap(
     arrayNew(depth),
-    (_, i) => `${addressColumnName}${i + 1}`,
+    (_, i) => `${addressColumn}${i + 1}`,
   );
   const addressPartColumnIds = arrayMap(
     addressPartColumns,
     (column) => identifier`${column}`,
   );
-  const timestampColumnId = identifier`${timestampColumnName}`;
+  const timestampColumnId = identifier`${timestampColumn}`;
 
   const connect = async () => {
     const schema = objFromEntries(
@@ -56,15 +46,15 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
         await pglite.sql<{name: string; type: string}>`
           SELECT column_name AS name, data_type AS type 
           FROM information_schema.columns 
-          WHERE table_name=${tableName} 
+          WHERE table_name=${table} 
           ORDER BY column_name
         `
       ).rows.map(({name, type}) => [name, type]),
     );
 
     const targetSchema = {
-      [addressColumnName]: 'text',
-      [timestampColumnName]: 'text',
+      [addressColumn]: 'text',
+      [timestampColumn]: 'text',
       ...objFromEntries(
         arrayMap(addressPartColumns, (column) => [column, 'text']),
       ),
