@@ -1,7 +1,9 @@
 import {PGlite} from '@electric-sql/pglite';
 import {createSynclet} from 'synclets';
-import {createMemoryDataConnector} from 'synclets/connector/memory';
-import {createPgliteMetaConnector} from 'synclets/connector/pglite';
+import {
+  createPgliteDataConnector,
+  createPgliteMetaConnector,
+} from 'synclets/connector/pglite';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
 import {
@@ -18,16 +20,21 @@ import {createMockDataConnector, describeSyncletTests} from '../common.ts';
 const TEXT = 25;
 
 test('getPglite', async () => {
+  const dataPglite = await PGlite.create();
   const metaPglite = await PGlite.create();
 
-  const dataConnector = createMockDataConnector(1);
-
+  const dataConnector = createPgliteDataConnector(1, dataPglite);
   const metaConnector = createPgliteMetaConnector(1, metaPglite);
+
   const synclet = await createSynclet({dataConnector, metaConnector});
+
+  expect(dataConnector.getPglite()).toBe(dataPglite);
+  expect(synclet.getDataConnector().getPglite()).toBe(dataPglite);
 
   expect(metaConnector.getPglite()).toBe(metaPglite);
   expect(synclet.getMetaConnector().getPglite()).toBe(metaPglite);
 
+  await dataPglite.close();
   await metaPglite.close();
 });
 
@@ -133,10 +140,11 @@ describe('meta schema checks', async () => {
 
 const pglite = await PGlite.create();
 describeSyncletTests(
-  'memory/pglite/memory',
+  'pglite/pglite/memory',
   async () => {},
   async () => {},
-  <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
+  <Depth extends number>(depth: Depth) =>
+    createPgliteDataConnector(depth, pglite, {table: 'data' + getUniqueId()}),
   <Depth extends number>(depth: Depth) =>
     createPgliteMetaConnector(depth, pglite, {table: 'meta' + getUniqueId()}),
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),

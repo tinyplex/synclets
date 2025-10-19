@@ -1,11 +1,11 @@
 import type {PGlite, Transaction} from '@electric-sql/pglite';
 import {identifier, raw, sql} from '@electric-sql/pglite/template';
-import {createMetaConnector} from '@synclets';
-import {AnyParentAddress, AtomAddress, Timestamp} from '@synclets/@types';
+import {createDataConnector} from '@synclets';
+import {AnyParentAddress, Atom, AtomAddress} from '@synclets/@types';
 import type {
-  createPgliteMetaConnector as createPgliteMetaConnectorDecl,
-  DatabaseMetaOptions,
-  PgliteMetaConnector,
+  createPgliteDataConnector as createPgliteDataConnectorDecl,
+  DatabaseDataOptions,
+  PgliteDataConnector,
 } from '@synclets/@types/connector/pglite';
 import {jsonString} from '@synclets/utils';
 import {arrayMap, arrayNew, arrayReduce} from '../../common/array.ts';
@@ -17,17 +17,17 @@ import {
 } from '../../common/object.ts';
 import {errorNew, promiseAll, size} from '../../common/other.ts';
 
-export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
+export const createPgliteDataConnector: typeof createPgliteDataConnectorDecl = <
   Depth extends number,
 >(
   depth: Depth,
   pglite: PGlite,
   {
-    table = 'meta',
+    table = 'data',
     addressColumn = 'address',
-    timestampColumn = 'timestamp',
-  }: DatabaseMetaOptions = {},
-): PgliteMetaConnector<Depth> => {
+    atomColumn = 'atom',
+  }: DatabaseDataOptions = {},
+): PgliteDataConnector<Depth> => {
   const tableId = identifier`${table}`;
   const addressColumnId = identifier`${addressColumn}`;
   const addressPartColumns = arrayMap(
@@ -38,7 +38,7 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
     addressPartColumns,
     (column) => identifier`${column}`,
   );
-  const timestampColumnId = identifier`${timestampColumn}`;
+  const atomColumnId = identifier`${atomColumn}`;
 
   const connect = async () => {
     const schema = objFromEntries(
@@ -54,7 +54,7 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
 
     const targetSchema = {
       [addressColumn]: 'text',
-      [timestampColumn]: 'text',
+      [atomColumn]: 'text',
       ...objFromEntries(
         arrayMap(addressPartColumns, (column) => [column, 'text']),
       ),
@@ -65,13 +65,13 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
         errorNew(`Table ${tableId.str} needs correct schema`);
       }
     } else {
-      metaConnector.log(`Creating table ${tableId.str}`);
+      dataConnector.log(`Creating table ${tableId.str}`);
       await pglite.transaction(async (tx: Transaction) => {
         const createColumns = arrayReduce(
           addressPartColumnIds,
           (createColumns, addressPartColumnId) =>
             sql`${createColumns}, ${addressPartColumnId} TEXT`,
-          sql`${addressColumnId} TEXT PRIMARY KEY, ${timestampColumnId} TEXT`,
+          sql`${addressColumnId} TEXT PRIMARY KEY, ${atomColumnId} TEXT`,
         );
         await tx.sql`CREATE TABLE ${tableId} (${createColumns})`;
 
@@ -86,18 +86,15 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
     }
   };
 
-  const readTimestamp = async (address: AtomAddress<Depth>) =>
+  const readAtom = async (address: AtomAddress<Depth>) =>
     (
-      await pglite.sql<{timestamp: string}>`
-        SELECT ${timestampColumnId} AS timestamp FROM ${tableId} 
+      await pglite.sql<{atom: string}>`
+        SELECT ${atomColumnId} AS atom FROM ${tableId} 
         WHERE ${addressColumnId}=${jsonString(address)}
       `
-    ).rows[0]?.timestamp;
+    ).rows[0]?.atom;
 
-  const writeTimestamp = async (
-    address: AtomAddress<Depth>,
-    timestamp: Timestamp,
-  ) => {
+  const writeAtom = async (address: AtomAddress<Depth>, atom: Atom) => {
     const [columns, values] = arrayReduce(
       address,
       ([columns, values], addressPart, a) => [
@@ -105,15 +102,21 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
         sql`${values}, ${addressPart}`,
       ],
       [
-        sql`${addressColumnId}, ${timestampColumnId}`,
-        sql`${jsonString(address)}, ${timestamp}`,
+        sql`${addressColumnId}, ${atomColumnId}`,
+        sql`${jsonString(address)}, ${atom}`,
       ],
     );
     await pglite.sql`
       INSERT INTO ${tableId} 
       (${columns}) VALUES (${values})
       ON CONFLICT(${addressColumnId}) 
-      DO UPDATE SET ${timestampColumnId}=excluded.${timestampColumnId}
+      DO UPDATE SET ${atomColumnId}=excluded.${atomColumnId}
+    `;
+  };
+
+  const removeAtom = async (address: AtomAddress<Depth>) => {
+    await pglite.sql`
+      DELETE FROM ${tableId} WHERE ${addressColumnId}=${jsonString(address)}
     `;
   };
 
@@ -134,17 +137,18 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
     return arrayMap(rows, ({id}) => id);
   };
 
-  const metaConnector = createMetaConnector(depth, {
+  const dataConnector = createDataConnector(depth, {
     connect,
-    readTimestamp,
-    writeTimestamp,
+    readAtom,
+    writeAtom,
+    removeAtom,
     readChildIds,
   });
 
   const getPglite = () => pglite;
 
   return objFreeze({
-    ...metaConnector,
+    ...dataConnector,
     getPglite,
   });
 };
