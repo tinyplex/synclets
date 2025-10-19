@@ -114,7 +114,7 @@ describe('meta schema checks', async () => {
 
 const pglite = await PGlite.create();
 describeSyncletTests(
-  'memory/pglite over memory',
+  'memory/pglite/memory',
   async () => {},
   async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),

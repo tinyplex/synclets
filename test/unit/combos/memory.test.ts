@@ -11,7 +11,7 @@ import {describeSyncletTests} from '../common.ts';
 const WS_PORT = 9000;
 
 describeSyncletTests(
-  'memory over memory',
+  'memory/memory/memory',
   async () => {},
   async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
@@ -20,7 +20,7 @@ describeSyncletTests(
 );
 
 describeSyncletTests(
-  'memory over ws',
+  'memory/memory/ws',
   async () => createStatelessWsServer(new WebSocketServer({port: WS_PORT})),
   async (wsServer) => wsServer.destroy(),
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
