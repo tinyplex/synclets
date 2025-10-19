@@ -8,17 +8,20 @@ import type {
 } from '@synclets/@types/connector/pglite';
 import {jsonString} from '@synclets/utils';
 import {
-  arrayJoin,
   arrayMap,
   arrayNew,
   arrayPop,
-  arrayPush,
   arrayReduce,
   arrayShift,
   arraySome,
 } from '../../common/array.ts';
 import {objFreeze} from '../../common/object.ts';
 import {errorNew, isEmpty, promiseAll, size} from '../../common/other.ts';
+
+type Options = {
+  tableName?: string;
+  addressColumnPrefix?: string;
+};
 
 export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
   Depth extends number,
@@ -27,37 +30,49 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
   pglite: PGlite,
   table: string,
 ): PgliteMetaConnector<Depth> => {
-  const escapedTable = identifier`${table}`;
-  const columns = arrayMap(arrayNew(depth), (_, i) => `address${i + 1}`);
+  const defaultOptions = {
+    tableName: table,
+    addressColumnName: 'address',
+    timestampColumnName: 'timestamp',
+  };
+
+  const {tableName, addressColumnName, timestampColumnName} = {
+    ...defaultOptions,
+  };
+
+  const tableId = identifier`${tableName}`;
+  const addressColumnId = identifier`${addressColumnName}`;
+  const addressPartColumnIds = arrayMap(
+    arrayNew(depth),
+    (_, i) => identifier`${addressColumnName}${i + 1}`,
+  );
+  const timestampColumnId = identifier`${timestampColumnName}`;
 
   const connect = async () => {
     const {rows: columnSchema} = await pglite.sql<{name: string; type: string}>`
       SELECT column_name AS name, data_type AS type 
       FROM information_schema.columns 
-      WHERE table_name=${table} 
+      WHERE table_name=${tableName} 
       ORDER BY column_name
     `;
 
     if (isEmpty(columnSchema)) {
-      metaConnector.log(`Creating table ${escapedTable.str}`);
+      metaConnector.log(`Creating table ${tableId.str}`);
 
       await pglite.transaction(async (tx: Transaction) => {
-        const createColumns =
-          'address TEXT PRIMARY KEY, ' +
-          arrayJoin(arrayMap(columns, (column) => `${column} TEXT, `)) +
-          'timestamp TEXT';
-        await tx.sql`
-          CREATE TABLE ${escapedTable} (${raw`${createColumns}`})
-        `;
+        const createColumns = arrayReduce(
+          addressPartColumnIds,
+          (createColumns, addressPartColumnId) =>
+            sql`${createColumns}, ${addressPartColumnId} TEXT`,
+          sql`${addressColumnId} TEXT PRIMARY KEY, ${timestampColumnId} TEXT`,
+        );
+        await tx.sql`CREATE TABLE ${tableId} (${createColumns})`;
 
-        const indexColumns: string[] = [];
+        let indexColumns = sql``;
         await promiseAll(
-          arrayMap(columns, (column, c) => {
-            arrayPush(indexColumns, column);
-            return tx.sql`
-              CREATE INDEX ON ${escapedTable} 
-              (${raw`${indexColumns.join(', ')}`})
-            `;
+          arrayMap(addressPartColumnIds, (column, c) => {
+            indexColumns = sql`${indexColumns}${c ? raw`, ` : raw``}${column}`;
+            return tx.sql`CREATE INDEX ON ${tableId} (${indexColumns})`;
           }),
         );
       });
@@ -68,15 +83,15 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
       arrayPop(columnSchema)?.name != 'timestamp' ||
       arraySome(columnSchema, ({name}, c) => name != `address${c + 1}`)
     ) {
-      errorNew(`Table ${escapedTable.str} needs correct schema`);
+      errorNew(`Table ${tableId.str} needs correct schema`);
     }
   };
 
   const readTimestamp = async (address: AtomAddress<Depth>) =>
     (
       await pglite.sql<{timestamp: string}>`
-        SELECT timestamp FROM ${escapedTable} 
-        WHERE address=${jsonString(address)}
+        SELECT ${timestampColumnId} as timestamp FROM ${tableId} 
+        WHERE ${addressColumnId}=${jsonString(address)}
       `
     ).rows[0]?.timestamp;
 
@@ -87,32 +102,35 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
     const [columns, values] = arrayReduce(
       address,
       ([columns, values], addressPart, a) => [
-        `${columns}, address${a + 1}`,
+        sql`${columns}, ${addressPartColumnIds[a]}`,
         sql`${values}, ${addressPart}`,
       ],
-      ['address, timestamp', sql`${jsonString(address)}, ${timestamp}`],
+      [
+        sql`${addressColumnId}, ${timestampColumnId}`,
+        sql`${jsonString(address)}, ${timestamp}`,
+      ],
     );
     await pglite.sql`
-      INSERT INTO ${escapedTable} 
-      (${raw`${columns}`}) 
-      VALUES (${values})
-      ON CONFLICT(address) 
-      DO UPDATE SET timestamp=excluded.timestamp
+      INSERT INTO ${tableId} 
+      (${columns}) VALUES (${values})
+      ON CONFLICT(${addressColumnId}) 
+      DO UPDATE SET ${timestampColumnId}=excluded.${timestampColumnId}
     `;
   };
 
   const readChildIds = async (address: AnyParentAddress<Depth>) => {
-    const where = arrayReduce(
+    const tableWhere = arrayReduce(
       address,
       (where, addressPart, a) =>
-        sql`${where} AND address${raw`${a + 1}`}=${sql`${addressPart}`}`,
-      sql`1=1`,
+        sql`
+          ${where}${a ? raw`AND` : raw`WHERE`}
+          ${addressPartColumnIds[a]}=${addressPart}
+        `,
+      sql`${tableId}`,
     );
-
     const {rows} = await pglite.sql<{id: string}>`
-      SELECT DISTINCT ${raw`address${size(address) + 1}`} AS id 
-      FROM ${escapedTable} 
-      WHERE ${where}
+      SELECT DISTINCT ${addressPartColumnIds[size(address)]} AS id
+      FROM ${tableWhere}
     `;
     return arrayMap(rows, ({id}) => id);
   };

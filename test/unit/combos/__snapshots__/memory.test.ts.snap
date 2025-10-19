@@ -1670,7 +1670,7 @@ exports[`memory/memory/memory connector > 4-depth > 2-way > disconnected, confli
     "aa": {
       "aaa": {
         "aaaa": "A",
-        "aaab": "C",
+        "aaab": "B",
       },
     },
   },

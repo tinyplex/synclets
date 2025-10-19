@@ -51,10 +51,10 @@ describe('meta schema checks', async () => {
     await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
     expect((await pglite.sql`SELECT * FROM meta;`).fields).toEqual([
       {name: 'address', dataTypeID: TEXT},
+      {name: 'timestamp', dataTypeID: TEXT},
       {name: 'address1', dataTypeID: TEXT},
       {name: 'address2', dataTypeID: TEXT},
       {name: 'address3', dataTypeID: TEXT},
-      {name: 'timestamp', dataTypeID: TEXT},
     ]);
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "meta"');
   });

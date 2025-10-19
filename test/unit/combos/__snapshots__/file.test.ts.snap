@@ -1060,7 +1060,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > set 1, set 2, start 2, s
 {
   "a": {
     "aa": {
-      "aaa": "B",
+      "aaa": "A",
     },
   },
 }
