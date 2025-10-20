@@ -6,7 +6,7 @@ import {createMemoryTransport} from 'synclets/transport/memory';
 import {describeSyncletTests} from '../common.ts';
 
 describeSyncletTests(
-  'memory/memory/memory',
+  'memory',
   async () => {},
   async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
