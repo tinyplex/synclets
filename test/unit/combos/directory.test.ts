@@ -15,7 +15,7 @@ import {describeSyncletTests} from '../common.ts';
 const WS_PORT = 9002;
 
 describeSyncletTests(
-  'directory/directory/memory',
+  'memory',
   async () => ({tempDir: await mkdtemp(tmpdir() + sep)}),
   async ({tempDir}: {tempDir: string}) =>
     await rm(tempDir, {recursive: true, force: true}),
@@ -27,7 +27,7 @@ describeSyncletTests(
 );
 
 describeSyncletTests(
-  'directory/directory/ws',
+  'ws',
   async () => ({
     tempDir: await mkdtemp(tmpdir() + sep),
     wsServer: createStatelessWsServer(new WebSocketServer({port: WS_PORT})),

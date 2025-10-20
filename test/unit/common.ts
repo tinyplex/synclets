@@ -18,7 +18,7 @@ export const describeSyncletTests = <
   MetaConnectorType extends MetaConnector<number>,
   Environment,
 >(
-  type: string,
+  transportType: string,
   before: () => Promise<Environment>,
   after: (environment: Environment) => Promise<void>,
   createDataConnector: (
@@ -30,9 +30,9 @@ export const describeSyncletTests = <
     environment: Environment,
   ) => MetaConnectorType,
   createTransport: (uniqueId: string) => Transport,
-  transportPause = 0,
+  transportPause = 1,
 ) =>
-  describe(`${type} connector`, () => {
+  describe(`over ${transportType}`, () => {
     let environment: Environment;
 
     beforeAll(async () => (environment = await before()));
@@ -265,7 +265,7 @@ export const describeSyncletTests = <
 
             await synclet2.start();
             await synclet1.start();
-            await pause(transportPause);
+            await pause(transportPause * 2);
             await expectEquivalentSynclets([synclet1, synclet2]);
           });
 

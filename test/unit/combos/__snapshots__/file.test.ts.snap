@@ -1,48 +1,48 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`file/file/memory connector > 1-depth > 2-way > connected > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > connected > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > connected > equivalent 2`] = `
+exports[`over memory > 1-depth > 2-way > connected > equivalent 2`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > connected, deletion > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > connected, deletion > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+exports[`over memory > 1-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
 
-exports[`file/file/memory connector > 1-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+exports[`over memory > 1-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
 
-exports[`file/file/memory connector > 1-depth > 2-way > connected, near atom > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > connected, near atom > equivalent 1`] = `
 {
   "a": "A",
   "b": "B",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > disconnected, near atom > equivalent 1`] = `
 {
   "a": "A",
   "b": "B",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+exports[`over memory > 1-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
 [
   {
     "a": "A",
@@ -51,7 +51,7 @@ exports[`file/file/memory connector > 1-depth > 2-way > set 1, set 2, start 2, s
 ]
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+exports[`over memory > 1-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
 [
   {
     "a": "A",
@@ -62,13 +62,13 @@ exports[`file/file/memory connector > 1-depth > 2-way > set 1, set 2, start 2, s
 ]
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+exports[`over memory > 1-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
 [
   {
     "a": "A",
@@ -77,13 +77,13 @@ exports[`file/file/memory connector > 1-depth > 2-way > start 1, set 1, start 2 
 ]
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+exports[`over memory > 1-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
 [
   {
     "a": "A",
@@ -92,13 +92,13 @@ exports[`file/file/memory connector > 1-depth > 2-way > start 2, set 1, start 1 
 ]
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+exports[`over memory > 1-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
 [
   {
     "a": "B",
@@ -109,19 +109,19 @@ exports[`file/file/memory connector > 1-depth > 2-way > stop 1, set 1, start 1 >
 ]
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+exports[`over memory > 1-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+exports[`over memory > 1-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
 [
   {
     "a": "A",
@@ -132,253 +132,253 @@ exports[`file/file/memory connector > 1-depth > 2-way > stop 1, set 2, start 1 >
 ]
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+exports[`over memory > 1-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+exports[`over memory > 1-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > chain > equivalent 1`] = `
+exports[`over memory > 1-depth > 3-way > chain > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > chain > equivalent 2`] = `
+exports[`over memory > 1-depth > 3-way > chain > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > chain > equivalent 3`] = `
+exports[`over memory > 1-depth > 3-way > chain > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > pool > equivalent 1`] = `
+exports[`over memory > 1-depth > 3-way > pool > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > pool > equivalent 2`] = `
+exports[`over memory > 1-depth > 3-way > pool > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > pool > equivalent 3`] = `
+exports[`over memory > 1-depth > 3-way > pool > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > ring > equivalent 1`] = `
+exports[`over memory > 1-depth > 3-way > ring > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > ring > equivalent 2`] = `
+exports[`over memory > 1-depth > 3-way > ring > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 3-way > ring > equivalent 3`] = `
+exports[`over memory > 1-depth > 3-way > ring > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 1`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 2`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 3`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 4`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 5`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 6`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 7`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 8`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 9`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > chain > equivalent 10`] = `
+exports[`over memory > 1-depth > 10-way > chain > equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 1`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 2`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 3`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 4`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 5`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 6`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 7`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 8`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 9`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > pool > equivalent 10`] = `
+exports[`over memory > 1-depth > 10-way > pool > equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 1`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 2`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 3`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 4`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 5`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 6`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 7`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 8`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 9`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`file/file/memory connector > 1-depth > 10-way > ring > equivalent 10`] = `
+exports[`over memory > 1-depth > 10-way > ring > equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > connected > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > connected > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -386,7 +386,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > connected > equivalent 1
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > connected > equivalent 2`] = `
+exports[`over memory > 2-depth > 2-way > connected > equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -394,7 +394,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > connected > equivalent 2
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > connected, deletion > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > connected, deletion > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -402,9 +402,9 @@ exports[`file/file/memory connector > 2-depth > 2-way > connected, deletion > eq
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+exports[`over memory > 2-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
 
-exports[`file/file/memory connector > 2-depth > 2-way > connected, far atom > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > connected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -415,9 +415,9 @@ exports[`file/file/memory connector > 2-depth > 2-way > connected, far atom > eq
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+exports[`over memory > 2-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
 
-exports[`file/file/memory connector > 2-depth > 2-way > connected, near atom > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > connected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -426,7 +426,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > connected, near atom > e
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
 {
   "a": {
     "aa": "B",
@@ -434,7 +434,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > disconnected, conflictin
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -446,7 +446,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > disconnected, conflictin
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > disconnected, far atom > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > disconnected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -457,7 +457,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > disconnected, far atom >
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > disconnected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -466,7 +466,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > disconnected, near atom 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+exports[`over memory > 2-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -477,7 +477,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > set 1, set 2, start 2, s
 ]
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+exports[`over memory > 2-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
 [
   {
     "a": {
@@ -492,7 +492,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > set 1, set 2, start 2, s
 ]
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": "B",
@@ -500,7 +500,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > set 1, set 2, start 2, s
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+exports[`over memory > 2-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
 [
   {
     "a": {
@@ -511,7 +511,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > start 1, set 1, start 2 
 ]
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -519,7 +519,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > start 1, set 1, start 2 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+exports[`over memory > 2-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -530,7 +530,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > start 2, set 1, start 1 
 ]
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -538,7 +538,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > start 2, set 1, start 1 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+exports[`over memory > 2-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -553,7 +553,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 1, start 1 >
 ]
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -561,7 +561,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 1, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+exports[`over memory > 2-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -569,7 +569,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 1, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+exports[`over memory > 2-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -584,7 +584,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 2, start 1 >
 ]
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+exports[`over memory > 2-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -592,7 +592,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 2, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+exports[`over memory > 2-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -600,7 +600,7 @@ exports[`file/file/memory connector > 2-depth > 2-way > stop 1, set 2, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > chain > equivalent 1`] = `
+exports[`over memory > 2-depth > 3-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -608,7 +608,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > chain > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > chain > equivalent 2`] = `
+exports[`over memory > 2-depth > 3-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -616,7 +616,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > chain > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > chain > equivalent 3`] = `
+exports[`over memory > 2-depth > 3-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -624,7 +624,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > chain > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > pool > equivalent 1`] = `
+exports[`over memory > 2-depth > 3-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -632,7 +632,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > pool > equivalent 1`] = 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > pool > equivalent 2`] = `
+exports[`over memory > 2-depth > 3-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -640,7 +640,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > pool > equivalent 2`] = 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > pool > equivalent 3`] = `
+exports[`over memory > 2-depth > 3-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -648,7 +648,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > pool > equivalent 3`] = 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > ring > equivalent 1`] = `
+exports[`over memory > 2-depth > 3-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -656,7 +656,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > ring > equivalent 1`] = 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > ring > equivalent 2`] = `
+exports[`over memory > 2-depth > 3-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -664,7 +664,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > ring > equivalent 2`] = 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 3-way > ring > equivalent 3`] = `
+exports[`over memory > 2-depth > 3-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -672,7 +672,7 @@ exports[`file/file/memory connector > 2-depth > 3-way > ring > equivalent 3`] = 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 1`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -680,7 +680,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 1`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 2`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -688,7 +688,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 2`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 3`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -696,7 +696,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 3`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 4`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -704,7 +704,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 4`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 5`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -712,7 +712,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 5`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 6`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -720,7 +720,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 6`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 7`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -728,7 +728,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 7`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 8`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -736,7 +736,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 8`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 9`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -744,7 +744,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 9`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 10`] = `
+exports[`over memory > 2-depth > 10-way > chain > equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -752,7 +752,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > chain > equivalent 10`]
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 1`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -760,7 +760,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 2`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -768,7 +768,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 3`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -776,7 +776,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 4`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -784,7 +784,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 4`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 5`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -792,7 +792,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 5`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 6`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -800,7 +800,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 6`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 7`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -808,7 +808,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 7`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 8`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -816,7 +816,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 8`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 9`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -824,7 +824,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 9`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 10`] = `
+exports[`over memory > 2-depth > 10-way > pool > equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -832,7 +832,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > pool > equivalent 10`] 
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 1`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -840,7 +840,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 2`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -848,7 +848,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 3`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -856,7 +856,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 4`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -864,7 +864,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 4`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 5`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -872,7 +872,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 5`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 6`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -880,7 +880,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 6`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 7`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -888,7 +888,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 7`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 8`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -896,7 +896,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 8`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 9`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -904,7 +904,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 9`] =
 }
 `;
 
-exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 10`] = `
+exports[`over memory > 2-depth > 10-way > ring > equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -912,7 +912,7 @@ exports[`file/file/memory connector > 2-depth > 10-way > ring > equivalent 10`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > connected > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > connected > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -922,7 +922,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > connected > equivalent 1
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > connected > equivalent 2`] = `
+exports[`over memory > 3-depth > 2-way > connected > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -932,7 +932,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > connected > equivalent 2
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > connected, deletion > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > connected, deletion > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -942,9 +942,9 @@ exports[`file/file/memory connector > 3-depth > 2-way > connected, deletion > eq
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+exports[`over memory > 3-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
 
-exports[`file/file/memory connector > 3-depth > 2-way > connected, far atom > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > connected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -959,9 +959,9 @@ exports[`file/file/memory connector > 3-depth > 2-way > connected, far atom > eq
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+exports[`over memory > 3-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
 
-exports[`file/file/memory connector > 3-depth > 2-way > connected, near atom > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > connected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -972,7 +972,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > connected, near atom > e
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -982,7 +982,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > disconnected, conflictin
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -998,7 +998,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > disconnected, conflictin
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > disconnected, far atom > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > disconnected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1013,7 +1013,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > disconnected, far atom >
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > disconnected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1024,7 +1024,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > disconnected, near atom 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+exports[`over memory > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -1037,7 +1037,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > set 1, set 2, start 2, s
 ]
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+exports[`over memory > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
 [
   {
     "a": {
@@ -1056,92 +1056,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > set 1, set 2, start 2, s
 ]
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
-{
-  "a": {
-    "aa": {
-      "aaa": "A",
-    },
-  },
-}
-`;
-
-exports[`file/file/memory connector > 3-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
-[
-  {
-    "a": {
-      "aa": {
-        "aaa": "A",
-      },
-    },
-  },
-  {},
-]
-`;
-
-exports[`file/file/memory connector > 3-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
-{
-  "a": {
-    "aa": {
-      "aaa": "A",
-    },
-  },
-}
-`;
-
-exports[`file/file/memory connector > 3-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
-[
-  {
-    "a": {
-      "aa": {
-        "aaa": "A",
-      },
-    },
-  },
-  {},
-]
-`;
-
-exports[`file/file/memory connector > 3-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
-{
-  "a": {
-    "aa": {
-      "aaa": "A",
-    },
-  },
-}
-`;
-
-exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
-[
-  {
-    "a": {
-      "aa": {
-        "aaa": "B",
-      },
-    },
-  },
-  {
-    "a": {
-      "aa": {
-        "aaa": "A",
-      },
-    },
-  },
-]
-`;
-
-exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
-{
-  "a": {
-    "aa": {
-      "aaa": "A",
-    },
-  },
-}
-`;
-
-exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+exports[`over memory > 3-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1151,7 +1066,92 @@ exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 1, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+exports[`over memory > 3-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+  {},
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+  {},
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "B",
+      },
+    },
+  },
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -1170,7 +1170,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 2, start 1 >
 ]
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+exports[`over memory > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1180,7 +1180,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 2, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+exports[`over memory > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1190,7 +1190,7 @@ exports[`file/file/memory connector > 3-depth > 2-way > stop 1, set 2, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > chain > equivalent 1`] = `
+exports[`over memory > 3-depth > 3-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1200,7 +1200,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > chain > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > chain > equivalent 2`] = `
+exports[`over memory > 3-depth > 3-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1210,7 +1210,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > chain > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > chain > equivalent 3`] = `
+exports[`over memory > 3-depth > 3-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1220,7 +1220,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > chain > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > pool > equivalent 1`] = `
+exports[`over memory > 3-depth > 3-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1230,7 +1230,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > pool > equivalent 1`] = 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > pool > equivalent 2`] = `
+exports[`over memory > 3-depth > 3-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1240,7 +1240,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > pool > equivalent 2`] = 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > pool > equivalent 3`] = `
+exports[`over memory > 3-depth > 3-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1250,7 +1250,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > pool > equivalent 3`] = 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > ring > equivalent 1`] = `
+exports[`over memory > 3-depth > 3-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1260,7 +1260,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > ring > equivalent 1`] = 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > ring > equivalent 2`] = `
+exports[`over memory > 3-depth > 3-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1270,7 +1270,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > ring > equivalent 2`] = 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 3-way > ring > equivalent 3`] = `
+exports[`over memory > 3-depth > 3-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1280,7 +1280,7 @@ exports[`file/file/memory connector > 3-depth > 3-way > ring > equivalent 3`] = 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 1`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1290,7 +1290,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 1`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 2`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1300,7 +1300,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 2`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 3`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1310,7 +1310,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 3`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 4`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -1320,7 +1320,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 4`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 5`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -1330,7 +1330,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 5`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 6`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -1340,7 +1340,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 6`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 7`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -1350,7 +1350,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 7`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 8`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -1360,7 +1360,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 8`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 9`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -1370,7 +1370,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 9`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 10`] = `
+exports[`over memory > 3-depth > 10-way > chain > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -1380,7 +1380,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > chain > equivalent 10`]
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 1`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1390,7 +1390,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 2`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1400,7 +1400,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 3`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1410,7 +1410,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 4`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -1420,7 +1420,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 4`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 5`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -1430,7 +1430,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 5`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 6`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -1440,7 +1440,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 6`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 7`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -1450,7 +1450,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 7`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 8`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -1460,7 +1460,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 8`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 9`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -1470,7 +1470,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 9`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 10`] = `
+exports[`over memory > 3-depth > 10-way > pool > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -1480,7 +1480,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > pool > equivalent 10`] 
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 1`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1490,7 +1490,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 2`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1500,7 +1500,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 3`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1510,7 +1510,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 4`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -1520,7 +1520,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 4`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 5`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -1530,7 +1530,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 5`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 6`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -1540,7 +1540,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 6`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 7`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -1550,7 +1550,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 7`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 8`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -1560,7 +1560,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 8`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 9`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -1570,7 +1570,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 9`] =
 }
 `;
 
-exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 10`] = `
+exports[`over memory > 3-depth > 10-way > ring > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -1580,7 +1580,7 @@ exports[`file/file/memory connector > 3-depth > 10-way > ring > equivalent 10`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > connected > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > connected > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1592,7 +1592,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > connected > equivalent 1
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > connected > equivalent 2`] = `
+exports[`over memory > 4-depth > 2-way > connected > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1604,7 +1604,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > connected > equivalent 2
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > connected, deletion > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > connected, deletion > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1616,9 +1616,9 @@ exports[`file/file/memory connector > 4-depth > 2-way > connected, deletion > eq
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+exports[`over memory > 4-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
 
-exports[`file/file/memory connector > 4-depth > 2-way > connected, far atom > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > connected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1637,9 +1637,9 @@ exports[`file/file/memory connector > 4-depth > 2-way > connected, far atom > eq
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+exports[`over memory > 4-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
 
-exports[`file/file/memory connector > 4-depth > 2-way > connected, near atom > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > connected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1652,7 +1652,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > connected, near atom > e
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1664,7 +1664,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > disconnected, conflictin
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1684,7 +1684,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > disconnected, conflictin
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > disconnected, far atom > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > disconnected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1703,7 +1703,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > disconnected, far atom >
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > disconnected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1716,7 +1716,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > disconnected, near atom 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+exports[`over memory > 4-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -1731,7 +1731,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > set 1, set 2, start 2, s
 ]
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+exports[`over memory > 4-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
 [
   {
     "a": {
@@ -1754,7 +1754,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > set 1, set 2, start 2, s
 ]
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1766,7 +1766,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > set 1, set 2, start 2, s
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+exports[`over memory > 4-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
 [
   {
     "a": {
@@ -1781,7 +1781,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > start 1, set 1, start 2 
 ]
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1793,7 +1793,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > start 1, set 1, start 2 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+exports[`over memory > 4-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -1808,7 +1808,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > start 2, set 1, start 1 
 ]
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1820,7 +1820,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > start 2, set 1, start 1 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+exports[`over memory > 4-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -1843,7 +1843,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 1, start 1 >
 ]
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1855,7 +1855,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 1, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+exports[`over memory > 4-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1867,7 +1867,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 1, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+exports[`over memory > 4-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -1890,7 +1890,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 2, start 1 >
 ]
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+exports[`over memory > 4-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1902,7 +1902,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 2, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+exports[`over memory > 4-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1914,7 +1914,7 @@ exports[`file/file/memory connector > 4-depth > 2-way > stop 1, set 2, start 1 >
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > chain > equivalent 1`] = `
+exports[`over memory > 4-depth > 3-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1926,7 +1926,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > chain > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > chain > equivalent 2`] = `
+exports[`over memory > 4-depth > 3-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1938,7 +1938,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > chain > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > chain > equivalent 3`] = `
+exports[`over memory > 4-depth > 3-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1950,7 +1950,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > chain > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > pool > equivalent 1`] = `
+exports[`over memory > 4-depth > 3-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1962,7 +1962,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > pool > equivalent 1`] = 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > pool > equivalent 2`] = `
+exports[`over memory > 4-depth > 3-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -1974,7 +1974,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > pool > equivalent 2`] = 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > pool > equivalent 3`] = `
+exports[`over memory > 4-depth > 3-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -1986,7 +1986,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > pool > equivalent 3`] = 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > ring > equivalent 1`] = `
+exports[`over memory > 4-depth > 3-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -1998,7 +1998,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > ring > equivalent 1`] = 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > ring > equivalent 2`] = `
+exports[`over memory > 4-depth > 3-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -2010,7 +2010,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > ring > equivalent 2`] = 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 3-way > ring > equivalent 3`] = `
+exports[`over memory > 4-depth > 3-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2022,7 +2022,7 @@ exports[`file/file/memory connector > 4-depth > 3-way > ring > equivalent 3`] = 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 1`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -2034,7 +2034,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 1`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 2`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -2046,7 +2046,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 2`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 3`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2058,7 +2058,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 3`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 4`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -2070,7 +2070,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 4`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 5`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -2082,7 +2082,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 5`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 6`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -2094,7 +2094,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 6`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 7`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -2106,7 +2106,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 7`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 8`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -2118,7 +2118,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 8`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 9`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -2130,7 +2130,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 9`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 10`] = `
+exports[`over memory > 4-depth > 10-way > chain > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -2142,7 +2142,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > chain > equivalent 10`]
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 1`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -2154,7 +2154,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 2`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -2166,7 +2166,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 3`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2178,7 +2178,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 4`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -2190,7 +2190,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 4`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 5`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -2202,7 +2202,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 5`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 6`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -2214,7 +2214,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 6`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 7`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -2226,7 +2226,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 7`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 8`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -2238,7 +2238,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 8`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 9`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -2250,7 +2250,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 9`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 10`] = `
+exports[`over memory > 4-depth > 10-way > pool > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -2262,7 +2262,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > pool > equivalent 10`] 
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 1`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -2274,7 +2274,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 1`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 2`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -2286,7 +2286,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 2`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 3`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -2298,7 +2298,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 3`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 4`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -2310,7 +2310,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 4`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 5`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -2322,7 +2322,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 5`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 6`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -2334,7 +2334,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 6`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 7`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -2346,7 +2346,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 7`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 8`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -2358,7 +2358,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 8`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 9`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -2370,7 +2370,7 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 9`] =
 }
 `;
 
-exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 10`] = `
+exports[`over memory > 4-depth > 10-way > ring > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -2382,49 +2382,49 @@ exports[`file/file/memory connector > 4-depth > 10-way > ring > equivalent 10`] 
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > connected > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > connected > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > connected > equivalent 2`] = `
+exports[`over ws > 1-depth > 2-way > connected > equivalent 2`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > connected, deletion > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > connected, deletion > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+exports[`over ws > 1-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
 
-exports[`file/file/ws connector > 1-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+exports[`over ws > 1-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
 
-exports[`file/file/ws connector > 1-depth > 2-way > connected, near atom > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > connected, near atom > equivalent 1`] = `
 {
   "a": "A",
   "b": "B",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > disconnected, near atom > equivalent 1`] = `
 {
   "a": "A",
   "b": "B",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+exports[`over ws > 1-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
 [
   {
     "a": "A",
@@ -2433,7 +2433,7 @@ exports[`file/file/ws connector > 1-depth > 2-way > set 1, set 2, start 2, start
 ]
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+exports[`over ws > 1-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
 [
   {
     "a": "A",
@@ -2444,13 +2444,13 @@ exports[`file/file/ws connector > 1-depth > 2-way > set 1, set 2, start 2, start
 ]
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+exports[`over ws > 1-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
 [
   {
     "a": "A",
@@ -2459,13 +2459,13 @@ exports[`file/file/ws connector > 1-depth > 2-way > start 1, set 1, start 2 > di
 ]
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+exports[`over ws > 1-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
 [
   {
     "a": "A",
@@ -2474,13 +2474,13 @@ exports[`file/file/ws connector > 1-depth > 2-way > start 2, set 1, start 1 > di
 ]
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+exports[`over ws > 1-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
 [
   {
     "a": "B",
@@ -2491,19 +2491,19 @@ exports[`file/file/ws connector > 1-depth > 2-way > stop 1, set 1, start 1 > dif
 ]
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+exports[`over ws > 1-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+exports[`over ws > 1-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
 [
   {
     "a": "A",
@@ -2514,253 +2514,253 @@ exports[`file/file/ws connector > 1-depth > 2-way > stop 1, set 2, start 1 > dif
 ]
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+exports[`over ws > 1-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
 {
   "a": "A",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+exports[`over ws > 1-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
 {
   "a": "B",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > chain > equivalent 1`] = `
+exports[`over ws > 1-depth > 3-way > chain > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > chain > equivalent 2`] = `
+exports[`over ws > 1-depth > 3-way > chain > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > chain > equivalent 3`] = `
+exports[`over ws > 1-depth > 3-way > chain > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > pool > equivalent 1`] = `
+exports[`over ws > 1-depth > 3-way > pool > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > pool > equivalent 2`] = `
+exports[`over ws > 1-depth > 3-way > pool > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > pool > equivalent 3`] = `
+exports[`over ws > 1-depth > 3-way > pool > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > ring > equivalent 1`] = `
+exports[`over ws > 1-depth > 3-way > ring > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > ring > equivalent 2`] = `
+exports[`over ws > 1-depth > 3-way > ring > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 3-way > ring > equivalent 3`] = `
+exports[`over ws > 1-depth > 3-way > ring > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 1`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 2`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 3`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 4`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 5`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 6`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 7`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 8`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 9`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > chain > equivalent 10`] = `
+exports[`over ws > 1-depth > 10-way > chain > equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 1`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 2`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 3`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 4`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 5`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 6`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 7`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 8`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 9`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > pool > equivalent 10`] = `
+exports[`over ws > 1-depth > 10-way > pool > equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 1`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 1`] = `
 {
   "a": "A1",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 2`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 2`] = `
 {
   "a": "A2",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 3`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 3`] = `
 {
   "a": "A3",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 4`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 4`] = `
 {
   "a": "A4",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 5`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 5`] = `
 {
   "a": "A5",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 6`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 6`] = `
 {
   "a": "A6",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 7`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 7`] = `
 {
   "a": "A7",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 8`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 8`] = `
 {
   "a": "A8",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 9`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 9`] = `
 {
   "a": "A9",
 }
 `;
 
-exports[`file/file/ws connector > 1-depth > 10-way > ring > equivalent 10`] = `
+exports[`over ws > 1-depth > 10-way > ring > equivalent 10`] = `
 {
   "a": "A10",
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > connected > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > connected > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2768,7 +2768,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > connected > equivalent 1`] =
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > connected > equivalent 2`] = `
+exports[`over ws > 2-depth > 2-way > connected > equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -2776,7 +2776,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > connected > equivalent 2`] =
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > connected, deletion > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > connected, deletion > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2784,9 +2784,9 @@ exports[`file/file/ws connector > 2-depth > 2-way > connected, deletion > equiva
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+exports[`over ws > 2-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
 
-exports[`file/file/ws connector > 2-depth > 2-way > connected, far atom > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > connected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2797,9 +2797,9 @@ exports[`file/file/ws connector > 2-depth > 2-way > connected, far atom > equiva
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+exports[`over ws > 2-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
 
-exports[`file/file/ws connector > 2-depth > 2-way > connected, near atom > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > connected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2808,7 +2808,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > connected, near atom > equiv
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
 {
   "a": {
     "aa": "B",
@@ -2816,7 +2816,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > disconnected, conflicting va
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2828,7 +2828,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > disconnected, conflicting va
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > disconnected, far atom > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > disconnected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2839,7 +2839,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > disconnected, far atom > equ
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > disconnected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2848,7 +2848,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > disconnected, near atom > eq
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+exports[`over ws > 2-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -2859,7 +2859,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > set 1, set 2, start 2, start
 ]
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+exports[`over ws > 2-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
 [
   {
     "a": {
@@ -2874,7 +2874,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > set 1, set 2, start 2, start
 ]
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": "B",
@@ -2882,7 +2882,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > set 1, set 2, start 2, start
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+exports[`over ws > 2-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
 [
   {
     "a": {
@@ -2893,7 +2893,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > start 1, set 1, start 2 > di
 ]
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2901,7 +2901,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > start 1, set 1, start 2 > eq
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+exports[`over ws > 2-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -2912,7 +2912,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > start 2, set 1, start 1 > di
 ]
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2920,7 +2920,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > start 2, set 1, start 1 > eq
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+exports[`over ws > 2-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -2935,7 +2935,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 1, start 1 > dif
 ]
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2943,7 +2943,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 1, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+exports[`over ws > 2-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -2951,7 +2951,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 1, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+exports[`over ws > 2-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -2966,7 +2966,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 2, start 1 > dif
 ]
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+exports[`over ws > 2-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": "A",
@@ -2974,7 +2974,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 2, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+exports[`over ws > 2-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": "B",
@@ -2982,7 +2982,7 @@ exports[`file/file/ws connector > 2-depth > 2-way > stop 1, set 2, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > chain > equivalent 1`] = `
+exports[`over ws > 2-depth > 3-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -2990,7 +2990,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > chain > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > chain > equivalent 2`] = `
+exports[`over ws > 2-depth > 3-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -2998,7 +2998,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > chain > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > chain > equivalent 3`] = `
+exports[`over ws > 2-depth > 3-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -3006,7 +3006,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > chain > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > pool > equivalent 1`] = `
+exports[`over ws > 2-depth > 3-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -3014,7 +3014,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > pool > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > pool > equivalent 2`] = `
+exports[`over ws > 2-depth > 3-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -3022,7 +3022,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > pool > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > pool > equivalent 3`] = `
+exports[`over ws > 2-depth > 3-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -3030,7 +3030,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > pool > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > ring > equivalent 1`] = `
+exports[`over ws > 2-depth > 3-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -3038,7 +3038,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > ring > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > ring > equivalent 2`] = `
+exports[`over ws > 2-depth > 3-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -3046,7 +3046,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > ring > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 3-way > ring > equivalent 3`] = `
+exports[`over ws > 2-depth > 3-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -3054,7 +3054,7 @@ exports[`file/file/ws connector > 2-depth > 3-way > ring > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 1`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -3062,7 +3062,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 2`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -3070,7 +3070,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 3`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -3078,7 +3078,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 4`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -3086,7 +3086,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 5`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -3094,7 +3094,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 6`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -3102,7 +3102,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 7`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -3110,7 +3110,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 8`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -3118,7 +3118,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 9`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -3126,7 +3126,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 10`] = `
+exports[`over ws > 2-depth > 10-way > chain > equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -3134,7 +3134,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > chain > equivalent 10`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 1`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -3142,7 +3142,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 2`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -3150,7 +3150,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 3`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -3158,7 +3158,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 4`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -3166,7 +3166,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 5`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -3174,7 +3174,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 6`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -3182,7 +3182,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 7`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -3190,7 +3190,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 8`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -3198,7 +3198,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 9`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -3206,7 +3206,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 10`] = `
+exports[`over ws > 2-depth > 10-way > pool > equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -3214,7 +3214,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > pool > equivalent 10`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 1`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": "A1",
@@ -3222,7 +3222,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 2`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": "A2",
@@ -3230,7 +3230,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 3`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": "A3",
@@ -3238,7 +3238,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 4`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 4`] = `
 {
   "a": {
     "aa": "A4",
@@ -3246,7 +3246,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 5`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 5`] = `
 {
   "a": {
     "aa": "A5",
@@ -3254,7 +3254,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 6`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 6`] = `
 {
   "a": {
     "aa": "A6",
@@ -3262,7 +3262,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 7`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 7`] = `
 {
   "a": {
     "aa": "A7",
@@ -3270,7 +3270,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 8`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 8`] = `
 {
   "a": {
     "aa": "A8",
@@ -3278,7 +3278,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 9`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 9`] = `
 {
   "a": {
     "aa": "A9",
@@ -3286,7 +3286,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 10`] = `
+exports[`over ws > 2-depth > 10-way > ring > equivalent 10`] = `
 {
   "a": {
     "aa": "A10",
@@ -3294,7 +3294,7 @@ exports[`file/file/ws connector > 2-depth > 10-way > ring > equivalent 10`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > connected > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > connected > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3304,7 +3304,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > connected > equivalent 1`] =
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > connected > equivalent 2`] = `
+exports[`over ws > 3-depth > 2-way > connected > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3314,7 +3314,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > connected > equivalent 2`] =
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > connected, deletion > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > connected, deletion > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3324,9 +3324,9 @@ exports[`file/file/ws connector > 3-depth > 2-way > connected, deletion > equiva
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+exports[`over ws > 3-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
 
-exports[`file/file/ws connector > 3-depth > 2-way > connected, far atom > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > connected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3341,9 +3341,9 @@ exports[`file/file/ws connector > 3-depth > 2-way > connected, far atom > equiva
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+exports[`over ws > 3-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
 
-exports[`file/file/ws connector > 3-depth > 2-way > connected, near atom > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > connected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3354,7 +3354,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > connected, near atom > equiv
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3364,7 +3364,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > disconnected, conflicting va
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3380,7 +3380,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > disconnected, conflicting va
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > disconnected, far atom > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > disconnected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3395,7 +3395,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > disconnected, far atom > equ
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > disconnected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3406,7 +3406,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > disconnected, near atom > eq
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+exports[`over ws > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -3419,7 +3419,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > set 1, set 2, start 2, start
 ]
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+exports[`over ws > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
 [
   {
     "a": {
@@ -3438,7 +3438,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > set 1, set 2, start 2, start
 ]
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3448,7 +3448,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > set 1, set 2, start 2, start
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+exports[`over ws > 3-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
 [
   {
     "a": {
@@ -3461,7 +3461,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > start 1, set 1, start 2 > di
 ]
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3471,7 +3471,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > start 1, set 1, start 2 > eq
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+exports[`over ws > 3-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -3484,7 +3484,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > start 2, set 1, start 1 > di
 ]
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3494,7 +3494,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > start 2, set 1, start 1 > eq
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+exports[`over ws > 3-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -3513,7 +3513,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 1, start 1 > dif
 ]
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3523,7 +3523,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 1, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+exports[`over ws > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3533,7 +3533,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 1, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+exports[`over ws > 3-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -3552,7 +3552,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 2, start 1 > dif
 ]
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+exports[`over ws > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3562,7 +3562,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 2, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+exports[`over ws > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3572,7 +3572,7 @@ exports[`file/file/ws connector > 3-depth > 2-way > stop 1, set 2, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > chain > equivalent 1`] = `
+exports[`over ws > 3-depth > 3-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3582,7 +3582,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > chain > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > chain > equivalent 2`] = `
+exports[`over ws > 3-depth > 3-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3592,7 +3592,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > chain > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > chain > equivalent 3`] = `
+exports[`over ws > 3-depth > 3-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -3602,7 +3602,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > chain > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > pool > equivalent 1`] = `
+exports[`over ws > 3-depth > 3-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3612,7 +3612,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > pool > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > pool > equivalent 2`] = `
+exports[`over ws > 3-depth > 3-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3622,7 +3622,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > pool > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > pool > equivalent 3`] = `
+exports[`over ws > 3-depth > 3-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -3632,7 +3632,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > pool > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > ring > equivalent 1`] = `
+exports[`over ws > 3-depth > 3-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3642,7 +3642,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > ring > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > ring > equivalent 2`] = `
+exports[`over ws > 3-depth > 3-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3652,7 +3652,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > ring > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 3-way > ring > equivalent 3`] = `
+exports[`over ws > 3-depth > 3-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -3662,7 +3662,7 @@ exports[`file/file/ws connector > 3-depth > 3-way > ring > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 1`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3672,7 +3672,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 2`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3682,7 +3682,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 3`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -3692,7 +3692,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 4`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -3702,7 +3702,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 5`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -3712,7 +3712,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 6`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -3722,7 +3722,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 7`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -3732,7 +3732,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 8`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -3742,7 +3742,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 9`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -3752,7 +3752,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 10`] = `
+exports[`over ws > 3-depth > 10-way > chain > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -3762,7 +3762,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > chain > equivalent 10`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 1`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3772,7 +3772,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 2`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3782,7 +3782,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 3`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -3792,7 +3792,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 4`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -3802,7 +3802,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 5`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -3812,7 +3812,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 6`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -3822,7 +3822,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 7`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -3832,7 +3832,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 8`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -3842,7 +3842,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 9`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -3852,7 +3852,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 10`] = `
+exports[`over ws > 3-depth > 10-way > pool > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -3862,7 +3862,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > pool > equivalent 10`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 1`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3872,7 +3872,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 2`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3882,7 +3882,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 3`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -3892,7 +3892,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 4`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -3902,7 +3902,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 5`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -3912,7 +3912,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 6`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -3922,7 +3922,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 7`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -3932,7 +3932,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 8`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -3942,7 +3942,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 9`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -3952,7 +3952,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 10`] = `
+exports[`over ws > 3-depth > 10-way > ring > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -3962,7 +3962,7 @@ exports[`file/file/ws connector > 3-depth > 10-way > ring > equivalent 10`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > connected > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > connected > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3974,7 +3974,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > connected > equivalent 1`] =
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > connected > equivalent 2`] = `
+exports[`over ws > 4-depth > 2-way > connected > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -3986,7 +3986,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > connected > equivalent 2`] =
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > connected, deletion > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > connected, deletion > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -3998,9 +3998,9 @@ exports[`file/file/ws connector > 4-depth > 2-way > connected, deletion > equiva
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+exports[`over ws > 4-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
 
-exports[`file/file/ws connector > 4-depth > 2-way > connected, far atom > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > connected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4019,9 +4019,9 @@ exports[`file/file/ws connector > 4-depth > 2-way > connected, far atom > equiva
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+exports[`over ws > 4-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
 
-exports[`file/file/ws connector > 4-depth > 2-way > connected, near atom > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > connected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4034,7 +4034,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > connected, near atom > equiv
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4046,7 +4046,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > disconnected, conflicting va
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4066,7 +4066,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > disconnected, conflicting va
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > disconnected, far atom > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > disconnected, far atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4085,7 +4085,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > disconnected, far atom > equ
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > disconnected, near atom > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4098,7 +4098,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > disconnected, near atom > eq
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+exports[`over ws > 4-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -4113,7 +4113,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > set 1, set 2, start 2, start
 ]
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+exports[`over ws > 4-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
 [
   {
     "a": {
@@ -4136,7 +4136,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > set 1, set 2, start 2, start
 ]
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4148,7 +4148,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > set 1, set 2, start 2, start
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+exports[`over ws > 4-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
 [
   {
     "a": {
@@ -4163,7 +4163,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > start 1, set 1, start 2 > di
 ]
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4175,7 +4175,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > start 1, set 1, start 2 > eq
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+exports[`over ws > 4-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -4190,7 +4190,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > start 2, set 1, start 1 > di
 ]
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4202,7 +4202,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > start 2, set 1, start 1 > eq
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+exports[`over ws > 4-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -4225,7 +4225,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 1, start 1 > dif
 ]
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4237,7 +4237,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 1, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+exports[`over ws > 4-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -4249,7 +4249,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 1, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+exports[`over ws > 4-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
 [
   {
     "a": {
@@ -4272,7 +4272,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 2, start 1 > dif
 ]
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+exports[`over ws > 4-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4284,7 +4284,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 2, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+exports[`over ws > 4-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -4296,7 +4296,7 @@ exports[`file/file/ws connector > 4-depth > 2-way > stop 1, set 2, start 1 > equ
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > chain > equivalent 1`] = `
+exports[`over ws > 4-depth > 3-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4308,7 +4308,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > chain > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > chain > equivalent 2`] = `
+exports[`over ws > 4-depth > 3-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -4320,7 +4320,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > chain > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > chain > equivalent 3`] = `
+exports[`over ws > 4-depth > 3-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -4332,7 +4332,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > chain > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > pool > equivalent 1`] = `
+exports[`over ws > 4-depth > 3-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4344,7 +4344,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > pool > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > pool > equivalent 2`] = `
+exports[`over ws > 4-depth > 3-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -4356,7 +4356,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > pool > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > pool > equivalent 3`] = `
+exports[`over ws > 4-depth > 3-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -4368,7 +4368,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > pool > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > ring > equivalent 1`] = `
+exports[`over ws > 4-depth > 3-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4380,7 +4380,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > ring > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > ring > equivalent 2`] = `
+exports[`over ws > 4-depth > 3-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -4392,7 +4392,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > ring > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 3-way > ring > equivalent 3`] = `
+exports[`over ws > 4-depth > 3-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -4404,7 +4404,7 @@ exports[`file/file/ws connector > 4-depth > 3-way > ring > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 1`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4416,7 +4416,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 2`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -4428,7 +4428,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 3`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -4440,7 +4440,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 4`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -4452,7 +4452,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 5`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -4464,7 +4464,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 6`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -4476,7 +4476,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 7`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -4488,7 +4488,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 8`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -4500,7 +4500,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 9`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -4512,7 +4512,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 10`] = `
+exports[`over ws > 4-depth > 10-way > chain > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -4524,7 +4524,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > chain > equivalent 10`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 1`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4536,7 +4536,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 2`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -4548,7 +4548,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 3`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -4560,7 +4560,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 4`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -4572,7 +4572,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 5`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -4584,7 +4584,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 6`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -4596,7 +4596,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 7`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -4608,7 +4608,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 8`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -4620,7 +4620,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 9`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -4632,7 +4632,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 10`] = `
+exports[`over ws > 4-depth > 10-way > pool > equivalent 10`] = `
 {
   "a": {
     "aa": {
@@ -4644,7 +4644,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > pool > equivalent 10`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 1`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 1`] = `
 {
   "a": {
     "aa": {
@@ -4656,7 +4656,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 1`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 2`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 2`] = `
 {
   "a": {
     "aa": {
@@ -4668,7 +4668,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 2`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 3`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 3`] = `
 {
   "a": {
     "aa": {
@@ -4680,7 +4680,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 3`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 4`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 4`] = `
 {
   "a": {
     "aa": {
@@ -4692,7 +4692,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 4`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 5`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 5`] = `
 {
   "a": {
     "aa": {
@@ -4704,7 +4704,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 5`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 6`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 6`] = `
 {
   "a": {
     "aa": {
@@ -4716,7 +4716,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 6`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 7`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 7`] = `
 {
   "a": {
     "aa": {
@@ -4728,7 +4728,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 7`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 8`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 8`] = `
 {
   "a": {
     "aa": {
@@ -4740,7 +4740,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 8`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 9`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 9`] = `
 {
   "a": {
     "aa": {
@@ -4752,7 +4752,7 @@ exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 9`] = `
 }
 `;
 
-exports[`file/file/ws connector > 4-depth > 10-way > ring > equivalent 10`] = `
+exports[`over ws > 4-depth > 10-way > ring > equivalent 10`] = `
 {
   "a": {
     "aa": {
