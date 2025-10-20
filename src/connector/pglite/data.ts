@@ -1,7 +1,12 @@
 import type {PGlite, Transaction} from '@electric-sql/pglite';
 import {identifier, raw, sql} from '@electric-sql/pglite/template';
 import {createDataConnector} from '@synclets';
-import {AnyParentAddress, Atom, AtomAddress} from '@synclets/@types';
+import {
+  AnyParentAddress,
+  Atom,
+  AtomAddress,
+  AtomsAddress,
+} from '@synclets/@types';
 import type {
   createPgliteDataConnector as createPgliteDataConnectorDecl,
   DatabaseDataOptions,
@@ -137,13 +142,36 @@ export const createPgliteDataConnector: typeof createPgliteDataConnectorDecl = <
     return arrayMap(rows, ({id}) => id);
   };
 
-  const dataConnector = createDataConnector(depth, {
-    connect,
-    readAtom,
-    writeAtom,
-    removeAtom,
-    readChildIds,
-  });
+  const readAtoms = async (address: AtomsAddress<Depth>) => {
+    const tableWhere = arrayReduce(
+      address,
+      (where, addressPart, a) =>
+        sql`
+            ${where}${a ? raw`AND` : raw`WHERE`}
+            ${addressPartColumnIds[a]}=${addressPart}
+          `,
+      sql`${tableId}`,
+    );
+    const {rows} = await pglite.sql<{id: string; atom: string}>`
+        SELECT 
+          ${addressPartColumnIds[size(address)]} AS id, 
+          ${atomColumnId} AS atom
+        FROM ${tableWhere}
+      `;
+    return objFromEntries(arrayMap(rows, ({id, atom}) => [id, atom]));
+  };
+
+  const dataConnector = createDataConnector(
+    depth,
+    {
+      connect,
+      readAtom,
+      writeAtom,
+      removeAtom,
+      readChildIds,
+    },
+    {readAtoms},
+  );
 
   const getPglite = () => pglite;
 

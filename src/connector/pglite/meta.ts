@@ -1,7 +1,12 @@
 import type {PGlite, Transaction} from '@electric-sql/pglite';
 import {identifier, raw, sql} from '@electric-sql/pglite/template';
 import {createMetaConnector} from '@synclets';
-import {AnyParentAddress, AtomAddress, Timestamp} from '@synclets/@types';
+import {
+  AnyParentAddress,
+  AtomAddress,
+  Timestamp,
+  TimestampsAddress,
+} from '@synclets/@types';
 import type {
   createPgliteMetaConnector as createPgliteMetaConnectorDecl,
   DatabaseMetaOptions,
@@ -134,12 +139,35 @@ export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
     return arrayMap(rows, ({id}) => id);
   };
 
-  const metaConnector = createMetaConnector(depth, {
-    connect,
-    readTimestamp,
-    writeTimestamp,
-    readChildIds,
-  });
+  const readTimestamps = async (address: TimestampsAddress<Depth>) => {
+    const tableWhere = arrayReduce(
+      address,
+      (where, addressPart, a) =>
+        sql`
+          ${where}${a ? raw`AND` : raw`WHERE`}
+          ${addressPartColumnIds[a]}=${addressPart}
+        `,
+      sql`${tableId}`,
+    );
+    const {rows} = await pglite.sql<{id: string; timestamp: string}>`
+      SELECT 
+        ${addressPartColumnIds[size(address)]} AS id, 
+        ${timestampColumnId} AS timestamp
+      FROM ${tableWhere}
+    `;
+    return objFromEntries(arrayMap(rows, ({id, timestamp}) => [id, timestamp]));
+  };
+
+  const metaConnector = createMetaConnector(
+    depth,
+    {
+      connect,
+      readTimestamp,
+      writeTimestamp,
+      readChildIds,
+    },
+    {readTimestamps},
+  );
 
   const getPglite = () => pglite;
 
