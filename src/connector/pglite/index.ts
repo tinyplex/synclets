@@ -1,2 +1,2 @@
-export * from './data.ts';
-export * from './meta.ts';
+export {createPgliteDataConnector} from './data.ts';
+export {createPgliteMetaConnector} from './meta.ts';

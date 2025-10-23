@@ -1,2 +1,2 @@
-export * from './data.ts';
-export * from './meta.ts';
+export {createMemoryDataConnector} from './data.ts';
+export {createMemoryMetaConnector} from './meta.ts';

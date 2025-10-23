@@ -1,2 +1,2 @@
-export * from './data.ts';
-export * from './meta.ts';
+export {createDirectoryDataConnector, createFileDataConnector} from './data.ts';
+export {createDirectoryMetaConnector, createFileMetaConnector} from './meta.ts';
