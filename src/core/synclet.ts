@@ -128,7 +128,7 @@ export const createSynclet = async <
   } = metaConnector;
 
   if (dataDepth < 1 || metaDepth < 1 || dataDepth != metaDepth) {
-    errorNew('depths must be positive and equal');
+    errorNew(`depths must be positive and equal; ${dataDepth} vs ${metaDepth}`);
   }
 
   let started = false;
