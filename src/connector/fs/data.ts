@@ -17,7 +17,7 @@ import {
   validateFile,
   writeFileJson,
 } from '../../common/fs.ts';
-import {createMemoryDataConnector} from '../../common/memory.ts';
+import {createMemoryConnector} from '../../common/memory.ts';
 import {objFreeze} from '../../common/object.ts';
 import {readLeaf} from './common.ts';
 
@@ -36,10 +36,10 @@ export const createFileDataConnector: typeof createFileDataConnectorDecl = <
   const getInitialDataAfterConnect = (): Promise<Data | undefined> =>
     readFileJson(validatedFile, []) as Promise<Data | undefined>;
 
-  const dataConnector = createMemoryDataConnector(
+  const dataConnector = createMemoryConnector(
+    false,
     depth,
     connect,
-    undefined,
     (data: Data) => writeFileJson(validatedFile, [], data, false),
     getInitialDataAfterConnect,
   );

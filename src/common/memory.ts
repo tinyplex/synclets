@@ -2,152 +2,126 @@ import {createDataConnector, createMetaConnector} from '@synclets';
 import type {
   AnyParentAddress,
   Atom,
-  Atoms,
+  AtomAddress,
   AtomsAddress,
   Data,
   DataConnector,
+  DataConnectorImplementations,
+  DataConnectorOptimizations,
   Meta,
   MetaConnector,
+  MetaConnectorImplementations,
+  MetaConnectorOptimizations,
   Timestamp,
   TimestampAddress,
-  Timestamps,
   TimestampsAddress,
 } from '@synclets/@types';
 import {jsonParse, jsonString} from '@synclets/utils';
 import {objDeepAction, objKeys} from './object.ts';
 import {isEmpty} from './other.ts';
 
-export const createMemoryDataConnector = <Depth extends number>(
+type Tree = Data | Meta;
+type Leaf = Atom | Timestamp;
+
+type LeafAddress<Depth extends number> =
+  | AtomAddress<Depth>
+  | TimestampAddress<Depth>;
+type LeavesAddress<Depth extends number> =
+  | AtomsAddress<Depth>
+  | TimestampsAddress<Depth>;
+
+export const createMemoryConnector = <
+  CreateMeta extends boolean,
+  Depth extends number,
+>(
+  createMeta: CreateMeta,
   depth: Depth,
   connectImpl?: () => Promise<void>,
-  disconnect?: () => Promise<void>,
-  onChange?: (data: Data) => Promise<void>,
-  getInitialDataAfterConnect?: () => Promise<Data | undefined>,
-): DataConnector<Depth> => {
-  let data: Data = {};
+  onChange?: (tree: CreateMeta extends true ? Meta : Data) => Promise<void>,
+  getInitialAfterConnect?: () => Promise<
+    (CreateMeta extends true ? Meta : Data) | undefined
+  >,
+) => {
+  let tree: Tree = {};
 
   const connect = async () => {
     await connectImpl?.();
-    data = (await getInitialDataAfterConnect?.()) ?? data;
+    tree = (await getInitialAfterConnect?.()) ?? tree;
   };
 
-  const readAtom = async (address: TimestampAddress<Depth>) =>
-    objDeepAction(data, address, (parent, id) => parent[id]) as
-      | Atom
-      | undefined;
+  const readLeaf = async (address: LeafAddress<Depth>) =>
+    objDeepAction(tree, address, (parent, id) => parent[id]);
 
-  const writeAtom = async (address: LeafAddressFor<Depth>, atom: Atom) =>
+  const writeLeaf = async (address: LeafAddress<Depth>, leaf: Leaf) => {
     await objDeepAction(
-      data,
+      tree,
       address,
       async (parent, id) => {
-        parent[id] = atom;
-        await onChange?.(data);
+        parent[id] = leaf;
+        await onChange?.(tree as CreateMeta extends true ? Meta : Data);
       },
       true,
     );
+  };
 
-  const removeAtom = async (address: LeafAddressFor<Depth>) =>
+  const removeLeaf = async (address: LeafAddress<Depth>) => {
     await objDeepAction(
-      data,
+      tree,
       address,
       async (parent, id) => {
         delete parent[id];
-        await onChange?.(data);
+        await onChange?.(tree as CreateMeta extends true ? Meta : Data);
       },
       true,
       true,
     );
-
-  const readChildIds = async (address: AnyParentAddress<Depth>) =>
-    isEmpty(address)
-      ? objKeys(data)
-      : (objDeepAction(data, address, (parent, id) =>
-          objKeys(parent[id] as Data),
-        ) ?? []);
-
-  const readAtoms = async (address: AtomsAddress<Depth>) =>
-    objDeepAction(
-      data,
-      address,
-      (parent, id) => parent[id + '1'] ?? {},
-    ) as Atoms;
-
-  const getData = async () => jsonParse(jsonString(data));
-
-  return createDataConnector<Depth>(
-    depth,
-    {
-      connect,
-      disconnect,
-      readAtom,
-      writeAtom,
-      removeAtom,
-      readChildIds,
-    },
-    {readAtoms, getData},
-  );
-};
-
-export const createMemoryMetaConnector = <Depth extends number>(
-  depth: Depth,
-  connectImpl?: () => Promise<void>,
-  disconnect?: () => Promise<void>,
-  onChange?: (meta: Meta) => Promise<void>,
-  getInitialMetaAfterConnect?: () => Promise<Meta | undefined>,
-): MetaConnector<Depth> => {
-  let meta: Meta = {};
-
-  const connect = async () => {
-    await connectImpl?.();
-    meta = (await getInitialMetaAfterConnect?.()) ?? meta;
   };
 
-  const readTimestamp = async (address: TimestampAddress<Depth>) =>
-    objDeepAction(meta, address, (parent, id) => parent[id]) as
-      | Timestamp
-      | undefined;
-
-  const writeTimestamp = async (
-    address: TimestampAddress<Depth>,
-    timestamp: Timestamp,
-  ) =>
-    objDeepAction(
-      meta,
-      address,
-      (parent, id) => {
-        parent[id] = timestamp;
-        onChange?.(meta);
-      },
-      true,
-      true,
-    );
-
   const readChildIds = async (address: AnyParentAddress<Depth>) =>
     isEmpty(address)
-      ? objKeys(meta)
-      : (objDeepAction(meta, address, (parent, id) =>
-          objKeys(parent[id] as Meta),
+      ? objKeys(tree)
+      : (objDeepAction(tree, address, (parent, id) =>
+          objKeys(parent[id] as Tree),
         ) ?? []);
 
-  const readTimestamps = async (address: TimestampsAddress<Depth>) =>
-    objDeepAction(
-      meta,
-      address,
-      (parent, id) => parent[id] ?? {},
-    ) as Timestamps;
+  const readLeaves = async (address: LeavesAddress<Depth>) =>
+    objDeepAction(tree, address, (parent, id) => parent[id] ?? {});
 
-  const getMeta = async () => jsonParse(jsonString(meta));
+  const getTree = async () => jsonParse(jsonString(tree));
 
-  return createMetaConnector(
-    depth,
-    {
-      connect,
-      disconnect,
-      readTimestamp,
-      writeTimestamp,
-      readChildIds,
-    },
-    {readTimestamps, getMeta},
-  );
+  const connector = createMeta
+    ? createMetaConnector(
+        depth,
+        {
+          connect,
+          readTimestamp:
+            readLeaf as MetaConnectorImplementations<Depth>['readTimestamp'],
+          writeTimestamp: writeLeaf,
+          readChildIds,
+        },
+        {
+          readTimestamps:
+            readLeaves as MetaConnectorOptimizations<Depth>['readTimestamps'],
+          getMeta: getTree,
+        },
+      )
+    : createDataConnector(
+        depth,
+        {
+          connect,
+          readAtom: readLeaf as DataConnectorImplementations<Depth>['readAtom'],
+          writeAtom: writeLeaf,
+          removeAtom: removeLeaf,
+          readChildIds,
+        },
+        {
+          readAtoms:
+            readLeaves as DataConnectorOptimizations<Depth>['readAtoms'],
+          getData: getTree,
+        },
+      );
+
+  return connector as CreateMeta extends true
+    ? MetaConnector<Depth>
+    : DataConnector<Depth>;
 };

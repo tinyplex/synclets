@@ -16,27 +16,14 @@ import {
 } from '@synclets/@types/connector/pglite';
 import {jsonString} from '@synclets/utils';
 import {arrayMap, arrayNew, arrayReduce} from '../../common/array.ts';
-import {
-  objFreeze,
-  objFromEntries,
-  objIsEqual,
-  objNotEmpty,
-} from '../../common/object.ts';
+import {objFromEntries, objIsEqual, objNotEmpty} from '../../common/object.ts';
 import {errorNew, promiseAll, size} from '../../common/other.ts';
 
-type Leaf = Atom | Timestamp;
-type LeafAddress<Depth extends number> =
-  | AtomAddress<Depth>
-  | TimestampAddress<Depth>;
-type LeavesAddress<Depth extends number> =
-  | AtomsAddress<Depth>
-  | TimestampsAddress<Depth>;
-
 export const createPgliteConnector = <
+  CreateMeta extends boolean,
   Depth extends number,
-  IsMeta extends boolean,
 >(
-  isMeta: IsMeta,
+  createMeta: CreateMeta,
   depth: Depth,
   pglite: PGlite,
   {
@@ -48,9 +35,7 @@ export const createPgliteConnector = <
     addressColumn: string;
     leafColumn: string;
   },
-): IsMeta extends true
-  ? PgliteMetaConnector<Depth>
-  : PgliteDataConnector<Depth> => {
+) => {
   const tableId = identifier`${table}`;
   const addressColumnId = identifier`${addressColumn}`;
   const addressPartColumns = arrayMap(
@@ -113,7 +98,9 @@ export const createPgliteConnector = <
     }
   };
 
-  const readLeaf = async (address: LeafAddress<Depth>) =>
+  const readLeaf = async (
+    address: AtomAddress<Depth> | TimestampAddress<Depth>,
+  ) =>
     (
       await pglite.sql<{leaf: string}>`
         SELECT ${leafColumnId} AS leaf FROM ${tableId} 
@@ -121,7 +108,10 @@ export const createPgliteConnector = <
       `
     ).rows[0]?.leaf;
 
-  const writeLeaf = async (address: LeafAddress<Depth>, leaf: Leaf) => {
+  const writeLeaf = async (
+    address: AtomAddress<Depth> | TimestampAddress<Depth>,
+    leaf: Atom | Timestamp,
+  ) => {
     const [columns, values] = arrayReduce(
       address,
       ([columns, values], addressPart, a) => [
@@ -141,7 +131,7 @@ export const createPgliteConnector = <
     `;
   };
 
-  const removeLeaf = async (address: LeafAddress<Depth>) => {
+  const removeAtom = async (address: AtomAddress<Depth>) => {
     await pglite.sql`
       DELETE FROM ${tableId} WHERE ${addressColumnId}=${jsonString(address)}
     `;
@@ -164,7 +154,9 @@ export const createPgliteConnector = <
     return arrayMap(rows, ({id}) => id);
   };
 
-  const readLeaves = async (address: LeavesAddress<Depth>) => {
+  const readLeaves = async (
+    address: AtomsAddress<Depth> | TimestampsAddress<Depth>,
+  ) => {
     const tableWhere = arrayReduce(
       address,
       (where, addressPart, a) =>
@@ -183,7 +175,11 @@ export const createPgliteConnector = <
     return objFromEntries(arrayMap(rows, ({id, leaf}) => [id, leaf]));
   };
 
-  const connector = isMeta
+  const extraFunctions = {
+    getPglite: () => pglite,
+  };
+
+  const connector = createMeta
     ? createMetaConnector(
         depth,
         {
@@ -193,6 +189,7 @@ export const createPgliteConnector = <
           readChildIds,
         },
         {readTimestamps: readLeaves},
+        extraFunctions,
       )
     : createDataConnector(
         depth,
@@ -200,18 +197,14 @@ export const createPgliteConnector = <
           connect,
           readAtom: readLeaf,
           writeAtom: writeLeaf,
-          removeAtom: removeLeaf,
+          removeAtom,
           readChildIds,
         },
         {readAtoms: readLeaves},
+        extraFunctions,
       );
 
-  const getPglite = () => pglite;
-
-  return objFreeze({
-    ...connector,
-    getPglite,
-  }) as IsMeta extends true
+  return connector as CreateMeta extends true
     ? PgliteMetaConnector<Depth>
     : PgliteDataConnector<Depth>;
 };

@@ -48,6 +48,9 @@ export type Meta = Timestamps | {[id: string]: Meta};
 /// Context
 export type Context = {[key: string]: Atom};
 
+/// ExtraFunctions
+export type ExtraFunctions = {[name: string]: (...args: any[]) => any};
+
 /// Logger
 export type Logger = {
   error?: (string: string) => void;
@@ -173,6 +176,7 @@ export function createDataConnector<Depth extends number>(
   depth: Depth,
   implementations: DataConnectorImplementations<Depth>,
   optimizations?: DataConnectorOptimizations<Depth>,
+  extraFunctions?: ExtraFunctions,
 ): DataConnector<Depth>;
 
 // --
@@ -209,6 +213,7 @@ export function createMetaConnector<Depth extends number>(
   depth: Depth,
   implementations: MetaConnectorImplementations<Depth>,
   optimizations?: MetaConnectorOptimizations<Depth>,
+  extraFunctions?: ExtraFunctions,
 ): MetaConnector<Depth>;
 
 // --

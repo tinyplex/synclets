@@ -21,7 +21,7 @@ import {
   validateFile,
   writeFileJson,
 } from '../../common/fs.ts';
-import {createMemoryMetaConnector} from '../../common/memory.ts';
+import {createMemoryConnector} from '../../common/memory.ts';
 import {objFreeze} from '../../common/object.ts';
 import {readLeaf} from './common.ts';
 
@@ -37,14 +37,17 @@ export const createFileMetaConnector: typeof createFileMetaConnectorDecl = <
     validatedFile = await validateFile(file);
   };
 
+  const onChange = (meta: Meta) =>
+    writeFileJson(validatedFile, [], meta, false);
+
   const getInitialMetaAfterConnect = (): Promise<Meta | undefined> =>
     readFileJson(validatedFile, []) as Promise<Meta | undefined>;
 
-  const metaConnector = createMemoryMetaConnector(
+  const metaConnector = createMemoryConnector(
+    true,
     depth,
     connect,
-    undefined,
-    (meta: Meta) => writeFileJson(validatedFile, [], meta, false),
+    onChange,
     getInitialMetaAfterConnect,
   );
 

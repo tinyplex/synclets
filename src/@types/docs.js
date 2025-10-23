@@ -105,6 +105,13 @@
 /// Context
 
 /**
+ * The ExtraFunctions type.
+ * @category Core
+ * @since v0.0.0
+ */
+/// ExtraFunctions
+
+/**
  * The Logger type.
  * @category Logging
  * @since v0.0.0
