@@ -4,6 +4,8 @@ import {
   createPgliteDataConnector,
   createPgliteMetaConnector,
 } from 'synclets/connector/pglite';
+import {createMemoryTransport} from 'synclets/transport/memory';
+import {getUniqueId} from 'synclets/utils';
 import {
   afterAll,
   afterEach,
@@ -13,9 +15,24 @@ import {
   test,
   vi,
 } from 'vitest';
-import {createMockDataConnector, createMockMetaConnector} from '../common.ts';
+import {
+  createMockDataConnector,
+  createMockMetaConnector,
+  describeSyncletTests,
+} from '../common.ts';
 
 const TEXT = 25;
+
+describeSyncletTests(
+  'memory',
+  async () => await PGlite.create(),
+  async () => {},
+  <Depth extends number>(depth: Depth, pglite: PGlite) =>
+    createPgliteDataConnector(depth, pglite, {table: 'data' + getUniqueId()}),
+  <Depth extends number>(depth: Depth, pglite: PGlite) =>
+    createPgliteMetaConnector(depth, pglite, {table: 'meta' + getUniqueId()}),
+  (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
+);
 
 test('getPglite', async () => {
   const dataPglite = await PGlite.create();

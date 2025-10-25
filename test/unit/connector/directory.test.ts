@@ -6,20 +6,26 @@ import {
   createDirectoryDataConnector,
   createDirectoryMetaConnector,
 } from 'synclets/connector/fs';
+import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
-import {afterEach, beforeEach, expect, test} from 'vitest';
+import {expect, test} from 'vitest';
+import {describeSyncletTests} from '../common.ts';
 
-let tmpDir: string;
-
-beforeEach(async () => {
-  tmpDir = await mkdtemp(tmpdir() + sep);
-});
-
-afterEach(async () => {
-  await rm(tmpDir, {recursive: true, force: true});
-});
+describeSyncletTests(
+  'memory',
+  async () => ({tempDir: await mkdtemp(tmpdir() + sep)}),
+  async ({tempDir}: {tempDir: string}) =>
+    await rm(tempDir, {recursive: true, force: true}),
+  (depth: number, {tempDir}: {tempDir: string}) =>
+    createDirectoryDataConnector(depth, join(tempDir, getUniqueId() + '.data')),
+  (depth: number, {tempDir}: {tempDir: string}) =>
+    createDirectoryMetaConnector(depth, join(tempDir, getUniqueId() + '.meta')),
+  (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
+);
 
 test('getDirectory', async () => {
+  const tmpDir = await mkdtemp(tmpdir() + sep);
+
   const dataDir = join(tmpDir, getUniqueId() + '.data');
   const dataConnector = createDirectoryDataConnector(1, dataDir);
 
@@ -32,9 +38,13 @@ test('getDirectory', async () => {
   expect(synclet.getDataConnector().getDirectory()).toBe(dataDir);
   expect(metaConnector.getDirectory()).toBe(metaDir);
   expect(synclet.getMetaConnector().getDirectory()).toBe(metaDir);
+
+  await rm(tmpDir, {recursive: true, force: true});
 });
 
 test('non-path addresses', async () => {
+  const tmpDir = await mkdtemp(tmpdir() + sep);
+
   const dataDir = join(tmpDir, getUniqueId() + '.data');
   const dataConnector = createDirectoryDataConnector(2, dataDir);
 
@@ -51,4 +61,6 @@ test('non-path addresses', async () => {
     '*': {'/': 'B'},
     '~': {'..': 'B'},
   });
+
+  await rm(tmpDir, {recursive: true, force: true});
 });

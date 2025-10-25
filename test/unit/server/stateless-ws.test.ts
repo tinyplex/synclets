@@ -5,6 +5,8 @@ import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../common.ts';
 
+const WS_PORT = 9000;
+
 test('getWebSocketServer', async () => {
   const wss = new WebSocketServer({port: 0});
   const wsServer = createStatelessWsServer(wss);
@@ -17,12 +19,12 @@ test('Two synclets on single server', async () => {
   const wsServer = createStatelessWsServer(wss);
 
   const synclet1 = await createSynclet({
-    transport: createWsTransport(new WebSocket(`ws://localhost:9000`)),
+    transport: createWsTransport(new WebSocket('ws://localhost:' + WS_PORT)),
   });
   await synclet1.start();
 
   const synclet2 = await createSynclet({
-    transport: createWsTransport(new WebSocket(`ws://localhost:9000`)),
+    transport: createWsTransport(new WebSocket('ws://localhost:' + WS_PORT)),
   });
   await synclet2.start();
 

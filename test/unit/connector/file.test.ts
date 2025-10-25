@@ -6,7 +6,21 @@ import {
   createFileDataConnector,
   createFileMetaConnector,
 } from 'synclets/connector/fs';
+import {createMemoryTransport} from 'synclets/transport/memory';
+import {getUniqueId} from 'synclets/utils';
 import {expect, test} from 'vitest';
+import {describeSyncletTests} from '../common.ts';
+
+describeSyncletTests(
+  'memory',
+  async () => ({tempDir: await mkdtemp(tmpdir() + sep)}),
+  async ({tempDir}) => await rm(tempDir, {recursive: true, force: true}),
+  (depth: number, {tempDir}) =>
+    createFileDataConnector(depth, join(tempDir, getUniqueId() + '.data')),
+  (depth: number, {tempDir}) =>
+    createFileMetaConnector(depth, join(tempDir, getUniqueId() + '.meta')),
+  (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
+);
 
 test('getFile', async () => {
   const tmp = await mkdtemp(tmpdir() + sep);

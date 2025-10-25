@@ -3,21 +3,11 @@ import {
   createMemoryMetaConnector,
 } from 'synclets/connector/memory';
 import {createStatelessWsServer} from 'synclets/server/stateless-ws';
-import {createMemoryTransport} from 'synclets/transport/memory';
 import {createWsTransport} from 'synclets/transport/ws';
 import {WebSocket, WebSocketServer} from 'ws';
 import {describeSyncletTests} from '../common.ts';
 
-const WS_PORT = 9000;
-
-describeSyncletTests(
-  'memory',
-  async () => {},
-  async () => {},
-  <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
-  <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
-  (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
-);
+const WS_PORT = 9001;
 
 describeSyncletTests(
   'ws',
