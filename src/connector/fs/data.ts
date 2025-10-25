@@ -1,5 +1,5 @@
 import {createDataConnector} from '@synclets';
-import type {AnyParentAddress, Atom, AtomAddress, Data} from '@synclets/@types';
+import type {AnyParentAddress, Atom, AtomAddress} from '@synclets/@types';
 import type {
   createDirectoryDataConnector as createDirectoryDataConnectorDecl,
   createFileDataConnector as createFileDataConnectorDecl,
@@ -11,46 +11,19 @@ import {
   decodePaths,
   encodePaths,
   getDirectoryContents,
-  readFileJson,
   removeFileAndAncestors,
   validateDirectory,
-  validateFile,
   writeFileJson,
 } from '../../common/fs.ts';
-import {createMemoryConnector} from '../../common/memory.ts';
 import {objFreeze} from '../../common/object.ts';
-import {readLeaf} from './common.ts';
+import {createFileConnector, readLeaf} from './common.ts';
 
 export const createFileDataConnector: typeof createFileDataConnectorDecl = <
   Depth extends number,
 >(
   depth: Depth,
   file: string,
-): FileDataConnector<Depth> => {
-  let validatedFile: string;
-
-  const connect = async () => {
-    validatedFile = await validateFile(file);
-  };
-
-  const getInitialDataAfterConnect = (): Promise<Data | undefined> =>
-    readFileJson(validatedFile, []) as Promise<Data | undefined>;
-
-  const dataConnector = createMemoryConnector(
-    false,
-    depth,
-    connect,
-    (data: Data) => writeFileJson(validatedFile, [], data, false),
-    getInitialDataAfterConnect,
-  );
-
-  const getFile = () => file;
-
-  return objFreeze({
-    ...dataConnector,
-    getFile,
-  });
-};
+): FileDataConnector<Depth> => createFileConnector(false, depth, file);
 
 export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDecl =
   <Depth extends number>(
