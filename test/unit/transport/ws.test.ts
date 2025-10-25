@@ -1,9 +1,11 @@
+import {createSynclet} from 'synclets';
 import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/connector/memory';
 import {createStatelessWsServer} from 'synclets/server/stateless-ws';
 import {createWsTransport} from 'synclets/transport/ws';
+import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {describeSyncletTests} from '../common.ts';
 
@@ -21,3 +23,20 @@ describeSyncletTests(
     ),
   5,
 );
+
+test('getWebSocket', async () => {
+  const wsServer = createStatelessWsServer(
+    new WebSocketServer({port: WS_PORT}),
+  );
+  const webSocket = new WebSocket('ws://localhost:' + WS_PORT);
+
+  const transport = createWsTransport(webSocket);
+  const synclet = await createSynclet({transport});
+  await synclet.start();
+
+  expect(transport.getWebSocket()).toBe(webSocket);
+  expect((synclet.getTransport()[0] as any).getWebSocket()).toBe(webSocket);
+
+  webSocket.close();
+  wsServer.destroy();
+});
