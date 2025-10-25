@@ -1,25 +1,10 @@
-import {createMetaConnector} from '@synclets';
-import type {
-  AnyParentAddress,
-  Timestamp,
-  TimestampAddress,
-} from '@synclets/@types';
 import type {
   createDirectoryMetaConnector as createDirectoryMetaConnectorDecl,
   createFileMetaConnector as createFileMetaConnectorDecl,
   DirectoryMetaConnector,
   FileMetaConnector,
 } from '@synclets/@types/connector/fs';
-import {isTimestamp} from '@synclets/utils';
-import {
-  decodePaths,
-  encodePaths,
-  getDirectoryContents,
-  validateDirectory,
-  writeFileJson,
-} from '../../common/fs.ts';
-import {objFreeze} from '../../common/object.ts';
-import {createFileConnector, readLeaf} from './common.ts';
+import {createDirectoryConnector, createFileConnector} from './common.ts';
 
 export const createFileMetaConnector: typeof createFileMetaConnectorDecl = <
   Depth extends number,
@@ -32,39 +17,5 @@ export const createDirectoryMetaConnector: typeof createDirectoryMetaConnectorDe
   <Depth extends number>(
     depth: Depth,
     directory: string,
-  ): DirectoryMetaConnector<Depth> => {
-    let validatedDirectory: string;
-
-    const connect = async () => {
-      validatedDirectory = await validateDirectory(directory);
-    };
-
-    const readTimestamp = (
-      address: TimestampAddress<Depth>,
-    ): Promise<Timestamp | undefined> =>
-      readLeaf(validatedDirectory, address, isTimestamp);
-
-    const writeTimestamp = (
-      address: TimestampAddress<Depth>,
-      timestamp: Timestamp,
-    ) => writeFileJson(validatedDirectory, encodePaths(address), timestamp);
-
-    const readChildIds = async (address: AnyParentAddress<Depth>) =>
-      decodePaths(
-        await getDirectoryContents(validatedDirectory, encodePaths(address)),
-      );
-
-    const metaConnector = createMetaConnector(depth, {
-      connect,
-      readTimestamp,
-      writeTimestamp,
-      readChildIds,
-    });
-
-    const getDirectory = () => directory;
-
-    return objFreeze({
-      ...metaConnector,
-      getDirectory,
-    });
-  };
+  ): DirectoryMetaConnector<Depth> =>
+    createDirectoryConnector(true, depth, directory);

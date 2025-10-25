@@ -1,11 +1,28 @@
-import type {Address, Atom, Data, Meta, Timestamp} from '@synclets/@types';
+import {createDataConnector, createMetaConnector} from '@synclets';
+import type {
+  Address,
+  AnyParentAddress,
+  Atom,
+  AtomAddress,
+  Data,
+  Meta,
+  Timestamp,
+  TimestampAddress,
+} from '@synclets/@types';
 import {
+  DirectoryDataConnector,
+  DirectoryMetaConnector,
   FileDataConnector,
   FileMetaConnector,
 } from '@synclets/@types/connector/fs';
+import {isAtom, isTimestamp} from '@synclets/utils';
 import {
+  decodePaths,
   encodePaths,
+  getDirectoryContents,
   readFileJson,
+  removeFileAndAncestors,
+  validateDirectory,
   validateFile,
   writeFileJson,
 } from '../../common/fs.ts';
@@ -56,4 +73,73 @@ export const createFileConnector = <
   ) as CreateMeta extends true
     ? FileMetaConnector<Depth>
     : FileDataConnector<Depth>;
+};
+
+export const createDirectoryConnector = <
+  CreateMeta extends boolean,
+  Depth extends number,
+>(
+  createMeta: CreateMeta,
+  depth: Depth,
+  directory: string,
+) => {
+  let validatedDirectory: string;
+
+  const connect = async () => {
+    validatedDirectory = await validateDirectory(directory);
+  };
+
+  const readAtom = (address: AtomAddress<Depth>): Promise<Atom | undefined> =>
+    readLeaf(validatedDirectory, address, isAtom);
+
+  const readTimestamp = (
+    address: TimestampAddress<Depth>,
+  ): Promise<Timestamp | undefined> =>
+    readLeaf(validatedDirectory, address, isTimestamp);
+
+  const writeLeaf = (
+    address: AtomAddress<Depth> | TimestampAddress<Depth>,
+    leaf: Atom | Timestamp,
+  ) => writeFileJson(validatedDirectory, encodePaths(address), leaf);
+
+  const removeAtom = (address: AtomAddress<Depth>) =>
+    removeFileAndAncestors(validatedDirectory, encodePaths(address));
+
+  const readChildIds = async (address: AnyParentAddress<Depth>) =>
+    decodePaths(
+      await getDirectoryContents(validatedDirectory, encodePaths(address)),
+    );
+
+  const extraFunctions = {
+    getDirectory: () => directory,
+  };
+
+  const connector = createMeta
+    ? createMetaConnector(
+        depth,
+        {
+          connect,
+          readTimestamp,
+          writeTimestamp: writeLeaf,
+          readChildIds,
+        },
+        {},
+        extraFunctions,
+      )
+    : createDataConnector(
+        depth,
+        {
+          connect,
+          readAtom,
+          writeAtom: writeLeaf,
+          removeAtom,
+          readChildIds,
+        },
+        {},
+        extraFunctions,
+      );
+
+  return connector as CreateMeta extends true
+    ? DirectoryMetaConnector<Depth>
+    : DirectoryDataConnector<Depth>;
 };
