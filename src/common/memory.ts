@@ -20,16 +20,6 @@ import {jsonParse, jsonString} from '@synclets/utils';
 import {objDeepAction, objKeys} from './object.ts';
 import {isEmpty} from './other.ts';
 
-type Tree = Data | Meta;
-type Leaf = Atom | Timestamp;
-
-type LeafAddress<Depth extends number> =
-  | AtomAddress<Depth>
-  | TimestampAddress<Depth>;
-type LeavesAddress<Depth extends number> =
-  | AtomsAddress<Depth>
-  | TimestampsAddress<Depth>;
-
 export const createMemoryConnector = <
   CreateMeta extends boolean,
   Depth extends number,
@@ -42,17 +32,21 @@ export const createMemoryConnector = <
     (CreateMeta extends true ? Meta : Data) | undefined
   >,
 ) => {
-  let tree: Tree = {};
+  let tree: Data | Meta = {};
 
   const connect = async () => {
     await connectImpl?.();
     tree = (await getInitialAfterConnect?.()) ?? tree;
   };
 
-  const readLeaf = async (address: LeafAddress<Depth>) =>
-    objDeepAction(tree, address, (parent, id) => parent[id]);
+  const readLeaf = async (
+    address: AtomAddress<Depth> | TimestampAddress<Depth>,
+  ) => objDeepAction(tree, address, (parent, id) => parent[id]);
 
-  const writeLeaf = async (address: LeafAddress<Depth>, leaf: Leaf) => {
+  const writeLeaf = async (
+    address: AtomAddress<Depth> | TimestampAddress<Depth>,
+    leaf: Atom | Timestamp,
+  ) => {
     await objDeepAction(
       tree,
       address,
@@ -64,7 +58,7 @@ export const createMemoryConnector = <
     );
   };
 
-  const removeLeaf = async (address: LeafAddress<Depth>) => {
+  const removeAtom = async (address: AtomAddress<Depth>) => {
     await objDeepAction(
       tree,
       address,
@@ -81,11 +75,12 @@ export const createMemoryConnector = <
     isEmpty(address)
       ? objKeys(tree)
       : (objDeepAction(tree, address, (parent, id) =>
-          objKeys(parent[id] as Tree),
+          objKeys(parent[id] as Meta | Data),
         ) ?? []);
 
-  const readLeaves = async (address: LeavesAddress<Depth>) =>
-    objDeepAction(tree, address, (parent, id) => parent[id] ?? {});
+  const readLeaves = async (
+    address: AtomsAddress<Depth> | TimestampsAddress<Depth>,
+  ) => objDeepAction(tree, address, (parent, id) => parent[id] ?? {});
 
   const getTree = async () => jsonParse(jsonString(tree));
 
@@ -111,7 +106,7 @@ export const createMemoryConnector = <
           connect,
           readAtom: readLeaf as DataConnectorImplementations<Depth>['readAtom'],
           writeAtom: writeLeaf,
-          removeAtom: removeLeaf,
+          removeAtom: removeAtom,
           readChildIds,
         },
         {
