@@ -95,7 +95,7 @@ export const createDirectoryConnector = <
     validatedDirectory = await validateDirectory(directory);
   };
 
-  const readLeaf = async <Leaf extends Atom | Timestamp>(
+  const readLeaf = async (
     address: AtomAddress<Depth> | TimestampAddress<Depth>,
   ): Promise<Atom | Timestamp | undefined> => {
     const leaf = await readFileJson(validatedDirectory, encodePaths(address));

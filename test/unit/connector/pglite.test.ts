@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {PGlite} from '@electric-sql/pglite';
 import {createSynclet} from 'synclets';
 import {
