@@ -133,7 +133,7 @@
 /// Synclet
 
 /**
- * The /// SyncletComponents type.
+ * The SyncletComponents type.
  * @category Synclet
  * @since v0.0.0
  */
