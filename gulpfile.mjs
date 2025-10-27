@@ -14,6 +14,7 @@ const UTF8 = 'utf-8';
 const TEST_MODULES = [
   '',
   'utils',
+  'connector/browser',
   'connector/fs',
   'connector/memory',
   'connector/pglite',
