@@ -257,7 +257,9 @@ export const createSynclet = async <
       },
     ];
     if (syncOrFromProtectedTransport) {
-      arrayPush(tasks, () => syncExcept(address, syncOrFromProtectedTransport));
+      arrayPush(tasks, () =>
+        syncExceptTransport(address, syncOrFromProtectedTransport),
+      );
     }
 
     await queue(...tasks);
@@ -372,16 +374,16 @@ export const createSynclet = async <
     return [subNodeObj];
   };
 
-  const syncExcept = async (
+  const syncExceptTransport = async (
     address: AnyAddress<Depth>,
-    exceptProtectedTransport?: ProtectedTransport | boolean,
+    exceptTransport?: ProtectedTransport | boolean,
   ) => {
     if (started) {
       const hashOrTimestamp = await readHashOrTimestamp(address, {});
       const tasks: Task[] = [];
       let didSync = false;
       arrayForEach(transports, (transport, t) => {
-        if (transport !== exceptProtectedTransport) {
+        if (transport !== exceptTransport) {
           log(`sync (${t}) ` + address);
           didSync = true;
           arrayPush(tasks, () =>
@@ -628,7 +630,18 @@ export const createSynclet = async <
 
   const getTransport = () => [...transports];
 
-  const sync = (address: AnyAddress<Depth>) => syncExcept(address);
+  const sync = async (
+    address: AnyAddress<Depth>,
+    updateTimestamp?: boolean,
+  ) => {
+    if (size(address) == dataDepth && updateTimestamp) {
+      await metaWriteTimestamp(
+        address as TimestampAddress<Depth>,
+        getNextTimestamp(),
+      );
+    }
+    await syncExceptTransport(address, updateTimestamp);
+  };
 
   const setAtom = (
     address: AtomAddress<Depth>,
@@ -663,7 +676,7 @@ export const createSynclet = async <
     delAtom,
     getData,
     getMeta,
-    _: [syncExcept],
+    _: [syncExceptTransport],
   };
 
   await dataAttach(synclet);

@@ -5,12 +5,31 @@ import type {
   TinyBaseTablesDataConnector,
   TinyBaseValuesDataConnector,
 } from '@synclets/@types/connector/tinybase';
-import type {Cell, Store, Value} from 'tinybase';
+import type {Cell, Id, Store, Value} from 'tinybase';
 import {size} from '../../common/other.ts';
 import {createDataConnector} from '../../core/index.ts';
 
 export const createTinyBaseTablesDataConnector: typeof createTinyBaseTablesDataConnectorDecl =
   (store: Store) => {
+    let listenerId: Id;
+
+    const connect = async (
+      onChange: (address: AtomAddress<3>) => Promise<void>,
+    ) => {
+      listenerId = store.addCellListener(
+        null,
+        null,
+        null,
+        (_, tableId, rowId, cellId) => {
+          onChange([tableId, rowId, cellId]);
+        },
+      );
+    };
+
+    const disconnect = async () => {
+      store.delListener(listenerId);
+    };
+
     const readAtom = async (address: AtomAddress<3>) =>
       store.getCell(...address);
 
@@ -35,7 +54,7 @@ export const createTinyBaseTablesDataConnector: typeof createTinyBaseTablesDataC
 
     return createDataConnector(
       3,
-      {readAtom, writeAtom, removeAtom, readChildIds},
+      {connect, disconnect, readAtom, writeAtom, removeAtom, readChildIds},
       {},
       extraFunctions,
     ) as TinyBaseTablesDataConnector;

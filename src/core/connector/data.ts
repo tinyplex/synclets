@@ -34,7 +34,7 @@ export const createDataConnector: typeof createDataConnectorDecl = <
       errorNew('Data connector is already attached to Synclet');
     }
     attachedSynclet = synclet;
-    await connect?.();
+    await connect?.(async (address) => synclet.sync(address, true));
   };
 
   const detach = async () => {
