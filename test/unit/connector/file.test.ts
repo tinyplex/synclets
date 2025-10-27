@@ -25,10 +25,10 @@ describeSyncletTests(
 test('getFile', async () => {
   const tmp = await mkdtemp(tmpdir() + sep);
 
-  const dataFile = join(tmp, '42.data');
+  const dataFile = join(tmp, getUniqueId() + '.data');
   const dataConnector = createFileDataConnector(1, dataFile);
 
-  const metaFile = join(tmp, '42.meta');
+  const metaFile = join(tmp, getUniqueId() + '.meta');
   const metaConnector = createFileMetaConnector(1, metaFile);
 
   const synclet = await createSynclet({dataConnector, metaConnector});
