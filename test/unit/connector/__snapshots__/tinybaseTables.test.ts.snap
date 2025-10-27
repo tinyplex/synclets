@@ -1,0 +1,669 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`over memory > 3-depth > 2-way > connected > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > connected > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > connected, deletion > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > connected, deletion > equivalent 2`] = `{}`;
+
+exports[`over memory > 3-depth > 2-way > connected, far atom > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+  "b": {
+    "ba": {
+      "baa": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > connected, initial > equivalent 1`] = `{}`;
+
+exports[`over memory > 3-depth > 2-way > connected, near atom > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+      "aab": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > disconnected, conflicting values > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > disconnected, conflicting values 2 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+      "aab": "C",
+    },
+  },
+  "b": {
+    "ba": {
+      "baa": "D",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > disconnected, far atom > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+  "b": {
+    "ba": {
+      "baa": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > disconnected, near atom > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+      "aab": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 1`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+  {},
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > set 1, set 2, start 2, start 1 > differing 2`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+  {
+    "a": {
+      "aa": {
+        "aaa": "B",
+      },
+    },
+  },
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > set 1, set 2, start 2, start 1 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > start 1, set 1, start 2 > differing 1`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+  {},
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > start 1, set 1, start 2 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > start 2, set 1, start 1 > differing 1`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+  {},
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > start 2, set 1, start 1 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 1, start 1 > differing 1`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "B",
+      },
+    },
+  },
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 1, start 1 > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 2, start 1 > differing 1`] = `
+[
+  {
+    "a": {
+      "aa": {
+        "aaa": "A",
+      },
+    },
+  },
+  {
+    "a": {
+      "aa": {
+        "aaa": "B",
+      },
+    },
+  },
+]
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 2-way > stop 1, set 2, start 1 > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "B",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > chain > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A1",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > chain > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A2",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > chain > equivalent 3`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A3",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > pool > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A1",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > pool > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A2",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > pool > equivalent 3`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A3",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > ring > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A1",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > ring > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A2",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 3-way > ring > equivalent 3`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A3",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A1",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A2",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 3`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A3",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 4`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A4",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 5`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A5",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 6`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A6",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 7`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A7",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 8`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A8",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 9`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A9",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > chain > equivalent 10`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A10",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A1",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A2",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 3`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A3",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 4`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A4",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 5`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A5",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 6`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A6",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 7`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A7",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 8`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A8",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 9`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A9",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > pool > equivalent 10`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A10",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 1`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A1",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 2`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A2",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 3`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A3",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 4`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A4",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 5`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A5",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 6`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A6",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 7`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A7",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 8`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A8",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 9`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A9",
+    },
+  },
+}
+`;
+
+exports[`over memory > 3-depth > 10-way > ring > equivalent 10`] = `
+{
+  "a": {
+    "aa": {
+      "aaa": "A10",
+    },
+  },
+}
+`;

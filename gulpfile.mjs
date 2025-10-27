@@ -18,6 +18,7 @@ const TEST_MODULES = [
   'connector/fs',
   'connector/memory',
   'connector/pglite',
+  'connector/tinybase',
   'server/stateless-ws',
   'transport/memory',
   'transport/ws',

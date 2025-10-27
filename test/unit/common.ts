@@ -31,6 +31,7 @@ export const describeSyncletTests = <
   ) => MetaConnectorType,
   createTransport: (uniqueId: string) => Transport,
   transportPause = 1,
+  onlyDepths: number[] = [1, 2, 3, 4],
 ) =>
   describe(`over ${transportType}`, () => {
     let environment: Environment;
@@ -57,6 +58,10 @@ export const describeSyncletTests = <
         nearAddress: string[],
         farAddress?: string[],
       ) => {
+        if (onlyDepths.indexOf(depth) === -1) {
+          return;
+        }
+
         interface TestSynclet extends Synclet<Depth> {
           setAtomForTest(value: string): Promise<void>;
           setNearAtomForTest(value: string): Promise<void>;

@@ -19,4 +19,4 @@ type AnyParentAddressFor<
   Address extends string[] = [],
 > = OneLonger<Address>['length'] extends Depth
   ? Address
-  : Address | LeafParentAddressFor<Depth, [string, ...Address]>;
+  : Address | AnyParentAddressFor<Depth, [string, ...Address]>;
