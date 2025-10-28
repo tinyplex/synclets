@@ -1,6 +1,5 @@
 import type {
   Address,
-  AnyAddress,
   AnyParentAddress,
   Atom,
   AtomAddress,
@@ -47,12 +46,7 @@ export type MessageSubNodes = [
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
 export interface ProtectedSynclet<Depth extends number> extends Synclet<Depth> {
-  _: [
-    syncExcept: (
-      address: AnyAddress<Depth>,
-      transport?: ProtectedTransport,
-    ) => Promise<void>,
-  ];
+  _: [syncChangedAtoms: (...addresses: AtomAddress<Depth>[]) => Promise<void>];
 }
 
 export interface ProtectedDataConnector<Depth extends number>

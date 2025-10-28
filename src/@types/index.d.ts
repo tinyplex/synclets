@@ -76,7 +76,7 @@ export interface Synclet<
   getDataConnector(): DataConnectorType;
   getMetaConnector(): MetaConnectorType;
   getTransport(): Transport[];
-  sync(address: Address, updateTimestamp?: boolean): Promise<void>;
+  sync(address: Address): Promise<void>;
   setAtom(
     address: Address,
     atom: Atom,
@@ -158,7 +158,7 @@ export interface DataConnector<Depth extends number> {
 /// DataConnectorImplementations
 export type DataConnectorImplementations<Depth extends number> = {
   connect?: (
-    onChange: (address: AtomAddress<Depth>) => Promise<void>,
+    syncChangedAtoms: (...address: AtomAddress<Depth>[]) => Promise<void>,
   ) => Promise<void>;
   disconnect?: () => Promise<void>;
   readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>;

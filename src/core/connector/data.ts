@@ -1,4 +1,6 @@
 import type {
+  Atom,
+  AtomAddress,
   createDataConnector as createDataConnectorDecl,
   DataConnectorImplementations,
   DataConnectorOptimizations,
@@ -9,6 +11,8 @@ import {objFreeze} from '../../common/object.ts';
 import {errorNew} from '../../common/other.ts';
 import {ProtectedDataConnector, ProtectedSynclet} from '../types.js';
 
+const SYNC_CHANGED_ATOMS = 0;
+
 export const createDataConnector: typeof createDataConnectorDecl = <
   Depth extends number,
 >(
@@ -17,24 +21,43 @@ export const createDataConnector: typeof createDataConnectorDecl = <
     connect,
     disconnect,
     readAtom,
-    writeAtom,
-    removeAtom,
+    writeAtom: writeAtomImpl,
+    removeAtom: removeAtomImpl,
     readChildIds,
   }: DataConnectorImplementations<Depth>,
   {readAtoms, getData}: DataConnectorOptimizations<Depth> = {},
   extraFunctions: ExtraFunctions = {},
 ): ProtectedDataConnector<Depth> => {
   let attachedSynclet: ProtectedSynclet<Depth> | undefined;
+  let syncletWriting = 0;
 
   const log = (message: string, level?: LogLevel) =>
     attachedSynclet?.log(message, level);
+
+  const syncChangedAtoms = async (...addresses: AtomAddress<Depth>[]) => {
+    if (!syncletWriting) {
+      await attachedSynclet?._[SYNC_CHANGED_ATOMS](...addresses);
+    }
+  };
+
+  const writeAtom = async (address: AtomAddress<Depth>, atom: Atom) => {
+    syncletWriting = 1;
+    await writeAtomImpl(address, atom);
+    syncletWriting = 0;
+  };
+
+  const removeAtom = async (address: AtomAddress<Depth>) => {
+    syncletWriting = 1;
+    await removeAtomImpl(address);
+    syncletWriting = 0;
+  };
 
   const attach = async (synclet: ProtectedSynclet<Depth>) => {
     if (attachedSynclet) {
       errorNew('Data connector is already attached to Synclet');
     }
     attachedSynclet = synclet;
-    await connect?.(async (address) => synclet.sync(address, true));
+    await connect?.(syncChangedAtoms);
   };
 
   const detach = async () => {
