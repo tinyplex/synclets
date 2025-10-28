@@ -14,14 +14,13 @@ export const createTinyBaseTablesDataConnector: typeof createTinyBaseTablesDataC
     let listenerId: Id;
 
     const connect = async (
-      onChange: (address: AtomAddress<3>) => Promise<void>,
+      syncChangedAtoms: (...addresses: AtomAddress<3>[]) => Promise<void>,
     ) => {
       listenerId = store.addCellListener(
         null,
         null,
         null,
         (_, tableId, rowId, cellId) => {
-          onChange([tableId, rowId, cellId]);
         },
       );
     };

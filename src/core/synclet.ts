@@ -398,6 +398,20 @@ export const createSynclet = async <
     }
   };
 
+  const syncChangedAtoms = async (...addresses: AtomAddress<Depth>[]) => {
+    await promiseAll(
+      arrayMap(addresses, async (address) => {
+        if (size(address) == dataDepth) {
+          await metaWriteTimestamp(
+            address as TimestampAddress<Depth>,
+            getNextTimestamp(),
+          );
+          await syncExceptTransport(address);
+        }
+      }),
+    );
+  };
+
   const sendMessage = async (
     transport: ProtectedTransport,
     address: Address,
@@ -630,18 +644,8 @@ export const createSynclet = async <
 
   const getTransport = () => [...transports];
 
-  const sync = async (
-    address: AnyAddress<Depth>,
-    updateTimestamp?: boolean,
-  ) => {
-    if (size(address) == dataDepth && updateTimestamp) {
-      await metaWriteTimestamp(
-        address as TimestampAddress<Depth>,
-        getNextTimestamp(),
-      );
-    }
-    await syncExceptTransport(address, updateTimestamp);
-  };
+  const sync = async (address: AnyAddress<Depth>) =>
+    syncExceptTransport(address);
 
   const setAtom = (
     address: AtomAddress<Depth>,
@@ -676,7 +680,7 @@ export const createSynclet = async <
     delAtom,
     getData,
     getMeta,
-    _: [syncExceptTransport],
+    _: [syncChangedAtoms],
   };
 
   await dataAttach(synclet);

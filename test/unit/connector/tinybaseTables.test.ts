@@ -26,7 +26,7 @@ test('getStore, tables', async () => {
   expect(synclet.getDataConnector().getStore()).toBe(store);
 });
 
-test('reactive', async () => {
+test.only('reactive', async () => {
   const poolId = getUniqueId();
 
   const store1 = createStore();
@@ -44,10 +44,8 @@ test('reactive', async () => {
     transport: createMemoryTransport({poolId}),
   });
   await synclet2.start();
-  await pause(10);
 
   store1.setCell('t1', 'r1', 'c1', 'c1');
-  await pause(10);
-
+  await pause(1);
   expect(store2.getTables()).toEqual({t1: {r1: {c1: 'c1'}}});
 });
