@@ -45,6 +45,31 @@ export type Timestamps = {[id: string]: Timestamp};
 /// Meta
 export type Meta = Timestamps | {[id: string]: Meta};
 
+/// TimestampAndAtom
+export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom | undefined];
+
+/// Hash
+export type Hash = number;
+
+/// MessageType
+export type MessageType = 0;
+
+/// MessageNode
+export type MessageNode = Timestamp | TimestampAndAtom | Hash | MessageNodes;
+
+/// MessageNodes
+export type MessageNodes = [subNodes: {[id: string]: MessageNode}, partial?: 1];
+
+/// Message
+export type Message = [
+  version: number,
+  type: MessageType,
+  depth: number,
+  address: Address,
+  node: MessageNode,
+  context: Context,
+];
+
 /// Context
 export type Context = {[key: string]: Atom};
 

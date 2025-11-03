@@ -1,6 +1,7 @@
 import type {
   createTransport as createTransportDecl,
   LogLevel,
+  Message,
   TransportImplementations,
   TransportOptions,
 } from '@synclets/@types';
@@ -10,12 +11,7 @@ import {mapEnsure, mapNew} from '../common/map.ts';
 import {objFreeze} from '../common/object.ts';
 import {errorNew, promiseAll, size} from '../common/other.ts';
 import {ASTERISK, SPACE} from '../common/string.ts';
-import {
-  Message,
-  ProtectedSynclet,
-  ProtectedTransport,
-  ReceiveMessage,
-} from './types.js';
+import {ProtectedSynclet, ProtectedTransport, ReceiveMessage} from './types.js';
 
 type Pending = [fragments: string[], due: number];
 

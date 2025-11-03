@@ -1,9 +1,8 @@
+import {Hash} from '@synclets/@types';
 import {arrayForEach, arrayMap} from './array.ts';
 import {mapGet, mapNew} from './map.ts';
 import {GLOBAL} from './other.ts';
 import {EMPTY_STRING, strSplit} from './string.ts';
-
-export type Hash = number;
 
 const textEncoder = new GLOBAL.TextEncoder();
 

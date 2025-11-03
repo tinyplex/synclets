@@ -7,12 +7,17 @@ import {
   AtomsAddress,
   Context,
   Data,
+  Hash,
   LogLevel,
+  Message,
+  MessageNode,
+  MessageNodes,
   Meta,
   SyncletImplementations,
   SyncletOptions,
   Timestamp,
   TimestampAddress,
+  TimestampAndAtom,
   TimestampsAddress,
 } from '@synclets/@types';
 import {
@@ -29,7 +34,7 @@ import {
   arrayReduce,
   isArray,
 } from '../common/array.ts';
-import {combineHash, getHash, Hash} from '../common/codec.ts';
+import {combineHash, getHash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
 import {
   objFreeze,
@@ -53,19 +58,13 @@ import {
   INVALID_NODE,
   WARN,
 } from '../common/string.ts';
-import {
-  isHash,
-  isProtocolSubNodes,
-  isTimestampAndAtom,
-  Message,
+import type {
   ProtectedDataConnector,
   ProtectedMetaConnector,
   ProtectedSynclet,
   ProtectedTransport,
-  TimestampAndAtom,
-  type MessageNode,
-  type MessageNodes,
 } from './types.ts';
+import {isHash, isProtocolSubNodes, isTimestampAndAtom} from './types.ts';
 
 const VERSION = 1;
 

@@ -98,6 +98,48 @@
 /// Meta
 
 /**
+ * The TimestampAndAtom type.
+ * @category Message
+ * @since v0.0.0
+ */
+/// TimestampAndAtom
+
+/**
+ * The Hash type.
+ * @category Message
+ * @since v0.0.0
+ */
+/// Hash
+
+/**
+ * The MessageType type.
+ * @category Message
+ * @since v0.0.0
+ */
+/// MessageType
+
+/**
+ * The MessageNode type.
+ * @category Message
+ * @since v0.0.0
+ */
+/// MessageNode
+
+/**
+ * The MessageNodes type.
+ * @category Message
+ * @since v0.0.0
+ */
+/// MessageNodes
+
+/**
+ * The Message type.
+ * @category Message
+ * @since v0.0.0
+ */
+/// Message
+
+/**
  * The Context type.
  * @category Context
  * @since v0.0.0

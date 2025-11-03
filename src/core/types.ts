@@ -1,44 +1,29 @@
 import type {
-  Address,
   AnyParentAddress,
   Atom,
   AtomAddress,
   Atoms,
   AtomsAddress,
-  Context,
   Data,
   DataConnector,
+  Hash,
+  Message,
+  MessageNode,
+  MessageNodes,
   Meta,
   MetaConnector,
   Synclet,
   Timestamp,
   TimestampAddress,
+  TimestampAndAtom,
   Timestamps,
   TimestampsAddress,
   Transport,
 } from '@synclets/@types';
 import {isAtom, isTimestamp} from '@synclets/utils';
 import {isArray} from '../common/array.ts';
-import {Hash} from '../common/codec.ts';
 import {isObject, objEvery} from '../common/object.ts';
 import {size} from '../common/other.ts';
-
-export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom | undefined];
-
-export type MessageType = 0;
-
-export type MessageNode = Timestamp | TimestampAndAtom | Hash | MessageNodes;
-
-export type MessageNodes = [subNodes: {[id: string]: MessageNode}, partial?: 1];
-
-export type Message = [
-  version: number,
-  type: MessageType,
-  depth: number,
-  address: Address,
-  node: MessageNode,
-  context: Context,
-];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
 
