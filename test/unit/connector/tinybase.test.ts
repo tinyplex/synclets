@@ -28,16 +28,28 @@ test('getStore, tables', async () => {
 describe('reactive', async () => {
   let store1: Store;
   let store2: Store;
+  let messagesSent = 0;
+  let messagesReceived = 0;
 
   beforeEach(async () => {
     const poolId = getUniqueId();
 
     store1 = createStore();
     const dataConnector1 = createTinyBaseDataConnector(store1);
-    const synclet1 = await createSynclet({
-      dataConnector: dataConnector1,
-      transport: createMemoryTransport({poolId}),
-    });
+    const synclet1 = await createSynclet(
+      {
+        dataConnector: dataConnector1,
+        transport: createMemoryTransport({poolId}),
+      },
+      {
+        onSendMessage: async () => {
+          messagesSent++;
+        },
+        onReceiveMessage: async () => {
+          messagesReceived++;
+        },
+      },
+    );
     await synclet1.start();
 
     store2 = createStore();
@@ -53,6 +65,8 @@ describe('reactive', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await pause(1);
     expect(store2.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(messagesSent).toBe(3);
+    expect(messagesReceived).toBe(2);
   });
 
   test('value', async () => {

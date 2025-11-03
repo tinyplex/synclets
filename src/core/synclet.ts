@@ -64,7 +64,7 @@ import {
   ProtectedTransport,
   TimestampAndAtom,
   type MessageNode,
-  type MessageSubNodes,
+  type MessageNodes,
 } from './types.ts';
 
 const VERSION = 1;
@@ -93,6 +93,8 @@ export const createSynclet = async <
     onStart,
     onStop,
     onSync,
+    onSendMessage,
+    onReceiveMessage,
     onSetAtom,
     getSendContext,
     canReceiveMessage,
@@ -337,7 +339,7 @@ export const createSynclet = async <
   const readFullNodesOrAtomAndTimestamp = async (
     address: AnyAddress<Depth>,
     context: Context,
-  ): Promise<MessageSubNodes | TimestampAndAtom | undefined> => {
+  ): Promise<MessageNodes | TimestampAndAtom | undefined> => {
     if (isAnyParentAddress(address)) {
       return await readFullNodes(address, context);
     }
@@ -351,7 +353,7 @@ export const createSynclet = async <
     address: AnyParentAddress<Depth>,
     context: Context,
     except: string[] = [],
-  ): Promise<MessageSubNodes> => {
+  ): Promise<MessageNodes> => {
     const subNodeObj: {[id: string]: MessageNode} = {};
     await promiseAll(
       arrayMap(
@@ -418,18 +420,18 @@ export const createSynclet = async <
     node: MessageNode,
     receivedContext: Context = {},
     to?: string,
-  ) =>
-    await transport._[SEND_MESSAGE](
-      [
-        VERSION,
-        0,
-        dataDepth,
-        address,
-        node,
-        (await getSendContext?.(receivedContext)) ?? {},
-      ],
-      to,
-    );
+  ) => {
+    const message = [
+      VERSION,
+      0,
+      dataDepth,
+      address,
+      node,
+      (await getSendContext?.(receivedContext)) ?? {},
+    ] as Message;
+    await onSendMessage?.();
+    await transport._[SEND_MESSAGE](message, to);
+  };
 
   const receiveMessage = (
     transport: ProtectedTransport,
@@ -437,6 +439,7 @@ export const createSynclet = async <
     from: string,
   ) =>
     queueIfStarted(async () => {
+      onReceiveMessage?.();
       const [version, type, depth, address, node, context] = message;
 
       if (from == ASTERISK || from == id) {
@@ -565,11 +568,11 @@ export const createSynclet = async <
   const transformSubNodes = async (
     transport: ProtectedTransport,
     address: AnyParentAddress<Depth>,
-    [otherSubNodeObj, partial]: MessageSubNodes,
+    [otherSubNodeObj, partial]: MessageNodes,
     context: Context,
   ): Promise<MessageNode | undefined> => {
     if (size(address) < dataDepth) {
-      const mySubNodes: MessageSubNodes = partial
+      const mySubNodes: MessageNodes = partial
         ? [{}]
         : await readFullNodes(address, context, objKeys(otherSubNodeObj));
       await promiseAll(

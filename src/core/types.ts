@@ -27,6 +27,10 @@ export type TimestampAndAtom = [timestamp: Timestamp, atom: Atom | undefined];
 
 export type MessageType = 0;
 
+export type MessageNode = Timestamp | TimestampAndAtom | Hash | MessageNodes;
+
+export type MessageNodes = [subNodes: {[id: string]: MessageNode}, partial?: 1];
+
 export type Message = [
   version: number,
   type: MessageType,
@@ -34,13 +38,6 @@ export type Message = [
   address: Address,
   node: MessageNode,
   context: Context,
-];
-
-export type MessageNode = Timestamp | TimestampAndAtom | Hash | MessageSubNodes;
-
-export type MessageSubNodes = [
-  subNodes: {[id: string]: MessageNode},
-  partial?: 1,
 ];
 
 export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
@@ -110,7 +107,7 @@ export const isTimestampAndAtom = (thing: unknown): thing is TimestampAndAtom =>
 export const isHash = (thing: unknown): thing is Hash =>
   typeof thing === 'number';
 
-export const isProtocolSubNodes = (thing: unknown): thing is MessageSubNodes =>
+export const isProtocolSubNodes = (thing: unknown): thing is MessageNodes =>
   isArray(thing) &&
   isObject(thing[0]) &&
   objEvery(thing[0], isProtocolNode) &&
