@@ -1,4 +1,1 @@
-export {
-  createTinyBaseTablesDataConnector,
-  createTinyBaseValuesDataConnector,
-} from './data.ts';
+export {createTinyBaseDataConnector} from './data.ts';

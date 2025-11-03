@@ -1,22 +1,27 @@
-import {AnyParentAddress, Atom, AtomAddress} from '@synclets/@types';
+import {Address, AnyParentAddress, Atom, AtomAddress} from '@synclets/@types';
 import type {
-  createTinyBaseTablesDataConnector as createTinyBaseTablesDataConnectorDecl,
-  createTinyBaseValuesDataConnector as createTinyBaseValuesDataConnectorDecl,
-  TinyBaseTablesDataConnector,
-  TinyBaseValuesDataConnector,
+  createTinyBaseDataConnector as createTinyBaseDataConnectorDecl,
+  TinyBaseDataConnector,
 } from '@synclets/@types/connector/tinybase';
+import {RESERVED} from '@synclets/utils';
 import type {Cell, Id, Store, Value} from 'tinybase';
 import {size} from '../../common/other.ts';
 import {createDataConnector} from '../../core/index.ts';
 
-export const createTinyBaseTablesDataConnector: typeof createTinyBaseTablesDataConnectorDecl =
+const VALUE_STEM = RESERVED + 'v';
+
+const isValueAddress = (address: Address) =>
+  address[0] == VALUE_STEM && address[1] == VALUE_STEM;
+
+export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl =
   (store: Store) => {
-    let listenerId: Id;
+    let cellListenerId: Id;
+    let valueListenerId: Id;
 
     const connect = async (
       syncChangedAtoms: (...addresses: AtomAddress<3>[]) => Promise<void>,
     ) => {
-      listenerId = store.addCellListener(
+      cellListenerId = store.addCellListener(
         null,
         null,
         null,
@@ -24,29 +29,47 @@ export const createTinyBaseTablesDataConnector: typeof createTinyBaseTablesDataC
           syncChangedAtoms([tableId, rowId, cellId]);
         },
       );
+      valueListenerId = store.addValueListener(null, (_, valueId) => {
+        syncChangedAtoms([VALUE_STEM, VALUE_STEM, valueId]);
+      });
     };
 
     const disconnect = async () => {
-      store.delListener(listenerId);
+      store.delListener(cellListenerId);
+      store.delListener(valueListenerId);
     };
 
     const readAtom = async (address: AtomAddress<3>) =>
-      store.getCell(...address);
+      isValueAddress(address)
+        ? store.getValue(address[2])
+        : store.getCell(...address);
 
     const writeAtom = async (address: AtomAddress<3>, atom: Atom) => {
-      store.setCell(...address, atom as Cell);
+      if (isValueAddress(address)) {
+        store.setValue(address[2], atom as Value);
+      } else {
+        store.setCell(...address, atom as Cell);
+      }
     };
 
     const removeAtom = async (address: AtomAddress<3>) => {
-      store.delCell(...address);
+      if (isValueAddress(address)) {
+        store.delValue(address[2]);
+      } else {
+        store.delCell(...address);
+      }
     };
 
     const readChildIds = async (address: AnyParentAddress<3>) =>
       size(address) === 0
-        ? store.getTableIds()
+        ? [...store.getTableIds(), VALUE_STEM]
         : size(address) === 1
-          ? store.getRowIds(address[0] as string)
-          : store.getCellIds(address[0] as string, address[1] as string);
+          ? address[0] === VALUE_STEM
+            ? [VALUE_STEM]
+            : store.getRowIds(address[0] as string)
+          : isValueAddress(address)
+            ? store.getValueIds()
+            : store.getCellIds(address[0] as string, address[1] as string);
 
     const extraFunctions = {
       getStore: () => store,
@@ -57,32 +80,5 @@ export const createTinyBaseTablesDataConnector: typeof createTinyBaseTablesDataC
       {connect, disconnect, readAtom, writeAtom, removeAtom, readChildIds},
       {},
       extraFunctions,
-    ) as TinyBaseTablesDataConnector;
-  };
-
-export const createTinyBaseValuesDataConnector: typeof createTinyBaseValuesDataConnectorDecl =
-  (store: Store) => {
-    const readAtom = async (address: AtomAddress<1>) =>
-      store.getValue(...address);
-
-    const writeAtom = async (address: AtomAddress<1>, atom: Atom) => {
-      store.setValue(...address, atom as Value);
-    };
-
-    const removeAtom = async (address: AtomAddress<1>) => {
-      store.delValue(...address);
-    };
-
-    const readChildIds = async () => store.getValueIds();
-
-    const extraFunctions = {
-      getStore: () => store,
-    };
-
-    return createDataConnector(
-      1,
-      {readAtom, writeAtom, removeAtom, readChildIds},
-      {},
-      extraFunctions,
-    ) as TinyBaseValuesDataConnector;
+    ) as TinyBaseDataConnector;
   };
