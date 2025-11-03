@@ -152,6 +152,7 @@ export type SyncletImplementations<Depth extends number> = {
     childIds: string[],
     context: Context,
   ) => Promise<string[]>;
+  getNow?: () => number;
 };
 
 /// SyncletOptions

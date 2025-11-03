@@ -7,12 +7,11 @@ import {createStatelessWsServer} from 'synclets/server/stateless-ws';
 import {createWsTransport} from 'synclets/transport/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
-import {describeSyncletTests} from '../common.ts';
+import {describeCommonConnectorTests} from '../common.ts';
 
 const WS_PORT = 9001;
 
-describeSyncletTests(
-  'ws',
+describeCommonConnectorTests(
   async () => createStatelessWsServer(new WebSocketServer({port: WS_PORT})),
   async (wsServer) => wsServer.destroy(),
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),

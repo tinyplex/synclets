@@ -9,10 +9,9 @@ import {
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
 import {expect, test} from 'vitest';
-import {describeSyncletTests} from '../common.ts';
+import {describeCommonConnectorTests} from '../common.ts';
 
-describeSyncletTests(
-  'memory',
+describeCommonConnectorTests(
   async () => ({tempDir: await mkdtemp(tmpdir() + sep)}),
   async ({tempDir}: {tempDir: string}) =>
     await rm(tempDir, {recursive: true, force: true}),

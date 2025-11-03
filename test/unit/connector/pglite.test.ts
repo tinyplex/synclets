@@ -19,13 +19,12 @@ import {
 import {
   createMockDataConnector,
   createMockMetaConnector,
-  describeSyncletTests,
+  describeCommonConnectorTests,
 } from '../common.ts';
 
 const TEXT = 25;
 
-describeSyncletTests(
-  'memory',
+describeCommonConnectorTests(
   async () => await PGlite.create(),
   async () => {},
   <Depth extends number>(depth: Depth, pglite: PGlite) =>

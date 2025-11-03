@@ -1,6 +1,6 @@
 /// utils
 
-import {Atom, Timestamp} from '@synclets/@types';
+import {Atom, Hash, Timestamp} from '@synclets/@types';
 
 export type Reserved = '\uFFFA';
 export const RESERVED: Reserved;
@@ -13,6 +13,8 @@ export function jsonString(obj: unknown): string;
 export function jsonParse(str: string): any;
 
 export function getUniqueId(length?: number): string;
+
+export function getHash(string: string): Hash;
 
 export function isTimestamp(thing: unknown): thing is Timestamp;
 

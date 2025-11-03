@@ -22,7 +22,7 @@ beforeEach(async () => {
   transport = createMockTransport();
 });
 
-test('createSynclet', () => {
+test('createSynclet', async () => {
   const synclet = createSynclet({dataConnector, metaConnector, transport});
   expect(synclet).toBeDefined();
 });

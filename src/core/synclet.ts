@@ -25,7 +25,7 @@ import {
   createMemoryMetaConnector,
 } from '@synclets/connector/memory';
 import {createMemoryTransport} from '@synclets/transport/memory';
-import {getUniqueId, isTimestamp} from '@synclets/utils';
+import {getHash, getUniqueId, isTimestamp} from '@synclets/utils';
 import {
   arrayDifference,
   arrayForEach,
@@ -34,7 +34,7 @@ import {
   arrayReduce,
   isArray,
 } from '../common/array.ts';
-import {combineHash, getHash} from '../common/codec.ts';
+import {combineHash} from '../common/codec.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
 import {
   objFreeze,
@@ -101,6 +101,7 @@ export const createSynclet = async <
     canWriteAtom,
     canRemoveAtom,
     filterChildIds,
+    getNow,
   }: SyncletImplementations<Depth> = {},
   options: SyncletOptions = {},
 ): Promise<ProtectedSynclet<Depth>> => {
@@ -145,7 +146,7 @@ export const createSynclet = async <
 
   const transports = isArray(transport) ? transport : [transport];
 
-  const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id);
+  const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id, getNow);
 
   const isAnyParentAddress = (
     address: AnyAddress<Depth>,

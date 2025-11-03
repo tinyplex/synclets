@@ -1,4 +1,5 @@
 import console from 'console';
+import {join} from 'path';
 import {
   createDataConnector,
   createMetaConnector,
@@ -13,12 +14,173 @@ import {
 import {getUniqueId} from 'synclets/utils';
 import {afterAll, beforeAll, describe, expect, test} from 'vitest';
 
-export const describeSyncletTests = <
+const assertionsPerFileTest = new Map<string, number>();
+const getFileSnapshot = (type: string) => {
+  const state = expect.getState();
+  const testName = state?.currentTestName;
+  const fileTestName = state?.snapshotState?.testFilePath + '/' + testName;
+  const assertion = (assertionsPerFileTest.get(fileTestName) ?? 0) + 1;
+  assertionsPerFileTest.set(fileTestName, assertion);
+  return join(__dirname, '__snapshots__', `${testName}.${type} #${assertion}`);
+};
+
+export const pause = async (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+export const getTimeFunctions = (): [
+  reset: () => void,
+  getNow: () => number,
+  pause: (ms?: number) => Promise<void>,
+] => {
+  let time = 0;
+  return [
+    () => (time = new Date('2026-01-01 00:00:00 UTC').valueOf()),
+    () => time,
+    async (ms = 50): Promise<void> => {
+      time += ms;
+      return pause(ms);
+    },
+  ];
+};
+
+export const createPooledTestSyncletsAndConnectors = async <
+  Depth extends number,
+  TestSynclet extends Synclet<Depth>,
+>(
+  createSynclet: (
+    dataConnector: DataConnector<Depth>,
+    metaConnector: MetaConnector<Depth>,
+    transport: Transport | Transport[],
+    options?: SyncletOptions,
+  ) => Promise<TestSynclet>,
+  createDataConnector: () => DataConnector<Depth>,
+  createMetaConnector: () => MetaConnector<Depth>,
+  createTransport: (uniqueId: string) => Transport,
+  number: number,
+  start = true,
+  log = false,
+): Promise<TestSynclet[]> => {
+  const uniqueId = getUniqueId();
+  return await Promise.all(
+    new Array(number).fill(0).map(async (_, i) => {
+      const dataConnector = createDataConnector();
+      const metaConnector = createMetaConnector();
+      const transport = createTransport(uniqueId);
+      const synclet = await createSynclet(
+        dataConnector,
+        metaConnector,
+        transport,
+        {id: 'synclet' + (i + 1), logger: log ? console : undefined},
+      );
+      if (start) {
+        await synclet.start();
+      }
+      return synclet;
+    }),
+  );
+};
+
+export const createChainedTestSynclets = async <
+  Depth extends number,
+  TestSynclet extends Synclet<Depth>,
+>(
+  createSynclet: (
+    dataConnector: DataConnector<Depth>,
+    metaConnector: MetaConnector<Depth>,
+    transport: Transport | Transport[],
+    options?: SyncletOptions,
+  ) => Promise<TestSynclet>,
+  createDataConnector: () => DataConnector<Depth>,
+  createMetaConnector: () => MetaConnector<Depth>,
+  createTransport: (uniqueId: string) => Transport,
+  number: number,
+  loop = false,
+  start = true,
+  log = false,
+): Promise<TestSynclet[]> => {
+  const uniqueId = getUniqueId();
+  return await Promise.all(
+    new Array(number).fill(0).map(async (_, i) => {
+      const dataConnector = createDataConnector();
+      const metaConnector = createMetaConnector();
+      const transports = [];
+      if (i != 0 || loop) {
+        transports.push(createTransport(uniqueId + i));
+      }
+      if (i != number - 1 || loop) {
+        transports.push(
+          createTransport(uniqueId + (i == number - 1 ? 0 : i + 1)),
+        );
+      }
+      const synclet = await createSynclet(
+        dataConnector,
+        metaConnector,
+        transports,
+        {id: 'synclet' + (i + 1), logger: log ? console : undefined},
+      );
+      if (start) {
+        await synclet.start();
+      }
+      return synclet;
+    }),
+  );
+};
+
+export const createMockDataConnector = <Depth extends number>(depth: Depth) =>
+  createDataConnector(depth, {
+    readAtom: async () => 0,
+    writeAtom: async () => {},
+    removeAtom: async () => {},
+    readChildIds: async () => [],
+  }) as DataConnector<Depth>;
+
+export const createMockMetaConnector = <Depth extends number>(depth: Depth) =>
+  createMetaConnector(depth, {
+    readTimestamp: async () => '',
+    writeTimestamp: async () => {},
+    readChildIds: async () => [],
+  }) as MetaConnector<Depth>;
+
+export const createMockTransport = () =>
+  createTransport({
+    sendPacket: async () => {},
+  });
+
+export const expectEquivalentSynclets = async <Depth extends number>(
+  synclets: Synclet<Depth>[],
+) => {
+  const data = await synclets[0].getData();
+  const meta = await synclets[0].getMeta();
+
+  await expect(data).toMatchFileSnapshot(getFileSnapshot('equivalent'));
+  await Promise.all(
+    synclets.map(async (synclet) => {
+      expect(await synclet.getData()).toEqual(data);
+      expect(await synclet.getMeta()).toEqual(meta);
+    }),
+  );
+};
+
+export const expectDifferingSynclets = async <Depth extends number>(
+  synclet1: Synclet<Depth>,
+  synclet2: Synclet<Depth>,
+) => {
+  const data1 = await synclet1.getData();
+  const data2 = await synclet2.getData();
+  expect(data1).not.toEqual(data2);
+  await expect([data1, data2]).toMatchFileSnapshot(
+    getFileSnapshot('differing'),
+  );
+
+  expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
+  expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
+};
+
+export const describeCommonConnectorTests = <
   DataConnectorType extends DataConnector<number>,
   MetaConnectorType extends MetaConnector<number>,
   Environment,
 >(
-  transportType: string,
   before: () => Promise<Environment>,
   after: (environment: Environment) => Promise<void>,
   createDataConnector: (
@@ -33,7 +195,7 @@ export const describeSyncletTests = <
   transportPause = 1,
   onlyDepths: number[] = [1, 2, 3, 4],
 ) =>
-  describe(`over ${transportType}`, () => {
+  describe(`common connector tests`, () => {
     let environment: Environment;
 
     beforeAll(async () => (environment = await before()));
@@ -441,135 +603,3 @@ export const describeSyncletTests = <
       },
     );
   });
-
-export const pause = async (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-export const createPooledTestSyncletsAndConnectors = async <
-  Depth extends number,
-  TestSynclet extends Synclet<Depth>,
->(
-  createSynclet: (
-    dataConnector: DataConnector<Depth>,
-    metaConnector: MetaConnector<Depth>,
-    transport: Transport | Transport[],
-    options?: SyncletOptions,
-  ) => Promise<TestSynclet>,
-  createDataConnector: () => DataConnector<Depth>,
-  createMetaConnector: () => MetaConnector<Depth>,
-  createTransport: (uniqueId: string) => Transport,
-  number: number,
-  start = true,
-  log = false,
-): Promise<TestSynclet[]> => {
-  const uniqueId = getUniqueId();
-  return await Promise.all(
-    new Array(number).fill(0).map(async (_, i) => {
-      const dataConnector = createDataConnector();
-      const metaConnector = createMetaConnector();
-      const transport = createTransport(uniqueId);
-      const synclet = await createSynclet(
-        dataConnector,
-        metaConnector,
-        transport,
-        {id: 'synclet' + (i + 1), logger: log ? console : undefined},
-      );
-      if (start) {
-        await synclet.start();
-      }
-      return synclet;
-    }),
-  );
-};
-
-export const createChainedTestSynclets = async <
-  Depth extends number,
-  TestSynclet extends Synclet<Depth>,
->(
-  createSynclet: (
-    dataConnector: DataConnector<Depth>,
-    metaConnector: MetaConnector<Depth>,
-    transport: Transport | Transport[],
-    options?: SyncletOptions,
-  ) => Promise<TestSynclet>,
-  createDataConnector: () => DataConnector<Depth>,
-  createMetaConnector: () => MetaConnector<Depth>,
-  createTransport: (uniqueId: string) => Transport,
-  number: number,
-  loop = false,
-  start = true,
-  log = false,
-): Promise<TestSynclet[]> => {
-  const uniqueId = getUniqueId();
-  return await Promise.all(
-    new Array(number).fill(0).map(async (_, i) => {
-      const dataConnector = createDataConnector();
-      const metaConnector = createMetaConnector();
-      const transports = [];
-      if (i != 0 || loop) {
-        transports.push(createTransport(uniqueId + i));
-      }
-      if (i != number - 1 || loop) {
-        transports.push(
-          createTransport(uniqueId + (i == number - 1 ? 0 : i + 1)),
-        );
-      }
-      const synclet = await createSynclet(
-        dataConnector,
-        metaConnector,
-        transports,
-        {id: 'synclet' + (i + 1), logger: log ? console : undefined},
-      );
-      if (start) {
-        await synclet.start();
-      }
-      return synclet;
-    }),
-  );
-};
-
-export const createMockDataConnector = <Depth extends number>(depth: Depth) =>
-  createDataConnector(depth, {
-    readAtom: async () => 0,
-    writeAtom: async () => {},
-    removeAtom: async () => {},
-    readChildIds: async () => [],
-  }) as DataConnector<Depth>;
-
-export const createMockMetaConnector = <Depth extends number>(depth: Depth) =>
-  createMetaConnector(depth, {
-    readTimestamp: async () => '',
-    writeTimestamp: async () => {},
-    readChildIds: async () => [],
-  }) as MetaConnector<Depth>;
-
-export const createMockTransport = () =>
-  createTransport({
-    sendPacket: async () => {},
-  });
-
-export const expectEquivalentSynclets = async <Depth extends number>(
-  synclets: Synclet<Depth>[],
-) => {
-  const data = await synclets[0].getData();
-  const meta = await synclets[0].getMeta();
-  expect(data).toMatchSnapshot('equivalent');
-  await Promise.all(
-    synclets.map(async (synclet) => {
-      expect(await synclet.getData()).toEqual(data);
-      expect(await synclet.getMeta()).toEqual(meta);
-    }),
-  );
-};
-
-export const expectDifferingSynclets = async <Depth extends number>(
-  synclet1: Synclet<Depth>,
-  synclet2: Synclet<Depth>,
-) => {
-  const data1 = await synclet1.getData();
-  const data2 = await synclet2.getData();
-  expect(data1).not.toEqual(data2);
-  expect([data1, data2]).toMatchSnapshot('differing');
-  expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
-  expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
-};

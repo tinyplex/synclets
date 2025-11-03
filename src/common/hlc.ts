@@ -1,5 +1,5 @@
-import {getUniqueId} from '@synclets/utils';
-import {decode, encode, getHash} from './codec.ts';
+import {getHash, getUniqueId} from '@synclets/utils';
+import {decode, encode} from './codec.ts';
 import {ifNotUndefined, isUndefined, mathMax} from './other.ts';
 import {EMPTY_STRING} from './string.ts';
 

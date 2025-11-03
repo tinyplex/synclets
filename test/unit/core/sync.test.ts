@@ -3,10 +3,9 @@ import {
   createMemoryMetaConnector,
 } from 'synclets/connector/memory';
 import {createMemoryTransport} from 'synclets/transport/memory';
-import {describeSyncletTests} from '../common.ts';
+import {describeCommonConnectorTests} from '../common.ts';
 
-describeSyncletTests(
-  'memory',
+describeCommonConnectorTests(
   async () => {},
   async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
