@@ -1,4 +1,4 @@
-import {createSynclet} from 'synclets';
+import {Address, createSynclet, MessageNode} from 'synclets';
 import {createMemoryMetaConnector} from 'synclets/connector/memory';
 import {createTinyBaseDataConnector} from 'synclets/connector/tinybase';
 import {createMemoryTransport} from 'synclets/transport/memory';
@@ -28,8 +28,8 @@ test('getStore, tables', async () => {
 describe('reactive', async () => {
   let store1: Store;
   let store2: Store;
-  let messagesSent = 0;
-  let messagesReceived = 0;
+  const messagesSent: [Address, MessageNode][] = [];
+  const messagesReceived: [Address, MessageNode][] = [];
 
   beforeEach(async () => {
     const poolId = getUniqueId();
@@ -42,11 +42,11 @@ describe('reactive', async () => {
         transport: createMemoryTransport({poolId}),
       },
       {
-        onSendMessage: async () => {
-          messagesSent++;
+        onSendMessage: async (message) => {
+          messagesSent.push([message[3], message[4]]);
         },
-        onReceiveMessage: async () => {
-          messagesReceived++;
+        onReceiveMessage: async (message) => {
+          messagesReceived.push([message[3], message[4]]);
         },
       },
     );
@@ -65,8 +65,18 @@ describe('reactive', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await pause(1);
     expect(store2.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    expect(messagesSent).toBe(3);
-    expect(messagesReceived).toBe(2);
+    expect(messagesSent).toEqual([
+      [[], 0],
+      [['t1', 'r1', 'c1'], expect.stringMatching(/^[\w-]{16}$/)],
+      [
+        ['t1', 'r1', 'c1'],
+        [expect.stringMatching(/^[\w-]{16}$/), 1],
+      ],
+    ]);
+    expect(messagesReceived).toEqual([
+      [[], 0],
+      [['t1', 'r1', 'c1'], ''],
+    ]);
   });
 
   test('value', async () => {

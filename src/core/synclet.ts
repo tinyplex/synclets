@@ -428,7 +428,7 @@ export const createSynclet = async <
       node,
       (await getSendContext?.(receivedContext)) ?? {},
     ] as Message;
-    await onSendMessage?.();
+    await onSendMessage?.([...message], to);
     await transport._[SEND_MESSAGE](message, to);
   };
 
@@ -438,7 +438,7 @@ export const createSynclet = async <
     from: string,
   ) =>
     queueIfStarted(async () => {
-      onReceiveMessage?.();
+      onReceiveMessage?.([...message], from);
       const [version, type, depth, address, node, context] = message;
 
       if (from == ASTERISK || from == id) {
