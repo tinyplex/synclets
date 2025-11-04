@@ -259,7 +259,7 @@ export const createSynclet = async <
       },
     ];
     if (syncOrFromTransport) {
-      arrayPush(tasks, () => syncExceptTransport(address, syncOrFromTransport));
+      arrayPush(tasks, () => syncExceptTransport(syncOrFromTransport, address));
     }
 
     await queue(...tasks);
@@ -375,24 +375,24 @@ export const createSynclet = async <
   };
 
   const syncExceptTransport = async (
-    address: AnyAddress<Depth>,
-    syncOrFromTransport: boolean | ProtectedTransport = true,
+    syncOrFromTransport: boolean | ProtectedTransport,
+    ...addresses: AnyAddress<Depth>[]
   ) => {
     if (started) {
-      const hashOrTimestamp = await readHashOrTimestamp(address, {});
+      const hashOrTimestamp = await readHashOrTimestamp(addresses[0], {});
       const tasks: Task[] = [];
       let didSync = false;
       arrayForEach(transports, (transport, t) => {
         if (transport !== syncOrFromTransport) {
-          log(`sync (${t}) ` + address);
+          log(`sync (${t}) ` + addresses[0]);
           didSync = true;
           arrayPush(tasks, () =>
-            sendMessage(transport, address, hashOrTimestamp),
+            sendMessage(transport, addresses[0], hashOrTimestamp),
           );
         }
       });
       if (didSync) {
-        await onSync?.(address);
+        await onSync?.(addresses[0]);
       }
       await queue(...tasks);
     }
@@ -406,7 +406,7 @@ export const createSynclet = async <
             address as TimestampAddress<Depth>,
             getNextTimestamp(),
           );
-          await syncExceptTransport(address);
+          await syncExceptTransport(true, address);
         }
       }),
     );
@@ -646,7 +646,7 @@ export const createSynclet = async <
   const getTransport = () => [...transports];
 
   const sync = async (address: AnyAddress<Depth>) =>
-    syncExceptTransport(address);
+    syncExceptTransport(true, address);
 
   const setAtom = (
     address: AtomAddress<Depth>,
