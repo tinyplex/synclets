@@ -57,3 +57,8 @@ export const arraySlice = <Value>(
   start?: number,
   end?: number,
 ): Value[] => array.slice(start, end);
+
+export const arrayConcat = <Value>(
+  array1: Value[],
+  ...arrays: Value[][]
+): Value[] => array1.concat(...arrays);

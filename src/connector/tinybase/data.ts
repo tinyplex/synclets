@@ -5,6 +5,7 @@ import type {
 } from '@synclets/@types/connector/tinybase';
 import {RESERVED} from '@synclets/utils';
 import type {Cell, Id, Store, Value} from 'tinybase';
+import {arrayConcat} from '../../common/array.ts';
 import {size} from '../../common/other.ts';
 import {createDataConnector} from '../../core/index.ts';
 
@@ -62,10 +63,15 @@ export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl
 
     const readChildIds = async (address: AnyParentAddress<3>) =>
       size(address) === 0
-        ? [...store.getTableIds(), VALUE_STEM]
+        ? arrayConcat(
+            store.getTableIds(),
+            store.hasValues() ? [VALUE_STEM] : [],
+          )
         : size(address) === 1
           ? address[0] === VALUE_STEM
-            ? [VALUE_STEM]
+            ? store.hasValues()
+              ? [VALUE_STEM]
+              : []
             : store.getRowIds(address[0] as string)
           : isValueAddress(address)
             ? store.getValueIds()
