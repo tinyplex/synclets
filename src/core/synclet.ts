@@ -236,7 +236,7 @@ export const createSynclet = async <
     address: AtomAddress<Depth>,
     atomOrUndefined: Atom | undefined,
     context: Context = {},
-    syncOrFromProtectedTransport: boolean | ProtectedTransport = true,
+    syncOrFromTransport: boolean | ProtectedTransport = true,
     newTimestamp?: Timestamp,
     oldTimestamp?: Timestamp,
   ) => {
@@ -258,10 +258,8 @@ export const createSynclet = async <
         await onSetAtom?.(address);
       },
     ];
-    if (syncOrFromProtectedTransport) {
-      arrayPush(tasks, () =>
-        syncExceptTransport(address, syncOrFromProtectedTransport),
-      );
+    if (syncOrFromTransport) {
+      arrayPush(tasks, () => syncExceptTransport(address, syncOrFromTransport));
     }
 
     await queue(...tasks);
@@ -378,14 +376,14 @@ export const createSynclet = async <
 
   const syncExceptTransport = async (
     address: AnyAddress<Depth>,
-    exceptTransport?: ProtectedTransport | boolean,
+    syncOrFromTransport: boolean | ProtectedTransport = true,
   ) => {
     if (started) {
       const hashOrTimestamp = await readHashOrTimestamp(address, {});
       const tasks: Task[] = [];
       let didSync = false;
       arrayForEach(transports, (transport, t) => {
-        if (transport !== exceptTransport) {
+        if (transport !== syncOrFromTransport) {
           log(`sync (${t}) ` + address);
           didSync = true;
           arrayPush(tasks, () =>
