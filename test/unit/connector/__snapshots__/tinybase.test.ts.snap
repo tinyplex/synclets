@@ -1,5 +1,31 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`reactive > both (transaction) 1`] = `
+[
+  "["S",[],0]",
+  "["R",[],0]",
+  "["S",["t1","r1","c1"],"OhqqeV0----BT7zq"]",
+  "["S",["￺v","￺v","v1"],"OhqqeV0---0BT7zq"]",
+  "["R",["t1","r1","c1"],""]",
+  "["S",["t1","r1","c1"],["OhqqeV0----BT7zq",1]]",
+  "["R",["￺v","￺v","v1"],""]",
+  "["S",["￺v","￺v","v1"],["OhqqeV0---0BT7zq",1]]",
+]
+`;
+
+exports[`reactive > both 1`] = `
+[
+  "["S",[],0]",
+  "["R",[],0]",
+  "["S",["t1","r1","c1"],"OhqqeV-----BT7zq"]",
+  "["R",["t1","r1","c1"],""]",
+  "["S",["t1","r1","c1"],["OhqqeV-----BT7zq",1]]",
+  "["S",["￺v","￺v","v1"],"OhqqeV0----BT7zq"]",
+  "["R",["￺v","￺v","v1"],""]",
+  "["S",["￺v","￺v","v1"],["OhqqeV0----BT7zq",1]]",
+]
+`;
+
 exports[`reactive > cell 1`] = `
 [
   "["S",[],0]",

@@ -88,9 +88,9 @@ describe('reactive', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await pause(1);
     store1.setValue('v1', 1);
-    expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
     await pause(1);
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(messages).toMatchSnapshot();
   });
 
   test('both (transaction)', async () => {
@@ -102,5 +102,6 @@ describe('reactive', async () => {
     expect(store2.getContent()).toEqual([{}, {}]);
     await pause(1);
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(messages).toMatchSnapshot();
   });
 });
