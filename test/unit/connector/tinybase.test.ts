@@ -14,7 +14,7 @@ describeCommonConnectorTests(
   () => createTinyBaseDataConnector(createStore()),
   (depth: number) => createMemoryMetaConnector(depth),
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
-  2,
+  0,
   [3],
 );
 

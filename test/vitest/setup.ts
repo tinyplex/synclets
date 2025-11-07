@@ -16,9 +16,10 @@ beforeAll(() => {
   fetchMock.enableMocks();
 });
 
-beforeEach(() => {
+beforeEach(({task}) => {
   fetchMock.resetMocks();
   mockWasmFetches();
+  (task.meta as any).retry = ((task.meta as any).retry ?? -1) + 1;
 });
 
 afterEach(({task}) => {

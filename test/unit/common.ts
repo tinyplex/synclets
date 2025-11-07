@@ -12,15 +12,31 @@ import {
   type Transport,
 } from 'synclets';
 import {getUniqueId} from 'synclets/utils';
-import {afterAll, beforeAll, describe, expect, test} from 'vitest';
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  test,
+  type TestContext,
+} from 'vitest';
 
-const assertionsPerFileTest = new Map<string, number>();
-const getFileSnapshot = (type: string) => {
+const retriesPerTest = new Map<string, number>();
+const assertionsPerTest = new Map<string, number>();
+const getFileSnapshot = (type: string, {task}: TestContext & object) => {
   const state = expect.getState();
   const testName = state?.currentTestName;
   const fileTestName = state?.snapshotState?.testFilePath + '/' + testName;
-  const assertion = (assertionsPerFileTest.get(fileTestName) ?? 0) + 1;
-  assertionsPerFileTest.set(fileTestName, assertion);
+
+  const lastRetry = retriesPerTest.get(fileTestName) ?? -1;
+  const {retry = 0} = task?.meta as any;
+  if (retry != lastRetry) {
+    retriesPerTest.set(fileTestName, retry);
+    assertionsPerTest.set(fileTestName, 0);
+  }
+
+  const assertion = (assertionsPerTest.get(fileTestName) ?? 0) + 1;
+  assertionsPerTest.set(fileTestName, assertion);
   return join(__dirname, '__snapshots__', `${testName}.${type} #${assertion}`);
 };
 
@@ -148,11 +164,12 @@ export const createMockTransport = () =>
 
 export const expectEquivalentSynclets = async <Depth extends number>(
   synclets: Synclet<Depth>[],
+  test: TestContext & object,
 ) => {
   const data = await synclets[0].getData();
   const meta = await synclets[0].getMeta();
 
-  await expect(data).toMatchFileSnapshot(getFileSnapshot('equivalent'));
+  await expect(data).toMatchFileSnapshot(getFileSnapshot('equivalent', test));
   await Promise.all(
     synclets.map(async (synclet) => {
       expect(await synclet.getData()).toEqual(data);
@@ -164,12 +181,13 @@ export const expectEquivalentSynclets = async <Depth extends number>(
 export const expectDifferingSynclets = async <Depth extends number>(
   synclet1: Synclet<Depth>,
   synclet2: Synclet<Depth>,
+  test: TestContext & object,
 ) => {
   const data1 = await synclet1.getData();
   const data2 = await synclet2.getData();
   expect(data1).not.toEqual(data2);
   await expect([data1, data2]).toMatchFileSnapshot(
-    getFileSnapshot('differing'),
+    getFileSnapshot('differing', test),
   );
 
   expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
@@ -267,7 +285,7 @@ export const describeCommonConnectorTests = <
         };
 
         describe('2-way', () => {
-          test('connected, initial', async () => {
+          test('connected, initial', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -277,10 +295,10 @@ export const describeCommonConnectorTests = <
                 2,
               );
 
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('connected', async () => {
+          test('connected', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -292,14 +310,14 @@ export const describeCommonConnectorTests = <
 
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
 
             await synclet2.setAtomForTest('B');
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('connected, deletion', async () => {
+          test('connected, deletion', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -311,16 +329,16 @@ export const describeCommonConnectorTests = <
 
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
 
             const meta = await synclet1.getMeta();
             await synclet1.delAtomForTest();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
             expect(meta).not.toEqual(await synclet1.getMeta());
           });
 
-          test('start 1, set 1, start 2', async () => {
+          test('start 1, set 1, start 2', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -335,14 +353,14 @@ export const describeCommonConnectorTests = <
 
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
-            await expectDifferingSynclets(synclet1, synclet2);
+            await expectDifferingSynclets(synclet1, synclet2, test);
 
             await synclet2.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('start 2, set 1, start 1', async () => {
+          test('start 2, set 1, start 1', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -356,14 +374,14 @@ export const describeCommonConnectorTests = <
             await synclet2.start();
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
-            await expectDifferingSynclets(synclet1, synclet2);
+            await expectDifferingSynclets(synclet1, synclet2, test);
 
             await synclet1.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('stop 1, set 1, start 1', async () => {
+          test('stop 1, set 1, start 1', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -375,19 +393,19 @@ export const describeCommonConnectorTests = <
 
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
 
             await synclet1.stop();
             await synclet1.setAtomForTest('B');
             await pause(transportPause);
-            await expectDifferingSynclets(synclet1, synclet2);
+            await expectDifferingSynclets(synclet1, synclet2, test);
 
             await synclet1.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('stop 1, set 2, start 1', async () => {
+          test('stop 1, set 2, start 1', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -399,19 +417,19 @@ export const describeCommonConnectorTests = <
 
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
 
             await synclet1.stop();
             await synclet2.setAtomForTest('B');
             await pause(transportPause);
-            await expectDifferingSynclets(synclet1, synclet2);
+            await expectDifferingSynclets(synclet1, synclet2, test);
 
             await synclet1.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('set 1, set 2, start 2, start 1', async () => {
+          test('set 1, set 2, start 2, start 1', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -424,19 +442,19 @@ export const describeCommonConnectorTests = <
 
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
-            await expectDifferingSynclets(synclet1, synclet2);
+            await expectDifferingSynclets(synclet1, synclet2, test);
 
             await synclet2.setAtomForTest('B');
             await pause(transportPause);
-            await expectDifferingSynclets(synclet1, synclet2);
+            await expectDifferingSynclets(synclet1, synclet2, test);
 
             await synclet2.start();
             await synclet1.start();
             await pause(transportPause * 2);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('connected, near atom', async () => {
+          test('connected, near atom', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -449,10 +467,10 @@ export const describeCommonConnectorTests = <
             await synclet1.setAtomForTest('A');
             await synclet2.setNearAtomForTest('B');
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('connected, far atom', async () => {
+          test('connected, far atom', async (test) => {
             if (farAddress) {
               const [synclet1, synclet2] =
                 await createPooledTestSyncletsAndConnectors(
@@ -465,11 +483,11 @@ export const describeCommonConnectorTests = <
               await synclet1.setAtomForTest('A');
               await synclet2.setFarAtomForTest('B');
               await pause(transportPause);
-              await expectEquivalentSynclets([synclet1, synclet2]);
+              await expectEquivalentSynclets([synclet1, synclet2], test);
             }
           });
 
-          test('disconnected, near atom', async () => {
+          test('disconnected, near atom', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -484,10 +502,10 @@ export const describeCommonConnectorTests = <
             await synclet1.start();
             await synclet2.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('disconnected, far atom', async () => {
+          test('disconnected, far atom', async (test) => {
             if (farAddress) {
               const [synclet1, synclet2] =
                 await createPooledTestSyncletsAndConnectors(
@@ -503,11 +521,11 @@ export const describeCommonConnectorTests = <
               await synclet1.start();
               await synclet2.start();
               await pause(transportPause * 2);
-              await expectEquivalentSynclets([synclet1, synclet2]);
+              await expectEquivalentSynclets([synclet1, synclet2], test);
             }
           });
 
-          test('disconnected, conflicting values', async () => {
+          test('disconnected, conflicting values', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -523,10 +541,10 @@ export const describeCommonConnectorTests = <
             await synclet1.start();
             await synclet2.start();
             await pause(transportPause * 2);
-            await expectEquivalentSynclets([synclet1, synclet2]);
+            await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('disconnected, conflicting values 2', async () => {
+          test('disconnected, conflicting values 2', async (test) => {
             if (farAddress) {
               const [synclet1, synclet2] =
                 await createPooledTestSyncletsAndConnectors(
@@ -545,13 +563,13 @@ export const describeCommonConnectorTests = <
               await synclet1.start();
               await synclet2.start();
               await pause(transportPause * 2);
-              await expectEquivalentSynclets([synclet1, synclet2]);
+              await expectEquivalentSynclets([synclet1, synclet2], test);
             }
           });
         });
 
         describe.each([3, 10])('%d-way', (count: number) => {
-          test('pool', async () => {
+          test('pool', async (test) => {
             const synclets = await createPooledTestSyncletsAndConnectors(
               createTestSynclet,
               createTestDataConnector,
@@ -563,11 +581,11 @@ export const describeCommonConnectorTests = <
             for (const [i, synclet] of synclets.entries()) {
               await synclet.setAtomForTest('A' + (i + 1));
               await pause(transportPause * count);
-              await expectEquivalentSynclets(synclets);
+              await expectEquivalentSynclets(synclets, test);
             }
           });
 
-          test('chain', async () => {
+          test('chain', async (test) => {
             const synclets = await createChainedTestSynclets(
               createTestSynclet,
               createTestDataConnector,
@@ -579,11 +597,11 @@ export const describeCommonConnectorTests = <
             for (const [i, synclet] of synclets.entries()) {
               await synclet.setAtomForTest('A' + (i + 1));
               await pause(transportPause * count);
-              await expectEquivalentSynclets(synclets);
+              await expectEquivalentSynclets(synclets, test);
             }
           });
 
-          test('ring', async () => {
+          test('ring', async (test) => {
             const synclets = await createChainedTestSynclets(
               createTestSynclet,
               createTestDataConnector,
@@ -592,11 +610,10 @@ export const describeCommonConnectorTests = <
               count,
               true,
             );
-
             for (const [i, synclet] of synclets.entries()) {
               await synclet.setAtomForTest('A' + (i + 1));
               await pause(transportPause * count);
-              await expectEquivalentSynclets(synclets);
+              await expectEquivalentSynclets(synclets, test);
             }
           });
         });
