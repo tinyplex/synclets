@@ -7,6 +7,34 @@
 /// synclets
 
 /**
+ * The RESERVED constant.
+ * @category Constants
+ * @since v0.0.0
+ */
+/// RESERVED
+
+/**
+ * The Reserved type.
+ * @category Constants
+ * @since v0.0.0
+ */
+/// Reserved
+
+/**
+ * The UNDEFINED constant.
+ * @category Constants
+ * @since v0.0.0
+ */
+/// UNDEFINED
+
+/**
+ * The Undefined type.
+ * @category Constants
+ * @since v0.0.0
+ */
+/// Undefined
+
+/**
  * The Address type.
  * @category Address
  * @since v0.0.0

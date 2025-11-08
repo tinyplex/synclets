@@ -1,6 +1,16 @@
 /// synclets
 
-import type {Undefined} from './utils/index.d.ts';
+/// RESERVED
+export const RESERVED: '\uFFFA';
+
+/// Reserved
+export type Reserved = typeof RESERVED;
+
+/// UNDEFINED
+export const UNDEFINED: '\uFFFC';
+
+/// Undefined
+export type Undefined = typeof UNDEFINED;
 
 /// Address
 export type Address = string[];

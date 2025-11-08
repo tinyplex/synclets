@@ -1,9 +1,9 @@
+import {RESERVED} from '@synclets';
 import {Address, AnyParentAddress, Atom, AtomAddress} from '@synclets/@types';
 import type {
   createTinyBaseDataConnector as createTinyBaseDataConnectorDecl,
   TinyBaseDataConnector,
 } from '@synclets/@types/connector/tinybase';
-import {RESERVED} from '@synclets/utils';
 import type {Cell, Id, Store, Value} from 'tinybase';
 import {arrayConcat} from '../../common/array.ts';
 import {size} from '../../common/other.ts';

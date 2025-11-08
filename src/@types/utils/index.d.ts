@@ -2,12 +2,6 @@
 
 import {Atom, Hash, Timestamp} from '@synclets/@types';
 
-export type Reserved = '\uFFFA';
-export const RESERVED: Reserved;
-
-export type Undefined = '\uFFFC';
-export const UNDEFINED: Undefined;
-
 export function jsonString(obj: unknown): string;
 
 export function jsonParse(str: string): any;

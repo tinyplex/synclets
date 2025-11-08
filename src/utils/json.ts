@@ -1,4 +1,4 @@
-import {UNDEFINED} from './string.ts';
+import {UNDEFINED} from '@synclets';
 
 export const jsonString = (obj: unknown): string =>
   JSON.stringify(obj, (_key, value) =>
