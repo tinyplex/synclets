@@ -1,5 +1,5 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.json"],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.json", "__snapshots__"],
   "words": [
     "aaab",
     "atrule",
