@@ -103,34 +103,34 @@ export interface Synclet<
   DataConnectorType extends DataConnector<Depth> = DataConnector<Depth>,
   MetaConnectorType extends MetaConnector<Depth> = MetaConnector<Depth>,
 > {
-  /// log
+  /// Synclet.log
   log(message: string, level?: LogLevel): void;
 
-  /// start
+  /// Synclet.start
   start(): Promise<void>;
 
-  /// stop
+  /// Synclet.stop
   stop(): Promise<void>;
 
-  /// isStarted
+  /// Synclet.isStarted
   isStarted(): boolean;
 
-  /// destroy
+  /// Synclet.destroy
   destroy(): Promise<void>;
 
-  /// getDataConnector
+  /// Synclet.getDataConnector
   getDataConnector(): DataConnectorType;
 
-  /// getMetaConnector
+  /// Synclet.getMetaConnector
   getMetaConnector(): MetaConnectorType;
 
-  /// getTransport
+  /// Synclet.getTransport
   getTransport(): Transport[];
 
-  /// sync
+  /// Synclet.sync
   sync(address: Address): Promise<void>;
 
-  /// setAtom
+  /// Synclet.setAtom
   setAtom(
     address: Address,
     atom: Atom,
@@ -138,13 +138,13 @@ export interface Synclet<
     sync?: boolean,
   ): Promise<void>;
 
-  /// delAtom
+  /// Synclet.delAtom
   delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
 
-  /// getData
+  /// Synclet.getData
   getData(): Promise<Readonly<Data>>;
 
-  /// getMeta
+  /// Synclet.getMeta
   getMeta(): Promise<Readonly<Meta>>;
 }
 
@@ -154,45 +154,78 @@ export type SyncletComponents<
   DataConnectorType extends DataConnector<Depth>,
   MetaConnectorType extends MetaConnector<Depth>,
 > = {
+  /// SyncletComponents.dataConnector
   dataConnector?: DataConnectorType;
+
+  /// SyncletComponents.metaConnector
   metaConnector?: MetaConnectorType;
+
+  /// SyncletComponents.transport
   transport?: Transport | Transport[];
 };
 
 /// SyncletImplementations
 export type SyncletImplementations<Depth extends number> = {
+  /// SyncletImplementations.onStart
   onStart?: () => Promise<void>;
+
+  /// SyncletImplementations.onStop
   onStop?: () => Promise<void>;
+
+  /// SyncletImplementations.onSync
   onSync?: (address: AnyAddress<Depth>) => Promise<void>;
+
+  /// SyncletImplementations.onSendMessage
   onSendMessage?: (message: Message, to?: string) => Promise<void>;
+
+  /// SyncletImplementations.onReceiveMessage
   onReceiveMessage?: (message: Message, from: string) => Promise<void>;
+
+  /// SyncletImplementations.onSetAtom
   onSetAtom?: (address: AtomAddress<Depth>) => Promise<void>;
+
+  /// SyncletImplementations.getSendContext
   getSendContext?: (receivedContext?: Context) => Promise<Context>;
+
+  /// SyncletImplementations.canReceiveMessage
   canReceiveMessage?: (context: Context) => Promise<boolean>;
+
+  /// SyncletImplementations.canReadAtom
   canReadAtom?: (
     address: AtomAddress<Depth>,
     context: Context,
   ) => Promise<boolean>;
+
+  /// SyncletImplementations.canWriteAtom
   canWriteAtom?: (
     address: AtomAddress<Depth>,
     atom: Atom,
     context: Context,
   ) => Promise<boolean>;
+
+  /// SyncletImplementations.canRemoveAtom
   canRemoveAtom?: (
     address: AtomAddress<Depth>,
     context: Context,
   ) => Promise<boolean>;
+
+  /// SyncletImplementations.filterChildIds
   filterChildIds?: (
     address: AnyParentAddress<Depth>,
     childIds: string[],
     context: Context,
   ) => Promise<string[]>;
+
+  /// SyncletImplementations.getNow
   getNow?: () => number;
 };
 
 /// SyncletOptions
 export type SyncletOptions = {
+  /// SyncletOptions.id
   id?: string;
+
+  /// SyncletOptions.logger
   logger?: Logger;
 };
 

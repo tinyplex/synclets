@@ -226,107 +226,221 @@
 {
   /**
    * The log method writes synclet log entries at the requested level.
-   * @category Synclet
+   * @category Logging
    * @since v0.0.0
    */
-  /// log
+  /// Synclet.log
   /**
    * The start method initializes connectors and begins processing.
    * @category Lifecycle
    * @since v0.0.0
    */
-  /// start
+  /// Synclet.start
   /**
    * The stop method halts connector activity without destroying state.
    * @category Lifecycle
    * @since v0.0.0
    */
-  /// stop
+  /// Synclet.stop
   /**
    * The isStarted method reports whether the synclet is currently running.
    * @category Lifecycle
    * @since v0.0.0
    */
-  /// isStarted
+  /// Synclet.isStarted
   /**
    * The destroy method tears down the synclet and releases owned resources.
    * @category Lifecycle
    * @since v0.0.0
    */
-  /// destroy
+  /// Synclet.destroy
   /**
    * The getDataConnector method returns the active data connector instance.
    * @category Component
    * @since v0.0.0
    */
-  /// getDataConnector
+  /// Synclet.getDataConnector
   /**
    * The getMetaConnector method returns the active meta connector instance.
    * @category Component
    * @since v0.0.0
    */
-  /// getMetaConnector
+  /// Synclet.getMetaConnector
   /**
    * The getTransport method returns the transports used for messaging.
    * @category Component
    * @since v0.0.0
    */
-  /// getTransport
+  /// Synclet.getTransport
   /**
    * The sync method triggers synchronization work for the provided address.
    * @category Sync
    * @since v0.0.0
    */
-  /// sync
+  /// Synclet.sync
   /**
    * The setAtom method writes an atom at the address and optionally syncs it.
    * @category Manipulation
    * @since v0.0.0
    */
-  /// setAtom
+  /// Synclet.setAtom
   /**
    * The delAtom method removes an atom at the address and optionally syncs it.
    * @category Manipulation
    * @since v0.0.0
    */
-  /// delAtom
+  /// Synclet.delAtom
   /**
    * The getData method resolves to a read-only snapshot of the data tree.
    * @category Inspection
    * @since v0.0.0
    */
-  /// getData
+  /// Synclet.getData
   /**
    * The getMeta method resolves to a read-only snapshot of the meta tree.
    * @category Inspection
    * @since v0.0.0
    */
-  /// getMeta
+  /// Synclet.getMeta
 }
 
 /**
  * The SyncletComponents type bundles the optional connector and transport
  * instances supplied to createSynclet.
- * @category Synclet
+ * @category Component
  * @since v0.0.0
  */
 /// SyncletComponents
+{
+  /**
+   * The dataConnector property supplies the DataConnector instance to use.
+   * @category Component
+   * @since v0.0.0
+   */
+  /// SyncletComponents.dataConnector
+  /**
+   * The metaConnector property supplies the MetaConnector instance to use.
+   * @category Component
+   * @since v0.0.0
+   */
+  /// SyncletComponents.metaConnector
+  /**
+   * The transport property provides one or more Transport instances.
+   * @category Component
+   * @since v0.0.0
+   */
+  /// SyncletComponents.transport
+}
 
 /**
  * The SyncletImplementations type collects async functions that customize
  * Synclet behavior.
- * @category Synclet
+ * @category Implementation
  * @since v0.0.0
  */
 /// SyncletImplementations
+{
+  /**
+   * The onStart callback runs when the synclet starts.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.onStart
+  /**
+   * The onStop callback runs when the synclet stops.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.onStop
+  /**
+   * The onSync callback runs before syncing the provided address.
+   * @category Sync
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.onSync
+  /**
+   * The onSendMessage callback observes messages before they are sent.
+   * @category Messaging
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.onSendMessage
+  /**
+   * The onReceiveMessage callback handles messages as they arrive.
+   * @category Messaging
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.onReceiveMessage
+  /**
+   * The onSetAtom callback runs after a local atom is set.
+   * @category Mutation
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.onSetAtom
+  /**
+   * The getSendContext callback computes the context for outgoing messages.
+   * @category Messaging
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.getSendContext
+  /**
+   * The canReceiveMessage callback authorizes receipt based on context.
+   * @category Filter
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.canReceiveMessage
+  /**
+   * The canReadAtom callback controls read access at an atom address.
+   * @category Filter
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.canReadAtom
+  /**
+   * The canWriteAtom callback controls write access at an atom address.
+   * @category Filter
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.canWriteAtom
+  /**
+   * The canRemoveAtom callback controls delete access at an atom address.
+   * @category Filter
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.canRemoveAtom
+  /**
+   * The filterChildIds callback can trim child ids visible to the caller.
+   * @category Filter
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.filterChildIds
+  /**
+   * The getNow callback supplies a clock value for deterministic testing.
+   * @category Utility
+   * @since v0.0.0
+   */
+  /// SyncletImplementations.getNow
+}
 
 /**
  * The SyncletOptions type configures identifiers and logging for a Synclet
  * instance.
- * @category Synclet
+ * @category Options
  * @since v0.0.0
  */
 /// SyncletOptions
+{
+  /**
+   * The id option overrides the generated synclet identifier.
+   * @category Identity
+   * @since v0.0.0
+   */
+  /// SyncletOptions.id
+  /**
+   * The logger option supplies the Logger used for synclet messages.
+   * @category Logging
+   * @since v0.0.0
+   */
+  /// SyncletOptions.logger
+}
 
 /**
  * The createSynclet function wires the provided components, functions, and
