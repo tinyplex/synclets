@@ -2,13 +2,13 @@
 
 <section id="hero">
   <h2>
-    An extensible framework for synchronizing data.
+    An open, storage-agnostic, <em>sync engine</em> development kit.
   </h2>
 </section>
 
 <a href='/guides/releases/#v0-0'><em>NEW!</em> v0.0 release</a>
 
-<span id="one-with">The first one</span>
+<span id="one-with">Still under development!</span>
 
 <a class='start' href='/guides/getting-started/'>Get started</a>
 
@@ -20,7 +20,8 @@
 
 <section id="family">
   <h2>Meet the family</h2>
-  <p>The Synclets framework is part of a group of libraries designed to help make rich client and local-first apps easier to build. Check out the others:</p>
+  <p>The Synclets project is part of a group of libraries designed to help make 
+  rich client and local-first apps easier to build. Check out the others:</p>
 
   <p>
     <a href='https://tinybase.org' target='_blank'>

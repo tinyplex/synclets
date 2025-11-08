@@ -5,9 +5,11 @@
   "repository": "github:tinyplex/synclets",
   "license": "MIT",
   "homepage": "https://synclets.org",
-  "description": "A framework for synchronizing data.",
+  "description": "An open, storage-agnostic, sync engine development kit.",
   "keywords": [
     "sync engine",
+    "storage-agnostic",
+    "synchronization",
     "database",
     "local first"
   ],
@@ -17,9 +19,21 @@
   },
   "sideEffects": false,
   "peerDependencies": {
+    "@electric-sql/pglite": "^0.3.11",
+    "sqlite3": "^5.1.7",
+    "tinybase": "^6.7.2",
     "ws": "^8.18.3"
   },
   "peerDependenciesMeta": {
+    "@electric-sql/pglite": {
+      "optional": true
+    },
+    "sqlite3": {
+      "optional": true
+    },
+    "tinybase": {
+      "optional": true
+    },
     "ws": {
       "optional": true
     }
