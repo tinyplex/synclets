@@ -14,12 +14,16 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "paths": {
+      // Aliases used within project:
       "@synclets": ["./index.ts"],
       "@synclets/utils": ["./utils/index.ts"],
       "@synclets/connector/memory": ["./connector/memory/index.ts"],
       "@synclets/transport/memory": ["./transport/memory/index.ts"],
 
+      // Main module exposed by project:
       "@synclets/@types": ["./@types/index.d.ts"],
+
+      // Canonical list of submodules exposed by project:
       "@synclets/@types/utils": ["./@types/utils/index.d.ts"],
       "@synclets/@types/connector/browser": [
         "./@types/connector/browser/index.d.ts"

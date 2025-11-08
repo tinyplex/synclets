@@ -11,17 +11,13 @@ import {dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
 
 const MODULES = [
-  '',
-  'utils',
-  'connector/browser',
-  'connector/fs',
-  'connector/memory',
-  'connector/pglite',
-  'connector/sqlite3',
-  'connector/tinybase',
-  'server/stateless-ws',
-  'transport/memory',
-  'transport/ws',
+  '', // root module
+  ...Object.keys(
+    JSON.parse(readFileSync('src/tsconfig.json', 'utf-8')).compilerOptions
+      .paths,
+  )
+    .filter((alias) => alias.startsWith('@synclets/@types/'))
+    .map((alias) => alias.replace('@synclets/@types/', '')),
 ];
 
 const UTF8 = 'utf-8';
