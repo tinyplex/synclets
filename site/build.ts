@@ -31,8 +31,9 @@ const REFLECTIONS = [
 
 export const build = async (
   outDir: string,
-  api = true,
-  pages = true,
+  api: boolean,
+  pages: boolean,
+  modules: string[],
 ): Promise<void> => {
   const {version} = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
@@ -54,7 +55,7 @@ export const build = async (
     .addDir('site/extras');
 
   if (api) {
-    addApi(docs);
+    addApi(docs, modules);
   }
   if (pages) {
     addPages(docs);
@@ -78,18 +79,10 @@ export const build = async (
   docs.publish();
 };
 
-const addApi = (docs: Docs): Docs =>
-  docs
-    .addApiFile('dist/@types/index.d.ts')
-    .addApiFile('dist/@types/utils/index.d.ts')
-    .addApiFile('dist/@types/connector/browser/index.d.ts')
-    .addApiFile('dist/@types/connector/fs/index.d.ts')
-    .addApiFile('dist/@types/connector/memory/index.d.ts')
-    .addApiFile('dist/@types/connector/pglite/index.d.ts')
-    .addApiFile('dist/@types/connector/tinybase/index.d.ts')
-    .addApiFile('dist/@types/server/stateless-ws/index.d.ts')
-    .addApiFile('dist/@types/transport/memory/index.d.ts')
-    .addApiFile('dist/@types/transport/ws/index.d.ts');
+const addApi = (docs: Docs, modules: string[]) =>
+  modules.forEach((module) => {
+    docs.addApiFile(`dist/@types/${module}${module ? '/' : ''}index.d.ts`);
+  });
 
 const addPages = (docs: Docs): Docs =>
   docs.addRootMarkdownFile('site/home/index.md').addMarkdownDir('site/guides');

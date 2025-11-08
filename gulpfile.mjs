@@ -10,8 +10,7 @@ import {parallel, series} from 'gulp';
 import {dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
 
-const UTF8 = 'utf-8';
-const TEST_MODULES = [
+const MODULES = [
   '',
   'utils',
   'connector/browser',
@@ -23,9 +22,8 @@ const TEST_MODULES = [
   'transport/memory',
   'transport/ws',
 ];
-const ALL_MODULES = [...TEST_MODULES];
-const ALL_DEFINITIONS = [...ALL_MODULES];
 
+const UTF8 = 'utf-8';
 const DIST_DIR = 'dist';
 const DOCS_DIR = 'docs';
 const TMP_DIR = 'tmp';
@@ -41,7 +39,7 @@ const EXTERNAL = [
 ];
 const MODULE_REPLACEMENTS = {};
 const MIN_MODULE_REPLACEMENTS = {};
-ALL_MODULES.forEach((module) => {
+MODULES.forEach((module) => {
   const fullModule = `synclets${module ? '/' : ''}${module}`;
   const minModule = `synclets/min${module ? '/' : ''}${module}`;
   EXTERNAL.push(fullModule, minModule);
@@ -55,10 +53,8 @@ const getPrettierConfig = async () => ({
   parser: 'typescript',
 });
 
-const allOf = async (array, cb) => await Promise.all(array.map(cb));
-const testModules = async (cb) => await allOf(TEST_MODULES, cb);
-const allModules = async (cb) => await allOf(ALL_MODULES, cb);
-const allDefinitions = async (cb) => await allOf(ALL_DEFINITIONS, cb);
+const promiseAll = async (array, cb) => await Promise.all(array.map(cb));
+const promiseAllModules = async (cb) => await promiseAll(MODULES, cb);
 
 const clearDir = async (dir = DIST_DIR) => {
   try {
@@ -108,7 +104,7 @@ const gzipFile = async (fileName) =>
 
 const copyPackageFiles = async (forProd = false) => {
   const mins = forProd ? [null, 'min'] : [null];
-  const modules = forProd ? ALL_MODULES : TEST_MODULES;
+  const modules = forProd ? MODULES : MODULES;
 
   const json = JSON.parse(await promises.readFile('package.json', UTF8));
   delete json.private;
@@ -155,7 +151,7 @@ let labelBlocks;
 const getLabelBlocks = async () => {
   if (labelBlocks == null) {
     labelBlocks = new Map();
-    await allModules(async (module) => {
+    await promiseAllModules(async (module) => {
       [
         ...(
           await promises.readFile(`src/@types/${module}/docs.js`, UTF8)
@@ -211,7 +207,7 @@ const copyDefinition = async (dir, module) => {
 };
 
 const copyDefinitions = async (dir) => {
-  await allDefinitions((module) => copyDefinition(dir, module));
+  await promiseAllModules((module) => copyDefinition(dir, module));
 };
 
 const execute = async (cmd) => {
@@ -234,7 +230,7 @@ const lintCheckFiles = async (dir) => {
   ['.ts', '.tsx', '.js', '.d.ts'].forEach((extension) =>
     forEachDeepFile(dir, (filePath) => filePaths.push(filePath), extension),
   );
-  await allOf(filePaths, async (filePath) => {
+  await promiseAll(filePaths, async (filePath) => {
     const code = await promises.readFile(filePath, UTF8);
     if (
       !(await prettier.check(code, {...prettierConfig, filepath: filePath}))
@@ -289,9 +285,9 @@ const lintCheckDocs = async (dir) => {
   ['.js', '.d.ts'].forEach((extension) =>
     forEachDeepFile(dir, (filePath) => filePaths.push(filePath), extension),
   );
-  await allOf(filePaths, async (filePath) => {
+  await promiseAll(filePaths, async (filePath) => {
     const code = await promises.readFile(filePath, UTF8);
-    await allOf(
+    await promiseAll(
       [...(code.matchAll(LINT_BLOCKS) ?? [])],
       async ([_, hint, docBlock]) => {
         if (hint?.trim() == 'override') {
@@ -375,7 +371,7 @@ const tsCheck = async (dir) => {
       '--excludeDeclarationFiles',
       '--excludePathsFromReport=' +
         'server.mjs;build.ts;' +
-        TEST_MODULES.map((module) => `${module}.ts`).join(';'),
+        MODULES.map((module) => `${module}.ts`).join(';'),
     ]).unusedExports,
   )
     .map(
@@ -489,7 +485,7 @@ const compileModulesForProd = async () => {
   await copyPackageFiles(true);
   await copyDefinitions(DIST_DIR);
 
-  await allModules(async (module) => {
+  await promiseAllModules(async (module) => {
     await compileModule(module, `${DIST_DIR}/`);
     await compileModule(module, `${DIST_DIR}/min`, true);
   });
@@ -510,7 +506,7 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
 
   // eslint-disable-next-line import/no-unresolved
   const {build} = await import('./tmp/build.js');
-  await build(DOCS_DIR, api, pages);
+  await build(DOCS_DIR, api, pages, MODULES);
   await removeDir(TMP_DIR);
 };
 
@@ -534,7 +530,7 @@ export const compileForTest = async () => {
   await clearDir(DIST_DIR);
   await copyPackageFiles();
   await copyDefinitions(DIST_DIR);
-  await testModules(async (module) => {
+  await promiseAllModules(async (module) => {
     await compileModule(module, DIST_DIR);
   });
 };
