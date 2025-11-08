@@ -5,6 +5,7 @@ import type {DataConnector, MetaConnector} from '../../index.js';
 /// LocalStorageDataConnector
 export interface LocalStorageDataConnector<Depth extends number>
   extends DataConnector<Depth> {
+  /// LocalStorageDataConnector.getStorageName
   getStorageName(): string;
 }
 
@@ -17,6 +18,7 @@ export function createLocalStorageDataConnector<Depth extends number>(
 /// LocalStorageMetaConnector
 export interface LocalStorageMetaConnector<Depth extends number>
   extends MetaConnector<Depth> {
+  /// LocalStorageMetaConnector.getStorageName
   getStorageName(): string;
 }
 
@@ -29,6 +31,7 @@ export function createLocalStorageMetaConnector<Depth extends number>(
 /// SessionStorageDataConnector
 export interface SessionStorageDataConnector<Depth extends number>
   extends DataConnector<Depth> {
+  /// SessionStorageDataConnector.getStorageName
   getStorageName(): string;
 }
 
@@ -41,6 +44,7 @@ export function createSessionStorageDataConnector<Depth extends number>(
 /// SessionStorageMetaConnector
 export interface SessionStorageMetaConnector<Depth extends number>
   extends MetaConnector<Depth> {
+  /// SessionStorageMetaConnector.getStorageName
   getStorageName(): string;
 }
 

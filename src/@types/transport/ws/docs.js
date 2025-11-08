@@ -21,6 +21,14 @@
  * @since v0.0.0
  */
 /// WsTransport
+{
+  /**
+   * The getWebSocket method returns the wrapped WebSocket instance.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// WsTransport.getWebSocket
+}
 
 /**
  * The createWsTransport function wraps a WebSocket in a WsTransport

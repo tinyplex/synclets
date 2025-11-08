@@ -7,6 +7,7 @@ import type {DatabaseDataOptions, DatabaseMetaOptions} from '../index.d.ts';
 /// PgliteDataConnector
 export interface PgliteDataConnector<Depth extends number>
   extends DataConnector<Depth> {
+  /// PgliteDataConnector.getPglite
   getPglite(): PGlite;
 }
 
@@ -20,6 +21,7 @@ export function createPgliteDataConnector<Depth extends number>(
 /// PgliteMetaConnector
 export interface PgliteMetaConnector<Depth extends number>
   extends MetaConnector<Depth> {
+  /// PgliteMetaConnector.getPglite
   getPglite(): PGlite;
 }
 

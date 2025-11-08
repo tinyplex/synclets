@@ -13,6 +13,14 @@
  * @since v0.0.0
  */
 /// LocalStorageDataConnector
+{
+  /**
+   * The getStorageName method returns the localStorage key namespace.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// LocalStorageDataConnector.getStorageName
+}
 
 /**
  * The createLocalStorageDataConnector function creates a
@@ -29,6 +37,14 @@
  * @since v0.0.0
  */
 /// LocalStorageMetaConnector
+{
+  /**
+   * The getStorageName method returns the localStorage key namespace.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// LocalStorageMetaConnector.getStorageName
+}
 
 /**
  * The createLocalStorageMetaConnector function creates a
@@ -45,6 +61,14 @@
  * @since v0.0.0
  */
 /// SessionStorageDataConnector
+{
+  /**
+   * The getStorageName method returns the sessionStorage key namespace.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// SessionStorageDataConnector.getStorageName
+}
 
 /**
  * The createSessionStorageDataConnector function creates a
@@ -61,6 +85,14 @@
  * @since v0.0.0
  */
 /// SessionStorageMetaConnector
+{
+  /**
+   * The getStorageName method returns the sessionStorage key namespace.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// SessionStorageMetaConnector.getStorageName
+}
 
 /**
  * The createSessionStorageMetaConnector function creates a

@@ -5,6 +5,7 @@ import type {DataConnector} from '../../index.d.ts';
 
 /// TinyBaseDataConnector
 export interface TinyBaseDataConnector extends DataConnector<3> {
+  /// TinyBaseDataConnector.getStore
   getStore(): Store;
 }
 

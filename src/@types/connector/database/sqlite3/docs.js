@@ -13,6 +13,14 @@
  * @since v0.0.0
  */
 /// Sqlite3DataConnector
+{
+  /**
+   * The getDatabase method returns the wrapped sqlite3 Database instance.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// Sqlite3DataConnector.getDatabase
+}
 
 /**
  * The createSqlite3DataConnector function creates a Sqlite3DataConnector with
@@ -29,6 +37,14 @@
  * @since v0.0.0
  */
 /// Sqlite3MetaConnector
+{
+  /**
+   * The getDatabase method returns the wrapped sqlite3 Database instance.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// Sqlite3MetaConnector.getDatabase
+}
 
 /**
  * The createSqlite3MetaConnector function creates a Sqlite3MetaConnector with

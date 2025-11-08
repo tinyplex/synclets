@@ -13,6 +13,14 @@
  * @since v0.0.0
  */
 /// TinyBaseDataConnector
+{
+  /**
+   * The getStore method returns the wrapped TinyBase Store.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// TinyBaseDataConnector.getStore
+}
 
 /**
  * The createTinyBaseDataConnector function creates a TinyBaseDataConnector from

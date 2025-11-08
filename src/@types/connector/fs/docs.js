@@ -13,6 +13,14 @@
  * @since v0.0.0
  */
 /// FileDataConnector
+{
+  /**
+   * The getFile method returns the path to the backing data file.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// FileDataConnector.getFile
+}
 
 /**
  * The createFileDataConnector function creates a FileDataConnector instance.
@@ -28,6 +36,14 @@
  * @since v0.0.0
  */
 /// FileMetaConnector
+{
+  /**
+   * The getFile method returns the path to the backing metadata file.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// FileMetaConnector.getFile
+}
 
 /**
  * The createFileMetaConnector function creates a FileMetaConnector instance.
@@ -43,6 +59,14 @@
  * @since v0.0.0
  */
 /// DirectoryDataConnector
+{
+  /**
+   * The getDirectory method returns the directory containing data files.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// DirectoryDataConnector.getDirectory
+}
 
 /**
  * The createDirectoryDataConnector function creates a
@@ -59,6 +83,14 @@
  * @since v0.0.0
  */
 /// DirectoryMetaConnector
+{
+  /**
+   * The getDirectory method returns the directory containing metadata files.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// DirectoryMetaConnector.getDirectory
+}
 
 /**
  * The createDirectoryMetaConnector function creates a

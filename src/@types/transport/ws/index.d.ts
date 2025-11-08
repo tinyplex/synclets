@@ -9,6 +9,7 @@ export type WebSocketTypes = WebSocket | WsWebSocket;
 /// WsTransport
 export interface WsTransport<WebSocketType extends WebSocketTypes>
   extends Transport {
+  /// WsTransport.getWebSocket
   getWebSocket(): WebSocketType;
 }
 

@@ -5,6 +5,7 @@ import type {DataConnector, MetaConnector} from '../../index.d.ts';
 /// FileDataConnector
 export interface FileDataConnector<Depth extends number>
   extends DataConnector<Depth> {
+  /// FileDataConnector.getFile
   getFile(): string;
 }
 
@@ -17,6 +18,7 @@ export function createFileDataConnector<Depth extends number>(
 /// FileMetaConnector
 export interface FileMetaConnector<Depth extends number>
   extends MetaConnector<Depth> {
+  /// FileMetaConnector.getFile
   getFile(): string;
 }
 
@@ -29,6 +31,7 @@ export function createFileMetaConnector<Depth extends number>(
 /// DirectoryDataConnector
 export interface DirectoryDataConnector<Depth extends number>
   extends DataConnector<Depth> {
+  /// DirectoryDataConnector.getDirectory
   getDirectory(): string;
 }
 
@@ -41,6 +44,7 @@ export function createDirectoryDataConnector<Depth extends number>(
 /// DirectoryMetaConnector
 export interface DirectoryMetaConnector<Depth extends number>
   extends MetaConnector<Depth> {
+  /// DirectoryMetaConnector.getDirectory
   getDirectory(): string;
 }
 

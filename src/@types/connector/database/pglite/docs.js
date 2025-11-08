@@ -13,6 +13,14 @@
  * @since v0.0.0
  */
 /// PgliteDataConnector
+{
+  /**
+   * The getPglite method returns the underlying PGlite instance.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// PgliteDataConnector.getPglite
+}
 
 /**
  * The createPgliteDataConnector function creates a PgliteDataConnector with
@@ -29,6 +37,14 @@
  * @since v0.0.0
  */
 /// PgliteMetaConnector
+{
+  /**
+   * The getPglite method returns the underlying PGlite instance.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// PgliteMetaConnector.getPglite
+}
 
 /**
  * The createPgliteMetaConnector function creates a PgliteMetaConnector with
