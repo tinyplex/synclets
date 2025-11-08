@@ -17,6 +17,7 @@ const MODULES = [
   'connector/fs',
   'connector/memory',
   'connector/pglite',
+  'connector/sqlite3',
   'connector/tinybase',
   'server/stateless-ws',
   'transport/memory',

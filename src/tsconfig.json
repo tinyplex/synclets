@@ -31,6 +31,9 @@
       "@synclets/@types/connector/pglite": [
         "./@types/connector/pglite/index.d.ts"
       ],
+      "@synclets/@types/connector/sqlite3": [
+        "./@types/connector/sqlite3/index.d.ts"
+      ],
       "@synclets/@types/connector/tinybase": [
         "./@types/connector/tinybase/index.d.ts"
       ],
