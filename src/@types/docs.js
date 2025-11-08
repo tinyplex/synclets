@@ -7,308 +7,343 @@
 /// synclets
 
 /**
- * The RESERVED constant.
+ * The RESERVED constant is a magic string used to prefix system-reserved
+ * identifiers.
  * @category Constants
  * @since v0.0.0
  */
 /// RESERVED
 
 /**
- * The Reserved type.
+ * The Reserved type captures the literal string form of the RESERVED magic
+ * string.
  * @category Constants
  * @since v0.0.0
  */
 /// Reserved
 
 /**
- * The UNDEFINED constant.
+ * The UNDEFINED constant is a magic string that encodes an `undefined` value.
  * @category Constants
  * @since v0.0.0
  */
 /// UNDEFINED
 
 /**
- * The Undefined type.
+ * The Undefined type reflects the literal string produced by the UNDEFINED
+ * magic string.
  * @category Constants
  * @since v0.0.0
  */
 /// Undefined
 
 /**
- * The Address type.
+ * The Address type lists the string segments that locate a node inside a data
+ * or meta tree.
  * @category Address
  * @since v0.0.0
  */
 /// Address
 
 /**
- * The AtomAddress type.
+ * The AtomAddress type narrows an Address to a leaf that stores an Atom at a
+ * fixed depth in a data tree.
  * @category Address
  * @since v0.0.0
  */
 /// AtomAddress
 
 /**
- * The AtomsAddress type.
+ * The AtomsAddress type targets the parent location that contains a collection
+ * of Atoms in a data tree.
  * @category Address
  * @since v0.0.0
  */
 /// AtomsAddress
 
 /**
- * The TimestampAddress type.
+ * The TimestampAddress type narrows an Address to the leaf that stores a
+ * Timestamp at a fixed depth in a meta tree.
  * @category Address
  * @since v0.0.0
  */
 /// TimestampAddress
 
 /**
- * The TimestampsAddress type.
+ * The TimestampsAddress type targets the parent node that contains a collection
+ * of Timestamps in a meta tree.
  * @category Address
  * @since v0.0.0
  */
 /// TimestampsAddress
 
 /**
- * The AnyParentAddress type.
+ * The AnyParentAddress type covers every location that has children (whether
+ * Atoms, Timestamps, or other parent nodes).
  * @category Address
  * @since v0.0.0
  */
 /// AnyParentAddress
 
 /**
- * The AnyAddress type.
+ * The AnyAddress type unifies all Atom, Timestamp, and parent addresses a
+ * Synclet can reference.
  * @category Address
  * @since v0.0.0
  */
 /// AnyAddress
 
 /**
- * The Atom type.
+ * The Atom type enumerates the scalar values stored at a leaf: string, number,
+ * boolean, null, or the UNDEFINED constant magic string.
  * @category DataConnector
  * @since v0.0.0
  */
 /// Atom
 
 /**
- * The Atoms type.
+ * The Atoms type maps the final part of an address to individual Atom values.
  * @category DataConnector
  * @since v0.0.0
  */
 /// Atoms
 
 /**
- * The Data type.
+ * The Data type represents the recursive tree of Atoms and nested maps that
+ * make up Synclet data.
  * @category DataConnector
  * @since v0.0.0
  */
 /// Data
 
 /**
- * The Timestamp type.
+ * The Timestamp type stores the serialized string recorded for a change.
  * @category MetaConnector
  * @since v0.0.0
  */
 /// Timestamp
 
 /**
- * The Timestamps type.
+ * The Timestamps type maps the final part of an address to individual Timestamp
+ * values.
  * @category MetaConnector
  * @since v0.0.0
  */
 /// Timestamps
 
 /**
- * The Meta type.
+ * The Meta type mirrors the data tree but holds Timestamp information instead
+ * of Atoms.
  * @category MetaConnector
  * @since v0.0.0
  */
 /// Meta
 
 /**
- * The TimestampAndAtom type.
+ * The TimestampAndAtom type pairs a Timestamp with the optional Atom value it
+ * describes.
  * @category Message
  * @since v0.0.0
  */
 /// TimestampAndAtom
 
 /**
- * The Hash type.
+ * The Hash type records the numeric hash used for message verification.
  * @category Message
  * @since v0.0.0
  */
 /// Hash
 
 /**
- * The MessageType type.
+ * The MessageType type enumerates the allowed message kinds, currently the
+ * single value 0.
  * @category Message
  * @since v0.0.0
  */
 /// MessageType
 
 /**
- * The MessageNode type.
+ * The MessageNode type represents either a Timestamp, a Timestamp-Atom pair, a
+ * hash, or nested message nodes.
  * @category Message
  * @since v0.0.0
  */
 /// MessageNode
 
 /**
- * The MessageNodes type.
+ * The MessageNodes type stores a tuple of child message nodes plus an optional
+ * partial marker.
  * @category Message
  * @since v0.0.0
  */
 /// MessageNodes
 
 /**
- * The Message type.
+ * The Message type defines the wire-format tuple describing a sync event and
+ * its payload.
  * @category Message
  * @since v0.0.0
  */
 /// Message
 
 /**
- * The Context type.
+ * The Context type holds arbitrary metadata that travels with a message.
  * @category Context
  * @since v0.0.0
  */
 /// Context
 
 /**
- * The ExtraFunctions type.
+ * The ExtraFunctions type stores host-provided helper functions keyed by name
+ * for connector implementations.
  * @category Core
  * @since v0.0.0
  */
 /// ExtraFunctions
 
 /**
- * The Logger type.
+ * The Logger type describes the optional logging callbacks a Synclet or its
+ * components can use.
  * @category Logging
  * @since v0.0.0
  */
 /// Logger
 
 /**
- * The LogLevel type.
+ * The LogLevel type lists the logger methods that can be invoked.
  * @category Logging
  * @since v0.0.0
  */
 /// LogLevel
 
 /**
- * The Synclet interface.
+ * The Synclet interface coordinates connectors, transports, lifecycle
+ * functions, and sync operations.
  * @category Core
  * @since v0.0.0
  */
 /// Synclet
 
 /**
- * The SyncletComponents type.
+ * The SyncletComponents type bundles the optional connector and transport
+ * instances supplied to createSynclet.
  * @category Synclet
  * @since v0.0.0
  */
 /// SyncletComponents
 
 /**
- * The SyncletImplementations type.
+ * The SyncletImplementations type collects async functions that customize
+ * Synclet behavior.
  * @category Synclet
  * @since v0.0.0
  */
 /// SyncletImplementations
 
 /**
- * The SyncletOptions type.
+ * The SyncletOptions type configures identifiers and logging for a Synclet
+ * instance.
  * @category Synclet
  * @since v0.0.0
  */
 /// SyncletOptions
 
 /**
- * The createSynclet function.
+ * The createSynclet function wires the provided components, functions, and
+ * options into a Synclet.
  * @category Core
  * @since v0.0.0
  */
 /// createSynclet
 
 /**
- * The DataConnector interface.
+ * The DataConnector interface defines the component that is responsible for
+ * storing Atoms.
  * @category Core
  * @since v0.0.0
  */
 /// DataConnector
 
 /**
- * The DataConnectorImplementations type.
+ * The DataConnectorImplementations type lists the async functions required to
+ * read and write Atoms.
  * @category DataConnector
  * @since v0.0.0
  */
 /// DataConnectorImplementations
 
 /**
- * The DataConnectorOptimizations type.
+ * The DataConnectorOptimizations type lists optional bulk operations a
+ * connector can implement to improve performance.
  * @category DataConnector
  * @since v0.0.0
  */
 /// DataConnectorOptimizations
 
 /**
- * The createDataConnector function.
+ * The createDataConnector function creates a DataConnector instance.
  * @category Core
  * @since v0.0.0
  */
 /// createDataConnector
 
 /**
- * The MetaConnector interface.
+ * The MetaConnector interface defines the component that is responsible for
+ * storing Timestamps.
  * @category Core
  * @since v0.0.0
  */
 /// MetaConnector
 
 /**
- * The MetaConnectorImplementations type.
+ * The MetaConnectorImplementations type lists the async functions required to
+ * read and write Timestamps.
  * @category MetaConnector
  * @since v0.0.0
  */
 /// MetaConnectorImplementations
 
 /**
- * The MetaConnectorOptimizations type.
+ * The MetaConnectorOptimizations type lists optional bulk operations a
+ * connector can implement to improve performance.
  * @category MetaConnector
  * @since v0.0.0
  */
 /// MetaConnectorOptimizations
 
 /**
- * The createMetaConnector function.
+ * The createMetaConnector function creates a MetaConnector instance.
  * @category Core
  * @since v0.0.0
  */
 /// createMetaConnector
 
 /**
- * The Transport interface.
+ * The Transport interface defines the component that is responsible for sending
+ * and receiving packets to and from other Synclets.
  * @category Core
  * @since v0.0.0
  */
 /// Transport
 
 /**
- * The TransportImplementations type.
+ * The TransportImplementations type lists the async connect, disconnect, and
+ * sendPacket callbacks a Transport requires to operate.
  * @category Transport
  * @since v0.0.0
  */
 /// TransportImplementations
 
 /**
- * The TransportOptions type.
+ * The TransportOptions type configures transport behaviors such as fragment
+ * sizes.
  * @category Transport
  * @since v0.0.0
  */
 /// TransportOptions
 
 /**
- * The createTransport function.
+ * The createTransport function creates a Transport instance.
  * @category Core
  * @since v0.0.0
  */
