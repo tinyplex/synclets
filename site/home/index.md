@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v0-0'><em>NEW!</em> v0.0 release</a>
+<a href='/guides/releases/#v0-0'>Announcing Synclets!</a>
 
-<span id="one-with">Still under development!</span>
+<span id="one-with">Read about this new project</span>
 
 <a class='start' href='/guides/getting-started/'>Get started</a>
 
