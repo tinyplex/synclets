@@ -185,6 +185,49 @@
  * @since v0.0.0
  */
 /// Message
+{
+  /**
+   * The version element records the message format version.
+   * @category Message Fields
+   * @since v0.0.0
+   */
+  /// Message.version
+
+  /**
+   * The type element indicates which MessageType is being sent.
+   * @category Message Fields
+   * @since v0.0.0
+   */
+  /// Message.type
+
+  /**
+   * The depth element captures the tree depth addressed by the message.
+   * @category Message Fields
+   * @since v0.0.0
+   */
+  /// Message.depth
+
+  /**
+   * The address element contains the Address being synchronized.
+   * @category Message Fields
+   * @since v0.0.0
+   */
+  /// Message.address
+
+  /**
+   * The node element carries the MessageNode payload.
+   * @category Message Fields
+   * @since v0.0.0
+   */
+  /// Message.node
+
+  /**
+   * The context element provides the Context metadata accompanying the message.
+   * @category Message Fields
+   * @since v0.0.0
+   */
+  /// Message.context
+}
 
 /**
  * The Context type holds arbitrary metadata that travels with a message.
@@ -208,6 +251,35 @@
  * @since v0.0.0
  */
 /// Logger
+{
+  /**
+   * The error method logs errors emitted by the synclet stack.
+   * @category Logging Methods
+   * @since v0.0.0
+   */
+  /// Logger.error
+
+  /**
+   * The warn method logs warning messages.
+   * @category Logging Methods
+   * @since v0.0.0
+   */
+  /// Logger.warn
+
+  /**
+   * The info method logs informational messages.
+   * @category Logging Methods
+   * @since v0.0.0
+   */
+  /// Logger.info
+
+  /**
+   * The debug method logs verbose diagnostic messages.
+   * @category Logging Methods
+   * @since v0.0.0
+   */
+  /// Logger.debug
+}
 
 /**
  * The LogLevel type lists the logger methods that can be invoked.

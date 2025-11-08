@@ -72,11 +72,22 @@ export type MessageNodes = [subNodes: {[id: string]: MessageNode}, partial?: 1];
 
 /// Message
 export type Message = [
+  /// Message.version
   version: number,
+
+  /// Message.type
   type: MessageType,
+
+  /// Message.depth
   depth: number,
+
+  /// Message.address
   address: Address,
+
+  /// Message.node
   node: MessageNode,
+
+  /// Message.context
   context: Context,
 ];
 
@@ -88,9 +99,16 @@ export type ExtraFunctions = {[name: string]: (...args: any[]) => any};
 
 /// Logger
 export type Logger = {
+  /// Logger.error
   error?: (string: string) => void;
+
+  /// Logger.warn
   warn?: (string: string) => void;
+
+  /// Logger.info
   info?: (string: string) => void;
+
+  /// Logger.debug
   debug?: (string: string) => void;
 };
 
