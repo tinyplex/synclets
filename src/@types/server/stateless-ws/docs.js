@@ -13,6 +13,20 @@
  * @since v0.0.0
  */
 /// StatelessWsServer
+{
+  /**
+   * The getWebSocketServer method returns the wrapped WebSocketServer instance.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// StatelessWsServer.getWebSocketServer
+  /**
+   * The destroy method shuts down the WebSocketServer and releases resources.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// StatelessWsServer.destroy
+}
 
 /**
  * The createStatelessWsServer function wraps a WebSocketServer to expose the
@@ -21,4 +35,3 @@
  * @since v0.0.0
  */
 /// createStatelessWsServer
-export * from './index.js';
