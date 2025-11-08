@@ -1,5 +1,6 @@
 /**
- * The transport/memory module.
+ * The transport/memory module covers the in-process transport used for local
+ * testing.
  * @packageDocumentation
  * @module transport/memory
  * @since v0.0.0

@@ -1,5 +1,6 @@
 /**
- * The connector/memory module.
+ * The connector/memory module provides volatile connectors for tests, demos,
+ * and ephemeral synclets.
  * @packageDocumentation
  * @module connector/memory
  * @since v0.0.0

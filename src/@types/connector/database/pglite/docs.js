@@ -1,5 +1,6 @@
 /**
- * The connector/database/pglite module.
+ * The connector/database/pglite module documents connectors backed by the
+ * embedded PGlite database.
  * @packageDocumentation
  * @module connector/database/pglite
  * @since v0.0.0

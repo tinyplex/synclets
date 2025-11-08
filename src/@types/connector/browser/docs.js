@@ -1,5 +1,6 @@
 /**
- * The connector/browser module.
+ * The connector/browser module covers LocalStorage and SessionStorage connector
+ * types.
  * @packageDocumentation
  * @module connector/browser
  * @since v0.0.0

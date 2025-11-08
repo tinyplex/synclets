@@ -1,5 +1,6 @@
 /**
- * The server/stateless-ws module.
+ * The server/stateless-ws module defines the minimal stateless WebSocket server
+ * wrapper types.
  * @packageDocumentation
  * @module server/stateless-ws
  * @since v0.0.0

@@ -1,5 +1,6 @@
 /**
- * The synclets module.
+ * The synclets module documents the core Synclet types, helpers, and factory
+ * functions.
  * @packageDocumentation
  * @module synclets
  * @since v0.0.0

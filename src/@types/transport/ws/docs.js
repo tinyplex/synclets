@@ -1,5 +1,6 @@
 /**
- * The transport/ws module.
+ * The transport/ws module documents WebSocket-based transports for browser and
+ * Node runtimes.
  * @packageDocumentation
  * @module transport/ws
  * @since v0.0.0

@@ -1,5 +1,6 @@
 /**
- * The connector/database module.
+ * The connector/database module defines shared option types for SQL-style
+ * connectors.
  * @packageDocumentation
  * @module connector/database
  * @since v0.0.0

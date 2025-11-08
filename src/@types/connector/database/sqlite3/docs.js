@@ -1,5 +1,6 @@
 /**
- * The connector/database/sqlite3 module.
+ * The connector/database/sqlite3 module describes connectors that persist data
+ * in sqlite3.
  * @packageDocumentation
  * @module connector/database/sqlite3
  * @since v0.0.0

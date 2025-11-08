@@ -1,5 +1,6 @@
 /**
- * The connector/fs module.
+ * The connector/fs module documents file- and directory-backed connector types
+ * for Node environments.
  * @packageDocumentation
  * @module connector/fs
  * @since v0.0.0

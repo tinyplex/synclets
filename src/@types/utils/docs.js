@@ -1,5 +1,6 @@
 /**
- * The utils module.
+ * The utils module gathers shared helper types for JSON parsing, hashing, and
+ * packet encoding.
  * @packageDocumentation
  * @module utils
  * @since v0.0.0
