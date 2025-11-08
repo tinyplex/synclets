@@ -9,7 +9,7 @@
 /**
  * The RESERVED constant is a magic string used to prefix system-reserved
  * identifiers.
- * @category Constants
+ * @category Constant
  * @since v0.0.0
  */
 /// RESERVED
@@ -17,14 +17,14 @@
 /**
  * The Reserved type captures the literal string form of the RESERVED magic
  * string.
- * @category Constants
+ * @category Constant
  * @since v0.0.0
  */
 /// Reserved
 
 /**
  * The UNDEFINED constant is a magic string that encodes an `undefined` value.
- * @category Constants
+ * @category Constant
  * @since v0.0.0
  */
 /// UNDEFINED
@@ -32,7 +32,7 @@
 /**
  * The Undefined type reflects the literal string produced by the UNDEFINED
  * magic string.
- * @category Constants
+ * @category Constant
  * @since v0.0.0
  */
 /// Undefined
@@ -188,42 +188,37 @@
 {
   /**
    * The version element records the message format version.
-   * @category Message Fields
+   * @category Message
    * @since v0.0.0
    */
   /// Message.version
-
   /**
    * The type element indicates which MessageType is being sent.
-   * @category Message Fields
+   * @category Message
    * @since v0.0.0
    */
   /// Message.type
-
   /**
    * The depth element captures the tree depth addressed by the message.
-   * @category Message Fields
+   * @category Message
    * @since v0.0.0
    */
   /// Message.depth
-
   /**
    * The address element contains the Address being synchronized.
-   * @category Message Fields
+   * @category Message
    * @since v0.0.0
    */
   /// Message.address
-
   /**
    * The node element carries the MessageNode payload.
-   * @category Message Fields
+   * @category Message
    * @since v0.0.0
    */
   /// Message.node
-
   /**
    * The context element provides the Context metadata accompanying the message.
-   * @category Message Fields
+   * @category Message
    * @since v0.0.0
    */
   /// Message.context
@@ -254,28 +249,25 @@
 {
   /**
    * The error method logs errors emitted by the synclet stack.
-   * @category Logging Methods
+   * @category Logging
    * @since v0.0.0
    */
   /// Logger.error
-
   /**
    * The warn method logs warning messages.
-   * @category Logging Methods
+   * @category Logging
    * @since v0.0.0
    */
   /// Logger.warn
-
   /**
    * The info method logs informational messages.
-   * @category Logging Methods
+   * @category Logging
    * @since v0.0.0
    */
   /// Logger.info
-
   /**
    * The debug method logs verbose diagnostic messages.
-   * @category Logging Methods
+   * @category Logging
    * @since v0.0.0
    */
   /// Logger.debug
@@ -352,13 +344,13 @@
   /// Synclet.sync
   /**
    * The setAtom method writes an Atom at the address and optionally syncs it.
-   * @category Manipulation
+   * @category Mutation
    * @since v0.0.0
    */
   /// Synclet.setAtom
   /**
    * The delAtom method removes an Atom at the address and optionally syncs it.
-   * @category Manipulation
+   * @category Mutation
    * @since v0.0.0
    */
   /// Synclet.delAtom
@@ -407,7 +399,7 @@
 /**
  * The SyncletImplementations type collects async functions that customize
  * Synclet behavior.
- * @category Implementation
+ * @category Synclet
  * @since v0.0.0
  */
 /// SyncletImplementations
@@ -432,13 +424,13 @@
   /// SyncletImplementations.onSync
   /**
    * The onSendMessage function is called when a message is sent.
-   * @category Messaging
+   * @category Message
    * @since v0.0.0
    */
   /// SyncletImplementations.onSendMessage
   /**
    * The onReceiveMessage function is called when a message is received.
-   * @category Messaging
+   * @category Message
    * @since v0.0.0
    */
   /// SyncletImplementations.onReceiveMessage
@@ -451,7 +443,7 @@
   /**
    * The getSendContext function should be implemented to insert context for
    * outgoing messages.
-   * @category Messaging
+   * @category Message
    * @since v0.0.0
    */
   /// SyncletImplementations.getSendContext
@@ -502,7 +494,7 @@
 /**
  * The SyncletOptions type configures identifiers and logging for a Synclet
  * instance.
- * @category Options
+ * @category Option
  * @since v0.0.0
  */
 /// SyncletOptions
@@ -568,38 +560,38 @@
   /**
    * The connect implementation can prepare the connector and registers change
    * notifications.
-   * @category Lifecycle Callbacks
+   * @category Lifecycle
    * @since v0.0.0
    */
   /// DataConnectorImplementations.connect
   /**
    * The disconnect implementation can tear down any connector resources.
-   * @category Lifecycle Callbacks
+   * @category Lifecycle
    * @since v0.0.0
    */
   /// DataConnectorImplementations.disconnect
   /**
    * The readAtom implementation must fetch a single Atom from storage.
-   * @category Data Callbacks
+   * @category Data
    * @since v0.0.0
    */
   /// DataConnectorImplementations.readAtom
   /**
    * The writeAtom implementation must persist a new Atom at the address.
-   * @category Data Callbacks
+   * @category Data
    * @since v0.0.0
    */
   /// DataConnectorImplementations.writeAtom
   /**
    * The removeAtom implementation must delete the Atom at the address.
-   * @category Data Callbacks
+   * @category Data
    * @since v0.0.0
    */
   /// DataConnectorImplementations.removeAtom
   /**
    * The readChildIds implementation must enumerate child Ids under a parent
    * address.
-   * @category Navigation Callbacks
+   * @category Navigation
    * @since v0.0.0
    */
   /// DataConnectorImplementations.readChildIds
@@ -615,13 +607,13 @@
 {
   /**
    * The readAtoms optimization can fetch an entire set of Atoms at once.
-   * @category Bulk Operations
+   * @category Bulk
    * @since v0.0.0
    */
   /// DataConnectorOptimizations.readAtoms
   /**
    * The getData optimization can return the connector’s full data snapshot.
-   * @category Bulk Operations
+   * @category Bulk
    * @since v0.0.0
    */
   /// DataConnectorOptimizations.getData
@@ -672,31 +664,31 @@
 {
   /**
    * The connect callback can prepare the meta connector for work.
-   * @category Lifecycle Callbacks
+   * @category Lifecycle
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.connect
   /**
    * The disconnect callback can tear down meta connector resources.
-   * @category Lifecycle Callbacks
+   * @category Lifecycle
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.disconnect
   /**
    * The readTimestamp callback must fetch a stored timestamp at the address.
-   * @category Meta Callbacks
+   * @category Meta
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.readTimestamp
   /**
    * The writeTimestamp callback must persist a timestamp at the address.
-   * @category Meta Callbacks
+   * @category Meta
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.writeTimestamp
   /**
    * The readChildIds callback must enumerate timestamp child Ids.
-   * @category Navigation Callbacks
+   * @category Navigation
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.readChildIds
@@ -712,14 +704,14 @@
 {
   /**
    * The readTimestamps optimization can fetch multiple timestamps at once.
-   * @category Bulk Operations
+   * @category Bulk
    * @since v0.0.0
    */
   /// MetaConnectorOptimizations.readTimestamps
   /**
    * The getMeta optimization can return the connector’s complete metadata
    * snapshot.
-   * @category Bulk Operations
+   * @category Bulk
    * @since v0.0.0
    */
   /// MetaConnectorOptimizations.getMeta
@@ -765,19 +757,19 @@
   /**
    * The connect callback can attach the transport and register a receive
    * handler.
-   * @category Lifecycle Callbacks
+   * @category Lifecycle
    * @since v0.0.0
    */
   /// TransportImplementations.connect
   /**
    * The disconnect callback can shut down the transport.
-   * @category Lifecycle Callbacks
+   * @category Lifecycle
    * @since v0.0.0
    */
   /// TransportImplementations.disconnect
   /**
    * The sendPacket callback must transmit a packet to remote peers.
-   * @category Messaging Callbacks
+   * @category Message
    * @since v0.0.0
    */
   /// TransportImplementations.sendPacket

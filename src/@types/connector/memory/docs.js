@@ -9,7 +9,7 @@
 /**
  * The createMemoryDataConnector function creates an in-memory DataConnector for
  * testing or ephemeral state.
- * @category Memory Connector
+ * @category Connector
  * @since v0.0.0
  */
 /// createMemoryDataConnector
@@ -17,7 +17,7 @@
 /**
  * The createMemoryMetaConnector function creates an in-memory MetaConnector
  * companion.
- * @category Memory Connector
+ * @category Connector
  * @since v0.0.0
  */
 /// createMemoryMetaConnector
