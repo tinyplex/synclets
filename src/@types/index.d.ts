@@ -103,23 +103,48 @@ export interface Synclet<
   DataConnectorType extends DataConnector<Depth> = DataConnector<Depth>,
   MetaConnectorType extends MetaConnector<Depth> = MetaConnector<Depth>,
 > {
+  /// log
   log(message: string, level?: LogLevel): void;
+
+  /// start
   start(): Promise<void>;
+
+  /// stop
   stop(): Promise<void>;
+
+  /// isStarted
   isStarted(): boolean;
+
+  /// destroy
   destroy(): Promise<void>;
+
+  /// getDataConnector
   getDataConnector(): DataConnectorType;
+
+  /// getMetaConnector
   getMetaConnector(): MetaConnectorType;
+
+  /// getTransport
   getTransport(): Transport[];
+
+  /// sync
   sync(address: Address): Promise<void>;
+
+  /// setAtom
   setAtom(
     address: Address,
     atom: Atom,
     context?: Context,
     sync?: boolean,
   ): Promise<void>;
+
+  /// delAtom
   delAtom(address: Address, context?: Context, sync?: boolean): Promise<void>;
+
+  /// getData
   getData(): Promise<Readonly<Data>>;
+
+  /// getMeta
   getMeta(): Promise<Readonly<Meta>>;
 }
 

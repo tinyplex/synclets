@@ -223,6 +223,86 @@
  * @since v0.0.0
  */
 /// Synclet
+{
+  /**
+   * The log method writes synclet log entries at the requested level.
+   * @category Synclet
+   * @since v0.0.0
+   */
+  /// log
+  /**
+   * The start method initializes connectors and begins processing.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// start
+  /**
+   * The stop method halts connector activity without destroying state.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// stop
+  /**
+   * The isStarted method reports whether the synclet is currently running.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// isStarted
+  /**
+   * The destroy method tears down the synclet and releases owned resources.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// destroy
+  /**
+   * The getDataConnector method returns the active data connector instance.
+   * @category Component
+   * @since v0.0.0
+   */
+  /// getDataConnector
+  /**
+   * The getMetaConnector method returns the active meta connector instance.
+   * @category Component
+   * @since v0.0.0
+   */
+  /// getMetaConnector
+  /**
+   * The getTransport method returns the transports used for messaging.
+   * @category Component
+   * @since v0.0.0
+   */
+  /// getTransport
+  /**
+   * The sync method triggers synchronization work for the provided address.
+   * @category Sync
+   * @since v0.0.0
+   */
+  /// sync
+  /**
+   * The setAtom method writes an atom at the address and optionally syncs it.
+   * @category Manipulation
+   * @since v0.0.0
+   */
+  /// setAtom
+  /**
+   * The delAtom method removes an atom at the address and optionally syncs it.
+   * @category Manipulation
+   * @since v0.0.0
+   */
+  /// delAtom
+  /**
+   * The getData method resolves to a read-only snapshot of the data tree.
+   * @category Inspection
+   * @since v0.0.0
+   */
+  /// getData
+  /**
+   * The getMeta method resolves to a read-only snapshot of the meta tree.
+   * @category Inspection
+   * @since v0.0.0
+   */
+  /// getMeta
+}
 
 /**
  * The SyncletComponents type bundles the optional connector and transport
