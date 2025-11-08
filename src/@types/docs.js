@@ -202,7 +202,7 @@
 /// ExtraFunctions
 
 /**
- * The Logger type describes the optional logging callbacks a Synclet or its
+ * The Logger type describes the optional logging functions a Synclet or its
  * components can use.
  * @category Logging
  * @since v0.0.0
@@ -279,13 +279,13 @@
    */
   /// Synclet.sync
   /**
-   * The setAtom method writes an atom at the address and optionally syncs it.
+   * The setAtom method writes an Atom at the address and optionally syncs it.
    * @category Manipulation
    * @since v0.0.0
    */
   /// Synclet.setAtom
   /**
-   * The delAtom method removes an atom at the address and optionally syncs it.
+   * The delAtom method removes an Atom at the address and optionally syncs it.
    * @category Manipulation
    * @since v0.0.0
    */
@@ -341,79 +341,86 @@
 /// SyncletImplementations
 {
   /**
-   * The onStart callback runs when the synclet starts.
+   * The onStart function is called when the synclet starts.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// SyncletImplementations.onStart
   /**
-   * The onStop callback runs when the synclet stops.
+   * The onStop function is called when the synclet stops.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// SyncletImplementations.onStop
   /**
-   * The onSync callback runs before syncing the provided address.
+   * The onSync function is called before syncing the provided address.
    * @category Sync
    * @since v0.0.0
    */
   /// SyncletImplementations.onSync
   /**
-   * The onSendMessage callback observes messages before they are sent.
+   * The onSendMessage function is called when a message is sent.
    * @category Messaging
    * @since v0.0.0
    */
   /// SyncletImplementations.onSendMessage
   /**
-   * The onReceiveMessage callback handles messages as they arrive.
+   * The onReceiveMessage function is called when a message is received.
    * @category Messaging
    * @since v0.0.0
    */
   /// SyncletImplementations.onReceiveMessage
   /**
-   * The onSetAtom callback runs after a local atom is set.
+   * The onSetAtom function is called after a local Atom is set.
    * @category Mutation
    * @since v0.0.0
    */
   /// SyncletImplementations.onSetAtom
   /**
-   * The getSendContext callback computes the context for outgoing messages.
+   * The getSendContext function should be implemented to insert context for
+   * outgoing messages.
    * @category Messaging
    * @since v0.0.0
    */
   /// SyncletImplementations.getSendContext
   /**
-   * The canReceiveMessage callback authorizes receipt based on context.
+   * The canReceiveMessage function can be implemented to control message
+   * receipt based on context.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.canReceiveMessage
   /**
-   * The canReadAtom callback controls read access at an atom address.
+   * The canReadAtom function can be implemented to control read access at an
+   * Atom address.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.canReadAtom
   /**
-   * The canWriteAtom callback controls write access at an atom address.
+   * The canWriteAtom function can be implemented to control write access at an
+   * Atom address.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.canWriteAtom
   /**
-   * The canRemoveAtom callback controls delete access at an atom address.
+   * The canRemoveAtom function can be implemented to control delete access at
+   * an Atom address.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.canRemoveAtom
   /**
-   * The filterChildIds callback can trim child ids visible to the caller.
+   * The filterChildIds function can be implemented to can trim child Ids
+   * visible to the caller.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.filterChildIds
   /**
-   * The getNow callback supplies a clock value for deterministic testing.
+   * The getNow function can be implemented to supplies a clock value for
+   * deterministic testing.
    * @category Utility
    * @since v0.0.0
    */
@@ -435,7 +442,7 @@
    */
   /// SyncletOptions.id
   /**
-   * The logger option supplies the Logger used for synclet messages.
+   * The logger option supplies the Logger used for Synclet messages.
    * @category Logging
    * @since v0.0.0
    */
@@ -457,6 +464,26 @@
  * @since v0.0.0
  */
 /// DataConnector
+{
+  /**
+   * The _brand property identifies DataConnector instances.
+   * @category Identity
+   * @since v0.0.0
+   */
+  /// DataConnector._brand
+  /**
+   * The depth property returns the address depth supported by this connector.
+   * @category Structure
+   * @since v0.0.0
+   */
+  /// DataConnector.depth
+  /**
+   * The log method logs output through the Synclet logger.
+   * @category Logging
+   * @since v0.0.0
+   */
+  /// DataConnector.log
+}
 
 /**
  * The DataConnectorImplementations type lists the async functions required to
@@ -465,6 +492,46 @@
  * @since v0.0.0
  */
 /// DataConnectorImplementations
+{
+  /**
+   * The connect implementation can prepare the connector and registers change
+   * notifications.
+   * @category Lifecycle Callbacks
+   * @since v0.0.0
+   */
+  /// DataConnectorImplementations.connect
+  /**
+   * The disconnect implementation can tear down any connector resources.
+   * @category Lifecycle Callbacks
+   * @since v0.0.0
+   */
+  /// DataConnectorImplementations.disconnect
+  /**
+   * The readAtom implementation must fetch a single Atom from storage.
+   * @category Data Callbacks
+   * @since v0.0.0
+   */
+  /// DataConnectorImplementations.readAtom
+  /**
+   * The writeAtom implementation must persist a new Atom at the address.
+   * @category Data Callbacks
+   * @since v0.0.0
+   */
+  /// DataConnectorImplementations.writeAtom
+  /**
+   * The removeAtom implementation must delete the Atom at the address.
+   * @category Data Callbacks
+   * @since v0.0.0
+   */
+  /// DataConnectorImplementations.removeAtom
+  /**
+   * The readChildIds implementation must enumerate child Ids under a parent
+   * address.
+   * @category Navigation Callbacks
+   * @since v0.0.0
+   */
+  /// DataConnectorImplementations.readChildIds
+}
 
 /**
  * The DataConnectorOptimizations type lists optional bulk operations a
@@ -473,6 +540,20 @@
  * @since v0.0.0
  */
 /// DataConnectorOptimizations
+{
+  /**
+   * The readAtoms optimization can fetch an entire set of Atoms at once.
+   * @category Bulk Operations
+   * @since v0.0.0
+   */
+  /// DataConnectorOptimizations.readAtoms
+  /**
+   * The getData optimization can return the connector’s full data snapshot.
+   * @category Bulk Operations
+   * @since v0.0.0
+   */
+  /// DataConnectorOptimizations.getData
+}
 
 /**
  * The createDataConnector function creates a DataConnector instance.
@@ -488,6 +569,26 @@
  * @since v0.0.0
  */
 /// MetaConnector
+{
+  /**
+   * The _brand property identifies MetaConnector instances.
+   * @category Identity
+   * @since v0.0.0
+   */
+  /// MetaConnector._brand
+  /**
+   * The depth property returns the address depth supported by this connector.
+   * @category Structure
+   * @since v0.0.0
+   */
+  /// MetaConnector.depth
+  /**
+   * The log method logs output through the Synclet logger.
+   * @category Logging
+   * @since v0.0.0
+   */
+  /// MetaConnector.log
+}
 
 /**
  * The MetaConnectorImplementations type lists the async functions required to
@@ -496,6 +597,38 @@
  * @since v0.0.0
  */
 /// MetaConnectorImplementations
+{
+  /**
+   * The connect callback can prepare the meta connector for work.
+   * @category Lifecycle Callbacks
+   * @since v0.0.0
+   */
+  /// MetaConnectorImplementations.connect
+  /**
+   * The disconnect callback can tear down meta connector resources.
+   * @category Lifecycle Callbacks
+   * @since v0.0.0
+   */
+  /// MetaConnectorImplementations.disconnect
+  /**
+   * The readTimestamp callback must fetch a stored timestamp at the address.
+   * @category Meta Callbacks
+   * @since v0.0.0
+   */
+  /// MetaConnectorImplementations.readTimestamp
+  /**
+   * The writeTimestamp callback must persist a timestamp at the address.
+   * @category Meta Callbacks
+   * @since v0.0.0
+   */
+  /// MetaConnectorImplementations.writeTimestamp
+  /**
+   * The readChildIds callback must enumerate timestamp child Ids.
+   * @category Navigation Callbacks
+   * @since v0.0.0
+   */
+  /// MetaConnectorImplementations.readChildIds
+}
 
 /**
  * The MetaConnectorOptimizations type lists optional bulk operations a
@@ -504,6 +637,21 @@
  * @since v0.0.0
  */
 /// MetaConnectorOptimizations
+{
+  /**
+   * The readTimestamps optimization can fetch multiple timestamps at once.
+   * @category Bulk Operations
+   * @since v0.0.0
+   */
+  /// MetaConnectorOptimizations.readTimestamps
+  /**
+   * The getMeta optimization can return the connector’s complete metadata
+   * snapshot.
+   * @category Bulk Operations
+   * @since v0.0.0
+   */
+  /// MetaConnectorOptimizations.getMeta
+}
 
 /**
  * The createMetaConnector function creates a MetaConnector instance.
@@ -519,6 +667,20 @@
  * @since v0.0.0
  */
 /// Transport
+{
+  /**
+   * The _brand property identifies Transport instances.
+   * @category Identity
+   * @since v0.0.0
+   */
+  /// Transport._brand
+  /**
+   * The log method logs output through the Synclet logger.
+   * @category Logging
+   * @since v0.0.0
+   */
+  /// Transport.log
+}
 
 /**
  * The TransportImplementations type lists the async connect, disconnect, and
@@ -527,6 +689,27 @@
  * @since v0.0.0
  */
 /// TransportImplementations
+{
+  /**
+   * The connect callback can attach the transport and register a receive
+   * handler.
+   * @category Lifecycle Callbacks
+   * @since v0.0.0
+   */
+  /// TransportImplementations.connect
+  /**
+   * The disconnect callback can shut down the transport.
+   * @category Lifecycle Callbacks
+   * @since v0.0.0
+   */
+  /// TransportImplementations.disconnect
+  /**
+   * The sendPacket callback must transmit a packet to remote peers.
+   * @category Messaging Callbacks
+   * @since v0.0.0
+   */
+  /// TransportImplementations.sendPacket
+}
 
 /**
  * The TransportOptions type configures transport behaviors such as fragment
@@ -535,6 +718,14 @@
  * @since v0.0.0
  */
 /// TransportOptions
+{
+  /**
+   * The fragmentSize option controls where packets are split for sending.
+   * @category Tuning
+   * @since v0.0.0
+   */
+  /// TransportOptions.fragmentSize
+}
 
 /**
  * The createTransport function creates a Transport instance.

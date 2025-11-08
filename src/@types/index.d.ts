@@ -246,26 +246,45 @@ export function createSynclet<
 
 /// DataConnector
 export interface DataConnector<Depth extends number> {
+  /// DataConnector._brand
   _brand: 'DataConnector';
+
+  /// DataConnector.depth
   depth: Depth;
+
+  /// DataConnector.log
   log(message: string, level?: LogLevel): void;
 }
 
 /// DataConnectorImplementations
 export type DataConnectorImplementations<Depth extends number> = {
+  /// DataConnectorImplementations.connect
   connect?: (
     syncChangedAtoms: (...address: AtomAddress<Depth>[]) => Promise<void>,
   ) => Promise<void>;
+
+  /// DataConnectorImplementations.disconnect
   disconnect?: () => Promise<void>;
+
+  /// DataConnectorImplementations.readAtom
   readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>;
+
+  /// DataConnectorImplementations.writeAtom
   writeAtom: (address: AtomAddress<Depth>, atom: Atom) => Promise<void>;
+
+  /// DataConnectorImplementations.removeAtom
   removeAtom: (address: AtomAddress<Depth>) => Promise<void>;
+
+  /// DataConnectorImplementations.readChildIds
   readChildIds: (address: AnyParentAddress<Depth>) => Promise<string[]>;
 };
 
 /// DataConnectorOptimizations
 export type DataConnectorOptimizations<Depth extends number> = {
+  /// DataConnectorOptimizations.readAtoms
   readAtoms?: (address: AtomsAddress<Depth>) => Promise<Atoms>;
+
+  /// DataConnectorOptimizations.getData
   getData?: () => Promise<Data>;
 };
 
@@ -281,28 +300,45 @@ export function createDataConnector<Depth extends number>(
 
 /// MetaConnector
 export interface MetaConnector<Depth extends number> {
+  /// MetaConnector._brand
   _brand: 'MetaConnector';
+
+  /// MetaConnector.depth
   depth: Depth;
+
+  /// MetaConnector.log
   log(message: string, level?: LogLevel): void;
 }
 
 /// MetaConnectorImplementations
 export type MetaConnectorImplementations<Depth extends number> = {
+  /// MetaConnectorImplementations.connect
   connect?: () => Promise<void>;
+
+  /// MetaConnectorImplementations.disconnect
   disconnect?: () => Promise<void>;
+
+  /// MetaConnectorImplementations.readTimestamp
   readTimestamp: (
     address: TimestampAddress<Depth>,
   ) => Promise<Timestamp | undefined>;
+
+  /// MetaConnectorImplementations.writeTimestamp
   writeTimestamp: (
     address: TimestampAddress<Depth>,
     timestamp: Timestamp,
   ) => Promise<void>;
+
+  /// MetaConnectorImplementations.readChildIds
   readChildIds: (address: AnyParentAddress<Depth>) => Promise<string[]>;
 };
 
 /// MetaConnectorOptimizations
 export type MetaConnectorOptimizations<Depth extends number> = {
+  /// MetaConnectorOptimizations.readTimestamps
   readTimestamps?: (address: TimestampsAddress<Depth>) => Promise<Timestamps>;
+
+  /// MetaConnectorOptimizations.getMeta
   getMeta?: () => Promise<Meta>;
 };
 
@@ -318,19 +354,28 @@ export function createMetaConnector<Depth extends number>(
 
 /// Transport
 export interface Transport {
+  /// Transport._brand
   _brand: 'Transport';
+
+  /// Transport.log
   log(message: string, level?: LogLevel): void;
 }
 
 /// TransportImplementations
 export type TransportImplementations = {
+  /// TransportImplementations.connect
   connect?: (receivePacket: (string: string) => Promise<void>) => Promise<void>;
+
+  /// TransportImplementations.disconnect
   disconnect?: () => Promise<void>;
+
+  /// TransportImplementations.sendPacket
   sendPacket: (string: string) => Promise<void>;
 };
 
 /// TransportOptions
 export type TransportOptions = {
+  /// TransportOptions.fragmentSize
   fragmentSize?: number;
 };
 
