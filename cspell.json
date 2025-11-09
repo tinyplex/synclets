@@ -1,10 +1,17 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.json", "__snapshots__"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp",
+    "*.svg",
+    "*.json",
+    "__snapshots__"
+  ],
   "words": [
     "aaab",
     "atrule",
     "attw",
     "baaa",
+    "cpus",
     "onwarn",
     "opfs",
     "Pearce",

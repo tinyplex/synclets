@@ -40,6 +40,10 @@ const getFileSnapshot = (type: string, {task}: TestContext & object) => {
   return join(__dirname, '__snapshots__', `${testName}.${type} #${assertion}`);
 };
 
+export const AsyncFunction = Object.getPrototypeOf(
+  async () => null,
+).constructor;
+
 export const pause = async (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
