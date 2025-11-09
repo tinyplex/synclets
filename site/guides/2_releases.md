@@ -32,10 +32,10 @@ future updates as we continue to develop Synclets further.
 
 ## The background to Synclets
 
-During the development of our sister project, TinyBase, we found ourselves
-needing to build synchronization logic to keep data in sync between local and
-remote stores - as well as ways to persist them to various storage backends and
-databases.
+During the development of our sister project, [TinyBase](https://tinybase.org/),
+we found ourselves needing to build synchronization logic to keep data in sync
+between local and remote stores - as well as ways to persist them to various
+storage backends and databases.
 
 But we figured these techniques would be valuable to people that are not using
 TinyBase too, and so Synclets is essentially an attempt to extract and
@@ -69,8 +69,8 @@ Exact implementation details are still evolving, but here's roughly how Synclets
 are designed to be used:
 
 1. Instantiate a DataConnector component that interfaces with your chosen
-   storage (e.g., SQLite, PGlite, TinyBase, local storage etc. - or one you
-   customize yourself)
+   storage (e.g., [SQLite](https://sqlite.org/), [PGlite](http://pglite.dev/),
+   TinyBase, local storage etc. - or one you customize yourself)
 
 2. Instantiate a MetaConnector component that stores metadata (primarily
    timestamps), again into any of many storage backends.
@@ -174,6 +174,6 @@ documentation, but we still need to build out more connectors, transports, and
 examples.
 
 Our next major milestone will be building out a proof of concept that connects
-client-side Sqlite and PGlite databases to CloudFlare Durable Objects, as we
+client-side SQLite and PGlite databases to CloudFlare Durable Objects, as we
 think this might be a popular pattern for many realtime collaborative apps. Stay
 tuned for announcements on that one!

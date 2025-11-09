@@ -517,6 +517,7 @@
 /**
  * The createSynclet function wires the provided components, functions, and
  * options into a Synclet.
+ * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
  */
@@ -622,6 +623,7 @@
 
 /**
  * The createDataConnector function creates a DataConnector instance.
+ * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
  */
@@ -720,6 +722,7 @@
 
 /**
  * The createMetaConnector function creates a MetaConnector instance.
+ * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
  */
@@ -794,6 +797,7 @@
 
 /**
  * The createTransport function creates a Transport instance.
+ * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
  */
