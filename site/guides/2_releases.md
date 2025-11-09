@@ -7,24 +7,28 @@ highlighted features.
 
 # Introducing Synclets
 
-We're excited to introduce Synclets, an open, storage-agnostic, sync engine
-development kit.
+**We're excited to introduce Synclets, an open, storage-agnostic, sync engine
+development kit.**
 
-Synclets is intended to make it easy to synchronize data between the different
+![Thumbnail of logo](/favicon.svg 'Thumbnail of logo')
+
+Synclets are intended to make it easy to synchronize data between the different
 parts of your applications, whether between local storage and remote servers,
 between different devices, or even across worker boundaries.
 
 We believe synchronization is a fundamental part of modern app development,
 especially in the context of rich client and local-first apps. We also believe
 that you shouldn't be locked into a specific storage solution, transport layer,
-or commercial vendor in order to do this.
+or vendor in order to do so!
 
 This is a very young project, and not ready for production use yet! But we are
 sharing it in this early form to invite feedback and contributions from the
 community.
 
-We hope you like the idea! If so, please follow us on GitHub, X, or BlueSky, and
-stay tuned for future updates as we continue to develop Synclets further.
+We hope you like the idea of this project! If so, please follow us on
+[GitHub](https://github.com/tinyplex/synclets), [X](https://x.com/syncletsjs),
+or [BlueSky](https://bsky.app/profile/synclets.bsky.social), and stay tuned for
+future updates as we continue to develop Synclets further.
 
 ## The background to Synclets
 
@@ -44,7 +48,7 @@ best works for you.)
 
 ## The philosophy of Synclets
 
-Synclets is designed around a few core principles:
+The Synclets project is designed around a few core principles:
 
 1. Be compatible with as many storage backends as possible, whether
    database-oriented, in-memory, file-based, or otherwise. No vendor lock-in!
@@ -162,8 +166,8 @@ changes to your codebase.
 
 ## What's next?
 
-The Synclets project is at a sort of pre-alpha-ish stage right now, so there is
-still plenty of work to be done!
+The Synclets project is pre-alpha right now, so there is still plenty of work to
+be done!
 
 There are decent test suites in place for the core components, and some basic
 documentation, but we still need to build out more connectors, transports, and

@@ -13,7 +13,7 @@ export const Footer: NoPropComponent = () => (
       </a>
       <a
         id="bs"
-        href="https://bsky.app/profile/tinybase.bsky.social"
+        href="https://bsky.app/profile/synclets.bsky.social"
         target="_blank"
         rel="noreferrer"
       >
@@ -21,19 +21,11 @@ export const Footer: NoPropComponent = () => (
       </a>
       <a
         id="tw"
-        href="https://x.com/tinybasejs"
+        href="https://x.com/syncletsjs"
         target="_blank"
         rel="noreferrer"
       >
         X / Twitter
-      </a>
-      <a
-        id="dc"
-        href="https://discord.com/invite/mGz3mevwP8"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Discord
       </a>
     </nav>
     <nav>

@@ -27,7 +27,8 @@ body > main > article {
     line-height: 1rem;
     display: none;
   }
-  img {
+  img,
+  embed {
     max-width: 100%;
     display: block;
     margin: 1rem auto;
@@ -37,7 +38,8 @@ body > main > article {
     display: inline;
     margin: 0;
   }
-  img[title^='Thumbnail'] {
+  img[title^='Thumbnail'],
+  embed[title^='Thumbnail'] {
     width: 50%;
   }
 }
