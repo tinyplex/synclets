@@ -6,11 +6,11 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#introducing-synclets'>Introducing Synclets!</a>
+<a class='start' href='/guides/releases/#introducing-synclets'>Introducing Synclets!</a>
 
 <span id="one-with">Read about this new project</span>
 
-<a class='start' href='/guides/the-basics/core-concepts'>Core concepts</a>
+<a href='/guides/the-basics/core-concepts'>Core concepts</a>
 
 <a href='/api/synclets'>Read the docs</a>
 
@@ -104,6 +104,14 @@ await synclet.start();
 >
 > Also feel free to kick the tires on our very basic [Vite
 > template](https://github.com/tinyplex/vite-synclets).
+
+---
+
+<a href='/guides/the-basics/core-concepts'>Core concepts</a>
+
+<a href='/api/synclets'>Read the docs</a>
+
+<a href='https://github.com/tinyplex/synclets'>Read the code</a>
 
 ---
 
