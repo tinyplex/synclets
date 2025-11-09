@@ -71,7 +71,7 @@ describe('data schema checks', async () => {
     const dataConnector = createPgliteDataConnector(3, pglite);
     const metaConnector = createMockMetaConnector(3);
     await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-    expect((await pglite.sql`SELECT * FROM data;`).fields).toEqual([
+    expect((await pglite.sql`SELECT * FROM data;`).fields).toBe([
       {name: 'address', dataTypeID: TEXT},
       {name: 'atom', dataTypeID: TEXT},
       {name: 'address1', dataTypeID: TEXT},
@@ -90,7 +90,7 @@ describe('data schema checks', async () => {
     });
     const metaConnector = createMockMetaConnector(3);
     await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-    expect((await pglite.sql`SELECT * FROM d;`).fields).toEqual([
+    expect((await pglite.sql`SELECT * FROM d;`).fields).toBe([
       {name: 'a', dataTypeID: TEXT},
       {name: 'x', dataTypeID: TEXT},
       {name: 'a1', dataTypeID: TEXT},
@@ -171,7 +171,7 @@ describe('meta schema checks', async () => {
     const dataConnector = createMockDataConnector(3);
     const metaConnector = createPgliteMetaConnector(3, pglite);
     await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-    expect((await pglite.sql`SELECT * FROM meta;`).fields).toEqual([
+    expect((await pglite.sql`SELECT * FROM meta;`).fields).toBe([
       {name: 'address', dataTypeID: TEXT},
       {name: 'timestamp', dataTypeID: TEXT},
       {name: 'address1', dataTypeID: TEXT},
@@ -190,7 +190,7 @@ describe('meta schema checks', async () => {
       timestampColumn: 't',
     });
     await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-    expect((await pglite.sql`SELECT * FROM m;`).fields).toEqual([
+    expect((await pglite.sql`SELECT * FROM m;`).fields).toBe([
       {name: 'a', dataTypeID: TEXT},
       {name: 't', dataTypeID: TEXT},
       {name: 'a1', dataTypeID: TEXT},

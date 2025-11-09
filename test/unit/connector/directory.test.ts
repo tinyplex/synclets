@@ -55,7 +55,7 @@ test('non-path addresses', async () => {
   await synclet.setAtom(['*', '/'], 'B');
   await synclet.setAtom(['~', '..'], 'B');
 
-  expect(await synclet.getData()).toEqual({
+  expect(await synclet.getData()).toBe({
     '.': {'a/b': 'A'},
     '*': {'/': 'B'},
     '~': {'..': 'B'},

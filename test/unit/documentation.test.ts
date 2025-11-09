@@ -134,7 +134,7 @@ describe('Documentation tests', () => {
   test.each(Object.entries(resultsByName))('%s', async (_name, getResults) => {
     const results = await getResults();
     results.forEach(([expectedResult, actualResult]) => {
-      expect(actualResult).toEqual(expectedResult);
+      expect(actualResult).toBe(expectedResult);
     });
   });
 });

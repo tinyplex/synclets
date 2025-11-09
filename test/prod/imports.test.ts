@@ -21,5 +21,5 @@ test.each(testFiles)('Imports', (testFile) => {
     ({messageText}) => messageText,
   );
 
-  expect(results).toEqual([]);
+  expect(results).toBe([]);
 });

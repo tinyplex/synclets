@@ -176,8 +176,8 @@ export const expectEquivalentSynclets = async <Depth extends number>(
   await expect(data).toMatchFileSnapshot(getFileSnapshot('equivalent', test));
   await Promise.all(
     synclets.map(async (synclet) => {
-      expect(await synclet.getData()).toEqual(data);
-      expect(await synclet.getMeta()).toEqual(meta);
+      expect(await synclet.getData()).toBe(data);
+      expect(await synclet.getMeta()).toBe(meta);
     }),
   );
 };
@@ -189,13 +189,13 @@ export const expectDifferingSynclets = async <Depth extends number>(
 ) => {
   const data1 = await synclet1.getData();
   const data2 = await synclet2.getData();
-  expect(data1).not.toEqual(data2);
+  expect(data1).not.toBe(data2);
   await expect([data1, data2]).toMatchFileSnapshot(
     getFileSnapshot('differing', test),
   );
 
-  expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
-  expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
+  expect(await synclet1.getMeta()).not.toBe(await synclet2.getMeta());
+  expect(await synclet1.getMeta()).not.toBe(await synclet2.getMeta());
 };
 
 export const describeCommonConnectorTests = <
@@ -339,7 +339,7 @@ export const describeCommonConnectorTests = <
             await synclet1.delAtomForTest();
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
-            expect(meta).not.toEqual(await synclet1.getMeta());
+            expect(meta).not.toBe(await synclet1.getMeta());
           });
 
           test('start 1, set 1, start 2', async (test) => {

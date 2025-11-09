@@ -71,7 +71,7 @@ describe('data schema checks', async () => {
   //   const dataConnector = createSqlite3DataConnector(3, database);
   //   const metaConnector = createMockMetaConnector(3);
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM data;`).fields).toEqual([
+  //   expect((await query(database, `SELECT * FROM data;`).fields).toBe([
   //     {name: 'address', dataTypeID: TEXT},
   //     {name: 'atom', dataTypeID: TEXT},
   //     {name: 'address1', dataTypeID: TEXT},
@@ -90,7 +90,7 @@ describe('data schema checks', async () => {
   //   });
   //   const metaConnector = createMockMetaConnector(3);
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM d;`)).fields).toEqual([
+  //   expect((await query(database, `SELECT * FROM d;`)).fields).toBe([
   //     {name: 'a', dataTypeID: TEXT},
   //     {name: 'x', dataTypeID: TEXT},
   //     {name: 'a1', dataTypeID: TEXT},
@@ -189,7 +189,7 @@ describe('meta schema checks', async () => {
   //   const dataConnector = createMockDataConnector(3);
   //   const metaConnector = createSqlite3MetaConnector(3, database);
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect(await query(database, `SELECT * FROM meta;`).fields).toEqual([
+  //   expect(await query(database, `SELECT * FROM meta;`).fields).toBe([
   //     {name: 'address', dataTypeID: TEXT},
   //     {name: 'timestamp', dataTypeID: TEXT},
   //     {name: 'address1', dataTypeID: TEXT},
@@ -208,7 +208,7 @@ describe('meta schema checks', async () => {
   //     timestampColumn: 't',
   //   });
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM m;`)).fields).toEqual([
+  //   expect((await query(database, `SELECT * FROM m;`)).fields).toBe([
   //     {name: 'a', dataTypeID: TEXT},
   //     {name: 't', dataTypeID: TEXT},
   //     {name: 'a1', dataTypeID: TEXT},
