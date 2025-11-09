@@ -11,7 +11,7 @@ import {Footer} from './Footer.tsx';
 import {Header} from './Header.tsx';
 import {Main} from './Main.tsx';
 
-const GTM_ID = 'G-14BZ56H85M';
+const GTM_ID = 'G-V452DW6JPH';
 
 const FONTS = ['inter', 'inconsolata', 'shantell'];
 
