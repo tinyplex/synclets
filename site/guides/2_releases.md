@@ -78,31 +78,58 @@ are designed to be used:
 4. Connect the three components together using a Synclet instance, which, once
    started, orchestrates the synchronization process itself.
 
+Here's an example of how Synclets can synchronize key-values between a local
+PGlite database and a local SQLite database over WebSockets:
+
 ```js
 import {PGlite} from '@electric-sql/pglite';
+import {Database} from 'sqlite3';
 import {createSynclet} from 'synclets';
+import {getUniqueId} from 'synclets/utils';
 import {
   createPgliteDataConnector,
   createPgliteMetaConnector,
 } from 'synclets/connector/database/pglite';
+import {
+  createSqlite3DataConnector,
+  createSqlite3MetaConnector,
+} from 'synclets/connector/database/sqlite3';
 import {createWsTransport} from 'synclets/transport/ws';
+import {WebSocket} from 'ws';
 
-const localPglite = await PGlite.create();
-const dataConnector = createPgliteDataConnector(1, localPglite);
-const metaConnector = createPgliteMetaConnector(1, localPglite);
+const SERVER = 'wss://demo.synclets.org/' + getUniqueId();
 
-const webSocket = new WebSocket('ws://example.com/synclet');
-const transport = createWsTransport(webSocket);
+// Synclet 1 (PGlite)
+const pglite = await PGlite.create();
+const synclet1 = await createSynclet({
+  dataConnector: createPgliteDataConnector(1, pglite),
+  metaConnector: createPgliteMetaConnector(1, pglite),
+  transport: createWsTransport(new WebSocket(SERVER)),
+});
+await synclet1.start();
 
-const synclet = await createSynclet({dataConnector, metaConnector, transport});
+// Synclet 2 (SQLite)
+const sqlite = new Database(':memory:');
+const synclet2 = await createSynclet({
+  dataConnector: createSqlite3DataConnector(1, sqlite),
+  metaConnector: createSqlite3MetaConnector(1, sqlite),
+  transport: createWsTransport(new WebSocket(SERVER)),
+});
+await synclet2.start();
 
-await synclet.start();
-// and off we go!
+// Set some data on Synclet 1
+await synclet1.setAtom(['foo'], 'bar');
+console.log(await synclet1.getData());
+// -> {foo: 'bar'}
+
+// ... wait a moment for synchronization to Synclet 2
+console.log(await synclet2.getData());
+// -> {foo: 'bar'}
 ```
 
-This modular approach means you can do plenty of customization for your chosen
-environment. For example, you could synchronize the memory state in the UI
-thread of your application with local storage in a worker thread.
+This compositional approach means you have a lot of flexibility for how data
+flows in your app. For example, you could synchronize an in-memory state in the
+UI thread of your application with local storage in a worker thread.
 
 Or you could synchronize data between a local SQLite database and a remote
 PostgreSQL server over WebSockets. PGlite in the browser with CloudFlare Durable
