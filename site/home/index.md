@@ -31,6 +31,54 @@
 > that you shouldn't be locked into a specific storage solution, transport
 > layer, or vendor in order to do so!
 
+<section class="logos">
+<h2>Store your data in...</h2>
+  <div>
+    <a href='/api/connector-database-pglite'>
+      <img width="48" src="/pglite.svg?asImg" /> PGlite
+    </a>
+  </div>
+  <div>
+    <a href='/api/connector-database-sqlite3'>
+      <img width="48" src="/sqlite.svg?asImg" /> SQLite
+    </a>
+  </div>
+  <div>
+    <a href='/api/connector-tinybase'>
+      <img width="48" src="https://tinybase.org/favicon.svg?asImg" /> TinyBase
+    </a>
+  </div>
+  <div>
+    <a href='/api/connector-memory'>
+      <img width="48" src="/memory.svg?asImg" /> Memory
+    </a>
+  </div>
+  <div>
+    <a href='/api/connector-browser'>
+      <img width="48" src="/browser.svg?asImg" /> Browser
+    </a>
+  </div>
+  <div>
+    <a href='/api/connector-fs'>
+      <img width="48" src="/filesystem.svg?asImg" /> Files
+    </a>
+  </div>
+</section>
+
+<section class="logos">
+  <h2>...and synchronize it over:</h2>
+  <div>
+    <a href='/api/transport-ws/'>
+      <img width="48" src="/websockets.svg?asImg" /> WebSockets
+    </a>
+  </div>
+  <div>
+    <a href='/api/transport-memory'>
+      <img width="48" src="/memory.svg?asImg" /> Memory
+    </a>
+  </div>
+</section>
+
 > ## Connect to a data store
 >
 > Synclets are designed to work with lots of different flavors of storage and
