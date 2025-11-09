@@ -1,0 +1,16 @@
+{
+  "name": "demo-synclets-org",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.ts",
+  "author": "jamesgpearce",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "synclets": "^0.0.2",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.10"
+  }
+}
