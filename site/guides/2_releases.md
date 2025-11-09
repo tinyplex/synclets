@@ -10,8 +10,6 @@ highlighted features.
 **We're excited to introduce Synclets, an open, storage-agnostic, sync engine
 development kit.**
 
-![Thumbnail of logo](/favicon.svg 'Thumbnail of logo')
-
 Synclets are intended to make it easy to synchronize data between the different
 parts of your applications, whether between local storage and remote servers,
 between different devices, or even across worker boundaries.
@@ -21,7 +19,7 @@ especially in the context of rich client and local-first apps. We also believe
 that you shouldn't be locked into a specific storage solution, transport layer,
 or vendor in order to do so!
 
-This is a very young project, and not ready for production use yet! But we are
+This is a very young project, and not ready for production use yet. But we are
 sharing it in this early form to invite feedback and contributions from the
 community.
 

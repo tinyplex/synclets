@@ -61,6 +61,9 @@ const metaConnector = createPgliteMetaConnector(1, db);
 > to use WebSockets via a server use the createWsTransport function.
 
 ```js
+import {createWsTransport} from 'synclets/transport/ws';
+import {WebSocket} from 'ws';
+
 const transport = createWsTransport(
   new WebSocket('wss://demo.synclets.org/room1'),
 );
