@@ -73,6 +73,11 @@
     </a>
   </div>
   <div>
+    <a href='/api/transport-broadcast-channel/'>
+      <img width="48" src="/broadcast.svg?asImg" /> Broadcast
+    </a>
+  </div>
+  <div>
     <a href='/api/transport-memory'>
       <img width="48" src="/memory.svg?asImg" /> Memory
     </a>

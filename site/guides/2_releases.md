@@ -51,8 +51,8 @@ The Synclets project is designed around a few core principles:
 1. Be compatible with as many storage backends as possible, whether
    database-oriented, in-memory, file-based, or otherwise. No vendor lock-in!
 
-2. Work across a variety of transport layers, including WebSockets, in-memory,
-   and other broadcast channels.
+2. Work across a variety of transport layers, such as WebSockets, in-memory,
+   BroadcastChannel, and so on.
 
 3. Be modular and extensible, allowing you to customize and extend its
    functionality to suit your specific needs, or to contribute back to the
@@ -74,7 +74,7 @@ are designed to be used:
    timestamps), again into any of many storage backends.
 
 3. Instantiate a Transport component that handles communication between
-   different parts of your application (e.g., WebSocket server/client,
+   different parts of your application (e.g. WebSocket server/client,
    BroadcastChannel, etc.)
 
 4. Connect the three components together using a Synclet instance, which, once
