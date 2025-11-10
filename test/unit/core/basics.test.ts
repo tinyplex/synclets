@@ -80,13 +80,13 @@ test('start & stop', async () => {
     metaConnector,
     transport,
   });
-  expect(synclet.isStarted()).toBe(false);
+  expect(synclet.isStarted()).toEqual(false);
 
   await synclet.start();
-  expect(synclet.isStarted()).toBe(true);
+  expect(synclet.isStarted()).toEqual(true);
 
   await synclet.stop();
-  expect(synclet.isStarted()).toBe(false);
+  expect(synclet.isStarted()).toEqual(false);
 });
 
 describe('context', () => {

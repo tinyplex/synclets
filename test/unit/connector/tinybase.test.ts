@@ -22,8 +22,8 @@ test('getStore, tables', async () => {
   const store = createStore();
   const dataConnector = createTinyBaseDataConnector(store);
   const synclet = await createSynclet({dataConnector});
-  expect(dataConnector.getStore()).toBe(store);
-  expect(synclet.getDataConnector().getStore()).toBe(store);
+  expect(dataConnector.getStore()).toEqual(store);
+  expect(synclet.getDataConnector().getStore()).toEqual(store);
 });
 
 describe('reactive', async () => {
@@ -73,14 +73,14 @@ describe('reactive', async () => {
   test('cell', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await pause(1);
-    expect(store2.getTables()).toBe({t1: {r1: {c1: 1}}});
+    expect(store2.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(messages).toMatchSnapshot();
   });
 
   test('value', async () => {
     store1.setValue('v1', 1);
     await pause(1);
-    expect(store2.getValues()).toBe({v1: 1});
+    expect(store2.getValues()).toEqual({v1: 1});
     expect(messages).toMatchSnapshot();
   });
 
@@ -89,7 +89,7 @@ describe('reactive', async () => {
     await pause(1);
     store1.setValue('v1', 1);
     await pause(1);
-    expect(store2.getContent()).toBe([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(messages).toMatchSnapshot();
   });
 
@@ -99,9 +99,9 @@ describe('reactive', async () => {
     await pause(1);
     store1.setValue('v1', 1);
     store1.finishTransaction();
-    expect(store2.getContent()).toBe([{}, {}]);
+    expect(store2.getContent()).toEqual([{}, {}]);
     await pause(1);
-    expect(store2.getContent()).toBe([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(messages).toMatchSnapshot();
   });
 });

@@ -27,8 +27,8 @@ test('getFile', async () => {
 
   const synclet = await createSynclet({dataConnector, metaConnector});
 
-  expect(dataConnector.getStorageName()).toBe(dataStorageName);
-  expect(synclet.getDataConnector().getStorageName()).toBe(dataStorageName);
-  expect(metaConnector.getStorageName()).toBe(metaStorageName);
-  expect(synclet.getMetaConnector().getStorageName()).toBe(metaStorageName);
+  expect(dataConnector.getStorageName()).toEqual(dataStorageName);
+  expect(synclet.getDataConnector().getStorageName()).toEqual(dataStorageName);
+  expect(metaConnector.getStorageName()).toEqual(metaStorageName);
+  expect(synclet.getMetaConnector().getStorageName()).toEqual(metaStorageName);
 });

@@ -33,10 +33,10 @@ test('getDirectory', async () => {
 
   const synclet = await createSynclet({dataConnector, metaConnector});
 
-  expect(dataConnector.getDirectory()).toBe(dataDir);
-  expect(synclet.getDataConnector().getDirectory()).toBe(dataDir);
-  expect(metaConnector.getDirectory()).toBe(metaDir);
-  expect(synclet.getMetaConnector().getDirectory()).toBe(metaDir);
+  expect(dataConnector.getDirectory()).toEqual(dataDir);
+  expect(synclet.getDataConnector().getDirectory()).toEqual(dataDir);
+  expect(metaConnector.getDirectory()).toEqual(metaDir);
+  expect(synclet.getMetaConnector().getDirectory()).toEqual(metaDir);
 
   await rm(tmpDir, {recursive: true, force: true});
 });
@@ -55,7 +55,7 @@ test('non-path addresses', async () => {
   await synclet.setAtom(['*', '/'], 'B');
   await synclet.setAtom(['~', '..'], 'B');
 
-  expect(await synclet.getData()).toBe({
+  expect(await synclet.getData()).toEqual({
     '.': {'a/b': 'A'},
     '*': {'/': 'B'},
     '~': {'..': 'B'},

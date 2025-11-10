@@ -32,10 +32,10 @@ test('getFile', async () => {
 
   const synclet = await createSynclet({dataConnector, metaConnector});
 
-  expect(dataConnector.getFile()).toBe(dataFile);
-  expect(synclet.getDataConnector().getFile()).toBe(dataFile);
-  expect(metaConnector.getFile()).toBe(metaFile);
-  expect(synclet.getMetaConnector().getFile()).toBe(metaFile);
+  expect(dataConnector.getFile()).toEqual(dataFile);
+  expect(synclet.getDataConnector().getFile()).toEqual(dataFile);
+  expect(metaConnector.getFile()).toEqual(metaFile);
+  expect(synclet.getMetaConnector().getFile()).toEqual(metaFile);
 
   await rm(tmp, {recursive: true, force: true});
 });

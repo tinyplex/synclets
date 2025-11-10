@@ -43,11 +43,11 @@ test('getDatabase', async () => {
 
   const synclet = await createSynclet({dataConnector, metaConnector});
 
-  expect(dataConnector.getDatabase()).toBe(dataDatabase);
-  expect(synclet.getDataConnector().getDatabase()).toBe(dataDatabase);
+  expect(dataConnector.getDatabase()).toEqual(dataDatabase);
+  expect(synclet.getDataConnector().getDatabase()).toEqual(dataDatabase);
 
-  expect(metaConnector.getDatabase()).toBe(metaDatabase);
-  expect(synclet.getMetaConnector().getDatabase()).toBe(metaDatabase);
+  expect(metaConnector.getDatabase()).toEqual(metaDatabase);
+  expect(synclet.getMetaConnector().getDatabase()).toEqual(metaDatabase);
 
   dataDatabase.close();
   metaDatabase.close();
@@ -71,7 +71,7 @@ describe('data schema checks', async () => {
   //   const dataConnector = createSqlite3DataConnector(3, database);
   //   const metaConnector = createMockMetaConnector(3);
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM data;`).fields).toBe([
+  //   expect((await query(database, `SELECT * FROM data;`).fields).toEqual([
   //     {name: 'address', dataTypeID: TEXT},
   //     {name: 'atom', dataTypeID: TEXT},
   //     {name: 'address1', dataTypeID: TEXT},
@@ -90,7 +90,7 @@ describe('data schema checks', async () => {
   //   });
   //   const metaConnector = createMockMetaConnector(3);
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM d;`)).fields).toBe([
+  //   expect((await query(database, `SELECT * FROM d;`)).fields).toEqual([
   //     {name: 'a', dataTypeID: TEXT},
   //     {name: 'x', dataTypeID: TEXT},
   //     {name: 'a1', dataTypeID: TEXT},
@@ -189,7 +189,7 @@ describe('meta schema checks', async () => {
   //   const dataConnector = createMockDataConnector(3);
   //   const metaConnector = createSqlite3MetaConnector(3, database);
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect(await query(database, `SELECT * FROM meta;`).fields).toBe([
+  //   expect(await query(database, `SELECT * FROM meta;`).fields).toEqual([
   //     {name: 'address', dataTypeID: TEXT},
   //     {name: 'timestamp', dataTypeID: TEXT},
   //     {name: 'address1', dataTypeID: TEXT},
@@ -208,7 +208,7 @@ describe('meta schema checks', async () => {
   //     timestampColumn: 't',
   //   });
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM m;`)).fields).toBe([
+  //   expect((await query(database, `SELECT * FROM m;`)).fields).toEqual([
   //     {name: 'a', dataTypeID: TEXT},
   //     {name: 't', dataTypeID: TEXT},
   //     {name: 'a1', dataTypeID: TEXT},

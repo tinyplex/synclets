@@ -10,7 +10,7 @@ const WS_PORT = 9000;
 test('getWebSocketServer', async () => {
   const wss = new WebSocketServer({port: WS_PORT});
   const wsServer = createStatelessWsServer(wss);
-  expect(wsServer.getWebSocketServer()).toBe(wss);
+  expect(wsServer.getWebSocketServer()).toEqual(wss);
   wsServer.destroy();
 });
 
@@ -28,12 +28,12 @@ test('Two synclets on single server', async () => {
   });
   await synclet2.start();
 
-  expect(await synclet1.getData()).toBe(await synclet2.getData());
+  expect(await synclet1.getData()).toEqual(await synclet2.getData());
 
   await synclet1.setAtom(['a'], 'A');
   await pause(5);
 
-  expect(await synclet1.getData()).toBe(await synclet2.getData());
+  expect(await synclet1.getData()).toEqual(await synclet2.getData());
 
   synclet1.destroy();
   synclet2.destroy();

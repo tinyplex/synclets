@@ -33,8 +33,8 @@ test('getWebSocket', async () => {
   const synclet = await createSynclet({transport});
   await synclet.start();
 
-  expect(transport.getWebSocket()).toBe(webSocket);
-  expect((synclet.getTransport()[0] as any).getWebSocket()).toBe(webSocket);
+  expect(transport.getWebSocket()).toEqual(webSocket);
+  expect((synclet.getTransport()[0] as any).getWebSocket()).toEqual(webSocket);
 
   webSocket.close();
   wsServer.destroy();
