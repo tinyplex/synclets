@@ -34,7 +34,7 @@ export const Page: NoPropComponent = () => {
   const title =
     (pageNode.name != 'Synclets' ? pageNode.name + ' | ' : '') + 'Synclets';
   const description = isHome
-    ? 'A tiny but very useful JavaScript task orchestrator.'
+    ? 'An open, storage-agnostic, sync engine development kit.'
     : (NodeSummary({node: pageNode, asText: true}) as any);
   const url = `${baseUrl}${pageNode.url}`;
 
@@ -66,13 +66,13 @@ export const Page: NoPropComponent = () => {
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
           <meta property="og:url" content={url} />
-          <meta property="og:image" content={`${baseUrl}/favicon_pad.png`} />
+          <meta property="og:image" content={`${baseUrl}/favicon.png`} />
 
           <meta name="twitter:card" content="summary" />
           <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={description} />
           <meta name="twitter:site" content="@tinybasejs" />
-          <meta name="twitter:image" content={`${baseUrl}/favicon_pad.png`} />
+          <meta name="twitter:image" content={`${baseUrl}/favicon.png`} />
 
           <meta
             name="viewport"
