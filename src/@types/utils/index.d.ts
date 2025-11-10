@@ -21,7 +21,9 @@ export function isTimestamp(thing: unknown): thing is Timestamp;
 export function isAtom(thing: unknown): thing is Atom;
 
 /// getPartsFromPacket
-export function getPartsFromPacket(packet: string): [to: string, body: string];
+export function getPartsFromPacket(
+  packet: string,
+): [toOrFrom: string, body: string];
 
 /// getPacketFromParts
-export function getPacketFromParts(to: string, body: string): string;
+export function getPacketFromParts(toOrFrom: string, body: string): string;
