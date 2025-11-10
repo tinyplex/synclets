@@ -49,11 +49,6 @@
     </a>
   </div>
   <div>
-    <a href='/api/connector-memory'>
-      <img width="48" src="/memory.svg?asImg" /> Memory
-    </a>
-  </div>
-  <div>
     <a href='/api/connector-browser'>
       <img width="48" src="/browser.svg?asImg" /> Browser
     </a>
@@ -61,6 +56,11 @@
   <div>
     <a href='/api/connector-fs'>
       <img width="48" src="/filesystem.svg?asImg" /> Files
+    </a>
+  </div>
+  <div>
+    <a href='/api/connector-memory'>
+      <img width="48" src="/memory.svg?asImg" /> Memory
     </a>
   </div>
 </section>
