@@ -43,6 +43,9 @@
       "@synclets/@types/server/stateless-ws": [
         "./@types/server/stateless-ws/index.d.ts"
       ],
+      "@synclets/@types/transport/broadcast-channel": [
+        "./@types/transport/broadcast-channel/index.d.ts"
+      ],
       "@synclets/@types/transport/memory": [
         "./@types/transport/memory/index.d.ts"
       ],
