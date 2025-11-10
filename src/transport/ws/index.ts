@@ -15,7 +15,7 @@ export const createWsTransport: typeof createWsTransportDecl = <
   webSocket: WebSocketType,
   options?: TransportOptions,
 ): WsTransport<WebSocketType> => {
-  let messageListener: (() => void) | undefined;
+  let removeMessageListener: (() => void) | undefined;
 
   const addEventListener = (
     event: keyof WebSocketEventMap,
@@ -28,7 +28,7 @@ export const createWsTransport: typeof createWsTransportDecl = <
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
-    messageListener = addEventListener('message', ({data}) =>
+    removeMessageListener = addEventListener('message', ({data}) =>
       receivePacket(data.toString(UTF8)),
     );
     return promiseNew((resolve, reject) => {
@@ -50,7 +50,7 @@ export const createWsTransport: typeof createWsTransportDecl = <
     });
   };
 
-  const disconnect = async (): Promise<void> => messageListener?.();
+  const disconnect = async (): Promise<void> => removeMessageListener?.();
 
   const sendPacket = async (packet: string): Promise<void> =>
     webSocket.send(packet);
