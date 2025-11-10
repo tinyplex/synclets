@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a class='start' href='/guides/releases/#introducing-synclets'>Introducing Synclets!</a>
+<a class='start' href='/guides/releases/#introducing-synclets'>Introducing Synclets</a>
 
-<span id="one-with">Read about this new project</span>
+<span id="one-with">Read about this new project!</span>
 
 <a href='/guides/the-basics/core-concepts'>Core concepts</a>
 
