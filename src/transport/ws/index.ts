@@ -1,20 +1,20 @@
 import {createTransport} from '@synclets';
 import type {TransportOptions} from '@synclets/@types';
 import type {
-  createWsTransport as createWsTransportDecl,
+  createWsClientTransport as createWsClientTransportDecl,
   WebSocketTypes,
-  WsTransport,
+  WsClientTransport,
 } from '@synclets/@types/transport/ws';
 import {objFreeze} from '../../common/object.ts';
 import {promiseNew} from '../../common/other.ts';
 import {UTF8} from '../../common/string.ts';
 
-export const createWsTransport: typeof createWsTransportDecl = <
+export const createWsClientTransport: typeof createWsClientTransportDecl = <
   WebSocketType extends WebSocketTypes,
 >(
   webSocket: WebSocketType,
   options?: TransportOptions,
-): WsTransport<WebSocketType> => {
+): WsClientTransport<WebSocketType> => {
   let removeMessageListener: (() => void) | undefined;
 
   const addEventListener = (
@@ -60,5 +60,5 @@ export const createWsTransport: typeof createWsTransportDecl = <
   return objFreeze({
     ...transport,
     getWebSocket: () => webSocket,
-  }) as WsTransport<WebSocketType>;
+  }) as WsClientTransport<WebSocketType>;
 };

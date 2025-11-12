@@ -41,15 +41,15 @@ A Transport component is an object that knows how to send and receive
 synchronization messages with another peer. Synclets are designed to work over a
 variety of transport layers, so there are multiple Transport implementations
 available, and again, you can also create your own. You will normally create a
-Transport using a factory function like `createWsTransport`, specific to the
-medium you want to use.
+Transport using a factory function like `createWsClientTransport`, specific to
+the medium you want to use.
 
 ## Servers
 
 Just for completeness, this project also includes some simple server
 implementations to help co-ordinate message transport. For example, there is a
 basic WebSocket server implementation that can be addressed when you use the
-`createWsTransport` WebSocket Transport.
+`createWsClientTransport` WebSocket Transport.
 
 ## The shape of Synclets data
 

@@ -16,25 +16,25 @@
 /// WebSocketTypes
 
 /**
- * The WsTransport interface describes a Transport that proxies an existing
- * WebSocket.
+ * The WsClientTransport interface describes a Transport that proxies an
+ * existing WebSocket.
  * @category Transport
  * @since v0.0.0
  */
-/// WsTransport
+/// WsClientTransport
 {
   /**
    * The getWebSocket method returns the wrapped WebSocket instance.
    * @category Accessor
    * @since v0.0.0
    */
-  /// WsTransport.getWebSocket
+  /// WsClientTransport.getWebSocket
 }
 
 /**
- * The createWsTransport function wraps a WebSocket in a WsTransport
+ * The createWsClientTransport function wraps a WebSocket in a WsClientTransport
  * implementation.
  * @category Transport
  * @since v0.0.0
  */
-/// createWsTransport
+/// createWsClientTransport

@@ -13,7 +13,7 @@ import {
   createSqlite3DataConnector,
   createSqlite3MetaConnector,
 } from 'synclets/connector/database/sqlite3';
-import {createWsTransport} from 'synclets/transport/ws';
+import {createWsClientTransport} from 'synclets/transport/ws';
 import {WebSocket} from 'ws';
 
 const SERVER = 'wss://demo.synclets.org/' + getUniqueId();
@@ -23,7 +23,7 @@ const pglite = await PGlite.create();
 const synclet1 = await createSynclet({
   dataConnector: createPgliteDataConnector(1, pglite),
   metaConnector: createPgliteMetaConnector(1, pglite),
-  transport: createWsTransport(new WebSocket(SERVER)),
+  transport: createWsClientTransport(new WebSocket(SERVER)),
 });
 await synclet1.start();
 
@@ -32,7 +32,7 @@ const sqlite = new Database(':memory:');
 const synclet2 = await createSynclet({
   dataConnector: createSqlite3DataConnector(1, sqlite),
   metaConnector: createSqlite3MetaConnector(1, sqlite),
-  transport: createWsTransport(new WebSocket(SERVER)),
+  transport: createWsClientTransport(new WebSocket(SERVER)),
 });
 await synclet2.start();
 

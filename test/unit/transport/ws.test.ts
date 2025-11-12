@@ -4,7 +4,7 @@ import {
   createMemoryMetaConnector,
 } from 'synclets/connector/memory';
 import {createStatelessWsServer} from 'synclets/server/stateless-ws';
-import {createWsTransport} from 'synclets/transport/ws';
+import {createWsClientTransport} from 'synclets/transport/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {describeCommonConnectorTests} from '../common.ts';
@@ -17,7 +17,7 @@ describeCommonConnectorTests(
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
   (uniqueId: string) =>
-    createWsTransport(
+    createWsClientTransport(
       new WebSocket('ws://localhost:' + WS_PORT + '/' + uniqueId),
     ),
   5,
@@ -29,7 +29,7 @@ test('getWebSocket', async () => {
   );
   const webSocket = new WebSocket('ws://localhost:' + WS_PORT);
 
-  const transport = createWsTransport(webSocket);
+  const transport = createWsClientTransport(webSocket);
   const synclet = await createSynclet({transport});
   await synclet.start();
 
