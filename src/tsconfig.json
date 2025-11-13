@@ -40,9 +40,6 @@
       "@synclets/@types/connector/tinybase": [
         "./@types/connector/tinybase/index.d.ts"
       ],
-      "@synclets/@types/server/stateless-ws": [
-        "./@types/server/stateless-ws/index.d.ts"
-      ],
       "@synclets/@types/transport/broadcast-channel": [
         "./@types/transport/broadcast-channel/index.d.ts"
       ],

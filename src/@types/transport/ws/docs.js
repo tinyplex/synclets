@@ -1,6 +1,6 @@
 /**
- * The transport/ws module documents WebSocket-based transports for browser and
- * Node runtimes.
+ * The transport/ws module documents WebSocket-based transports and servers for
+ * browser and Node runtimes.
  * @packageDocumentation
  * @module transport/ws
  * @since v0.0.0
@@ -38,3 +38,33 @@
  * @since v0.0.0
  */
 /// createWsClientTransport
+
+/**
+ * The WsServer interface describes the minimal API for a stateless WebSocket
+ * server wrapper.
+ * @category Server
+ * @since v0.0.0
+ */
+/// WsServer
+{
+  /**
+   * The getWebSocketServer method returns the wrapped WebSocketServer instance.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// WsServer.getWebSocketServer
+  /**
+   * The destroy method shuts down the WebSocketServer and releases resources.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// WsServer.destroy
+}
+
+/**
+ * The createWsServer function wraps a WebSocketServer to expose the WsServer
+ * interface.
+ * @category Server
+ * @since v0.0.0
+ */
+/// createWsServer

@@ -1,6 +1,5 @@
 import {createSynclet} from 'synclets';
-import {createStatelessWsServer} from 'synclets/server/stateless-ws';
-import {createWsClientTransport} from 'synclets/transport/ws';
+import {createWsClientTransport, createWsServer} from 'synclets/transport/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../common.ts';
@@ -9,14 +8,14 @@ const WS_PORT = 9000;
 
 test('getWebSocketServer', async () => {
   const wss = new WebSocketServer({port: WS_PORT});
-  const wsServer = createStatelessWsServer(wss);
+  const wsServer = createWsServer(wss);
   expect(wsServer.getWebSocketServer()).toEqual(wss);
   wsServer.destroy();
 });
 
 test('Two synclets on single server', async () => {
   const wss = new WebSocketServer({port: WS_PORT});
-  const wsServer = createStatelessWsServer(wss);
+  const wsServer = createWsServer(wss);
 
   const synclet1 = await createSynclet({
     transport: createWsClientTransport(

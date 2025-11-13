@@ -1,4 +1,4 @@
-import {createStatelessWsServer} from 'synclets/server/stateless-ws';
+import {createWsServer} from 'synclets/transport/ws';
 import {WebSocketServer} from 'ws';
 
-createStatelessWsServer(new WebSocketServer({port: 8043}));
+createWsServer(new WebSocketServer({port: 8043}));

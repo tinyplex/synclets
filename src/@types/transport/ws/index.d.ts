@@ -1,5 +1,5 @@
 /// transport/ws
-import type {WebSocket as WsWebSocket} from 'ws';
+import type {WebSocketServer, WebSocket as WsWebSocket} from 'ws';
 
 import type {Transport, TransportOptions} from '../../index.js';
 
@@ -18,3 +18,15 @@ export function createWsClientTransport<WebSocketType extends WebSocketTypes>(
   webSocket: WebSocketType,
   options?: TransportOptions,
 ): WsClientTransport<WebSocketType>;
+
+/// WsServer
+export interface WsServer {
+  /// WsServer.getWebSocketServer
+  getWebSocketServer(): WebSocketServer;
+
+  /// WsServer.destroy
+  destroy(): Promise<void>;
+}
+
+/// createWsServer
+export function createWsServer(webSocketServer: WebSocketServer): WsServer;
