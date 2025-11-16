@@ -40,6 +40,30 @@
 /// createWsClientTransport
 
 /**
+ * The WsServerTransport interface describes a Transport that proxies an
+ * existing WebSocket.
+ * @category Transport
+ * @since v0.0.0
+ */
+/// WsServerTransport
+{
+  /**
+   * The getWebSocketServer method returns the wrapped WebSocketServer instance.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// WsServerTransport.getWebSocketServer
+}
+
+/**
+ * The createWsServerTransport function wraps a Server in a WsServerTransport
+ * implementation.
+ * @category Transport
+ * @since v0.0.0
+ */
+/// createWsServerTransport
+
+/**
  * The WsServer interface describes the minimal API for a stateless WebSocket
  * server wrapper.
  * @category Server

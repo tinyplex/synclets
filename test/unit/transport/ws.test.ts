@@ -12,7 +12,10 @@ const WS_PORT = 9001;
 
 describeCommonConnectorTests(
   async () => createWsServer(new WebSocketServer({port: WS_PORT})),
-  async (wsServer) => wsServer.destroy(),
+  async (wsServer) => {
+    wsServer.destroy();
+    wsServer.getWebSocketServer().close();
+  },
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
   (uniqueId: string) =>
@@ -35,4 +38,5 @@ test('getWebSocket', async () => {
 
   webSocket.close();
   wsServer.destroy();
+  wsServer.getWebSocketServer().close();
 });

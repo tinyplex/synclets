@@ -57,8 +57,10 @@ export const createWsClientTransport: typeof createWsClientTransportDecl = <
 
   const transport = createTransport({connect, disconnect, sendPacket}, options);
 
+  const getWebSocket = () => webSocket;
+
   return objFreeze({
     ...transport,
-    getWebSocket: () => webSocket,
+    getWebSocket,
   }) as WsClientTransport<WebSocketType>;
 };

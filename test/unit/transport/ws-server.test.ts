@@ -11,11 +11,11 @@ test('getWebSocketServer', async () => {
   const wsServer = createWsServer(wss);
   expect(wsServer.getWebSocketServer()).toEqual(wss);
   wsServer.destroy();
+  wss.close();
 });
 
 test('Two synclets on single server', async () => {
-  const wss = new WebSocketServer({port: WS_PORT});
-  const wsServer = createWsServer(wss);
+  const wsServer = createWsServer(new WebSocketServer({port: WS_PORT}));
 
   const synclet1 = await createSynclet({
     transport: createWsClientTransport(
@@ -41,4 +41,5 @@ test('Two synclets on single server', async () => {
   synclet1.destroy();
   synclet2.destroy();
   wsServer.destroy();
+  wsServer.getWebSocketServer().close();
 });

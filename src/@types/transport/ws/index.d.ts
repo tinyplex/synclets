@@ -19,13 +19,25 @@ export function createWsClientTransport<WebSocketType extends WebSocketTypes>(
   options?: TransportOptions,
 ): WsClientTransport<WebSocketType>;
 
+/// WsServerTransport
+export interface WsServerTransport extends Transport {
+  /// WsServerTransport.getWebSocketServer
+  getWebSocketServer(): WebSocketServer;
+}
+
+/// createWsServerTransport
+export function createWsServerTransport(
+  webSocketServer: WebSocketServer,
+  options?: TransportOptions,
+): WsServerTransport;
+
 /// WsServer
 export interface WsServer {
   /// WsServer.getWebSocketServer
   getWebSocketServer(): WebSocketServer;
 
   /// WsServer.destroy
-  destroy(): Promise<void>;
+  destroy(): void;
 }
 
 /// createWsServer
