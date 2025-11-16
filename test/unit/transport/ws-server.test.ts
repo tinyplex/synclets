@@ -1,45 +1,19 @@
 import {createSynclet} from 'synclets';
-import {createWsClientTransport, createWsServer} from 'synclets/transport/ws';
+import {createWsServerTransport} from 'synclets/transport/ws';
 import {expect, test} from 'vitest';
-import {WebSocket, WebSocketServer} from 'ws';
-import {pause} from '../common.ts';
+import {WebSocketServer} from 'ws';
 
-const WS_PORT = 9000;
+const WS_PORT = 9002;
 
 test('getWebSocketServer', async () => {
   const wss = new WebSocketServer({port: WS_PORT});
-  const wsServer = createWsServer(wss);
-  expect(wsServer.getWebSocketServer()).toEqual(wss);
-  wsServer.destroy();
+
+  const transport = createWsServerTransport(wss);
+  const synclet = await createSynclet({transport});
+  await synclet.start();
+
+  expect(transport.getWebSocketServer()).toEqual(wss);
+  expect((synclet.getTransport()[0] as any).getWebSocketServer()).toEqual(wss);
+
   wss.close();
-});
-
-test('Two synclets on single server', async () => {
-  const wsServer = createWsServer(new WebSocketServer({port: WS_PORT}));
-
-  const synclet1 = await createSynclet({
-    transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + WS_PORT),
-    ),
-  });
-  await synclet1.start();
-
-  const synclet2 = await createSynclet({
-    transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + WS_PORT),
-    ),
-  });
-  await synclet2.start();
-
-  expect(await synclet1.getData()).toEqual(await synclet2.getData());
-
-  await synclet1.setAtom(['a'], 'A');
-  await pause(5);
-
-  expect(await synclet1.getData()).toEqual(await synclet2.getData());
-
-  synclet1.destroy();
-  synclet2.destroy();
-  wsServer.destroy();
-  wsServer.getWebSocketServer().close();
 });
