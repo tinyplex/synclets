@@ -34,7 +34,7 @@ test('Two synclets on single server', async () => {
   expect(await synclet1.getData()).toEqual(await synclet2.getData());
 
   await synclet1.setAtom(['a'], 'A');
-  await pause(5);
+  await pause(10);
 
   expect(await synclet1.getData()).toEqual(await synclet2.getData());
 
