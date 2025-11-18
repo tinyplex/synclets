@@ -24,18 +24,22 @@ import {isAtom, isTimestamp} from '@synclets/utils';
 import {isArray} from '../common/array.ts';
 import {isObject, objEvery} from '../common/object.ts';
 import {size} from '../common/other.ts';
-
-export type ReceiveMessage = (message: Message, from: string) => Promise<void>;
-
 export interface ProtectedSynclet<Depth extends number> extends Synclet<Depth> {
-  _: [syncChangedAtoms: (...addresses: AtomAddress<Depth>[]) => Promise<void>];
+  _: [
+    syncChangedAtoms: (...addresses: AtomAddress<Depth>[]) => Promise<void>,
+    receiveMessage: (
+      transport: ProtectedTransport,
+      message: Message,
+      from: string,
+    ) => Promise<void>,
+  ];
 }
 
 export interface ProtectedDataConnector<Depth extends number>
   extends DataConnector<Depth> {
   _: [
     attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
-    destroy: () => Promise<void>,
+    detach: () => Promise<void>,
     readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>,
     writeAtom: (address: AtomAddress<Depth>, atom: Atom) => Promise<void>,
     removeAtom: (address: AtomAddress<Depth>) => Promise<void>,
@@ -69,10 +73,8 @@ export interface ProtectedMetaConnector<Depth extends number>
 
 export interface ProtectedTransport extends Transport {
   _: [
-    attach: (synclet: ProtectedSynclet<any>) => void,
+    attach: (synclet: ProtectedSynclet<any>) => Promise<void>,
     detach: () => Promise<void>,
-    connect: (receiveMessage: ReceiveMessage) => Promise<void>,
-    disconnect: () => Promise<void>,
     sendMessage: (message: Message, to?: string) => Promise<void>,
   ];
 }

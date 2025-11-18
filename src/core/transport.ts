@@ -11,19 +11,18 @@ import {mapEnsure, mapNew} from '../common/map.ts';
 import {objFreeze} from '../common/object.ts';
 import {errorNew, promiseAll, size} from '../common/other.ts';
 import {ASTERISK, SPACE} from '../common/string.ts';
-import {ProtectedSynclet, ProtectedTransport, ReceiveMessage} from './types.js';
+import {ProtectedSynclet, ProtectedTransport} from './types.js';
 
 type Pending = [fragments: string[], due: number];
 
+const RECEIVE_MESSAGE = 1;
 const PACKET = /^(.+) (.+) (\d+) (\d+) (.+)$/;
 
 export const createTransport: typeof createTransportDecl = (
   {connect, disconnect, sendPacket}: TransportImplementations,
   options: TransportOptions = {},
 ): ProtectedTransport => {
-  let connected = false;
   let attachedSynclet: ProtectedSynclet<number> | undefined;
-  let receiveFinalMessage: ReceiveMessage | undefined;
 
   const messageSplit = new RegExp(
     `(.{1,${options.fragmentSize ?? 4096}})`,
@@ -58,12 +57,36 @@ export const createTransport: typeof createTransportDecl = (
           `recv: ${messageId} '${allFragments}', ${total} packets from ${from}`,
           'debug',
         );
-        await receiveFinalMessage?.(jsonParse(allFragments), from);
+        await attachedSynclet?._[RECEIVE_MESSAGE]?.(
+          transport,
+          jsonParse(allFragments),
+          from,
+        );
       }
     }
   };
 
-  const sendPackets = async (
+  // --
+
+  const log = (message: string, level?: LogLevel) =>
+    attachedSynclet?.log(message, level);
+
+  const attach = async (synclet: ProtectedSynclet<number>) => {
+    if (attachedSynclet) {
+      errorNew('Transport is already attached to Synclet');
+    }
+    attachedSynclet = synclet;
+    buffer.clear();
+    await connect?.(receivePacket);
+  };
+
+  const detach = async () => {
+    await disconnect?.();
+    buffer.clear();
+    attachedSynclet = undefined;
+  };
+
+  const sendMessage = async (
     message: Message,
     to: string = ASTERISK,
   ): Promise<void> => {
@@ -84,50 +107,10 @@ export const createTransport: typeof createTransportDecl = (
     }
   };
 
-  // --
-
-  const log = (message: string, level?: LogLevel) =>
-    attachedSynclet?.log(message, level);
-
-  const attach = (synclet: ProtectedSynclet<number>) => {
-    if (attachedSynclet) {
-      errorNew('Transport is already attached to Synclet');
-    }
-    attachedSynclet = synclet;
-  };
-
-  const connectImpl = async (receiveMessage: ReceiveMessage) => {
-    if (!connected) {
-      buffer.clear();
-      receiveFinalMessage = receiveMessage;
-      await connect?.(receivePacket);
-      connected = true;
-    }
-  };
-
-  const disconnectImpl = async () => {
-    if (connected) {
-      buffer.clear();
-      receiveFinalMessage = undefined;
-      await disconnect?.();
-      connected = false;
-    }
-  };
-
-  const detach = async () => {
-    await disconnectImpl();
-    attachedSynclet = undefined;
-  };
-
-  const sendMessage = async (message: Message, to?: string) => {
-    if (connected) {
-      await sendPackets(message, to);
-    }
-  };
-
-  return objFreeze({
+  const transport = objFreeze({
     _brand: 'Transport',
     log,
-    _: [attach, detach, connectImpl, disconnectImpl, sendMessage],
+    _: [attach, detach, sendMessage],
   }) as ProtectedTransport;
+  return transport;
 };

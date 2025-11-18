@@ -70,9 +70,7 @@ const VERSION = 1;
 
 const ATTACH = 0;
 const DETACH = 1;
-const CONNECT = 2;
-const DISCONNECT = 3;
-const SEND_MESSAGE = 4;
+const SEND_MESSAGE = 2;
 
 export const createSynclet = async <
   Depth extends number,
@@ -605,13 +603,6 @@ export const createSynclet = async <
   const start = async () => {
     if (!started) {
       log('start');
-      await promiseAll(
-        arrayMap(transports, (transport) =>
-          transport._[CONNECT]((message: Message, from: string) =>
-            receiveMessage(transport, message, from),
-          ),
-        ),
-      );
       started = true;
       await onStart?.();
       await sync([] as AnyAddress<Depth>);
@@ -621,9 +612,6 @@ export const createSynclet = async <
   const stop = async () => {
     if (started) {
       log('stop');
-      await promiseAll(
-        arrayMap(transports, (transport) => transport._[DISCONNECT]()),
-      );
       started = false;
       await onStop?.();
     }
@@ -632,11 +620,13 @@ export const createSynclet = async <
   const isStarted = () => started;
 
   const destroy = async () => {
+    await stop();
     log('destroy');
-    await synclet.stop();
     await dataDetach();
     await metaDetach();
-    arrayForEach(transports, (transport) => transport._[DETACH]());
+    await promiseAll(
+      arrayMap(transports, (transport) => transport._[DETACH]()),
+    );
   };
 
   const getDataConnector = () => dataConnector;
@@ -681,12 +671,14 @@ export const createSynclet = async <
     delAtom,
     getData,
     getMeta,
-    _: [syncChangedAtoms],
+    _: [syncChangedAtoms, receiveMessage],
   };
 
   await dataAttach(synclet);
   await metaAttach(synclet);
-  arrayForEach(transports, (transport) => transport._[ATTACH](synclet));
+  await promiseAll(
+    arrayMap(transports, (transport) => transport._[ATTACH](synclet)),
+  );
 
   return objFreeze(synclet);
 };
