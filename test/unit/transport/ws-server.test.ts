@@ -14,16 +14,15 @@ import {describeCommonConnectorTests} from '../common.ts';
 const WS_PORT = 9002;
 
 describeCommonConnectorTests(
-  async () => {},
-  async () => {},
+  async () => new WebSocketServer({port: WS_PORT}),
+  async (wss: WebSocketServer) => wss.close(),
   <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
-  (_: string, syncletNumber: number) =>
+  (_: string, wss: WebSocketServer, syncletNumber: number) =>
     syncletNumber === 0
-      ? createWsServerTransport(new WebSocketServer({port: WS_PORT}))
+      ? createWsServerTransport(wss)
       : createWsClientTransport(new WebSocket('ws://localhost:' + WS_PORT)),
   5,
-  [1],
 );
 
 test('getWebSocketServer', async () => {
@@ -36,5 +35,5 @@ test('getWebSocketServer', async () => {
   expect(transport.getWebSocketServer()).toEqual(wss);
   expect((synclet.getTransport()[0] as any).getWebSocketServer()).toEqual(wss);
 
-  wss.close();
+  await synclet.destroy();
 });

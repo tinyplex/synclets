@@ -214,7 +214,11 @@ export const describeCommonConnectorTests = <
     environment: Environment,
     syncletNumber: number,
   ) => MetaConnectorType,
-  createTransport: (uniqueId: string, syncletNumber: number) => Transport,
+  createTransport: (
+    uniqueId: string,
+    environment: Environment,
+    syncletNumber: number,
+  ) => Transport,
   transportPause = 1,
   onlyDepths: number[] = [1, 2, 3, 4],
 ) =>
@@ -264,6 +268,11 @@ export const describeCommonConnectorTests = <
         ): MetaConnectorType =>
           createMetaConnector(depth, environment, syncletNumber);
 
+        const createTestTransport = (
+          uniqueId: string,
+          syncletNumber: number,
+        ): Transport => createTransport(uniqueId, environment, syncletNumber);
+
         const createTestSynclet = async (
           dataConnector: any,
           metaConnector: any,
@@ -300,7 +309,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
               );
 
@@ -315,7 +324,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
               );
 
@@ -337,7 +346,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
               );
 
@@ -361,7 +370,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
                 false,
               );
@@ -386,7 +395,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
                 false,
               );
@@ -410,7 +419,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
               );
 
@@ -437,7 +446,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
               );
 
@@ -464,7 +473,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
                 false,
               );
@@ -492,7 +501,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
               );
 
@@ -512,7 +521,7 @@ export const describeCommonConnectorTests = <
                   createTestSynclet,
                   createTestDataConnector,
                   createTestMetaConnector,
-                  createTransport,
+                  createTestTransport,
                   2,
                 );
               await synclet1.setAtomForTest('A');
@@ -531,7 +540,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
                 false,
               );
@@ -553,7 +562,7 @@ export const describeCommonConnectorTests = <
                   createTestSynclet,
                   createTestDataConnector,
                   createTestMetaConnector,
-                  createTransport,
+                  createTestTransport,
                   2,
                   false,
                 );
@@ -575,7 +584,7 @@ export const describeCommonConnectorTests = <
                 createTestSynclet,
                 createTestDataConnector,
                 createTestMetaConnector,
-                createTransport,
+                createTestTransport,
                 2,
                 false,
               );
@@ -598,7 +607,7 @@ export const describeCommonConnectorTests = <
                   createTestSynclet,
                   createTestDataConnector,
                   createTestMetaConnector,
-                  createTransport,
+                  createTestTransport,
                   2,
                   false,
                 );
@@ -624,7 +633,7 @@ export const describeCommonConnectorTests = <
               createTestSynclet,
               createTestDataConnector,
               createTestMetaConnector,
-              createTransport,
+              createTestTransport,
               count,
             );
 
@@ -644,7 +653,7 @@ export const describeCommonConnectorTests = <
               createTestSynclet,
               createTestDataConnector,
               createTestMetaConnector,
-              createTransport,
+              createTestTransport,
               count,
             );
 
@@ -664,7 +673,7 @@ export const describeCommonConnectorTests = <
               createTestSynclet,
               createTestDataConnector,
               createTestMetaConnector,
-              createTransport,
+              createTestTransport,
               count,
               true,
             );
