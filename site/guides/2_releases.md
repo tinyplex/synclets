@@ -3,6 +3,23 @@
 This is a reverse chronological list of the major Synclets releases, with
 highlighted features.
 
+# v0.0.5
+
+This release includes some important changes to the WebSocket-oriented synclet
+APIs.
+
+The WsTransport has been renamed to WsClientTransport. This can be used for a
+client synclet that will be connecting to a WebSocket server elsewhere.
+
+There is a new WsServerTransport component, which is to be used for a server
+synclet that will be also acting as a server for other client synclets to
+connect to.
+
+The WsServer component is a standalone WebSocket server that can be used to
+accept incoming connections from multiple WsClientTransport synclets yet does
+not store its own data. This was previously in the synclet/server/stateless-ws
+module, but is now also part of the transport/ws module.
+
 ---
 
 # Introducing Synclets
