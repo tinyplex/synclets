@@ -35,7 +35,7 @@ export interface ProtectedDataConnector<Depth extends number>
   extends DataConnector<Depth> {
   _: [
     attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
-    detach: () => Promise<void>,
+    destroy: () => Promise<void>,
     readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>,
     writeAtom: (address: AtomAddress<Depth>, atom: Atom) => Promise<void>,
     removeAtom: (address: AtomAddress<Depth>) => Promise<void>,
@@ -70,7 +70,7 @@ export interface ProtectedMetaConnector<Depth extends number>
 export interface ProtectedTransport extends Transport {
   _: [
     attach: (synclet: ProtectedSynclet<any>) => void,
-    detach: () => void,
+    detach: () => Promise<void>,
     connect: (receiveMessage: ReceiveMessage) => Promise<void>,
     disconnect: () => Promise<void>,
     sendMessage: (message: Message, to?: string) => Promise<void>,

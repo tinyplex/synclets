@@ -307,7 +307,7 @@ export const describeCommonConnectorTests = <
             await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test.only('connected', async (test) => {
+          test('connected', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -315,8 +315,6 @@ export const describeCommonConnectorTests = <
                 createTestMetaConnector,
                 createTransport,
                 2,
-                true,
-                true,
               );
             await pause(transportPause);
 
@@ -329,7 +327,7 @@ export const describeCommonConnectorTests = <
             await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test.only('connected, deletion', async (test) => {
+          test('connected, deletion', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -337,8 +335,6 @@ export const describeCommonConnectorTests = <
                 createTestMetaConnector,
                 createTransport,
                 2,
-                true,
-                true,
               );
 
             await synclet1.setAtomForTest('A');

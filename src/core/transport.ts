@@ -96,10 +96,6 @@ export const createTransport: typeof createTransportDecl = (
     attachedSynclet = synclet;
   };
 
-  const detach = () => {
-    attachedSynclet = undefined;
-  };
-
   const connectImpl = async (receiveMessage: ReceiveMessage) => {
     if (!connected) {
       buffer.clear();
@@ -116,6 +112,11 @@ export const createTransport: typeof createTransportDecl = (
       await disconnect?.();
       connected = false;
     }
+  };
+
+  const detach = async () => {
+    await disconnectImpl();
+    attachedSynclet = undefined;
   };
 
   const sendMessage = async (message: Message, to?: string) => {
