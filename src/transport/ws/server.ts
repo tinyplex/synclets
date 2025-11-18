@@ -31,95 +31,89 @@ import {createTransport, RESERVED} from '../../core/index.ts';
 const PATH_REGEX = /\/([^?]*)/;
 const SERVER_ID = RESERVED + 's';
 
-type Connection = {
-  onPacket: (handlePacket: (packet: string) => void) => void;
-  onClose: (handleClose: () => void) => void;
-  send: (packet: string) => void;
-};
-
 const getConnectionFunctions = (): [
   addConnection: (
-    connectionId: string,
-    connection: Connection,
+    id: string,
+    send: (packet: string) => void,
     path: string,
-  ) => void,
+  ) => [receivePacket: (packet: string) => void, close: () => void],
   clearConnections: () => void,
 ] => {
-  const connectionsByPath: Map<string, Map<string, Connection>> = mapNew();
+  const sendsByPath: Map<
+    string,
+    Map<string, (packet: string) => void>
+  > = mapNew();
 
   const addConnection = (
-    connectionId: string,
-    connection: Connection,
+    id: string,
+    send: (packet: string) => void,
     path: string,
-  ) => {
-    const connections = mapEnsure(
-      connectionsByPath,
+  ): [(packet: string) => void, () => void] => {
+    const sends = mapEnsure(
+      sendsByPath,
       path,
-      mapNew<string, Connection>,
+      mapNew<string, (packet: string) => void>,
     );
-    mapSet(connections, connectionId, connection);
+    mapSet(sends, id, send);
 
-    connection.onPacket((packet: string) => {
+    const receivePacket = (packet: string) => {
       const splitAt = packet.indexOf(SPACE);
       if (splitAt !== -1) {
         const to = slice(packet, 0, splitAt);
         const remainder = slice(packet, splitAt + 1);
-        const forwardedPacket = connectionId + SPACE + remainder;
+        const forwardedPacket = id + SPACE + remainder;
         if (to === ASTERISK) {
-          mapForEach(connections, (otherConnectionId, otherConnection) =>
-            otherConnectionId !== connectionId
-              ? otherConnection.send(forwardedPacket)
-              : 0,
+          mapForEach(sends, (otherId, otherSend) =>
+            otherId !== id ? otherSend(forwardedPacket) : 0,
           );
         } else {
-          mapGet(connections, to)?.send(forwardedPacket);
+          mapGet(sends, to)?.(forwardedPacket);
         }
       }
-    });
+    };
 
-    connection.onClose(() => {
-      mapDel(connections, connectionId);
-      if (mapIsEmpty(connections)) {
-        mapDel(connectionsByPath, path);
+    const close = () => {
+      mapDel(sends, id);
+      if (mapIsEmpty(sends)) {
+        mapDel(sendsByPath, path);
       }
-    });
+    };
+
+    return [receivePacket, close];
   };
 
-  const clearConnections = () => mapClear(connectionsByPath);
+  const clearConnections = () => mapClear(sendsByPath);
 
   return [addConnection, clearConnections];
 };
 
-const connectFromRequest = (
+const addWebSocketConnection = (
   webSocket: WebSocket,
   request: IncomingMessage,
   path: string,
   addConnection: (
-    connectionId: string,
-    connection: Connection,
+    id: string,
+    send: (packet: string) => void,
     path: string,
-  ) => void,
+  ) => [receivePacket: (packet: string) => void, close: () => void],
 ) =>
-  ifNotUndefined(request.headers['sec-websocket-key'], (connectionId) =>
-    addConnection(
-      connectionId,
-      {
-        onPacket: (handlePacket: (packet: string) => void) => {
-          webSocket.on('message', (data) => handlePacket(data.toString(UTF8)));
-        },
-        onClose: (handleClose) => webSocket.on('close', handleClose),
-        send: (packet: string) => webSocket.send(packet),
-      },
+  ifNotUndefined(request.headers['sec-websocket-key'], (id) => {
+    const [receivePacket, close] = addConnection(
+      id,
+      (packet: string) => webSocket.send(packet),
       path,
-    ),
-  );
+    );
+    webSocket
+      .on('message', (data) => receivePacket(data.toString(UTF8)))
+      .on('close', close);
+  });
 
 export const createWsServer = ((webSocketServer: WebSocketServer) => {
   const [addConnection, clearConnections] = getConnectionFunctions();
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
     ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, path]) =>
-      connectFromRequest(webSocket, request, path, addConnection),
+      addWebSocketConnection(webSocket, request, path, addConnection),
     );
 
   webSocketServer.on('connection', onConnection);
@@ -138,7 +132,8 @@ export const createWsServerTransport = ((
   webSocketServer: WebSocketServer,
   options: TransportOptions & {path?: string} = {},
 ) => {
-  let handleServerPacket: ((packet: string) => void) | undefined;
+  let handleSendPacket: ((packet: string) => void) | undefined;
+  let handleClose: (() => void) | undefined;
 
   const path = options.path ?? EMPTY_STRING;
 
@@ -146,35 +141,29 @@ export const createWsServerTransport = ((
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
     request.url == '/' + path
-      ? connectFromRequest(webSocket, request, path, addConnection)
+      ? addWebSocketConnection(webSocket, request, path, addConnection)
       : 0;
 
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
     webSocketServer.on('connection', onConnection);
-    addConnection(
-      SERVER_ID,
-      {
-        onPacket: (handlePacket: (packet: string) => void) => {
-          handleServerPacket = handlePacket;
-        },
-        onClose: () => {
-          handleServerPacket = undefined;
-        },
-        send: (packet: string) => receivePacket(packet),
-      },
-      path,
-    );
+    const [sendPacket, close] = addConnection(SERVER_ID, receivePacket, path);
+    handleSendPacket = sendPacket;
+    handleClose = close;
   };
 
   const disconnect = async () => {
     webSocketServer.off('connection', onConnection);
+    handleClose?.();
     clearConnections();
+    handleClose = undefined;
+    handleSendPacket = undefined;
   };
 
-  const sendPacket = async (packet: string): Promise<void> =>
-    handleServerPacket?.(packet);
+  const sendPacket = async (packet: string): Promise<void> => {
+    handleSendPacket?.(packet);
+  };
 
   const transport = createTransport({connect, disconnect, sendPacket}, options);
 
