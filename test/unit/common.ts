@@ -305,6 +305,8 @@ export const describeCommonConnectorTests = <
               );
 
             await expectEquivalentSynclets([synclet1, synclet2], test);
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('connected', async (test) => {
@@ -316,7 +318,6 @@ export const describeCommonConnectorTests = <
                 createTransport,
                 2,
               );
-            await pause(transportPause);
 
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
@@ -325,6 +326,9 @@ export const describeCommonConnectorTests = <
             await synclet2.setAtomForTest('B');
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('connected, deletion', async (test) => {
@@ -346,6 +350,9 @@ export const describeCommonConnectorTests = <
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
             expect(meta).not.toEqual(await synclet1.getMeta());
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('start 1, set 1, start 2', async (test) => {
@@ -368,6 +375,9 @@ export const describeCommonConnectorTests = <
             await synclet2.start();
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('start 2, set 1, start 1', async (test) => {
@@ -389,6 +399,9 @@ export const describeCommonConnectorTests = <
             await synclet1.start();
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('stop 1, set 1, start 1', async (test) => {
@@ -413,6 +426,9 @@ export const describeCommonConnectorTests = <
             await synclet1.start();
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('stop 1, set 2, start 1', async (test) => {
@@ -437,6 +453,9 @@ export const describeCommonConnectorTests = <
             await synclet1.start();
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('set 1, set 2, start 2, start 1', async (test) => {
@@ -462,6 +481,9 @@ export const describeCommonConnectorTests = <
             await synclet1.start();
             await pause(transportPause * 2);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('connected, near atom', async (test) => {
@@ -478,6 +500,9 @@ export const describeCommonConnectorTests = <
             await synclet2.setNearAtomForTest('B');
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('connected, far atom', async (test) => {
@@ -494,6 +519,9 @@ export const describeCommonConnectorTests = <
               await synclet2.setFarAtomForTest('B');
               await pause(transportPause);
               await expectEquivalentSynclets([synclet1, synclet2], test);
+
+              await synclet1.destroy();
+              await synclet2.destroy();
             }
           });
 
@@ -513,6 +541,9 @@ export const describeCommonConnectorTests = <
             await synclet2.start();
             await pause(transportPause);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('disconnected, far atom', async (test) => {
@@ -532,6 +563,9 @@ export const describeCommonConnectorTests = <
               await synclet2.start();
               await pause(transportPause * 2);
               await expectEquivalentSynclets([synclet1, synclet2], test);
+
+              await synclet1.destroy();
+              await synclet2.destroy();
             }
           });
 
@@ -552,6 +586,9 @@ export const describeCommonConnectorTests = <
             await synclet2.start();
             await pause(transportPause * 2);
             await expectEquivalentSynclets([synclet1, synclet2], test);
+
+            await synclet1.destroy();
+            await synclet2.destroy();
           });
 
           test('disconnected, conflicting values 2', async (test) => {
@@ -574,6 +611,9 @@ export const describeCommonConnectorTests = <
               await synclet2.start();
               await pause(transportPause * 2);
               await expectEquivalentSynclets([synclet1, synclet2], test);
+
+              await synclet1.destroy();
+              await synclet2.destroy();
             }
           });
         });
@@ -593,6 +633,10 @@ export const describeCommonConnectorTests = <
               await pause(transportPause * count);
               await expectEquivalentSynclets(synclets, test);
             }
+
+            for (const synclet of synclets.values()) {
+              await synclet.destroy();
+            }
           });
 
           test('chain', async (test) => {
@@ -609,6 +653,10 @@ export const describeCommonConnectorTests = <
               await pause(transportPause * count);
               await expectEquivalentSynclets(synclets, test);
             }
+
+            for (const synclet of synclets.values()) {
+              await synclet.destroy();
+            }
           });
 
           test('ring', async (test) => {
@@ -620,10 +668,15 @@ export const describeCommonConnectorTests = <
               count,
               true,
             );
+
             for (const [i, synclet] of synclets.entries()) {
               await synclet.setAtomForTest('A' + (i + 1));
               await pause(transportPause * count);
               await expectEquivalentSynclets(synclets, test);
+            }
+
+            for (const synclet of synclets.values()) {
+              await synclet.destroy();
             }
           });
         });

@@ -31,4 +31,6 @@ test('getFile', async () => {
   expect(synclet.getDataConnector().getStorageName()).toEqual(dataStorageName);
   expect(metaConnector.getStorageName()).toEqual(metaStorageName);
   expect(synclet.getMetaConnector().getStorageName()).toEqual(metaStorageName);
+
+  await synclet.destroy();
 });

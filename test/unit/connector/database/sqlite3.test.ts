@@ -51,6 +51,8 @@ test('getDatabase', async () => {
 
   dataDatabase.close();
   metaDatabase.close();
+
+  await synclet.destroy();
 });
 
 describe('data schema checks', async () => {
@@ -107,7 +109,8 @@ describe('data schema checks', async () => {
     );
     const dataConnector = createSqlite3DataConnector(3, database);
     const metaConnector = createMockMetaConnector(3);
-    await createSynclet({dataConnector, metaConnector});
+    const synclet = await createSynclet({dataConnector, metaConnector});
+    await synclet.destroy();
   });
 
   test('error if table has wrong number of columns', async () => {
@@ -225,7 +228,8 @@ describe('meta schema checks', async () => {
     );
     const dataConnector = createMockDataConnector(3);
     const metaConnector = createSqlite3MetaConnector(3, database);
-    await createSynclet({dataConnector, metaConnector});
+    const synclet = await createSynclet({dataConnector, metaConnector});
+    await synclet.destroy();
   });
 
   test('error if table has wrong number of columns', async () => {

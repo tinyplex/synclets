@@ -23,8 +23,14 @@ beforeEach(async () => {
 });
 
 test('createSynclet', async () => {
-  const synclet = createSynclet({dataConnector, metaConnector, transport});
+  const synclet = await createSynclet({
+    dataConnector,
+    metaConnector,
+    transport,
+  });
   expect(synclet).toBeDefined();
+
+  await synclet.destroy();
 });
 
 test('log', async () => {
@@ -39,10 +45,16 @@ test('log', async () => {
   expect(logger.info).toHaveBeenCalledWith('[synclet] sync (0) ');
   await synclet.stop();
   expect(logger.info).toHaveBeenCalledWith('[synclet] stop');
+  await synclet.destroy();
+  expect(logger.info).toHaveBeenCalledWith('[synclet] destroy');
 });
 
 test('error on reassigning transport', async () => {
-  await createSynclet({dataConnector, metaConnector, transport});
+  const synclet = await createSynclet({
+    dataConnector,
+    metaConnector,
+    transport,
+  });
   await expect(async () => {
     await createSynclet({
       dataConnector: createMockDataConnector(1),
@@ -50,10 +62,16 @@ test('error on reassigning transport', async () => {
       transport,
     });
   }).rejects.toThrow('Transport is already attached to Synclet');
+
+  await synclet.destroy();
 });
 
 test('error on reassigning data connector', async () => {
-  await createSynclet({dataConnector, metaConnector, transport});
+  const synclet = await createSynclet({
+    dataConnector,
+    metaConnector,
+    transport,
+  });
   await expect(async () => {
     await createSynclet({
       dataConnector,
@@ -61,10 +79,16 @@ test('error on reassigning data connector', async () => {
       transport: createMockTransport(),
     });
   }).rejects.toThrow('Data connector is already attached to Synclet');
+
+  await synclet.destroy();
 });
 
 test('error on reassigning meta connector', async () => {
-  await createSynclet({dataConnector, metaConnector, transport});
+  const synclet = await createSynclet({
+    dataConnector,
+    metaConnector,
+    transport,
+  });
   await expect(() =>
     createSynclet({
       dataConnector: createMockDataConnector(1),
@@ -72,6 +96,8 @@ test('error on reassigning meta connector', async () => {
       transport: createMockTransport(),
     }),
   ).rejects.toThrow('Meta connector is already attached to Synclet');
+
+  await synclet.destroy();
 });
 
 test('start & stop', async () => {
@@ -87,6 +113,8 @@ test('start & stop', async () => {
 
   await synclet.stop();
   expect(synclet.isStarted()).toEqual(false);
+
+  await synclet.destroy();
 });
 
 describe('context', () => {
@@ -110,6 +138,9 @@ describe('context', () => {
     await synclet1.start();
 
     expect(canReceiveMessage).toHaveBeenCalledWith({});
+
+    await synclet1.destroy();
+    await synclet2.destroy();
   });
 
   test('add context', async () => {
@@ -137,5 +168,8 @@ describe('context', () => {
 
     expect(getSendContext).toHaveBeenCalledWith({});
     expect(canReceiveMessage).toHaveBeenCalledWith({foo: 42});
+
+    await synclet1.destroy();
+    await synclet2.destroy();
   });
 });

@@ -36,6 +36,8 @@ test('getWebSocket', async () => {
   expect(transport.getWebSocket()).toEqual(webSocket);
   expect((synclet.getTransport()[0] as any).getWebSocket()).toEqual(webSocket);
 
+  await synclet.destroy();
+
   webSocket.close();
   wsServer.destroy();
   wsServer.getWebSocketServer().close();

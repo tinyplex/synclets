@@ -142,6 +142,10 @@ const synclet = await createSynclet({
   transport,
 });
 await synclet.start();
+
+// ...
+
+await synclet.destroy();
 ```
 
 > ## What next?

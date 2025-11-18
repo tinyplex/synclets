@@ -38,8 +38,8 @@ test('Two synclets on single server', async () => {
 
   expect(await synclet1.getData()).toEqual(await synclet2.getData());
 
-  synclet1.destroy();
-  synclet2.destroy();
+  await synclet1.destroy();
+  await synclet2.destroy();
   wsServer.destroy();
   wsServer.getWebSocketServer().close();
 });

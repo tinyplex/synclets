@@ -38,4 +38,6 @@ test('getFile', async () => {
   expect(synclet.getMetaConnector().getFile()).toEqual(metaFile);
 
   await rm(tmp, {recursive: true, force: true});
+
+  await synclet.destroy();
 });

@@ -1,9 +1,9 @@
-import {createSynclet} from 'synclets';
+import {createSynclet, type Synclet} from 'synclets';
 import {createMemoryMetaConnector} from 'synclets/connector/memory';
 import {createTinyBaseDataConnector} from 'synclets/connector/tinybase';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {createStore, getUniqueId, type Store} from 'tinybase';
-import {beforeEach, describe, expect, test} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {describeCommonConnectorTests, getTimeFunctions} from '../common.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
@@ -24,11 +24,16 @@ test('getStore, tables', async () => {
   const synclet = await createSynclet({dataConnector});
   expect(dataConnector.getStore()).toEqual(store);
   expect(synclet.getDataConnector().getStore()).toEqual(store);
+
+  await synclet.destroy();
 });
 
 describe('reactive', async () => {
   let store1: Store;
   let store2: Store;
+
+  let synclet1: Synclet<3>;
+  let synclet2: Synclet<3>;
   const messages: string[] = [];
 
   beforeEach(async () => {
@@ -39,7 +44,7 @@ describe('reactive', async () => {
 
     store1 = createStore();
     const dataConnector1 = createTinyBaseDataConnector(store1);
-    const synclet1 = await createSynclet(
+    synclet1 = await createSynclet(
       {
         dataConnector: dataConnector1,
         transport: createMemoryTransport({poolId}),
@@ -59,7 +64,7 @@ describe('reactive', async () => {
 
     store2 = createStore();
     const dataConnector2 = createTinyBaseDataConnector(store2);
-    const synclet2 = await createSynclet(
+    synclet2 = await createSynclet(
       {
         dataConnector: dataConnector2,
         transport: createMemoryTransport({poolId}),
@@ -68,6 +73,11 @@ describe('reactive', async () => {
       {id: 'synclet2'},
     );
     await synclet2.start();
+  });
+
+  afterEach(async () => {
+    await synclet1.destroy();
+    await synclet2.destroy();
   });
 
   test('cell', async () => {

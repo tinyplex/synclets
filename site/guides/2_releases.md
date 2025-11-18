@@ -127,6 +127,9 @@ console.log(await synclet1.getData());
 // ... wait a moment for synchronization to Synclet 2
 console.log(await synclet2.getData());
 // -> {foo: 'bar'}
+
+await synclet1.destroy();
+await synclet2.destroy();
 ```
 
 This compositional approach means you have a lot of flexibility for how data

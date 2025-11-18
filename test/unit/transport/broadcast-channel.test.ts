@@ -25,4 +25,6 @@ test('getChannelName', async () => {
   expect((synclet.getTransport()[0] as any).getChannelName()).toEqual(
     'test-channel',
   );
+
+  await synclet.destroy();
 });

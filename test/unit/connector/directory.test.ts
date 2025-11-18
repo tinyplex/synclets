@@ -39,6 +39,8 @@ test('getDirectory', async () => {
   expect(synclet.getMetaConnector().getDirectory()).toEqual(metaDir);
 
   await rm(tmpDir, {recursive: true, force: true});
+
+  await synclet.destroy();
 });
 
 test('non-path addresses', async () => {
@@ -62,4 +64,6 @@ test('non-path addresses', async () => {
   });
 
   await rm(tmpDir, {recursive: true, force: true});
+
+  await synclet.destroy();
 });
