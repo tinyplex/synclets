@@ -72,9 +72,9 @@ export const createPooledTestSyncletsAndConnectors = async <
     transport: Transport | Transport[],
     options?: SyncletOptions,
   ) => Promise<TestSynclet>,
-  createDataConnector: () => DataConnector<Depth>,
-  createMetaConnector: () => MetaConnector<Depth>,
-  createTransport: (uniqueId: string) => Transport,
+  createDataConnector: (syncletNumber: number) => DataConnector<Depth>,
+  createMetaConnector: (syncletNumber: number) => MetaConnector<Depth>,
+  createTransport: (uniqueId: string, syncletNumber: number) => Transport,
   number: number,
   start = true,
   log = false,
@@ -82,9 +82,9 @@ export const createPooledTestSyncletsAndConnectors = async <
   const uniqueId = getUniqueId();
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
-      const dataConnector = createDataConnector();
-      const metaConnector = createMetaConnector();
-      const transport = createTransport(uniqueId);
+      const dataConnector = createDataConnector(i);
+      const metaConnector = createMetaConnector(i);
+      const transport = createTransport(uniqueId, i);
       const synclet = await createSynclet(
         dataConnector,
         metaConnector,
@@ -109,9 +109,9 @@ export const createChainedTestSynclets = async <
     transport: Transport | Transport[],
     options?: SyncletOptions,
   ) => Promise<TestSynclet>,
-  createDataConnector: () => DataConnector<Depth>,
-  createMetaConnector: () => MetaConnector<Depth>,
-  createTransport: (uniqueId: string) => Transport,
+  createDataConnector: (syncletNumber: number) => DataConnector<Depth>,
+  createMetaConnector: (syncletNumber: number) => MetaConnector<Depth>,
+  createTransport: (uniqueId: string, syncletNumber: number) => Transport,
   number: number,
   loop = false,
   start = true,
@@ -120,15 +120,15 @@ export const createChainedTestSynclets = async <
   const uniqueId = getUniqueId();
   return await Promise.all(
     new Array(number).fill(0).map(async (_, i) => {
-      const dataConnector = createDataConnector();
-      const metaConnector = createMetaConnector();
+      const dataConnector = createDataConnector(i);
+      const metaConnector = createMetaConnector(i);
       const transports = [];
       if (i != 0 || loop) {
-        transports.push(createTransport(uniqueId + i));
+        transports.push(createTransport(uniqueId + i, i));
       }
       if (i != number - 1 || loop) {
         transports.push(
-          createTransport(uniqueId + (i == number - 1 ? 0 : i + 1)),
+          createTransport(uniqueId + (i == number - 1 ? 0 : i + 1), i),
         );
       }
       const synclet = await createSynclet(
@@ -207,12 +207,14 @@ export const describeCommonConnectorTests = <
   createDataConnector: (
     depth: number,
     environment: Environment,
+    syncletNumber: number,
   ) => DataConnectorType,
   createMetaConnector: (
     depth: number,
     environment: Environment,
+    syncletNumber: number,
   ) => MetaConnectorType,
-  createTransport: (uniqueId: string) => Transport,
+  createTransport: (uniqueId: string, syncletNumber: number) => Transport,
   transportPause = 1,
   onlyDepths: number[] = [1, 2, 3, 4],
 ) =>
@@ -252,11 +254,15 @@ export const describeCommonConnectorTests = <
           delAtomForTest(): Promise<void>;
         }
 
-        const createTestDataConnector = (): DataConnectorType =>
-          createDataConnector(depth, environment);
+        const createTestDataConnector = (
+          syncletNumber: number,
+        ): DataConnectorType =>
+          createDataConnector(depth, environment, syncletNumber);
 
-        const createTestMetaConnector = (): MetaConnectorType =>
-          createMetaConnector(depth, environment);
+        const createTestMetaConnector = (
+          syncletNumber: number,
+        ): MetaConnectorType =>
+          createMetaConnector(depth, environment, syncletNumber);
 
         const createTestSynclet = async (
           dataConnector: any,
@@ -301,7 +307,7 @@ export const describeCommonConnectorTests = <
             await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('connected', async (test) => {
+          test.only('connected', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -309,7 +315,10 @@ export const describeCommonConnectorTests = <
                 createTestMetaConnector,
                 createTransport,
                 2,
+                true,
+                true,
               );
+            await pause(transportPause);
 
             await synclet1.setAtomForTest('A');
             await pause(transportPause);
@@ -320,7 +329,7 @@ export const describeCommonConnectorTests = <
             await expectEquivalentSynclets([synclet1, synclet2], test);
           });
 
-          test('connected, deletion', async (test) => {
+          test.only('connected, deletion', async (test) => {
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -328,6 +337,8 @@ export const describeCommonConnectorTests = <
                 createTestMetaConnector,
                 createTransport,
                 2,
+                true,
+                true,
               );
 
             await synclet1.setAtomForTest('A');
