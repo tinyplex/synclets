@@ -414,6 +414,11 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       image(),
       ...(min
         ? [
+            replace({
+              '': ' ',
+              delimiters: ['\\s+', ''],
+              preventAssignment: true,
+            }),
             terser({
               toplevel: true,
               compress: {unsafe: true, passes: 3},
