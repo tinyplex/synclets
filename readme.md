@@ -38,6 +38,10 @@ const synclet = await createSynclet({
   transport,
 });
 await synclet.start();
+
+// ...
+
+await synclet.destroy();
 ```
 
 <section><h2 id="what-next">What next?</h2><p>The Synclets project is pre-alpha right now, so there is still plenty of work to be done! There are decent test suites in place for the core components, and some basic documentation, but we still need to build out more connectors, transports, and examples.</p></section><section><h2 id="please-follow-along">Please follow along!</h2><p>We hope you like the idea of this project! If so, please follow us on <a href="https://github.com/tinyplex/synclets">GitHub</a>, <a href="https://x.com/syncletsjs">X</a>, or <a href="https://bsky.app/profile/synclets.bsky.social">BlueSky</a>, and stay tuned for future updates as we continue to develop Synclets further.</p><p>Also feel free to kick the tires on our very basic <a href="https://github.com/tinyplex/vite-synclets">Vite template</a>.</p></section><hr><p><a href="https://synclets.org/guides/the-basics/core-concepts">Core concepts</a></p><p><a href="https://synclets.org/api/synclets">Read the docs</a></p><p><a href="https://github.com/tinyplex/synclets">Read the code</a></p><hr><section id="family"><h2 id="meet-the-family">Meet the family</h2><p>The Synclets project is part of a group of libraries designed to help make rich client and local-first apps easier to build. Check out the others:</p><p><a href="https://tinybase.org" target="_blank"><img src="https://tinybase.org/favicon.svg?asImg" width="48"><br><b>TinyBase</b></a><br>A reactive data store and sync engine.</p><p><a href="https://tinywidgets.org" target="_blank"><img src="https://tinywidgets.org/favicon.svg?asImg" width="48"><br><b>TinyWidgets</b></a><br>A collection of tiny, reusable, UI components.</p><p><a href="https://tinytick.org" target="_blank"><img src="https://tinytick.org/favicon.svg?asImg" width="48"><br><b>TinyTick</b></a><br>A tiny but very useful task orchestrator.</p></section>
