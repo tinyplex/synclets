@@ -62,14 +62,47 @@ export const createSqlite3Connector = <
   );
   const leafColumnId = `"${leafColumn}"`;
 
+  const safeIdentity = (value: string) => {
+    return value.replaceAll('"', '\\"');
+  };
+
+  const sql = (
+    parts: TemplateStringsArray,
+    ...values: any[]
+  ): [sql: string, params: any[]] => {
+    let string = '';
+    const args: any[] = [];
+    parts.forEach((part, i) => {
+      const value = values[i];
+      if (value === undefined) {
+        string += part;
+      } else if (part.endsWith('$"')) {
+        string += part.slice(0, -2) + `"${safeIdentity(value)}"`;
+      } else if (part.endsWith('$,')) {
+        string += part.slice(0, -2);
+        value.forEach(([eachString, eachArgs]: [string, any[]], i: number) => {
+          string += (i ? ', ' : '') + eachString;
+          args.push(...eachArgs);
+        });
+      } else if (Array.isArray(value) && value.length == 2) {
+        string += part + value[0];
+        args.push(...value[1]);
+      } else {
+        string += part + '?';
+        args.push(value);
+      }
+    });
+    return [string, args];
+  };
+
   const connect = async () => {
     const schema = objFromEntries(
       (
         await query<{name: string; type: string}>(
           database,
-          `
+          ...sql`
           SELECT name 
-          FROM pragma_table_info(${tableId})
+          FROM pragma_table_info(${table})
           ORDER BY name
         `,
         )
@@ -86,23 +119,22 @@ export const createSqlite3Connector = <
 
     if (objNotEmpty(schema)) {
       if (!objIsEqual(schema, targetSchema)) {
-        errorNew(`Table ${tableId} needs correct schema`);
+        errorNew(`Table "${table}" needs correct schema`);
       }
     } else {
-      connector.log(`Creating table ${tableId}`);
-      await query(database, `BEGIN`);
-
-      const createColumns = arrayReduce(
-        addressPartColumnIds,
-        (createColumns, addressPartColumnId) =>
-          `${createColumns}, ${addressPartColumnId} TEXT`,
-        `${addressColumnId} TEXT PRIMARY KEY, ${leafColumnId} TEXT`,
-      );
+      connector.log(`Creating table "${table}"`);
+      await query(database, ...sql`BEGIN`);
       await query(
         database,
-        `
-          CREATE TABLE ${tableId} (${createColumns})
-        `,
+        ...sql`
+        CREATE TABLE $"${table} (
+          $"${addressColumn} TEXT PRIMARY KEY, 
+          $"${leafColumn} TEXT, 
+          $,${arrayMap(
+            addressPartColumns,
+            (addressPartColumn) => sql`$"${addressPartColumn} TEXT`,
+          )}
+        )`,
       );
 
       let indexColumns = ``;
@@ -118,7 +150,7 @@ export const createSqlite3Connector = <
         }),
       );
 
-      await query(database, `COMMIT`);
+      await query(database, ...sql`COMMIT`);
     }
   };
 
@@ -128,9 +160,9 @@ export const createSqlite3Connector = <
     (
       await query<{leaf: string}>(
         database,
-        `
-        SELECT ${leafColumnId} AS leaf FROM ${tableId} 
-        WHERE ${addressColumnId}='${jsonString(address)}'
+        ...sql`
+        SELECT $"${leafColumn} AS leaf FROM $"${table} 
+        WHERE $"${addressColumn}=${jsonString(address)}
       `,
       )
     )[0]?.leaf;
@@ -164,8 +196,8 @@ export const createSqlite3Connector = <
   const removeAtom = async (address: AtomAddress<Depth>) => {
     await query(
       database,
-      `
-      DELETE FROM ${tableId} WHERE ${addressColumnId}='${jsonString(address)}'
+      ...sql`
+      DELETE FROM $"${table} WHERE $"${addressColumn}=${jsonString(address)}
     `,
     );
   };
