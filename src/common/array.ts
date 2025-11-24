@@ -39,7 +39,7 @@ export const arrayEvery = <Value>(
 
 export const arraySome = <Value>(
   array: Value[],
-  test: (value: Value, index: number, array: Value[]) => boolean,
+  test: (value: Value, index: number, array: Value[]) => unknown,
 ): boolean => array.some(test);
 
 export const arrayDifference = (array1: string[], array2: string[]) => {

@@ -14,24 +14,26 @@ import type {
 } from '@synclets/@types/connector/database/sqlite3';
 import {jsonString} from '@synclets/utils';
 import type {Database} from 'sqlite3';
-import {arrayMap, arrayNew, arrayReduce} from '../../../common/array.ts';
+import {arrayMap, arrayNew, arraySlice} from '../../../common/array.ts';
 import {
   objFromEntries,
   objIsEqual,
   objNotEmpty,
 } from '../../../common/object.ts';
 import {errorNew, promiseAll, promiseNew, size} from '../../../common/other.ts';
+import {sql, type Sql} from '../index.ts';
 
 const query = <Row>(
   database: Database,
-  sql: string,
-  params: any[] = [],
-): Promise<Row[]> =>
-  promiseNew((resolve, reject) => {
-    database.all(sql, params, (error, rows: Row[]) =>
+  {string, params}: Sql,
+): Promise<Row[]> => {
+  // console.log(string, params);
+  return promiseNew((resolve, reject) => {
+    database.all(string, params, (error, rows: Row[]) =>
       error ? reject(error) : resolve(rows),
     );
   });
+};
 
 export const createSqlite3Connector = <
   CreateMeta extends boolean,
@@ -50,57 +52,17 @@ export const createSqlite3Connector = <
     leafColumn: string;
   },
 ) => {
-  const tableId = `"${table}"`;
-  const addressColumnId = `"${addressColumn}"`;
   const addressPartColumns = arrayMap(
     arrayNew(depth),
     (_, i) => `${addressColumn}${i + 1}`,
   );
-  const addressPartColumnIds = arrayMap(
-    addressPartColumns,
-    (column) => `"${column}"`,
-  );
-  const leafColumnId = `"${leafColumn}"`;
-
-  const safeIdentity = (value: string) => {
-    return value.replaceAll('"', '\\"');
-  };
-
-  const sql = (
-    parts: TemplateStringsArray,
-    ...values: any[]
-  ): [sql: string, params: any[]] => {
-    let string = '';
-    const args: any[] = [];
-    parts.forEach((part, i) => {
-      const value = values[i];
-      if (value === undefined) {
-        string += part;
-      } else if (part.endsWith('$"')) {
-        string += part.slice(0, -2) + `"${safeIdentity(value)}"`;
-      } else if (part.endsWith('$,')) {
-        string += part.slice(0, -2);
-        value.forEach(([eachString, eachArgs]: [string, any[]], i: number) => {
-          string += (i ? ', ' : '') + eachString;
-          args.push(...eachArgs);
-        });
-      } else if (Array.isArray(value) && value.length == 2) {
-        string += part + value[0];
-        args.push(...value[1]);
-      } else {
-        string += part + '?';
-        args.push(value);
-      }
-    });
-    return [string, args];
-  };
 
   const connect = async () => {
     const schema = objFromEntries(
       (
         await query<{name: string; type: string}>(
           database,
-          ...sql`
+          sql`
           SELECT name 
           FROM pragma_table_info(${table})
           ORDER BY name
@@ -123,10 +85,10 @@ export const createSqlite3Connector = <
       }
     } else {
       connector.log(`Creating table "${table}"`);
-      await query(database, ...sql`BEGIN`);
+      await query(database, sql`BEGIN`);
       await query(
         database,
-        ...sql`
+        sql`
         CREATE TABLE $"${table} (
           $"${addressColumn} TEXT PRIMARY KEY, 
           $"${leafColumn} TEXT, 
@@ -137,20 +99,20 @@ export const createSqlite3Connector = <
         )`,
       );
 
-      let indexColumns = ``;
       await promiseAll(
-        arrayMap(addressPartColumnIds, (columnId, c) => {
-          indexColumns = `${indexColumns}${c ? `, ` : ``}${columnId}`;
-          return query(
+        arrayMap(addressPartColumns, (_, c) =>
+          query(
             database,
-            `
-              CREATE INDEX "${table}${c}" ON ${tableId} (${indexColumns})
-            `,
-          );
-        }),
+            sql`
+              CREATE INDEX $"${table + c} ON $"${table} ($,${arrayMap(
+                arraySlice(addressPartColumns, 0, c + 1),
+                (addressPartColumn) => sql`$"${addressPartColumn}`,
+              )})`,
+          ),
+        ),
       );
 
-      await query(database, ...sql`COMMIT`);
+      await query(database, sql`COMMIT`);
     }
   };
 
@@ -160,91 +122,80 @@ export const createSqlite3Connector = <
     (
       await query<{leaf: string}>(
         database,
-        ...sql`
+        sql`
         SELECT $"${leafColumn} AS leaf FROM $"${table} 
         WHERE $"${addressColumn}=${jsonString(address)}
       `,
       )
     )[0]?.leaf;
 
-  const writeLeaf = async (
+  const writeLeaf = (
     address: AtomAddress<Depth> | TimestampAddress<Depth>,
     leaf: Atom | Timestamp,
-  ) => {
-    const [columns, values] = arrayReduce(
-      address,
-      ([columns, values], addressPart, a) => [
-        `${columns}, ${addressPartColumnIds[a]}`,
-        `${values}, '${addressPart}'`,
-      ],
-      [
-        `${addressColumnId}, ${leafColumnId}`,
-        `'${jsonString(address)}', '${leaf}'`,
-      ],
-    );
-    await query(
+  ) =>
+    query(
       database,
-      `
-      INSERT INTO ${tableId} 
-      (${columns}) VALUES (${values})
-      ON CONFLICT(${addressColumnId}) 
-      DO UPDATE SET ${leafColumnId}=excluded.${leafColumnId}
-    `,
+      sql`
+        INSERT INTO $"${table} 
+        (
+          $"${addressColumn}, $"${leafColumn}, 
+          $,${arrayMap(address, (_, a) => sql`$"${addressPartColumns[a]}`)}
+        ) VALUES  (
+          ${jsonString(address)}, ${leaf},
+          $,${arrayMap(address, (addressPart) => sql`${addressPart}`)}
+        ) 
+        ON CONFLICT($"${addressColumn}) 
+        DO UPDATE SET $"${leafColumn}=excluded.$"${leafColumn}
+      `,
     );
-  };
 
   const removeAtom = async (address: AtomAddress<Depth>) => {
     await query(
       database,
-      ...sql`
+      sql`
       DELETE FROM $"${table} WHERE $"${addressColumn}=${jsonString(address)}
     `,
     );
   };
 
-  const readChildIds = async (address: AnyParentAddress<Depth>) => {
-    const tableWhere = arrayReduce(
-      address,
-      (where, addressPart, a) =>
-        `
-          ${where}${a ? `AND` : `WHERE`}
-          ${addressPartColumnIds[a]}='${addressPart}'
-        `,
-      tableId,
-    );
-    const rows = await query<{id: string}>(
-      database,
-      `
-      SELECT DISTINCT ${addressPartColumnIds[size(address)]} AS id
-      FROM ${tableWhere}
+  const readChildIds = async (address: AnyParentAddress<Depth>) =>
+    arrayMap(
+      await query<{id: string}>(
+        database,
+        sql`
+      SELECT DISTINCT $"${addressPartColumns[size(address)]} AS id
+      FROM $"${table}
+      $&${arrayMap(
+        address,
+        (addressPart, a) => sql`$"${addressPartColumns[a]}=${addressPart}`,
+      )}
     `,
+      ),
+      ({id}) => id,
     );
-    return arrayMap(rows, ({id}) => id);
-  };
 
   const readLeaves = async (
     address: AtomsAddress<Depth> | TimestampsAddress<Depth>,
-  ) => {
-    const tableWhere = arrayReduce(
-      address,
-      (where, addressPart, a) =>
-        `
-            ${where}${a ? `AND` : `WHERE`}
-            ${addressPartColumnIds[a]}='${addressPart}'
+  ) =>
+    objFromEntries(
+      arrayMap(
+        await query<{id: string; leaf: string}>(
+          database,
+          sql`
+            SELECT 
+              $"${addressPartColumns[size(address)]} AS id, 
+              $"${leafColumn} AS leaf
+            FROM $"${table}
+            $&${arrayMap(
+              address,
+              (addressPart, a) =>
+                sql`$"${addressPartColumns[a]}=${addressPart}`,
+            )}
           `,
-      tableId,
+        ),
+        ({id, leaf}) => [id, leaf],
+      ),
     );
-    const rows = await query<{id: string; leaf: string}>(
-      database,
-      `
-      SELECT 
-        ${addressPartColumnIds[size(address)]} AS id, 
-        ${leafColumnId} AS leaf
-      FROM ${tableWhere}
-    `,
-    );
-    return objFromEntries(arrayMap(rows, ({id, leaf}) => [id, leaf]));
-  };
 
   const extraFunctions = {
     getDatabase: () => database,
