@@ -124,23 +124,23 @@ export const createSqlite3Connector = <
         database,
         sql`
         SELECT $"${leafColumn} AS leaf FROM $"${table} 
-        WHERE $"${addressColumn}=${jsonString(address)}
+        ?&${{[addressColumn]: jsonString(address)}}
       `,
       )
     )[0]?.leaf;
 
-  const writeLeaf = (
+  const writeLeaf = async (
     address: AtomAddress<Depth> | TimestampAddress<Depth>,
     leaf: Atom | Timestamp,
-  ) =>
-    query(
+  ) => {
+    await query(
       database,
       sql`
         INSERT INTO $"${table} 
         (
           $"${addressColumn}, $"${leafColumn}, 
           $,${arrayMap(address, (_, a) => sql`$"${addressPartColumns[a]}`)}
-        ) VALUES  (
+        ) VALUES (
           ${jsonString(address)}, ${leaf},
           $,${arrayMap(address, (addressPart) => sql`${addressPart}`)}
         ) 
@@ -148,13 +148,14 @@ export const createSqlite3Connector = <
         DO UPDATE SET $"${leafColumn}=excluded.$"${leafColumn}
       `,
     );
+  };
 
   const removeAtom = async (address: AtomAddress<Depth>) => {
     await query(
       database,
       sql`
-      DELETE FROM $"${table} WHERE $"${addressColumn}=${jsonString(address)}
-    `,
+        DELETE FROM $"${table} ?&${{[addressColumn]: jsonString(address)}}
+      `,
     );
   };
 
@@ -163,13 +164,15 @@ export const createSqlite3Connector = <
       await query<{id: string}>(
         database,
         sql`
-      SELECT DISTINCT $"${addressPartColumns[size(address)]} AS id
-      FROM $"${table}
-      $&${arrayMap(
-        address,
-        (addressPart, a) => sql`$"${addressPartColumns[a]}=${addressPart}`,
-      )}
-    `,
+          SELECT DISTINCT $"${addressPartColumns[size(address)]} AS id
+          FROM $"${table}
+          ?&${objFromEntries(
+            arrayMap(address, (addressPart, a) => [
+              addressPartColumns[a],
+              addressPart,
+            ]),
+          )}
+        `,
       ),
       ({id}) => id,
     );
@@ -186,10 +189,11 @@ export const createSqlite3Connector = <
               $"${addressPartColumns[size(address)]} AS id, 
               $"${leafColumn} AS leaf
             FROM $"${table}
-            $&${arrayMap(
-              address,
-              (addressPart, a) =>
-                sql`$"${addressPartColumns[a]}=${addressPart}`,
+            ?&${objFromEntries(
+              arrayMap(address, (addressPart, a) => [
+                addressPartColumns[a],
+                addressPart,
+              ]),
             )}
           `,
         ),
