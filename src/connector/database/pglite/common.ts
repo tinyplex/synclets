@@ -1,5 +1,5 @@
 import type {PGlite, Transaction} from '@electric-sql/pglite';
-import {identifier, raw, sql} from '@electric-sql/pglite/template';
+import {identifier, raw, sql as sqlO} from '@electric-sql/pglite/template';
 import {createDataConnector, createMetaConnector} from '@synclets';
 import {
   AnyParentAddress,
@@ -10,6 +10,7 @@ import {
   TimestampAddress,
   TimestampsAddress,
 } from '@synclets/@types';
+import {Sql} from '@synclets/@types/connector/database';
 import type {
   PgliteDataConnector,
   PgliteMetaConnector,
@@ -22,6 +23,10 @@ import {
   objNotEmpty,
 } from '../../../common/object.ts';
 import {errorNew, promiseAll, size} from '../../../common/other.ts';
+import {getQuery, sql} from '../index.ts';
+
+const query = async <Row>(pglite: PGlite, sql: Sql): Promise<Row[]> =>
+  (await pglite.query<Row>(...getQuery(sql))).rows;
 
 export const createPgliteConnector = <
   CreateMeta extends boolean,
@@ -55,13 +60,16 @@ export const createPgliteConnector = <
   const connect = async () => {
     const schema = objFromEntries(
       (
-        await pglite.sql<{name: string; type: string}>`
-          SELECT column_name AS name, data_type AS type 
-          FROM information_schema.columns 
-          WHERE table_name=${table} 
-          ORDER BY column_name
-        `
-      ).rows.map(({name, type}) => [name, type]),
+        await query<{name: string; type: string}>(
+          pglite,
+          sql`
+            SELECT column_name AS name, data_type AS type 
+            FROM information_schema.columns 
+            WHERE table_name=${table} 
+            ORDER BY column_name
+          `,
+        )
+      ).map(({name, type}) => [name, type]),
     );
 
     const targetSchema = {
@@ -82,17 +90,17 @@ export const createPgliteConnector = <
         const createColumns = arrayReduce(
           addressPartColumnIds,
           (createColumns, addressPartColumnId) =>
-            sql`${createColumns}, ${addressPartColumnId} TEXT`,
-          sql`${addressColumnId} TEXT PRIMARY KEY, ${leafColumnId} TEXT`,
+            sqlO`${createColumns}, ${addressPartColumnId} TEXT`,
+          sqlO`${addressColumnId} TEXT PRIMARY KEY, ${leafColumnId} TEXT`,
         );
         await tx.sql`
           CREATE TABLE ${tableId} (${createColumns})
         `;
 
-        let indexColumns = sql``;
+        let indexColumns = sqlO``;
         await promiseAll(
           arrayMap(addressPartColumnIds, (column, c) => {
-            indexColumns = sql`${indexColumns}${c ? raw`, ` : raw``}${column}`;
+            indexColumns = sqlO`${indexColumns}${c ? raw`, ` : raw``}${column}`;
             return tx.sql`
               CREATE INDEX ON ${tableId} (${indexColumns})
             `;
@@ -119,12 +127,12 @@ export const createPgliteConnector = <
     const [columns, values] = arrayReduce(
       address,
       ([columns, values], addressPart, a) => [
-        sql`${columns}, ${addressPartColumnIds[a]}`,
-        sql`${values}, ${addressPart}`,
+        sqlO`${columns}, ${addressPartColumnIds[a]}`,
+        sqlO`${values}, ${addressPart}`,
       ],
       [
-        sql`${addressColumnId}, ${leafColumnId}`,
-        sql`${jsonString(address)}, ${leaf}`,
+        sqlO`${addressColumnId}, ${leafColumnId}`,
+        sqlO`${jsonString(address)}, ${leaf}`,
       ],
     );
     await pglite.sql`
@@ -145,11 +153,11 @@ export const createPgliteConnector = <
     const tableWhere = arrayReduce(
       address,
       (where, addressPart, a) =>
-        sql`
+        sqlO`
           ${where}${a ? raw`AND` : raw`WHERE`}
           ${addressPartColumnIds[a]}=${addressPart}
         `,
-      sql`${tableId}`,
+      sqlO`${tableId}`,
     );
     const {rows} = await pglite.sql<{id: string}>`
       SELECT DISTINCT ${addressPartColumnIds[size(address)]} AS id
@@ -164,11 +172,11 @@ export const createPgliteConnector = <
     const tableWhere = arrayReduce(
       address,
       (where, addressPart, a) =>
-        sql`
+        sqlO`
             ${where}${a ? raw`AND` : raw`WHERE`}
             ${addressPartColumnIds[a]}=${addressPart}
           `,
-      sql`${tableId}`,
+      sqlO`${tableId}`,
     );
     const {rows} = await pglite.sql<{id: string; leaf: string}>`
       SELECT 

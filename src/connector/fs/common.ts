@@ -30,7 +30,7 @@ import {dirname, resolve} from 'path';
 import {arrayMap, arrayReduce, arraySlice} from '../../common/array.ts';
 import {createMemoryConnector} from '../../common/memory.ts';
 import {errorNew, isEmpty} from '../../common/other.ts';
-import {stringReplaceAll, UTF8} from '../../common/string.ts';
+import {strReplaceAll, UTF8} from '../../common/string.ts';
 export {resolve} from 'path';
 
 const {R_OK, W_OK} = constants;
@@ -154,7 +154,7 @@ const encodePaths = (paths: string[]): string[] =>
   arrayMap(paths, (path: string) =>
     arrayReduce(
       EXTRA_ENCODES,
-      (str, [char, code]) => stringReplaceAll(str, char, code),
+      (str, [char, code]) => strReplaceAll(str, char, code),
       encodeURIComponent(path),
     ),
   );
@@ -164,7 +164,7 @@ const decodePaths = (paths: string[]): string[] =>
     decodeURIComponent(
       arrayReduce(
         EXTRA_ENCODES,
-        (str, [char, code]) => stringReplaceAll(str, code, char),
+        (str, [char, code]) => strReplaceAll(str, code, char),
         path,
       ),
     ),

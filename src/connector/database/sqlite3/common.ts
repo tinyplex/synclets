@@ -8,6 +8,7 @@ import {
   TimestampAddress,
   TimestampsAddress,
 } from '@synclets/@types';
+import type {Sql} from '@synclets/@types/connector/database';
 import type {
   Sqlite3DataConnector,
   Sqlite3MetaConnector,
@@ -21,19 +22,14 @@ import {
   objNotEmpty,
 } from '../../../common/object.ts';
 import {errorNew, promiseAll, promiseNew, size} from '../../../common/other.ts';
-import {sql, type Sql} from '../index.ts';
+import {getQuery, sql} from '../index.ts';
 
-const query = <Row>(
-  database: Database,
-  {string, params}: Sql,
-): Promise<Row[]> => {
-  // console.log(string, params);
-  return promiseNew((resolve, reject) => {
-    database.all(string, params, (error, rows: Row[]) =>
+const query = <Row>(database: Database, sql: Sql): Promise<Row[]> =>
+  promiseNew((resolve, reject) => {
+    database.all(...getQuery(sql), (error, rows: Row[]) =>
       error ? reject(error) : resolve(rows),
     );
   });
-};
 
 export const createSqlite3Connector = <
   CreateMeta extends boolean,
@@ -124,7 +120,7 @@ export const createSqlite3Connector = <
         database,
         sql`
         SELECT $"${leafColumn} AS leaf FROM $"${table} 
-        ?&${{[addressColumn]: jsonString(address)}}
+        $&${{[addressColumn]: jsonString(address)}}
       `,
       )
     )[0]?.leaf;
@@ -154,7 +150,7 @@ export const createSqlite3Connector = <
     await query(
       database,
       sql`
-        DELETE FROM $"${table} ?&${{[addressColumn]: jsonString(address)}}
+        DELETE FROM $"${table} $&${{[addressColumn]: jsonString(address)}}
       `,
     );
   };
@@ -166,7 +162,7 @@ export const createSqlite3Connector = <
         sql`
           SELECT DISTINCT $"${addressPartColumns[size(address)]} AS id
           FROM $"${table}
-          ?&${objFromEntries(
+          $&${objFromEntries(
             arrayMap(address, (addressPart, a) => [
               addressPartColumns[a],
               addressPart,
@@ -189,7 +185,7 @@ export const createSqlite3Connector = <
               $"${addressPartColumns[size(address)]} AS id, 
               $"${leafColumn} AS leaf
             FROM $"${table}
-            ?&${objFromEntries(
+            $&${objFromEntries(
               arrayMap(address, (addressPart, a) => [
                 addressPartColumns[a],
                 addressPart,

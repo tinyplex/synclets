@@ -1,44 +1,73 @@
-import {arrayForEach, arrayMap, arraySome} from '../../common/array.ts';
+import {Sql} from '@synclets/@types/connector/database';
+import {
+  arrayForEach,
+  arrayJoin,
+  arrayMap,
+  arrayNew,
+  arrayPop,
+  arrayShift,
+  arraySome,
+} from '../../common/array.ts';
 import {
   isObject,
   objEntries,
   objKeys,
   objNotEmpty,
 } from '../../common/object.ts';
-import {size} from '../../common/other.ts';
+import {isEmpty, size} from '../../common/other.ts';
+import {strEndsWith, strReplaceAll, strSub} from '../../common/string.ts';
 
-export type Sql = {__brand: 'Sql'; string: string; params: any[]};
+export const sql = (
+  templateStringsArray: TemplateStringsArray | string[],
+  ...expressions: any[]
+): Sql => {
+  const templateStrings = [...templateStringsArray];
 
-export const sql = (parts: TemplateStringsArray, ...values: any[]): Sql => {
-  let string = '';
-  const params: any[] = [];
+  const strings: string[] = [];
+  const args: any[] = [];
+  let tail = '';
 
-  arrayForEach(parts, (part, i) => {
-    const value = values[i];
-    if (value === undefined) {
-      string += part;
-    } else if (
-      !arraySome(objKeys(ops), (op) => {
-        if (part.endsWith(op)) {
-          const {string: newString, params: newParams} = ops[op](value);
-          string += part.slice(0, -size(op)) + newString;
-          params.push(...newParams);
-          return 1;
-        }
-      })
-    ) {
-      if (isSql(value)) {
-        string += part + value.string;
-        params.push(...value.params);
+  while (!isEmpty(templateStrings) || tail) {
+    let templateString = tail + (arrayShift(templateStrings) ?? '');
+    let expression = arrayShift(expressions);
+    tail = '';
+
+    arraySome(objKeys(ops), (op) => {
+      if (strEndsWith(templateString, op)) {
+        templateString = strSub(templateString, 0, -op.length);
+        expression = ops[op](expression);
+        return 1;
+      }
+    });
+
+    if (isSql(expression)) {
+      const {strings: innerStrings, args: innerParams} = expression;
+      templateString += arrayShift(innerStrings) ?? '';
+      if (isEmpty(innerStrings)) {
+        tail = templateString;
       } else {
-        string += part + '?';
-        params.push(value);
+        tail = arrayPop(innerStrings)!;
+        strings.push(templateString, ...innerStrings);
+        args.push(...innerParams);
+      }
+    } else {
+      strings.push(templateString);
+      if (expression !== undefined) {
+        args.push(expression);
       }
     }
-  });
+  }
 
-  return asSql(string, params);
+  return asSql(strings, args);
 };
+
+export const getQuery = ({strings, args}: Sql): [string, any[]] => [
+  arrayJoin(
+    arrayMap(strings, (string, s) => (s > 0 ? '$' + s : '') + string),
+    '',
+  ),
+  args,
+];
 
 const getWhereOp = (separator: string) => {
   const concatOp = getConcatOp(separator);
@@ -55,30 +84,36 @@ const getWhereOp = (separator: string) => {
 
 const getConcatOp =
   (separator: string) =>
-  (value: Sql[]): Sql =>
-    asSql(
-      value.map(({string}) => string).join(separator),
-      value.map(({params}) => params).flat(),
-    );
+  (expressions: Sql[]): Sql =>
+    isEmpty(expressions)
+      ? sql``
+      : sql(
+          ['', ...arrayNew(size(expressions) - 1, separator), ''],
+          ...expressions,
+        );
 
-const ops: {[operator: string]: (value: any) => Sql} = {
-  // quote identifier
-  '$"': (value: string): Sql => asSql(`"${value.replaceAll('"', '\\"')}"`),
-  // concatenate Sql objects with comma
+const ops: {[op: string]: (expression: any) => Sql} = {
+  '$"': (expression: string): Sql =>
+    asSql([`"${strReplaceAll(expression, '"', '\\"')}"`]),
   '$,': getConcatOp(', '),
-  // raw value insertion
-  '$!': (value: string): Sql => asSql(value),
-  // WHERE object fields with AND
-  '?&': getWhereOp(' AND '),
-  // WHERE object fields with OR
-  '?|': getWhereOp(' OR '),
+  '$&': getWhereOp(' AND '),
+  '$|': getWhereOp(' OR '),
 };
+arrayForEach(
+  [
+    ['$ID', '$"'],
+    ['$COMMAS', '$,'],
+    ['$WHERE_ALL', '$&'],
+    ['$WHERE_ANY', '$|'],
+  ],
+  ([alias, op]) => (ops[alias] = ops[op]),
+);
 
-const asSql = (string: string, params: any[] = []): Sql => ({
+const asSql = (strings: string[], args: any[] = []): Sql => ({
   __brand: 'Sql',
-  string,
-  params,
+  strings,
+  args,
 });
 
-const isSql = (value: any): value is Sql =>
-  isObject(value) && value.__brand === 'Sql';
+const isSql = (expression: any): expression is Sql =>
+  isObject(expression) && expression.__brand === 'Sql';

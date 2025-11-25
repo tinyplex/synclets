@@ -16,8 +16,11 @@ export const strSplit = (
 export const strMatch = (str: string | undefined, regex: RegExp) =>
   str?.match(regex) ?? undefined;
 
-export const stringReplaceAll = (
-  str: string,
-  search: string,
-  replace: string,
-) => str.replaceAll(search, replace);
+export const strReplaceAll = (str: string, search: string, replace: string) =>
+  str.replaceAll(search, replace);
+
+export const strSub = (str: string, start: number, end?: number): string =>
+  str.slice(start, end);
+
+export const strEndsWith = (str: string, search: string): boolean =>
+  str.endsWith(search);
