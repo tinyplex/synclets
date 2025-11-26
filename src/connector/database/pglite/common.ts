@@ -1,5 +1,4 @@
-import type {PGlite, Transaction} from '@electric-sql/pglite';
-import {identifier, raw, sql as sqlO} from '@electric-sql/pglite/template';
+import type {PGlite} from '@electric-sql/pglite';
 import {createDataConnector, createMetaConnector} from '@synclets';
 import {
   AnyParentAddress,
@@ -16,7 +15,7 @@ import type {
   PgliteMetaConnector,
 } from '@synclets/@types/connector/database/pglite';
 import {jsonString} from '@synclets/utils';
-import {arrayMap, arrayNew, arrayReduce} from '../../../common/array.ts';
+import {arrayMap, arrayNew, arraySlice} from '../../../common/array.ts';
 import {
   objFromEntries,
   objIsEqual,
@@ -45,17 +44,10 @@ export const createPgliteConnector = <
     leafColumn: string;
   },
 ) => {
-  const tableId = identifier`${table}`;
-  const addressColumnId = identifier`${addressColumn}`;
   const addressPartColumns = arrayMap(
     arrayNew(depth),
     (_, i) => `${addressColumn}${i + 1}`,
   );
-  const addressPartColumnIds = arrayMap(
-    addressPartColumns,
-    (column) => identifier`${column}`,
-  );
-  const leafColumnId = identifier`${leafColumn}`;
 
   const connect = async () => {
     const schema = objFromEntries(
@@ -82,31 +74,35 @@ export const createPgliteConnector = <
 
     if (objNotEmpty(schema)) {
       if (!objIsEqual(schema, targetSchema)) {
-        errorNew(`Table ${tableId.str} needs correct schema`);
+        errorNew(`Table "${table}" needs correct schema`);
       }
     } else {
-      connector.log(`Creating table ${tableId.str}`);
-      await pglite.transaction(async (tx: Transaction) => {
-        const createColumns = arrayReduce(
-          addressPartColumnIds,
-          (createColumns, addressPartColumnId) =>
-            sqlO`${createColumns}, ${addressPartColumnId} TEXT`,
-          sqlO`${addressColumnId} TEXT PRIMARY KEY, ${leafColumnId} TEXT`,
-        );
-        await tx.sql`
-          CREATE TABLE ${tableId} (${createColumns})
-        `;
+      connector.log(`Creating table "${table}"`);
+      await query(
+        pglite,
+        sql`
+        CREATE TABLE $"${table} (
+          $"${addressColumn} TEXT PRIMARY KEY, 
+          $"${leafColumn} TEXT, 
+          $,${arrayMap(
+            addressPartColumns,
+            (addressPartColumn) => sql`$"${addressPartColumn} TEXT`,
+          )}
+        )`,
+      );
 
-        let indexColumns = sqlO``;
-        await promiseAll(
-          arrayMap(addressPartColumnIds, (column, c) => {
-            indexColumns = sqlO`${indexColumns}${c ? raw`, ` : raw``}${column}`;
-            return tx.sql`
-              CREATE INDEX ON ${tableId} (${indexColumns})
-            `;
-          }),
-        );
-      });
+      await promiseAll(
+        arrayMap(addressPartColumns, (_, c) =>
+          query(
+            pglite,
+            sql`
+              CREATE INDEX $"${table + c} ON $"${table} ($,${arrayMap(
+                arraySlice(addressPartColumns, 0, c + 1),
+                (addressPartColumn) => sql`$"${addressPartColumn}`,
+              )})`,
+          ),
+        ),
+      );
     }
   };
 
@@ -114,78 +110,86 @@ export const createPgliteConnector = <
     address: AtomAddress<Depth> | TimestampAddress<Depth>,
   ) =>
     (
-      await pglite.sql<{leaf: string}>`
-        SELECT ${leafColumnId} AS leaf FROM ${tableId} 
-        WHERE ${addressColumnId}=${jsonString(address)}
-      `
-    ).rows[0]?.leaf;
+      await query<{leaf: string}>(
+        pglite,
+        sql`
+        SELECT $"${leafColumn} AS leaf FROM $"${table} 
+        $&${{[addressColumn]: jsonString(address)}}
+      `,
+      )
+    )[0]?.leaf;
 
   const writeLeaf = async (
     address: AtomAddress<Depth> | TimestampAddress<Depth>,
     leaf: Atom | Timestamp,
   ) => {
-    const [columns, values] = arrayReduce(
-      address,
-      ([columns, values], addressPart, a) => [
-        sqlO`${columns}, ${addressPartColumnIds[a]}`,
-        sqlO`${values}, ${addressPart}`,
-      ],
-      [
-        sqlO`${addressColumnId}, ${leafColumnId}`,
-        sqlO`${jsonString(address)}, ${leaf}`,
-      ],
+    await query(
+      pglite,
+      sql`
+        INSERT INTO $"${table} 
+        (
+          $"${addressColumn}, $"${leafColumn}, 
+          $,${arrayMap(address, (_, a) => sql`$"${addressPartColumns[a]}`)}
+        ) VALUES (
+          ${jsonString(address)}, ${leaf},
+          $,${arrayMap(address, (addressPart) => sql`${addressPart}`)}
+        ) 
+        ON CONFLICT($"${addressColumn}) 
+        DO UPDATE SET $"${leafColumn}=excluded.$"${leafColumn}
+      `,
     );
-    await pglite.sql`
-      INSERT INTO ${tableId} 
-      (${columns}) VALUES (${values})
-      ON CONFLICT(${addressColumnId}) 
-      DO UPDATE SET ${leafColumnId}=excluded.${leafColumnId}
-    `;
   };
 
   const removeAtom = async (address: AtomAddress<Depth>) => {
-    await pglite.sql`
-      DELETE FROM ${tableId} WHERE ${addressColumnId}=${jsonString(address)}
-    `;
+    await query(
+      pglite,
+      sql`
+        DELETE FROM $"${table} $&${{[addressColumn]: jsonString(address)}}
+      `,
+    );
   };
 
-  const readChildIds = async (address: AnyParentAddress<Depth>) => {
-    const tableWhere = arrayReduce(
-      address,
-      (where, addressPart, a) =>
-        sqlO`
-          ${where}${a ? raw`AND` : raw`WHERE`}
-          ${addressPartColumnIds[a]}=${addressPart}
+  const readChildIds = async (address: AnyParentAddress<Depth>) =>
+    arrayMap(
+      await query<{id: string}>(
+        pglite,
+        sql`
+          SELECT DISTINCT $"${addressPartColumns[size(address)]} AS id
+          FROM $"${table}
+          $&${objFromEntries(
+            arrayMap(address, (addressPart, a) => [
+              addressPartColumns[a],
+              addressPart,
+            ]),
+          )}
         `,
-      sqlO`${tableId}`,
+      ),
+      ({id}) => id,
     );
-    const {rows} = await pglite.sql<{id: string}>`
-      SELECT DISTINCT ${addressPartColumnIds[size(address)]} AS id
-      FROM ${tableWhere}
-    `;
-    return arrayMap(rows, ({id}) => id);
-  };
 
   const readLeaves = async (
     address: AtomsAddress<Depth> | TimestampsAddress<Depth>,
-  ) => {
-    const tableWhere = arrayReduce(
-      address,
-      (where, addressPart, a) =>
-        sqlO`
-            ${where}${a ? raw`AND` : raw`WHERE`}
-            ${addressPartColumnIds[a]}=${addressPart}
-          `,
-      sqlO`${tableId}`,
+  ) =>
+    objFromEntries(
+      arrayMap(
+        await query<{id: string; leaf: string}>(
+          pglite,
+          sql`
+              SELECT 
+                $"${addressPartColumns[size(address)]} AS id, 
+                $"${leafColumn} AS leaf
+              FROM $"${table}
+              $&${objFromEntries(
+                arrayMap(address, (addressPart, a) => [
+                  addressPartColumns[a],
+                  addressPart,
+                ]),
+              )}
+            `,
+        ),
+        ({id, leaf}) => [id, leaf],
+      ),
     );
-    const {rows} = await pglite.sql<{id: string; leaf: string}>`
-      SELECT 
-        ${addressPartColumnIds[size(address)]} AS id, 
-        ${leafColumnId} AS leaf
-      FROM ${tableWhere}
-    `;
-    return objFromEntries(arrayMap(rows, ({id, leaf}) => [id, leaf]));
-  };
 
   const extraFunctions = {
     getPglite: () => pglite,

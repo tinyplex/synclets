@@ -81,7 +81,6 @@ export const createSqlite3Connector = <
       }
     } else {
       connector.log(`Creating table "${table}"`);
-      await query(database, sql`BEGIN`);
       await query(
         database,
         sql`
@@ -107,8 +106,6 @@ export const createSqlite3Connector = <
           ),
         ),
       );
-
-      await query(database, sql`COMMIT`);
     }
   };
 
