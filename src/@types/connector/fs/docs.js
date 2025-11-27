@@ -54,6 +54,39 @@
 /// createFileMetaConnector
 
 /**
+ * The FileConnectorsOptions type specifies configuration for both data and
+ * meta connectors when using createFileConnectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// FileConnectorsOptions
+{
+  /**
+   * The dataFile property specifies the file path for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileConnectorsOptions.dataFile
+  /**
+   * The metaFile property specifies the file path for metadata storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileConnectorsOptions.metaFile
+}
+
+/**
+ * The createFileConnectors function creates both file-backed DataConnector
+ * and MetaConnector together for convenience.
+ * @param depth The depth of the synclet.
+ * @param file The base file path (used for both if options not provided).
+ * @param options Configuration for both connectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// createFileConnectors
+
+/**
  * The DirectoryDataConnector interface describes a DataConnector that stores
  * data in a directory.
  * @category Connector
@@ -100,3 +133,38 @@
  * @since v0.0.0
  */
 /// createDirectoryMetaConnector
+
+/**
+ * The DirectoryConnectorsOptions type specifies configuration for both data
+ * and meta connectors when using createDirectoryConnectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// DirectoryConnectorsOptions
+{
+  /**
+   * The dataDirectory property specifies the directory path for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectoryConnectorsOptions.dataDirectory
+  /**
+   * The metaDirectory property specifies the directory path for metadata
+   * storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectoryConnectorsOptions.metaDirectory
+}
+
+/**
+ * The createDirectoryConnectors function creates both directory-backed
+ * DataConnector and MetaConnector together for convenience.
+ * @param depth The depth of the synclet.
+ * @param directory The base directory path (used for both if options not
+ * provided).
+ * @param options Configuration for both connectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// createDirectoryConnectors

@@ -166,12 +166,28 @@ export interface Synclet<
   getMeta(): Promise<Readonly<Meta>>;
 }
 
+/// Connectors
+export type Connectors<
+  Depth extends number,
+  DataConnectorType extends DataConnector<Depth>,
+  MetaConnectorType extends MetaConnector<Depth>,
+> = [
+  /// Connectors.dataConnector
+  dataConnector: DataConnectorType,
+
+  /// Connectors.metaConnector
+  metaConnector: MetaConnectorType,
+];
+
 /// SyncletComponents
 export type SyncletComponents<
   Depth extends number,
   DataConnectorType extends DataConnector<Depth>,
   MetaConnectorType extends MetaConnector<Depth>,
 > = {
+  /// SyncletComponents.connectors
+  connectors?: Connectors<Depth, DataConnectorType, MetaConnectorType>;
+
   /// SyncletComponents.dataConnector
   dataConnector?: DataConnectorType;
 

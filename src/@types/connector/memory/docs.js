@@ -22,3 +22,11 @@
  * @since v0.0.0
  */
 /// createMemoryMetaConnector
+
+/**
+ * The createMemoryConnectors function creates both in-memory DataConnector and
+ * MetaConnector together for convenience.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// createMemoryConnectors

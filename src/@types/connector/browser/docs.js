@@ -56,6 +56,40 @@
 /// createLocalStorageMetaConnector
 
 /**
+ * The LocalStorageConnectorsOptions type specifies configuration for both data
+ * and meta connectors when using createLocalStorageConnectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// LocalStorageConnectorsOptions
+{
+  /**
+   * The dataStorageName property specifies the localStorage key for data.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// LocalStorageConnectorsOptions.dataStorageName
+  /**
+   * The metaStorageName property specifies the localStorage key for metadata.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// LocalStorageConnectorsOptions.metaStorageName
+}
+
+/**
+ * The createLocalStorageConnectors function creates both localStorage-backed
+ * DataConnector and MetaConnector together for convenience.
+ * @param depth The depth of the synclet.
+ * @param storageName The base storage key (used for both if options not
+ * provided).
+ * @param options Configuration for both connectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// createLocalStorageConnectors
+
+/**
  * The SessionStorageDataConnector interface describes a DataConnector backed by
  * sessionStorage.
  * @category Connector
@@ -102,3 +136,37 @@
  * @since v0.0.0
  */
 /// createSessionStorageMetaConnector
+
+/**
+ * The SessionStorageConnectorsOptions type specifies configuration for both
+ * data and meta connectors when using createSessionStorageConnectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// SessionStorageConnectorsOptions
+{
+  /**
+   * The dataStorageName property specifies the sessionStorage key for data.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// SessionStorageConnectorsOptions.dataStorageName
+  /**
+   * The metaStorageName property specifies the sessionStorage key for metadata.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// SessionStorageConnectorsOptions.metaStorageName
+}
+
+/**
+ * The createSessionStorageConnectors function creates both sessionStorage-
+ * backed DataConnector and MetaConnector together for convenience.
+ * @param depth The depth of the synclet.
+ * @param storageName The base storage key (used for both if options not
+ * provided).
+ * @param options Configuration for both connectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// createSessionStorageConnectors

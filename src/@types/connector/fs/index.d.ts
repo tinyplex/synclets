@@ -1,6 +1,8 @@
 /// connector/fs
 
-import type {DataConnector, MetaConnector} from '../../index.d.ts';
+import type {Connectors, DataConnector, MetaConnector} from '../../index.d.ts';
+
+export type {Connectors};
 
 /// FileDataConnector
 export interface FileDataConnector<Depth extends number>
@@ -28,6 +30,22 @@ export function createFileMetaConnector<Depth extends number>(
   file: string,
 ): FileMetaConnector<Depth>;
 
+/// FileConnectorsOptions
+export type FileConnectorsOptions = {
+  /// FileConnectorsOptions.dataFile
+  dataFile?: string;
+
+  /// FileConnectorsOptions.metaFile
+  metaFile?: string;
+};
+
+/// createFileConnectors
+export function createFileConnectors<Depth extends number>(
+  depth: Depth,
+  file: string,
+  options?: FileConnectorsOptions,
+): Connectors<Depth, FileDataConnector<Depth>, FileMetaConnector<Depth>>;
+
 /// DirectoryDataConnector
 export interface DirectoryDataConnector<Depth extends number>
   extends DataConnector<Depth> {
@@ -53,3 +71,23 @@ export function createDirectoryMetaConnector<Depth extends number>(
   depth: Depth,
   directory: string,
 ): DirectoryMetaConnector<Depth>;
+
+/// DirectoryConnectorsOptions
+export type DirectoryConnectorsOptions = {
+  /// DirectoryConnectorsOptions.dataDirectory
+  dataDirectory?: string;
+
+  /// DirectoryConnectorsOptions.metaDirectory
+  metaDirectory?: string;
+};
+
+/// createDirectoryConnectors
+export function createDirectoryConnectors<Depth extends number>(
+  depth: Depth,
+  directory: string,
+  options?: DirectoryConnectorsOptions,
+): Connectors<
+  Depth,
+  DirectoryDataConnector<Depth>,
+  DirectoryMetaConnector<Depth>
+>;

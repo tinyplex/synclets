@@ -1,8 +1,14 @@
 /// connector/database/sqlite3
 
 import type {Database} from 'sqlite3';
-import type {DataConnector, MetaConnector} from '../../../index.d.ts';
+import type {
+  Connectors,
+  DataConnector,
+  MetaConnector,
+} from '../../../index.d.ts';
 import type {DatabaseDataOptions, DatabaseMetaOptions} from '../index.d.ts';
+
+export type {Connectors};
 
 /// Sqlite3DataConnector
 export interface Sqlite3DataConnector<Depth extends number>
@@ -31,3 +37,28 @@ export function createSqlite3MetaConnector<Depth extends number>(
   database: Database,
   options?: DatabaseMetaOptions,
 ): Sqlite3MetaConnector<Depth>;
+
+/// Sqlite3ConnectorsOptions
+export type Sqlite3ConnectorsOptions = {
+  /// Sqlite3ConnectorsOptions.dataTable
+  dataTable?: string;
+
+  /// Sqlite3ConnectorsOptions.metaTable
+  metaTable?: string;
+
+  /// Sqlite3ConnectorsOptions.addressColumn
+  addressColumn?: string;
+
+  /// Sqlite3ConnectorsOptions.atomColumn
+  atomColumn?: string;
+
+  /// Sqlite3ConnectorsOptions.timestampColumn
+  timestampColumn?: string;
+};
+
+/// createSqlite3Connectors
+export function createSqlite3Connectors<Depth extends number>(
+  depth: Depth,
+  database: Database,
+  options?: Sqlite3ConnectorsOptions,
+): Connectors<Depth, Sqlite3DataConnector<Depth>, Sqlite3MetaConnector<Depth>>;

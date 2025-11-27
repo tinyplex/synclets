@@ -54,3 +54,54 @@
  * @since v0.0.0
  */
 /// createSqlite3MetaConnector
+
+/**
+ * The Sqlite3ConnectorsOptions type specifies configuration for both data and
+ * meta connectors when using createSqlite3Connectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// Sqlite3ConnectorsOptions
+{
+  /**
+   * The dataTable property specifies the table name for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3ConnectorsOptions.dataTable
+  /**
+   * The metaTable property specifies the table name for metadata storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3ConnectorsOptions.metaTable
+  /**
+   * The addressColumn property specifies the column name for addresses.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3ConnectorsOptions.addressColumn
+  /**
+   * The atomColumn property specifies the column name for atom values.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3ConnectorsOptions.atomColumn
+  /**
+   * The timestampColumn property specifies the column name for timestamps.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3ConnectorsOptions.timestampColumn
+}
+
+/**
+ * The createSqlite3Connectors function creates both SQLite3-backed
+ * DataConnector and MetaConnector together for convenience.
+ * @param depth The depth of the synclet.
+ * @param database The SQLite3 database instance.
+ * @param options Configuration for both connectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// createSqlite3Connectors

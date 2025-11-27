@@ -54,3 +54,54 @@
  * @since v0.0.0
  */
 /// createPgliteMetaConnector
+
+/**
+ * The PgliteConnectorsOptions type specifies configuration for both data and
+ * meta connectors when using createPgliteConnectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// PgliteConnectorsOptions
+{
+  /**
+   * The dataTable property specifies the table name for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteConnectorsOptions.dataTable
+  /**
+   * The metaTable property specifies the table name for metadata storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteConnectorsOptions.metaTable
+  /**
+   * The addressColumn property specifies the column name for addresses.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteConnectorsOptions.addressColumn
+  /**
+   * The atomColumn property specifies the column name for atom values.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteConnectorsOptions.atomColumn
+  /**
+   * The timestampColumn property specifies the column name for timestamps.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteConnectorsOptions.timestampColumn
+}
+
+/**
+ * The createPgliteConnectors function creates both PGlite-backed DataConnector
+ * and MetaConnector together for convenience.
+ * @param depth The depth of the synclet.
+ * @param pglite The PGlite database instance.
+ * @param options Configuration for both connectors.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// createPgliteConnectors

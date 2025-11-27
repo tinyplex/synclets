@@ -156,6 +156,28 @@
 /// Hash
 
 /**
+ * The Connectors type represents a tuple of DataConnector and MetaConnector,
+ * returned by combined connector factory functions for convenience.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// Connectors
+{
+  /**
+   * The dataConnector element is the first element of the tuple.
+   * @category Connector
+   * @since v0.0.5
+   */
+  /// Connectors.dataConnector
+  /**
+   * The metaConnector element is the second element of the tuple.
+   * @category Connector
+   * @since v0.0.5
+   */
+  /// Connectors.metaConnector
+}
+
+/**
  * The MessageType type enumerates the allowed message kinds, currently the
  * single value 0.
  * @category Message
@@ -377,6 +399,13 @@
  */
 /// SyncletComponents
 {
+  /**
+   * The connectors property supplies both DataConnector and MetaConnector as a
+   * tuple for convenience.
+   * @category Component
+   * @since v0.0.5
+   */
+  /// SyncletComponents.connectors
   /**
    * The dataConnector property supplies the DataConnector instance to use.
    * @category Component

@@ -13,6 +13,7 @@ import {
   MessageNode,
   MessageNodes,
   Meta,
+  SyncletComponents,
   SyncletImplementations,
   SyncletOptions,
   Timestamp,
@@ -78,13 +79,22 @@ export const createSynclet = async <
   ProtectedMetaConnectorType extends ProtectedMetaConnector<Depth>,
 >(
   {
-    dataConnector = createMemoryDataConnector(1) as ProtectedDataConnectorType,
-    metaConnector = createMemoryMetaConnector(
-      dataConnector?.depth ?? 1,
-    ) as ProtectedMetaConnectorType,
+    connectors,
+    dataConnector = (connectors?.[0] ??
+      createMemoryDataConnector(1)) as ProtectedDataConnectorType,
+    metaConnector = (connectors?.[1] ??
+      createMemoryMetaConnector(
+        dataConnector?.depth ?? 1,
+      )) as ProtectedMetaConnectorType,
     transport = createMemoryTransport() as
       | ProtectedTransport
       | ProtectedTransport[],
+  }: SyncletComponents<
+    Depth,
+    ProtectedDataConnectorType,
+    ProtectedMetaConnectorType
+  > & {
+    transport?: ProtectedTransport | ProtectedTransport[];
   } = {},
   {
     onStart,
@@ -142,7 +152,9 @@ export const createSynclet = async <
     }
   };
 
-  const transports = isArray(transport) ? transport : [transport];
+  const transports = (
+    isArray(transport) ? transport : [transport]
+  ) as ProtectedTransport[];
 
   const [getNextTimestamp, seenTimestamp] = getHlcFunctions(id, getNow);
 
