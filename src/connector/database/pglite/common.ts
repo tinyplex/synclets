@@ -24,9 +24,6 @@ import {
 import {errorNew, promiseAll, size} from '../../../common/other.ts';
 import {getQuery, sql} from '../index.ts';
 
-const query = async <Row>(pglite: PGlite, sql: Sql): Promise<Row[]> =>
-  (await pglite.query<Row>(...getQuery(sql))).rows;
-
 export const createPgliteConnector = <
   CreateMeta extends boolean,
   Depth extends number,
@@ -44,6 +41,9 @@ export const createPgliteConnector = <
     leafColumn: string;
   },
 ) => {
+  const query = async <Row>(sql: Sql): Promise<Row[]> =>
+    (await pglite.query<Row>(...getQuery(sql))).rows;
+
   const addressPartColumns = arrayMap(
     arrayNew(depth),
     (_, i) => `${addressColumn}${i + 1}`,
@@ -53,7 +53,6 @@ export const createPgliteConnector = <
     const schema = objFromEntries(
       (
         await query<{name: string; type: string}>(
-          pglite,
           sql`
             SELECT column_name AS name, data_type AS type 
             FROM information_schema.columns 
@@ -79,7 +78,6 @@ export const createPgliteConnector = <
     } else {
       connector.log(`Creating table "${table}"`);
       await query(
-        pglite,
         sql`
         CREATE TABLE $"${table} (
           $"${addressColumn} TEXT PRIMARY KEY, 
@@ -94,7 +92,6 @@ export const createPgliteConnector = <
       await promiseAll(
         arrayMap(addressPartColumns, (_, c) =>
           query(
-            pglite,
             sql`
               CREATE INDEX $"${table + c} ON $"${table} ($,${arrayMap(
                 arraySlice(addressPartColumns, 0, c + 1),
@@ -111,7 +108,6 @@ export const createPgliteConnector = <
   ) =>
     (
       await query<{leaf: string}>(
-        pglite,
         sql`
         SELECT $"${leafColumn} AS leaf FROM $"${table} 
         $&${{[addressColumn]: jsonString(address)}}
@@ -124,7 +120,6 @@ export const createPgliteConnector = <
     leaf: Atom | Timestamp,
   ) => {
     await query(
-      pglite,
       sql`
         INSERT INTO $"${table} 
         (
@@ -142,7 +137,6 @@ export const createPgliteConnector = <
 
   const removeAtom = async (address: AtomAddress<Depth>) => {
     await query(
-      pglite,
       sql`
         DELETE FROM $"${table} $&${{[addressColumn]: jsonString(address)}}
       `,
@@ -152,8 +146,7 @@ export const createPgliteConnector = <
   const readChildIds = async (address: AnyParentAddress<Depth>) =>
     arrayMap(
       await query<{id: string}>(
-        pglite,
-        sql`
+        sql`    
           SELECT DISTINCT $"${addressPartColumns[size(address)]} AS id
           FROM $"${table}
           $&${objFromEntries(
@@ -173,7 +166,6 @@ export const createPgliteConnector = <
     objFromEntries(
       arrayMap(
         await query<{id: string; leaf: string}>(
-          pglite,
           sql`
               SELECT 
                 $"${addressPartColumns[size(address)]} AS id, 

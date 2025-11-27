@@ -24,13 +24,6 @@ import {
 import {errorNew, promiseAll, promiseNew, size} from '../../../common/other.ts';
 import {getQuery, sql} from '../index.ts';
 
-const query = <Row>(database: Database, sql: Sql): Promise<Row[]> =>
-  promiseNew((resolve, reject) => {
-    database.all(...getQuery(sql), (error, rows: Row[]) =>
-      error ? reject(error) : resolve(rows),
-    );
-  });
-
 export const createSqlite3Connector = <
   CreateMeta extends boolean,
   Depth extends number,
@@ -48,6 +41,13 @@ export const createSqlite3Connector = <
     leafColumn: string;
   },
 ) => {
+  const query = <Row>(sql: Sql): Promise<Row[]> =>
+    promiseNew((resolve, reject) => {
+      database.all(...getQuery(sql), (error, rows: Row[]) =>
+        error ? reject(error) : resolve(rows),
+      );
+    });
+
   const addressPartColumns = arrayMap(
     arrayNew(depth),
     (_, i) => `${addressColumn}${i + 1}`,
@@ -57,7 +57,6 @@ export const createSqlite3Connector = <
     const schema = objFromEntries(
       (
         await query<{name: string; type: string}>(
-          database,
           sql`
           SELECT name 
           FROM pragma_table_info(${table})
@@ -82,7 +81,6 @@ export const createSqlite3Connector = <
     } else {
       connector.log(`Creating table "${table}"`);
       await query(
-        database,
         sql`
         CREATE TABLE $"${table} (
           $"${addressColumn} TEXT PRIMARY KEY, 
@@ -97,7 +95,6 @@ export const createSqlite3Connector = <
       await promiseAll(
         arrayMap(addressPartColumns, (_, c) =>
           query(
-            database,
             sql`
               CREATE INDEX $"${table + c} ON $"${table} ($,${arrayMap(
                 arraySlice(addressPartColumns, 0, c + 1),
@@ -114,7 +111,6 @@ export const createSqlite3Connector = <
   ) =>
     (
       await query<{leaf: string}>(
-        database,
         sql`
         SELECT $"${leafColumn} AS leaf FROM $"${table} 
         $&${{[addressColumn]: jsonString(address)}}
@@ -127,7 +123,6 @@ export const createSqlite3Connector = <
     leaf: Atom | Timestamp,
   ) => {
     await query(
-      database,
       sql`
         INSERT INTO $"${table} 
         (
@@ -145,7 +140,6 @@ export const createSqlite3Connector = <
 
   const removeAtom = async (address: AtomAddress<Depth>) => {
     await query(
-      database,
       sql`
         DELETE FROM $"${table} $&${{[addressColumn]: jsonString(address)}}
       `,
@@ -155,7 +149,6 @@ export const createSqlite3Connector = <
   const readChildIds = async (address: AnyParentAddress<Depth>) =>
     arrayMap(
       await query<{id: string}>(
-        database,
         sql`
           SELECT DISTINCT $"${addressPartColumns[size(address)]} AS id
           FROM $"${table}
@@ -176,7 +169,6 @@ export const createSqlite3Connector = <
     objFromEntries(
       arrayMap(
         await query<{id: string; leaf: string}>(
-          database,
           sql`
             SELECT 
               $"${addressPartColumns[size(address)]} AS id, 
