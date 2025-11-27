@@ -24,7 +24,16 @@
 }
 
 /**
- * The createFileDataConnector function creates a FileDataConnector instance.
+ * The createFileDataConnector function creates a DataConnector that persists
+ * Atom data in a single JSON file on the file system.
+ *
+ * The entire data tree is stored as a JSON object in the specified file. The
+ * file is read on initialization and written atomically after each change,
+ * making it suitable for small to medium-sized datasets where the entire tree
+ * fits comfortably in memory.
+ *
+ * This connector is designed for Node.js environments and requires file system
+ * access. It will not work in browsers.
  * @category Connector
  * @since v0.0.0
  */
@@ -47,7 +56,12 @@
 }
 
 /**
- * The createFileMetaConnector function creates a FileMetaConnector instance.
+ * The createFileMetaConnector function creates a MetaConnector that persists
+ * Timestamp metadata in a single JSON file on the file system.
+ *
+ * The metadata tree is stored as a JSON object mirroring the data tree
+ * structure but containing HLC timestamps instead of Atom values. The file is
+ * read on initialization and written atomically after each timestamp change.
  * @category Connector
  * @since v0.0.0
  */
@@ -76,11 +90,21 @@
 }
 
 /**
- * The createFileConnectors function creates both file-backed DataConnector
- * and MetaConnector together for convenience.
- * @param depth The depth of the synclet.
- * @param file The base file path (used for both if options not provided).
- * @param options Configuration for both connectors.
+ * The createFileConnectors function creates both a file-backed DataConnector
+ * and MetaConnector together in a single call, returning them as a tuple.
+ *
+ * This is the recommended approach for file-based persistence in Node.js. The
+ * function provides a simplified API compared to creating the connectors
+ * separately.
+ *
+ * When options are not provided, both data and metadata are stored in the same
+ * file. For better organization and to avoid potential conflicts in large
+ * datasets, you can specify separate file paths via the options parameter.
+ * @param depth The tree depth the Synclet will operate at.
+ * @param file The base file path (used for both connectors if options not
+ * provided).
+ * @param options Optional configuration to use separate file paths.
+ * @returns A tuple of [DataConnector, MetaConnector].
  * @category Connector
  * @since v0.0.5
  */
@@ -103,8 +127,16 @@
 }
 
 /**
- * The createDirectoryDataConnector function creates a
- * DirectoryDataConnector instance.
+ * The createDirectoryDataConnector function creates a DataConnector that
+ * persists Atom data across multiple individual files within a directory.
+ *
+ * Each leaf address in the data tree is stored as a separate file, with the
+ * file path reflecting the address hierarchy. This approach is more scalable
+ * than file-based storage for large datasets, as only modified values need to be
+ * read or written rather than the entire tree.
+ *
+ * The directory structure is created automatically. This connector is designed
+ * for Node.js environments and requires file system access.
  * @category Connector
  * @since v0.0.0
  */
@@ -127,8 +159,16 @@
 }
 
 /**
- * The createDirectoryMetaConnector function creates a
- * DirectoryMetaConnector instance.
+ * The createDirectoryMetaConnector function creates a MetaConnector that
+ * persists Timestamp metadata across multiple individual files within a
+ * directory.
+ *
+ * Each leaf address in the metadata tree is stored as a separate file, mirroring
+ * the data tree structure. This approach provides better scalability for large
+ * datasets compared to storing all timestamps in a single file.
+ *
+ * The directory structure is created automatically. This connector is designed
+ * for Node.js environments and requires file system access.
  * @category Connector
  * @since v0.0.0
  */
@@ -158,12 +198,24 @@
 }
 
 /**
- * The createDirectoryConnectors function creates both directory-backed
- * DataConnector and MetaConnector together for convenience.
- * @param depth The depth of the synclet.
- * @param directory The base directory path (used for both if options not
- * provided).
- * @param options Configuration for both connectors.
+ * The createDirectoryConnectors function creates both a directory-backed
+ * DataConnector and MetaConnector together in a single call, returning them as
+ * a tuple.
+ *
+ * This is the recommended approach for directory-based persistence in Node.js,
+ * particularly for large datasets that benefit from granular file storage. The
+ * function provides a simplified API compared to creating the connectors
+ * separately.
+ *
+ * When options are not provided, both data and metadata files are stored in the
+ * same directory, which can lead to naming conflicts. It is strongly
+ * recommended to use the options parameter to specify separate subdirectories
+ * for data and metadata (e.g., 'data/' and 'meta/').
+ * @param depth The tree depth the Synclet will operate at.
+ * @param directory The base directory path (used for both connectors if options
+ * not provided).
+ * @param options Optional configuration to use separate directory paths.
+ * @returns A tuple of [DataConnector, MetaConnector].
  * @category Connector
  * @since v0.0.5
  */

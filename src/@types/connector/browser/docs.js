@@ -24,8 +24,16 @@
 }
 
 /**
- * The createLocalStorageDataConnector function creates a
- * LocalStorageDataConnector instance.
+ * The createLocalStorageDataConnector function creates a DataConnector that
+ * persists Atom data in the browser's localStorage API.
+ *
+ * Data is stored as JSON under the specified storage key. LocalStorage provides
+ * persistent storage that survives browser restarts and is shared across all
+ * tabs and windows of the same origin. The storage is synchronous and has a
+ * typical size limit of 5-10MB depending on the browser.
+ *
+ * This connector is designed for browser environments only and will not work in
+ * Node.js without a localStorage polyfill.
  * @category Connector
  * @since v0.0.0
  */
@@ -48,8 +56,12 @@
 }
 
 /**
- * The createLocalStorageMetaConnector function creates a
- * LocalStorageMetaConnector instance.
+ * The createLocalStorageMetaConnector function creates a MetaConnector that
+ * persists Timestamp metadata in the browser's localStorage API.
+ *
+ * Metadata is stored as JSON under the specified storage key. The metadata
+ * structure mirrors the data tree but contains HLC timestamps instead of Atom
+ * values, enabling conflict resolution during synchronization.
  * @category Connector
  * @since v0.0.0
  */
@@ -78,12 +90,22 @@
 }
 
 /**
- * The createLocalStorageConnectors function creates both localStorage-backed
- * DataConnector and MetaConnector together for convenience.
- * @param depth The depth of the synclet.
- * @param storageName The base storage key (used for both if options not
- * provided).
- * @param options Configuration for both connectors.
+ * The createLocalStorageConnectors function creates both a localStorage-backed
+ * DataConnector and MetaConnector together in a single call, returning them as
+ * a tuple.
+ *
+ * This is the recommended approach for browser-based Synclets where both data
+ * and metadata should persist across sessions. The function provides a
+ * simplified API compared to creating the connectors separately.
+ *
+ * When options are not provided, both connectors use the same storageName key,
+ * storing data and metadata together. For better organization or to work around
+ * size limits, you can specify separate keys via the options parameter.
+ * @param depth The tree depth the Synclet will operate at.
+ * @param storageName The base localStorage key (used for both connectors if
+ * options not provided).
+ * @param options Optional configuration to use separate storage keys.
+ * @returns A tuple of [DataConnector, MetaConnector].
  * @category Connector
  * @since v0.0.5
  */
@@ -106,8 +128,16 @@
 }
 
 /**
- * The createSessionStorageDataConnector function creates a
- * SessionStorageDataConnector instance.
+ * The createSessionStorageDataConnector function creates a DataConnector that
+ * persists Atom data in the browser's sessionStorage API.
+ *
+ * Data is stored as JSON under the specified storage key. Unlike
+ * localStorage, sessionStorage is ephemeral and scoped to a single browser tab
+ * or window. Data is cleared when the tab is closed, making it suitable for
+ * temporary state that should not persist between sessions.
+ *
+ * This connector is designed for browser environments only and will not work in
+ * Node.js without a sessionStorage polyfill.
  * @category Connector
  * @since v0.0.0
  */
@@ -130,8 +160,13 @@
 }
 
 /**
- * The createSessionStorageMetaConnector function creates a
- * SessionStorageMetaConnector instance.
+ * The createSessionStorageMetaConnector function creates a MetaConnector that
+ * persists Timestamp metadata in the browser's sessionStorage API.
+ *
+ * Metadata is stored as JSON under the specified storage key. Like the data
+ * connector, this storage is ephemeral and scoped to a single tab. The metadata
+ * structure mirrors the data tree but contains HLC timestamps for conflict
+ * resolution.
  * @category Connector
  * @since v0.0.0
  */
@@ -160,12 +195,23 @@
 }
 
 /**
- * The createSessionStorageConnectors function creates both sessionStorage-
- * backed DataConnector and MetaConnector together for convenience.
- * @param depth The depth of the synclet.
- * @param storageName The base storage key (used for both if options not
- * provided).
- * @param options Configuration for both connectors.
+ * The createSessionStorageConnectors function creates both a sessionStorage-
+ * backed DataConnector and MetaConnector together in a single call, returning
+ * them as a tuple.
+ *
+ * This is useful for browser-based Synclets that need temporary, tab-scoped
+ * persistence. The ephemeral nature of sessionStorage makes it ideal for
+ * maintaining state during a browsing session without cluttering permanent
+ * storage.
+ *
+ * When options are not provided, both connectors use the same storageName key.
+ * For better organization, you can specify separate keys via the options
+ * parameter.
+ * @param depth The tree depth the Synclet will operate at.
+ * @param storageName The base sessionStorage key (used for both connectors if
+ * options not provided).
+ * @param options Optional configuration to use separate storage keys.
+ * @returns A tuple of [DataConnector, MetaConnector].
  * @category Connector
  * @since v0.0.5
  */

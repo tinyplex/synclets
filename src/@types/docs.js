@@ -39,8 +39,10 @@
 /// Undefined
 
 /**
- * The Address type lists the string segments that locate a node inside a data
- * or meta tree.
+ * The Address type represents an array of string segments that form a path to
+ * a specific location within the data or metadata tree. For example, ['users',
+ * '123', 'name'] addresses the 'name' atom nested under user '123'. The
+ * length of the address must match the configured tree depth.
  * @category Address
  * @since v0.0.0
  */
@@ -95,8 +97,11 @@
 /// AnyAddress
 
 /**
- * The Atom type enumerates the scalar values stored at a leaf: string, number,
- * boolean, null, or the UNDEFINED constant magic string.
+ * The Atom type enumerates the primitive scalar values that can be stored at
+ * leaf addresses in the data tree: string, number, boolean, null, or the
+ * special UNDEFINED constant (used to represent JavaScript's undefined).
+ * Complex objects and arrays cannot be stored directly as Atoms and must be
+ * decomposed into scalar values.
  * @category DataConnector
  * @since v0.0.0
  */
@@ -118,7 +123,11 @@
 /// Data
 
 /**
- * The Timestamp type stores the serialized string recorded for a change.
+ * The Timestamp type represents a serialized Hybrid Logical Clock (HLC) value
+ * stored as a string. Timestamps are used for conflict resolution during sync,
+ * with later timestamps winning over earlier ones. The HLC format combines
+ * physical time with a logical counter to provide total ordering even when
+ * system clocks are not perfectly synchronized.
  * @category MetaConnector
  * @since v0.0.0
  */
@@ -141,8 +150,8 @@
 /// Meta
 
 /**
- * The TimestampAndAtom type pairs a Timestamp with the optional Atom value it
- * describes.
+ * The TimestampAndAtom type pairs a Timestamp with the optional Atom value
+ * it describes.
  * @category Message
  * @since v0.0.0
  */
@@ -186,24 +195,24 @@
 /// MessageType
 
 /**
- * The MessageNode type represents either a Timestamp, a Timestamp-Atom pair, a
- * hash, or nested message nodes.
+ * The MessageNode type represents either a Timestamp, a Timestamp-Atom pair,
+ * a hash, or nested message nodes.
  * @category Message
  * @since v0.0.0
  */
 /// MessageNode
 
 /**
- * The MessageNodes type stores a tuple of child message nodes plus an optional
- * partial marker.
+ * The MessageNodes type stores a tuple of child message nodes plus an
+ * optional partial marker.
  * @category Message
  * @since v0.0.0
  */
 /// MessageNodes
 
 /**
- * The Message type defines the wire-format tuple describing a sync event and
- * its payload.
+ * The Message type defines the wire-format tuple describing a sync event
+ * and its payload.
  * @category Message
  * @since v0.0.0
  */
@@ -248,7 +257,11 @@
 }
 
 /**
- * The Context type holds arbitrary metadata that travels with a message.
+ * The Context type holds arbitrary key-value metadata that accompanies sync
+ * messages and mutation operations. Context values must be Atoms (strings,
+ * numbers, booleans, null, or UNDEFINED). Common uses include authentication
+ * tokens, user identifiers, request IDs, or any other information needed for
+ * authorization, routing, or auditing.
  * @category Context
  * @since v0.0.0
  */
@@ -318,13 +331,19 @@
    */
   /// Synclet.log
   /**
-   * The start method initializes connectors and begins processing.
+   * The start method activates the Synclet by connecting its data and meta
+   * connectors, attaching transports, and beginning message processing. This
+   * method must be called before performing sync operations. It invokes the
+   * optional onStart implementation callback if provided.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// Synclet.start
   /**
-   * The stop method halts connector activity without destroying state.
+   * The stop method pauses the Synclet by halting connector activity and
+   * suspending message processing. The Synclet can be restarted later with
+   * start(). This method does not destroy the Synclet or release its resources.
+   * It invokes the optional onStop implementation callback if provided.
    * @category Lifecycle
    * @since v0.0.0
    */
@@ -336,7 +355,10 @@
    */
   /// Synclet.isStarted
   /**
-   * The destroy method tears down the synclet and releases owned resources.
+   * The destroy method permanently shuts down the Synclet by disconnecting all
+   * connectors and transports, then releasing all owned resources. After
+   * calling destroy(), the Synclet instance cannot be restarted and should be
+   * discarded.
    * @category Lifecycle
    * @since v0.0.0
    */
@@ -360,31 +382,51 @@
    */
   /// Synclet.getTransport
   /**
-   * The sync method triggers synchronization work for the provided address.
+   * The sync method manually triggers synchronization for the specified
+   * address, sending the current state to all connected peers via the
+   * configured transports. This method invokes the optional onSync
+   * implementation callback if provided. Synchronization also occurs
+   * automatically after setAtom and delAtom calls when the sync parameter is
+   * true.
    * @category Sync
    * @since v0.0.0
    */
   /// Synclet.sync
   /**
-   * The setAtom method writes an Atom at the address and optionally syncs it.
+   * The setAtom method writes an Atom value at the specified address in the
+   * data tree. The address must match the configured depth. If the sync
+   * parameter is true (the default), the change is automatically synchronized
+   * to connected peers. Optional Context metadata can be attached to the
+   * operation. This method invokes the optional onSetAtom implementation
+   * callback after the write completes.
    * @category Mutation
    * @since v0.0.0
    */
   /// Synclet.setAtom
   /**
-   * The delAtom method removes an Atom at the address and optionally syncs it.
+   * The delAtom method removes an Atom value at the specified address in the
+   * data tree. If the sync parameter is true (the default), the deletion is
+   * automatically synchronized to connected peers. Optional Context metadata
+   * can be attached to the operation.
    * @category Mutation
    * @since v0.0.0
    */
   /// Synclet.delAtom
   /**
-   * The getData method resolves to a read-only snapshot of the data tree.
+   * The getData method asynchronously retrieves a read-only snapshot of the
+   * complete data tree. The returned object is frozen and cannot be modified.
+   * This method uses the getData optimization if the data connector provides
+   * it, otherwise it constructs the tree by reading individual Atoms.
    * @category Inspection
    * @since v0.0.0
    */
   /// Synclet.getData
   /**
-   * The getMeta method resolves to a read-only snapshot of the meta tree.
+   * The getMeta method asynchronously retrieves a read-only snapshot of the
+   * complete metadata tree. The returned object is frozen and cannot be
+   * modified. This method uses the getMeta optimization if the meta connector
+   * provides it, otherwise it constructs the tree by reading individual
+   * Timestamps.
    * @category Inspection
    * @since v0.0.0
    */
@@ -427,8 +469,17 @@
 }
 
 /**
- * The SyncletImplementations type collects async functions that customize
- * Synclet behavior.
+ * The SyncletImplementations type collects optional async callback functions
+ * that customize Synclet behavior at key lifecycle and operational points.
+ *
+ * These callbacks allow you to inject custom logic for lifecycle events
+ * (onStart, onStop), synchronization hooks (onSync, onSetAtom), message
+ * handling (onSendMessage, onReceiveMessage, getSendContext), and
+ * fine-grained access control (canReceiveMessage, canReadAtom, canWriteAtom,
+ * canRemoveAtom, filterChildIds).
+ *
+ * All callbacks are optional. The Synclet will use sensible defaults when
+ * callbacks are not provided.
  * @category Synclet
  * @since v0.0.0
  */
@@ -471,50 +522,65 @@
    */
   /// SyncletImplementations.onSetAtom
   /**
-   * The getSendContext function should be implemented to insert context for
-   * outgoing messages.
+   * The getSendContext callback can be implemented to generate or augment the
+   * Context metadata attached to outgoing sync messages. This allows you to
+   * include authentication tokens, user identifiers, or other contextual
+   * information that receiving Synclets can use for authorization or routing.
    * @category Message
    * @since v0.0.0
    */
   /// SyncletImplementations.getSendContext
   /**
-   * The canReceiveMessage function can be implemented to control message
-   * receipt based on context.
+   * The canReceiveMessage callback can be implemented to filter incoming
+   * messages based on their Context metadata. Return true to accept the
+   * message or false to reject it. This is useful for implementing
+   * authentication, authorization, or message routing logic.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.canReceiveMessage
   /**
-   * The canReadAtom function can be implemented to control read access at an
-   * Atom address.
+   * The canReadAtom callback can be implemented to control read access to
+   * individual Atoms based on their address and the request Context. Return
+   * true to allow the read or false to deny it. This enables fine-grained
+   * authorization policies for data access.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.canReadAtom
   /**
-   * The canWriteAtom function can be implemented to control write access at an
-   * Atom address.
+   * The canWriteAtom callback can be implemented to control write access to
+   * individual Atoms based on their address, the new value, and the request
+   * Context. Return true to allow the write or false to deny it. This enables
+   * fine-grained authorization and validation policies for data mutations.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.canWriteAtom
   /**
-   * The canRemoveAtom function can be implemented to control delete access at
-   * an Atom address.
+   * The canRemoveAtom callback can be implemented to control delete access
+   * to individual Atoms based on their address and the request Context.
+   * Return true to allow the deletion or false to deny it. This enables
+   * fine-grained authorization policies for data removal.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.canRemoveAtom
   /**
-   * The filterChildIds function can be implemented to can trim child Ids
-   * visible to the caller.
+   * The filterChildIds callback can be implemented to selectively hide child
+   * IDs from enumeration based on the parent address and request Context.
+   * Return a filtered array of child IDs that should be visible to the
+   * caller. This enables hiding portions of the data tree from unauthorized
+   * users.
    * @category Filter
    * @since v0.0.0
    */
   /// SyncletImplementations.filterChildIds
   /**
-   * The getNow function can be implemented to supplies a clock value for
-   * deterministic testing.
+   * The getNow callback can be implemented to provide a custom clock value
+   * for timestamp generation. This is primarily useful for deterministic
+   * testing where you need reproducible timestamps. If not provided,
+   * Date.now() is used.
    * @category Utility
    * @since v0.0.0
    */
@@ -544,8 +610,18 @@
 }
 
 /**
- * The createSynclet function wires the provided components, functions, and
- * options into a Synclet.
+ * The createSynclet function wires the provided components, implementations,
+ * and options into a fully configured Synclet instance.
+ *
+ * This is the primary factory function for creating a Synclet. It accepts three
+ * optional parameters: components (data/meta connectors and transports),
+ * implementation callbacks (lifecycle hooks and permission filters), and
+ * configuration options (ID and logger).
+ *
+ * The function returns a Promise that resolves to a Synclet instance. The
+ * Synclet will use memory-based connectors and transport by default if none are
+ * provided, making it simple to start with a basic configuration and add
+ * persistence later.
  * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
@@ -589,39 +665,59 @@
 /// DataConnectorImplementations
 {
   /**
-   * The connect implementation can prepare the connector and registers change
-   * notifications.
+   * The connect callback is invoked when the Synclet starts. It receives a
+   * syncChangedAtoms function that should be called whenever external changes
+   * occur in the underlying storage (e.g., from another process). This enables
+   * the Synclet to detect and propagate changes from outside sources. The
+   * callback can also perform one-time initialization like creating database
+   * tables or opening file handles.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// DataConnectorImplementations.connect
   /**
-   * The disconnect implementation can tear down any connector resources.
+   * The disconnect callback is invoked when the Synclet is destroyed. It should
+   * clean up any resources allocated during connect, such as closing file
+   * handles, database connections, or removing event listeners. The connector
+   * will not be used after this callback returns.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// DataConnectorImplementations.disconnect
   /**
-   * The readAtom implementation must fetch a single Atom from storage.
+   * The readAtom callback must retrieve the Atom value stored at the specified
+   * address. Return the Atom if it exists, or undefined if the address contains
+   * no value. This callback is called frequently during sync operations, so
+   * efficient implementations are important for performance.
    * @category Data
    * @since v0.0.0
    */
   /// DataConnectorImplementations.readAtom
   /**
-   * The writeAtom implementation must persist a new Atom at the address.
+   * The writeAtom callback must persist the provided Atom value at the
+   * specified address, overwriting any existing value. The callback should
+   * handle all Atom types (string, number, boolean, null, and the UNDEFINED
+   * constant). Ensure the write is atomic to prevent partial updates during
+   * concurrent access.
    * @category Data
    * @since v0.0.0
    */
   /// DataConnectorImplementations.writeAtom
   /**
-   * The removeAtom implementation must delete the Atom at the address.
+   * The removeAtom callback must delete the Atom value at the specified
+   * address. If no value exists at the address, the operation should succeed
+   * silently without error. Ensure the deletion is atomic to prevent partial
+   * updates during concurrent access.
    * @category Data
    * @since v0.0.0
    */
   /// DataConnectorImplementations.removeAtom
   /**
-   * The readChildIds implementation must enumerate child Ids under a parent
-   * address.
+   * The readChildIds callback must return an array of child ID strings that
+   * exist under the specified parent address. For Atoms addresses, this returns
+   * the IDs of Atoms in the parent collection. For deeper tree nodes, this
+   * returns the IDs of child branches. Return an empty array if the address has
+   * no children.
    * @category Navigation
    * @since v0.0.0
    */
@@ -637,13 +733,20 @@
 /// DataConnectorOptimizations
 {
   /**
-   * The readAtoms optimization can fetch an entire set of Atoms at once.
+   * The readAtoms optimization callback can retrieve all Atom values under a
+   * parent address in a single operation. Return an object mapping child IDs to
+   * their Atom values. Implementing this optimization can significantly improve
+   * sync performance by reducing the number of storage round-trips.
    * @category Bulk
    * @since v0.0.0
    */
   /// DataConnectorOptimizations.readAtoms
   /**
-   * The getData optimization can return the connector’s full data snapshot.
+   * The getData optimization callback can return the connector's complete
+   * data tree in a single operation. This is used by Synclet.getData() when
+   * available and can dramatically improve performance for full-tree reads.
+   * The returned Data object should match the structure of individual Atom
+   * reads.
    * @category Bulk
    * @since v0.0.0
    */
@@ -651,7 +754,17 @@
 }
 
 /**
- * The createDataConnector function creates a DataConnector instance.
+ * The createDataConnector function creates a custom DataConnector instance from
+ * the provided implementation callbacks.
+ *
+ * This low-level factory allows you to build connectors for any storage backend
+ * by implementing the required read/write callbacks (readAtom, writeAtom,
+ * removeAtom, readChildIds). Optional optimization callbacks (readAtoms,
+ * getData) can improve bulk operation performance.
+ *
+ * Most applications should use pre-built connector factories like
+ * createPgliteDataConnector or createFileDataConnector rather than calling this
+ * function directly.
  * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
@@ -695,31 +808,50 @@
 /// MetaConnectorImplementations
 {
   /**
-   * The connect callback can prepare the meta connector for work.
+   * The connect callback is invoked when the Synclet starts. It can perform
+   * one-time initialization tasks such as creating database tables for
+   * timestamp storage or opening file handles. Unlike DataConnector's
+   * connect, this callback does not receive a change notification function
+   * since timestamps are only modified by the Synclet itself.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.connect
   /**
-   * The disconnect callback can tear down meta connector resources.
+   * The disconnect callback is invoked when the Synclet is destroyed. It should
+   * clean up any resources allocated during connect, such as closing file
+   * handles, database connections, or removing event listeners. The connector
+   * will not be used after this callback returns.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.disconnect
   /**
-   * The readTimestamp callback must fetch a stored timestamp at the address.
+   * The readTimestamp callback must retrieve the Timestamp string stored at
+   * the specified address in the metadata tree. Return the Timestamp if it
+   * exists, or undefined if the address contains no timestamp. This callback
+   * is called frequently during conflict resolution, so efficient
+   * implementations are important for sync performance.
    * @category Meta
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.readTimestamp
   /**
-   * The writeTimestamp callback must persist a timestamp at the address.
+   * The writeTimestamp callback must persist the provided Timestamp string
+   * at the specified address in the metadata tree, overwriting any existing
+   * timestamp. Timestamps use Hybrid Logical Clock (HLC) format and are
+   * critical for conflict resolution. Ensure the write is atomic to prevent
+   * inconsistent metadata states.
    * @category Meta
    * @since v0.0.0
    */
   /// MetaConnectorImplementations.writeTimestamp
   /**
-   * The readChildIds callback must enumerate timestamp child Ids.
+   * The readChildIds callback must return an array of child ID strings that
+   * have timestamps stored under the specified parent address. The structure
+   * mirrors the data tree but contains timestamp child IDs instead of Atom
+   * child IDs. Return an empty array if the address has no children with
+   * timestamps.
    * @category Navigation
    * @since v0.0.0
    */
@@ -735,14 +867,21 @@
 /// MetaConnectorOptimizations
 {
   /**
-   * The readTimestamps optimization can fetch multiple timestamps at once.
+   * The readTimestamps optimization callback can retrieve all Timestamp
+   * values under a parent address in a single operation. Return an object
+   * mapping child IDs to their Timestamp strings. Implementing this
+   * optimization can significantly improve sync performance by reducing
+   * storage round-trips during conflict resolution.
    * @category Bulk
    * @since v0.0.0
    */
   /// MetaConnectorOptimizations.readTimestamps
   /**
-   * The getMeta optimization can return the connector’s complete metadata
-   * snapshot.
+   * The getMeta optimization callback can return the connector's complete
+   * metadata tree in a single operation. This is used by Synclet.getMeta() when
+   * available and can dramatically improve performance for full-tree reads. The
+   * returned Meta object should mirror the data tree structure but contain
+   * Timestamps instead of Atoms.
    * @category Bulk
    * @since v0.0.0
    */
@@ -750,7 +889,17 @@
 }
 
 /**
- * The createMetaConnector function creates a MetaConnector instance.
+ * The createMetaConnector function creates a custom MetaConnector instance from
+ * the provided implementation callbacks.
+ *
+ * This low-level factory allows you to build metadata storage connectors for
+ * any backend by implementing the required timestamp operations
+ * (readTimestamp, writeTimestamp, readChildIds). Optional optimization
+ * callbacks (readTimestamps, getMeta) can improve bulk operation performance.
+ *
+ * Most applications should use pre-built connector factories like
+ * createPgliteMetaConnector or createFileMetaConnector rather than calling this
+ * function directly.
  * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
@@ -788,20 +937,30 @@
 /// TransportImplementations
 {
   /**
-   * The connect callback can attach the transport and register a receive
-   * handler.
+   * The connect callback is invoked when the Synclet starts. It receives a
+   * receivePacket function that must be called whenever a packet arrives from
+   * remote peers. The callback should establish the underlying communication
+   * channel (e.g., opening a WebSocket, subscribing to a message bus) and wire
+   * up incoming message handlers to call receivePacket.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// TransportImplementations.connect
   /**
-   * The disconnect callback can shut down the transport.
+   * The disconnect callback is invoked when the Synclet is destroyed. It should
+   * close the underlying communication channel (e.g., closing a WebSocket,
+   * unsubscribing from a message bus) and clean up any allocated resources. The
+   * transport will not be used after this callback returns.
    * @category Lifecycle
    * @since v0.0.0
    */
   /// TransportImplementations.disconnect
   /**
-   * The sendPacket callback must transmit a packet to remote peers.
+   * The sendPacket callback must transmit the provided packet string to
+   * remote peers through the underlying communication channel. Packets may be
+   * fragments of larger messages depending on the configured fragmentSize.
+   * The callback should handle transmission failures gracefully and may queue
+   * packets if the channel is not immediately ready.
    * @category Message
    * @since v0.0.0
    */
@@ -817,7 +976,11 @@
 /// TransportOptions
 {
   /**
-   * The fragmentSize option controls where packets are split for sending.
+   * The fragmentSize option specifies the maximum packet size in bytes before
+   * messages are split into multiple fragments. This is useful for adapting to
+   * channel constraints like WebSocket frame size limits. The Transport handles
+   * fragmentation and reassembly automatically. If not specified, messages are
+   * not fragmented.
    * @category Tuning
    * @since v0.0.0
    */
@@ -825,7 +988,17 @@
 }
 
 /**
- * The createTransport function creates a Transport instance.
+ * The createTransport function creates a custom Transport instance from the
+ * provided implementation callbacks.
+ *
+ * This low-level factory enables building transports for any communication
+ * channel by implementing the connect, disconnect, and sendPacket callbacks.
+ * The Transport handles message fragmentation and reassembly automatically
+ * based on the configured fragment size.
+ *
+ * Most applications should use pre-built transport factories like
+ * createWsClientTransport or createBroadcastChannelTransport rather than
+ * calling this function directly.
  * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0

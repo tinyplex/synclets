@@ -24,8 +24,16 @@
 }
 
 /**
- * The createSqlite3DataConnector function creates a Sqlite3DataConnector with
- * optional table mapping.
+ * The createSqlite3DataConnector function creates a DataConnector that persists
+ * Atom data in a SQLite3 database table.
+ *
+ * The connector automatically creates the necessary table and index structures
+ * on first use. By default, data is stored in a table named 'data' with columns
+ * for 'address' and 'atom', but these can be customized via the options
+ * parameter.
+ *
+ * This connector requires the 'sqlite3' npm package and is designed for Node.js
+ * environments. For browser-compatible SQLite, consider using PGlite instead.
  * @category Connector
  * @since v0.0.0
  */
@@ -48,8 +56,14 @@
 }
 
 /**
- * The createSqlite3MetaConnector function creates a Sqlite3MetaConnector with
- * optional table mapping.
+ * The createSqlite3MetaConnector function creates a MetaConnector that persists
+ * Timestamp metadata in a SQLite3 database table.
+ *
+ * The connector automatically creates the necessary table and index structures
+ * on first use. By default, metadata is stored in a table named 'meta' with
+ * columns for 'address' and 'timestamp', but these can be customized via the
+ * options parameter. The metadata table mirrors the structure of the data tree
+ * but stores HLC timestamps instead of Atom values.
  * @category Connector
  * @since v0.0.0
  */
@@ -96,11 +110,22 @@
 }
 
 /**
- * The createSqlite3Connectors function creates both SQLite3-backed
- * DataConnector and MetaConnector together for convenience.
- * @param depth The depth of the synclet.
- * @param database The SQLite3 database instance.
- * @param options Configuration for both connectors.
+ * The createSqlite3Connectors function creates both a SQLite3-backed
+ * DataConnector and MetaConnector together in a single call, returning them as
+ * a tuple.
+ *
+ * This is the recommended approach when both data and metadata are stored in
+ * the same SQLite3 database instance. The function provides a simplified API
+ * compared to creating the connectors separately, while still allowing
+ * customization of table and column names for both connectors.
+ *
+ * When options are not provided, the connectors use default table names 'data'
+ * and 'meta' with standard column names. All table structures are created
+ * automatically on first use.
+ * @param depth The tree depth the Synclet will operate at.
+ * @param database The SQLite3 Database instance to use for both connectors.
+ * @param options Optional configuration for table and column names.
+ * @returns A tuple of [DataConnector, MetaConnector].
  * @category Connector
  * @since v0.0.5
  */
