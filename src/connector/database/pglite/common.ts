@@ -1,27 +1,11 @@
 import type {PGlite} from '@electric-sql/pglite';
-import {createDataConnector, createMetaConnector} from '@synclets';
-import {
-  AnyParentAddress,
-  Atom,
-  AtomAddress,
-  AtomsAddress,
-  Timestamp,
-  TimestampAddress,
-  TimestampsAddress,
-} from '@synclets/@types';
 import {Sql} from '@synclets/@types/connector/database';
 import type {
   PgliteDataConnector,
   PgliteMetaConnector,
 } from '@synclets/@types/connector/database/pglite';
-import {jsonString} from '@synclets/utils';
-import {arrayMap, arrayNew, arraySlice} from '../../../common/array.ts';
-import {
-  objFromEntries,
-  objIsEqual,
-  objNotEmpty,
-} from '../../../common/object.ts';
-import {errorNew, promiseAll, size} from '../../../common/other.ts';
+import {objFromEntries} from '../../../common/object.ts';
+import {createDatabaseConnector} from '../common.ts';
 import {getQuery, sql} from '../index.ts';
 
 export const createPgliteConnector = <
@@ -31,11 +15,7 @@ export const createPgliteConnector = <
   createMeta: CreateMeta,
   depth: Depth,
   pglite: PGlite,
-  {
-    table,
-    addressColumn,
-    leafColumn,
-  }: {
+  config: {
     table: string;
     addressColumn: string;
     leafColumn: string;
@@ -44,175 +24,28 @@ export const createPgliteConnector = <
   const query = async <Row>(sql: Sql): Promise<Row[]> =>
     (await pglite.query<Row>(...getQuery(sql))).rows;
 
-  const addressPartColumns = arrayMap(
-    arrayNew(depth),
-    (_, i) => `${addressColumn}${i + 1}`,
-  );
-
-  const connect = async () => {
-    const schema = objFromEntries(
+  const getSchema = async () =>
+    objFromEntries(
       (
         await query<{name: string; type: string}>(
           sql`
             SELECT column_name AS name, data_type AS type 
             FROM information_schema.columns 
-            WHERE table_name=${table} 
+            WHERE table_name=${config.table} 
             ORDER BY column_name
           `,
         )
       ).map(({name, type}) => [name, type]),
     );
 
-    const targetSchema = {
-      [addressColumn]: 'text',
-      [leafColumn]: 'text',
-      ...objFromEntries(
-        arrayMap(addressPartColumns, (column) => [column, 'text']),
-      ),
-    };
-
-    if (objNotEmpty(schema)) {
-      if (!objIsEqual(schema, targetSchema)) {
-        errorNew(`Table "${table}" needs correct schema`);
-      }
-    } else {
-      connector.log(`Creating table "${table}"`);
-      await query(
-        sql`
-        CREATE TABLE $"${table} (
-          $"${addressColumn} TEXT PRIMARY KEY, 
-          $"${leafColumn} TEXT, 
-          $,${arrayMap(
-            addressPartColumns,
-            (addressPartColumn) => sql`$"${addressPartColumn} TEXT`,
-          )}
-        )`,
-      );
-
-      await promiseAll(
-        arrayMap(addressPartColumns, (_, c) =>
-          query(
-            sql`
-              CREATE INDEX $"${table + c} ON $"${table} ($,${arrayMap(
-                arraySlice(addressPartColumns, 0, c + 1),
-                (addressPartColumn) => sql`$"${addressPartColumn}`,
-              )})`,
-          ),
-        ),
-      );
-    }
-  };
-
-  const readLeaf = async (
-    address: AtomAddress<Depth> | TimestampAddress<Depth>,
-  ) =>
-    (
-      await query<{leaf: string}>(
-        sql`
-        SELECT $"${leafColumn} AS leaf FROM $"${table} 
-        $&${{[addressColumn]: jsonString(address)}}
-      `,
-      )
-    )[0]?.leaf;
-
-  const writeLeaf = async (
-    address: AtomAddress<Depth> | TimestampAddress<Depth>,
-    leaf: Atom | Timestamp,
-  ) => {
-    await query(
-      sql`
-        INSERT INTO $"${table} 
-        (
-          $"${addressColumn}, $"${leafColumn}, 
-          $,${arrayMap(address, (_, a) => sql`$"${addressPartColumns[a]}`)}
-        ) VALUES (
-          ${jsonString(address)}, ${leaf},
-          $,${arrayMap(address, (addressPart) => sql`${addressPart}`)}
-        ) 
-        ON CONFLICT($"${addressColumn}) 
-        DO UPDATE SET $"${leafColumn}=excluded.$"${leafColumn}
-      `,
-    );
-  };
-
-  const removeAtom = async (address: AtomAddress<Depth>) => {
-    await query(
-      sql`
-        DELETE FROM $"${table} $&${{[addressColumn]: jsonString(address)}}
-      `,
-    );
-  };
-
-  const readChildIds = async (address: AnyParentAddress<Depth>) =>
-    arrayMap(
-      await query<{id: string}>(
-        sql`    
-          SELECT DISTINCT $"${addressPartColumns[size(address)]} AS id
-          FROM $"${table}
-          $&${objFromEntries(
-            arrayMap(address, (addressPart, a) => [
-              addressPartColumns[a],
-              addressPart,
-            ]),
-          )}
-        `,
-      ),
-      ({id}) => id,
-    );
-
-  const readLeaves = async (
-    address: AtomsAddress<Depth> | TimestampsAddress<Depth>,
-  ) =>
-    objFromEntries(
-      arrayMap(
-        await query<{id: string; leaf: string}>(
-          sql`
-              SELECT 
-                $"${addressPartColumns[size(address)]} AS id, 
-                $"${leafColumn} AS leaf
-              FROM $"${table}
-              $&${objFromEntries(
-                arrayMap(address, (addressPart, a) => [
-                  addressPartColumns[a],
-                  addressPart,
-                ]),
-              )}
-            `,
-        ),
-        ({id, leaf}) => [id, leaf],
-      ),
-    );
-
-  const extraFunctions = {
-    getPglite: () => pglite,
-  };
-
-  const connector = createMeta
-    ? createMetaConnector(
-        depth,
-        {
-          connect,
-          readTimestamp: readLeaf,
-          writeTimestamp: writeLeaf,
-          readChildIds,
-        },
-        {readTimestamps: readLeaves},
-        extraFunctions,
-      )
-    : createDataConnector(
-        depth,
-        {
-          connect,
-          readAtom: readLeaf,
-          writeAtom: writeLeaf,
-          removeAtom,
-          readChildIds,
-        },
-        {readAtoms: readLeaves},
-        extraFunctions,
-      );
-
-  return connector as CreateMeta extends true
+  return createDatabaseConnector(
+    createMeta,
+    depth,
+    query,
+    getSchema,
+    {getPglite: () => pglite},
+    config,
+  ) as CreateMeta extends true
     ? PgliteMetaConnector<Depth>
     : PgliteDataConnector<Depth>;
 };
