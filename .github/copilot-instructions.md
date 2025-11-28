@@ -36,6 +36,12 @@ Synclets is a storage-agnostic sync engine development kit. It enables data sync
 
 - **Functional Factories**: Prefer factory functions (e.g., `createSynclet`, `createSqlite3Connector`) over class inheritance.
 - **Type Definitions**: Look in `src/@types` for interfaces. Implementation files often import types from `@synclets/@types/...`.
+- **Documentation Convention**: Type definitions in `src/@types/index.d.ts` use triple-slash comments (`///`) as documentation labels that connect to corresponding entries in `src/@types/docs.js`. For example:
+  - `/// TypeName` - Documents the type itself
+  - `/// TypeName.propertyName` - Documents a property or method
+  - The label in `index.d.ts` must exactly match the key in the `TYPES` object in `docs.js`
+  - **Indentation matters**: Properties and methods must be indented in `docs.js` to match the alignment in the generated `index.d.ts` files
+  - When adding new types or properties, update both files to avoid build errors
 - **Database Abstraction**: When implementing a new SQL-based connector, adapt `createDatabaseConnector` (`src/connector/database/common.ts`) instead of writing from scratch.
 - **Utilities**: Use shared utilities from `src/common` (internal) and `src/utils` (public).
 
