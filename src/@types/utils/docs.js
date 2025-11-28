@@ -66,8 +66,8 @@
 /**
  * The isTimestamp function is a type guard that identifies Timestamp values.
  *
- * This function checks whether a value conforms to the Timestamp structure,
- * which is a tuple containing a Hybrid Logical Clock (HLC) timestamp. Use
+ * This function checks whether a value conforms to the Timestamp type,
+ * which is a string representing a Hybrid Logical Clock (HLC) timestamp. Use
  * this for runtime validation of timestamp data before processing.
  * @param value The value to test.
  * @returns True if the value is a valid Timestamp.
@@ -79,9 +79,9 @@
 /**
  * The isAtom function is a type guard that identifies Atom values.
  *
- * This function checks whether a value conforms to the Atom structure,
- * which is a tuple containing a value and its HLC timestamp. Use this for
- * runtime validation of atom data before processing.
+ * This function checks whether a value conforms to the Atom type,
+ * which is a primitive value (string, number, boolean, null, or Undefined).
+ * Use this for runtime validation of atom data before processing.
  * @param value The value to test.
  * @returns True if the value is a valid Atom.
  * @category Utility

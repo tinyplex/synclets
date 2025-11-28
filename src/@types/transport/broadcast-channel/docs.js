@@ -29,8 +29,7 @@
  *
  * This transport enables real-time synchronization between Synclets running
  * in different browser contexts (tabs, windows, iframes) within the same
- * origin. It
- * uses the browser's BroadcastChannel API for efficient, same-origin
+ * origin. It uses the browser's BroadcastChannel API for efficient, same-origin
  * communication without requiring a server.
  *
  * The transport is only available in browser environments that support the
@@ -40,10 +39,8 @@
  *
  * This is ideal for synchronizing state across multiple tabs or windows of the
  * same web application without server involvement.
- * @param address The address of the local Synclet.
  * @param channelName The name of the BroadcastChannel to use.
- * @param fragmentSize Optional maximum packet size in bytes before
- * fragmentation.
+ * @param options Optional TransportOptions for configuring the transport.
  * @returns A BroadcastChannelTransport instance for cross-tab
  *   communication.
  * @category Transport

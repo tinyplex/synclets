@@ -175,29 +175,6 @@
 /// createDirectoryMetaConnector
 
 /**
- * The DirectoryConnectorsOptions type specifies configuration for both data
- * and meta connectors when using createDirectoryConnectors.
- * @category Connector
- * @since v0.0.5
- */
-/// DirectoryConnectorsOptions
-{
-  /**
-   * The dataDirectory property specifies the directory path for data storage.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// DirectoryConnectorsOptions.dataDirectory
-  /**
-   * The metaDirectory property specifies the directory path for metadata
-   * storage.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// DirectoryConnectorsOptions.metaDirectory
-}
-
-/**
  * The createDirectoryConnectors function creates both a directory-backed
  * DataConnector and MetaConnector together in a single call, returning them as
  * a tuple.
@@ -207,14 +184,11 @@
  * function provides a simplified API compared to creating the connectors
  * separately.
  *
- * When options are not provided, both data and metadata files are stored in the
- * same directory, which can lead to naming conflicts. It is strongly
- * recommended to use the options parameter to specify separate subdirectories
- * for data and metadata (e.g., 'data/' and 'meta/').
+ * You must provide separate directory paths for data and metadata to avoid
+ * naming conflicts.
  * @param depth The tree depth the Synclet will operate at.
- * @param directory The base directory path (used for both connectors if options
- * not provided).
- * @param options Optional configuration to use separate directory paths.
+ * @param dataDirectory The directory path for data storage.
+ * @param metaDirectory The directory path for metadata storage.
  * @returns A tuple of [DataConnector, MetaConnector].
  * @category Connector
  * @since v0.0.5

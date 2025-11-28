@@ -43,10 +43,8 @@
  * The client transport can only connect to servers created with
  * createWsServer. It is suitable for browser environments (using the Web
  * API WebSocket) and Node.js (using the 'ws' package).
- * @param address The address of the client Synclet.
- * @param url The WebSocket server URL (e.g., 'ws://localhost:8080').
- * @param fragmentSize Optional maximum packet size in bytes before
- * fragmentation.
+ * @param webSocket The WebSocket instance to wrap (browser WebSocket or ws WebSocket).
+ * @param options Optional TransportOptions for configuring the transport.
  * @returns A WsClientTransport instance for WebSocket communication.
  * @category Transport
  * @since v0.0.0
@@ -70,7 +68,7 @@
 }
 
 /**
- * The createWsServerTransport function wraps a Server in a WsServerTransport
+ * The createWsServerTransport function wraps a WebSocketServer in a WsServerTransport
  * implementation.
  *
  * This transport enables a Synclet running on a server to communicate with
@@ -78,13 +76,10 @@
  * fragmentation, connection management, and bidirectional communication with
  * all connected clients.
  *
- * This transport requires a WsServer instance (created with createWsServer)
- * and is only available in Node.js environments. It automatically broadcasts
+ * This transport is only available in Node.js environments. It automatically broadcasts
  * packets to all connected clients.
- * @param address The address of the server Synclet.
- * @param server The WsServer instance to use for connections.
- * @param fragmentSize Optional maximum packet size in bytes before
- * fragmentation.
+ * @param webSocketServer The WebSocketServer instance to wrap.
+ * @param options Optional TransportOptions for configuring the transport.
  * @returns A WsServerTransport instance for server-side WebSocket
  * communication.
  * @category Transport
@@ -124,10 +119,8 @@
  * and connected clients.
  *
  * The server requires the 'ws' package and is only available in Node.js
- * environments. It can be configured with custom HTTP servers or run standalone
- * on a specified port.
- * @param port The port number to listen on.
- * @param httpServer Optional Node.js HTTP server to attach to.
+ * environments.
+ * @param webSocketServer The WebSocketServer instance to wrap.
  * @returns A WsServer instance that can be used with createWsServerTransport.
  * @category Server
  * @since v0.0.0
