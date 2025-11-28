@@ -1,3 +1,10 @@
-export {createDirectoryConnectors, createFileConnectors} from './connectors.ts';
-export {createDirectoryDataConnector, createFileDataConnector} from './data.ts';
-export {createDirectoryMetaConnector, createFileMetaConnector} from './meta.ts';
+export {
+  createDirectoryConnectors,
+  createDirectoryDataConnector,
+  createDirectoryMetaConnector,
+} from './directory.ts';
+export {
+  createFileConnectors,
+  createFileDataConnector,
+  createFileMetaConnector,
+} from './file.ts';

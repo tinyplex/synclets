@@ -7,7 +7,6 @@ import {
 } from '@synclets/@types/connector/browser';
 import {jsonParse, jsonString} from '@synclets/utils';
 import {createMemoryConnector} from '../../common/memory.ts';
-export {resolve} from 'path';
 
 export const createStorageConnector = <
   CreateLocal extends boolean,

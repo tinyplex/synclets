@@ -1,12 +1,10 @@
 export {
   createLocalStorageConnectors,
-  createSessionStorageConnectors,
-} from './connectors.ts';
-export {
   createLocalStorageDataConnector,
-  createSessionStorageDataConnector,
-} from './data.ts';
-export {
   createLocalStorageMetaConnector,
+} from './local.ts';
+export {
+  createSessionStorageConnectors,
+  createSessionStorageDataConnector,
   createSessionStorageMetaConnector,
-} from './meta.ts';
+} from './session.ts';

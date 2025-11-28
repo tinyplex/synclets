@@ -1,3 +1,25 @@
-export {createMemoryConnectors} from './connectors.ts';
-export {createMemoryDataConnector} from './data.ts';
-export {createMemoryMetaConnector} from './meta.ts';
+import type {DataConnector, MetaConnector} from '@synclets/@types';
+import type {
+  createMemoryConnectors as createMemoryConnectorsDecl,
+  createMemoryDataConnector as createMemoryDataConnectorDecl,
+  createMemoryMetaConnector as createMemoryMetaConnectorDecl,
+} from '@synclets/@types/connector/memory';
+import {createMemoryConnector} from '../../common/memory.ts';
+
+export const createMemoryConnectors: typeof createMemoryConnectorsDecl = <
+  Depth extends number,
+>(
+  depth: Depth,
+) => [createMemoryDataConnector(depth), createMemoryMetaConnector(depth)];
+
+export const createMemoryDataConnector: typeof createMemoryDataConnectorDecl = <
+  Depth extends number,
+>(
+  depth: Depth,
+): DataConnector<Depth> => createMemoryConnector(false, depth);
+
+export const createMemoryMetaConnector: typeof createMemoryMetaConnectorDecl = <
+  Depth extends number,
+>(
+  depth: Depth,
+): MetaConnector<Depth> => createMemoryConnector(true, depth);
