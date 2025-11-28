@@ -68,28 +68,6 @@
 /// createLocalStorageMetaConnector
 
 /**
- * The LocalStorageConnectorsOptions type specifies configuration for both data
- * and meta connectors when using createLocalStorageConnectors.
- * @category Connector
- * @since v0.0.5
- */
-/// LocalStorageConnectorsOptions
-{
-  /**
-   * The dataStorageName property specifies the localStorage key for data.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// LocalStorageConnectorsOptions.dataStorageName
-  /**
-   * The metaStorageName property specifies the localStorage key for metadata.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// LocalStorageConnectorsOptions.metaStorageName
-}
-
-/**
  * The createLocalStorageConnectors function creates both a localStorage-backed
  * DataConnector and MetaConnector together in a single call, returning them as
  * a tuple.
@@ -98,13 +76,12 @@
  * and metadata should persist across sessions. The function provides a
  * simplified API compared to creating the connectors separately.
  *
- * When options are not provided, both connectors use the same storageName key,
- * storing data and metadata together. For better organization or to work around
- * size limits, you can specify separate keys via the options parameter.
+ * The data and metadata are stored under separate localStorage keys, allowing
+ * you to organize your storage or work around size limits by using different
+ * keys for each connector.
  * @param depth The tree depth the Synclet will operate at.
- * @param storageName The base localStorage key (used for both connectors if
- * options not provided).
- * @param options Optional configuration to use separate storage keys.
+ * @param dataStorageName The localStorage key for data storage.
+ * @param metaStorageName The localStorage key for metadata storage.
  * @returns A tuple of [DataConnector, MetaConnector].
  * @category Connector
  * @since v0.0.5
@@ -173,44 +150,19 @@
 /// createSessionStorageMetaConnector
 
 /**
- * The SessionStorageConnectorsOptions type specifies configuration for both
- * data and meta connectors when using createSessionStorageConnectors.
- * @category Connector
- * @since v0.0.5
- */
-/// SessionStorageConnectorsOptions
-{
-  /**
-   * The dataStorageName property specifies the sessionStorage key for data.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// SessionStorageConnectorsOptions.dataStorageName
-  /**
-   * The metaStorageName property specifies the sessionStorage key for metadata.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// SessionStorageConnectorsOptions.metaStorageName
-}
-
-/**
- * The createSessionStorageConnectors function creates both a sessionStorage-
- * backed DataConnector and MetaConnector together in a single call, returning
- * them as a tuple.
+ * The createSessionStorageConnectors function creates both a
+ * sessionStorage-backed DataConnector and MetaConnector together in a single
+ * call, returning them as a tuple.
  *
- * This is useful for browser-based Synclets that need temporary, tab-scoped
- * persistence. The ephemeral nature of sessionStorage makes it ideal for
- * maintaining state during a browsing session without cluttering permanent
- * storage.
+ * This is the recommended approach for browser-based Synclets where both data
+ * and metadata should be ephemeral and scoped to a single tab. The function
+ * provides a simplified API compared to creating the connectors separately.
  *
- * When options are not provided, both connectors use the same storageName key.
- * For better organization, you can specify separate keys via the options
- * parameter.
+ * The data and metadata are stored under separate sessionStorage keys,
+ * allowing you to organize your storage namespace.
  * @param depth The tree depth the Synclet will operate at.
- * @param storageName The base sessionStorage key (used for both connectors if
- * options not provided).
- * @param options Optional configuration to use separate storage keys.
+ * @param dataStorageName The sessionStorage key for data storage.
+ * @param metaStorageName The sessionStorage key for metadata storage.
  * @returns A tuple of [DataConnector, MetaConnector].
  * @category Connector
  * @since v0.0.5

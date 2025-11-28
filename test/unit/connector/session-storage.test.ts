@@ -1,5 +1,6 @@
 import {createSynclet} from 'synclets';
 import {
+  createSessionStorageConnectors,
   createSessionStorageDataConnector,
   createSessionStorageMetaConnector,
 } from 'synclets/connector/browser';
@@ -18,7 +19,7 @@ describeCommonConnectorTests(
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
 );
 
-test('getFile', async () => {
+test('getStorageName', async () => {
   const dataStorageName = getUniqueId() + '.data';
   const dataConnector = createSessionStorageDataConnector(1, dataStorageName);
 
@@ -30,6 +31,25 @@ test('getFile', async () => {
   expect(dataConnector.getStorageName()).toEqual(dataStorageName);
   expect(synclet.getDataConnector().getStorageName()).toEqual(dataStorageName);
   expect(metaConnector.getStorageName()).toEqual(metaStorageName);
+  expect(synclet.getMetaConnector().getStorageName()).toEqual(metaStorageName);
+
+  await synclet.destroy();
+});
+
+test('getStorageName, connectors', async () => {
+  const dataStorageName = getUniqueId() + '.data';
+  const metaStorageName = getUniqueId() + '.meta';
+
+  const connectors = createSessionStorageConnectors(
+    1,
+    dataStorageName,
+    metaStorageName,
+  );
+  const synclet = await createSynclet({connectors});
+
+  expect(connectors[0].getStorageName()).toEqual(dataStorageName);
+  expect(synclet.getDataConnector().getStorageName()).toEqual(dataStorageName);
+  expect(connectors[1].getStorageName()).toEqual(metaStorageName);
   expect(synclet.getMetaConnector().getStorageName()).toEqual(metaStorageName);
 
   await synclet.destroy();

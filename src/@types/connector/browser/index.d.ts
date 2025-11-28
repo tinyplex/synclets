@@ -30,20 +30,11 @@ export function createLocalStorageMetaConnector<Depth extends number>(
   storageName: string,
 ): LocalStorageMetaConnector<Depth>;
 
-/// LocalStorageConnectorsOptions
-export type LocalStorageConnectorsOptions = {
-  /// LocalStorageConnectorsOptions.dataStorageName
-  dataStorageName?: string;
-
-  /// LocalStorageConnectorsOptions.metaStorageName
-  metaStorageName?: string;
-};
-
 /// createLocalStorageConnectors
 export function createLocalStorageConnectors<Depth extends number>(
   depth: Depth,
-  storageName: string,
-  options?: LocalStorageConnectorsOptions,
+  dataStorageName: string,
+  metaStorageName: string,
 ): Connectors<
   Depth,
   LocalStorageDataConnector<Depth>,
@@ -76,20 +67,11 @@ export function createSessionStorageMetaConnector<Depth extends number>(
   storageName: string,
 ): SessionStorageMetaConnector<Depth>;
 
-/// SessionStorageConnectorsOptions
-export type SessionStorageConnectorsOptions = {
-  /// SessionStorageConnectorsOptions.dataStorageName
-  dataStorageName?: string;
-
-  /// SessionStorageConnectorsOptions.metaStorageName
-  metaStorageName?: string;
-};
-
 /// createSessionStorageConnectors
 export function createSessionStorageConnectors<Depth extends number>(
   depth: Depth,
-  storageName: string,
-  options?: SessionStorageConnectorsOptions,
+  dataStorageName: string,
+  metaStorageName: string,
 ): Connectors<
   Depth,
   SessionStorageDataConnector<Depth>,

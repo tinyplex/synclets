@@ -10,11 +10,8 @@ import {createStorageConnector} from './common.ts';
 export const createSessionStorageConnectors: typeof createSessionStorageConnectorsDecl =
   <Depth extends number>(
     depth: Depth,
-    storageName: string,
-    {
-      dataStorageName = storageName,
-      metaStorageName = storageName,
-    }: {dataStorageName?: string; metaStorageName?: string} = {},
+    dataStorageName: string,
+    metaStorageName: string,
   ) => [
     createSessionStorageDataConnector(depth, dataStorageName),
     createSessionStorageMetaConnector(depth, metaStorageName),

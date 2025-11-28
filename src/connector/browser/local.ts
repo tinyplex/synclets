@@ -10,11 +10,8 @@ import {createStorageConnector} from './common.ts';
 export const createLocalStorageConnectors: typeof createLocalStorageConnectorsDecl =
   <Depth extends number>(
     depth: Depth,
-    storageName: string,
-    {
-      dataStorageName = storageName,
-      metaStorageName = storageName,
-    }: {dataStorageName?: string; metaStorageName?: string} = {},
+    dataStorageName: string,
+    metaStorageName: string,
   ) => [
     createLocalStorageDataConnector(depth, dataStorageName),
     createLocalStorageMetaConnector(depth, metaStorageName),
