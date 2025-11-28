@@ -80,9 +80,9 @@ export const createSynclet = async <
 >(
   {
     connectors,
-    dataConnector = (connectors?.[0] ??
+    dataConnector = (connectors?.getDataConnector() ??
       createMemoryDataConnector(1)) as ProtectedDataConnectorType,
-    metaConnector = (connectors?.[1] ??
+    metaConnector = (connectors?.getMetaConnector() ??
       createMemoryMetaConnector(
         dataConnector?.depth ?? 1,
       )) as ProtectedMetaConnectorType,

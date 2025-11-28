@@ -16,10 +16,14 @@ export const createFileConnectors: typeof createFileConnectorsDecl = <
     dataFile = file,
     metaFile = file,
   }: {dataFile?: string; metaFile?: string} = {},
-) => [
-  createFileDataConnector(depth, dataFile),
-  createFileMetaConnector(depth, metaFile),
-];
+) => {
+  const dataConnector = createFileDataConnector(depth, dataFile);
+  const metaConnector = createFileMetaConnector(depth, metaFile);
+  return {
+    getDataConnector: () => dataConnector,
+    getMetaConnector: () => metaConnector,
+  };
+};
 
 export const createFileDataConnector: typeof createFileDataConnectorDecl = <
   Depth extends number,

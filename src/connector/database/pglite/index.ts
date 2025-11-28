@@ -33,18 +33,22 @@ export const createPgliteConnectors: typeof createPgliteConnectorsDecl = <
     atomColumn?: string;
     timestampColumn?: string;
   } = {},
-) => [
-  createPgliteDataConnector(depth, pglite, {
+) => {
+  const dataConnector = createPgliteDataConnector(depth, pglite, {
     table: dataTable,
     addressColumn,
     atomColumn,
-  } as DatabaseDataOptions),
-  createPgliteMetaConnector(depth, pglite, {
+  } as DatabaseDataOptions);
+  const metaConnector = createPgliteMetaConnector(depth, pglite, {
     table: metaTable,
     addressColumn,
     timestampColumn,
-  } as DatabaseMetaOptions),
-];
+  } as DatabaseMetaOptions);
+  return {
+    getDataConnector: () => dataConnector,
+    getMetaConnector: () => metaConnector,
+  };
+};
 
 export const createPgliteDataConnector: typeof createPgliteDataConnectorDecl = <
   Depth extends number,

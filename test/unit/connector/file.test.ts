@@ -50,9 +50,9 @@ test('getFile, connectors', async () => {
   const metaFile = join(tmp, getUniqueId() + '.meta');
   const connectors = createFileConnectors(1, tmp, {dataFile, metaFile});
   const synclet = await createSynclet({connectors});
-  expect(connectors[0].getFile()).toEqual(dataFile);
+  expect(connectors.getDataConnector().getFile()).toEqual(dataFile);
   expect(synclet.getDataConnector().getFile()).toEqual(dataFile);
-  expect(connectors[1].getFile()).toEqual(metaFile);
+  expect(connectors.getMetaConnector().getFile()).toEqual(metaFile);
   expect(synclet.getMetaConnector().getFile()).toEqual(metaFile);
 
   await rm(tmp, {recursive: true, force: true});

@@ -12,10 +12,20 @@ export const createLocalStorageConnectors: typeof createLocalStorageConnectorsDe
     depth: Depth,
     dataStorageName: string,
     metaStorageName: string,
-  ) => [
-    createLocalStorageDataConnector(depth, dataStorageName),
-    createLocalStorageMetaConnector(depth, metaStorageName),
-  ];
+  ) => {
+    const dataConnector = createLocalStorageDataConnector(
+      depth,
+      dataStorageName,
+    );
+    const metaConnector = createLocalStorageMetaConnector(
+      depth,
+      metaStorageName,
+    );
+    return {
+      getDataConnector: () => dataConnector,
+      getMetaConnector: () => metaConnector,
+    };
+  };
 
 export const createLocalStorageDataConnector: typeof createLocalStorageDataConnectorDecl =
   <Depth extends number>(

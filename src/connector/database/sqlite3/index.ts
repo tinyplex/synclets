@@ -34,18 +34,22 @@ export const createSqlite3Connectors: typeof createSqlite3ConnectorsDecl = <
     atomColumn?: string;
     timestampColumn?: string;
   } = {},
-) => [
-  createSqlite3DataConnector(depth, database, {
+) => {
+  const dataConnector = createSqlite3DataConnector(depth, database, {
     table: dataTable,
     addressColumn,
     atomColumn,
-  } as DatabaseDataOptions),
-  createSqlite3MetaConnector(depth, database, {
+  } as DatabaseDataOptions);
+  const metaConnector = createSqlite3MetaConnector(depth, database, {
     table: metaTable,
     addressColumn,
     timestampColumn,
-  } as DatabaseMetaOptions),
-];
+  } as DatabaseMetaOptions);
+  return {
+    getDataConnector: () => dataConnector,
+    getMetaConnector: () => metaConnector,
+  };
+};
 
 export const createSqlite3MetaConnector: typeof createSqlite3MetaConnectorDecl =
   <Depth extends number>(

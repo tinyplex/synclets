@@ -167,17 +167,17 @@ export interface Synclet<
 }
 
 /// Connectors
-export type Connectors<
+export interface Connectors<
   Depth extends number,
   DataConnectorType extends DataConnector<Depth>,
   MetaConnectorType extends MetaConnector<Depth>,
-> = [
-  /// Connectors.dataConnector
-  dataConnector: DataConnectorType,
+> {
+  /// Connectors.getDataConnector
+  getDataConnector(): DataConnectorType;
 
-  /// Connectors.metaConnector
-  metaConnector: MetaConnectorType,
-];
+  /// Connectors.getMetaConnector
+  getMetaConnector(): MetaConnectorType;
+}
 
 /// SyncletComponents
 export type SyncletComponents<

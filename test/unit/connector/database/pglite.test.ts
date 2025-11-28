@@ -64,10 +64,10 @@ test('getPglite, connectors', async () => {
   });
 
   const synclet = await createSynclet({connectors});
-  expect(connectors[0].getPglite()).toEqual(pglite);
+  expect(connectors.getDataConnector().getPglite()).toEqual(pglite);
   expect(synclet.getDataConnector().getPglite()).toEqual(pglite);
 
-  expect(connectors[1].getPglite()).toEqual(pglite);
+  expect(connectors.getMetaConnector().getPglite()).toEqual(pglite);
   expect(synclet.getMetaConnector().getPglite()).toEqual(pglite);
   await pglite.close();
 

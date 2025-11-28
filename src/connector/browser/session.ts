@@ -12,10 +12,20 @@ export const createSessionStorageConnectors: typeof createSessionStorageConnecto
     depth: Depth,
     dataStorageName: string,
     metaStorageName: string,
-  ) => [
-    createSessionStorageDataConnector(depth, dataStorageName),
-    createSessionStorageMetaConnector(depth, metaStorageName),
-  ];
+  ) => {
+    const dataConnector = createSessionStorageDataConnector(
+      depth,
+      dataStorageName,
+    );
+    const metaConnector = createSessionStorageMetaConnector(
+      depth,
+      metaStorageName,
+    );
+    return {
+      getDataConnector: () => dataConnector,
+      getMetaConnector: () => metaConnector,
+    };
+  };
 
 export const createSessionStorageDataConnector: typeof createSessionStorageDataConnectorDecl =
   <Depth extends number>(

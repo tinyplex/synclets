@@ -165,25 +165,25 @@
 /// Hash
 
 /**
- * The Connectors type represents a tuple of DataConnector and MetaConnector,
- * returned by combined connector factory functions for convenience.
+ * The Connectors interface provides accessor methods for obtaining both the
+ * DataConnector and MetaConnector from combined connector factory functions.
  * @category Connector
  * @since v0.0.5
  */
 /// Connectors
 {
   /**
-   * The dataConnector element is the first element of the tuple.
+   * The getDataConnector method returns the DataConnector instance.
    * @category Connector
    * @since v0.0.5
    */
-  /// Connectors.dataConnector
+  /// Connectors.getDataConnector
   /**
-   * The metaConnector element is the second element of the tuple.
+   * The getMetaConnector method returns the MetaConnector instance.
    * @category Connector
    * @since v0.0.5
    */
-  /// Connectors.metaConnector
+  /// Connectors.getMetaConnector
 }
 
 /**

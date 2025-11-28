@@ -47,9 +47,13 @@ test('getStorageName, connectors', async () => {
   );
   const synclet = await createSynclet({connectors});
 
-  expect(connectors[0].getStorageName()).toEqual(dataStorageName);
+  expect(connectors.getDataConnector().getStorageName()).toEqual(
+    dataStorageName,
+  );
   expect(synclet.getDataConnector().getStorageName()).toEqual(dataStorageName);
-  expect(connectors[1].getStorageName()).toEqual(metaStorageName);
+  expect(connectors.getMetaConnector().getStorageName()).toEqual(
+    metaStorageName,
+  );
   expect(synclet.getMetaConnector().getStorageName()).toEqual(metaStorageName);
 
   await synclet.destroy();

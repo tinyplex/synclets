@@ -52,9 +52,9 @@ test('getDirectory, connectors', async () => {
   const connectors = createDirectoryConnectors(1, dataDirectory, metaDirectory);
   const synclet = await createSynclet({connectors});
 
-  expect(connectors[0].getDirectory()).toEqual(dataDirectory);
+  expect(connectors.getDataConnector().getDirectory()).toEqual(dataDirectory);
   expect(synclet.getDataConnector().getDirectory()).toEqual(dataDirectory);
-  expect(connectors[1].getDirectory()).toEqual(metaDirectory);
+  expect(connectors.getMetaConnector().getDirectory()).toEqual(metaDirectory);
   expect(synclet.getMetaConnector().getDirectory()).toEqual(metaDirectory);
 
   await rm(tmpDir, {recursive: true, force: true});

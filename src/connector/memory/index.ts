@@ -10,7 +10,14 @@ export const createMemoryConnectors: typeof createMemoryConnectorsDecl = <
   Depth extends number,
 >(
   depth: Depth,
-) => [createMemoryDataConnector(depth), createMemoryMetaConnector(depth)];
+) => {
+  const dataConnector = createMemoryDataConnector(depth);
+  const metaConnector = createMemoryMetaConnector(depth);
+  return {
+    getDataConnector: () => dataConnector,
+    getMetaConnector: () => metaConnector,
+  };
+};
 
 export const createMemoryDataConnector: typeof createMemoryDataConnectorDecl = <
   Depth extends number,

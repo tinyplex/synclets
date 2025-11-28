@@ -13,10 +13,14 @@ export const createDirectoryConnectors: typeof createDirectoryConnectorsDecl = <
   depth: Depth,
   dataDirectory: string,
   metaDirectory: string,
-) => [
-  createDirectoryDataConnector(depth, dataDirectory),
-  createDirectoryMetaConnector(depth, metaDirectory),
-];
+) => {
+  const dataConnector = createDirectoryDataConnector(depth, dataDirectory);
+  const metaConnector = createDirectoryMetaConnector(depth, metaDirectory);
+  return {
+    getDataConnector: () => dataConnector,
+    getMetaConnector: () => metaConnector,
+  };
+};
 
 export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDecl =
   <Depth extends number>(
