@@ -72,20 +72,11 @@ export function createDirectoryMetaConnector<Depth extends number>(
   directory: string,
 ): DirectoryMetaConnector<Depth>;
 
-/// DirectoryConnectorsOptions
-export type DirectoryConnectorsOptions = {
-  /// DirectoryConnectorsOptions.dataDirectory
-  dataDirectory?: string;
-
-  /// DirectoryConnectorsOptions.metaDirectory
-  metaDirectory?: string;
-};
-
 /// createDirectoryConnectors
 export function createDirectoryConnectors<Depth extends number>(
   depth: Depth,
-  directory: string,
-  options?: DirectoryConnectorsOptions,
+  dataDirectory: string,
+  metaDirectory: string,
 ): Connectors<
   Depth,
   DirectoryDataConnector<Depth>,

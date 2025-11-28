@@ -3,6 +3,7 @@ import {tmpdir} from 'os';
 import {join, sep} from 'path';
 import {createSynclet} from 'synclets';
 import {
+  createDirectoryConnectors,
   createDirectoryDataConnector,
   createDirectoryMetaConnector,
 } from 'synclets/connector/fs';
@@ -37,6 +38,24 @@ test('getDirectory', async () => {
   expect(synclet.getDataConnector().getDirectory()).toEqual(dataDir);
   expect(metaConnector.getDirectory()).toEqual(metaDir);
   expect(synclet.getMetaConnector().getDirectory()).toEqual(metaDir);
+
+  await rm(tmpDir, {recursive: true, force: true});
+
+  await synclet.destroy();
+});
+
+test('getDirectory, connectors', async () => {
+  const tmpDir = await mkdtemp(tmpdir() + sep);
+
+  const dataDirectory = join(tmpDir, getUniqueId() + '.data');
+  const metaDirectory = join(tmpDir, getUniqueId() + '.meta');
+  const connectors = createDirectoryConnectors(1, dataDirectory, metaDirectory);
+  const synclet = await createSynclet({connectors});
+
+  expect(connectors[0].getDirectory()).toEqual(dataDirectory);
+  expect(synclet.getDataConnector().getDirectory()).toEqual(dataDirectory);
+  expect(connectors[1].getDirectory()).toEqual(metaDirectory);
+  expect(synclet.getMetaConnector().getDirectory()).toEqual(metaDirectory);
 
   await rm(tmpDir, {recursive: true, force: true});
 
