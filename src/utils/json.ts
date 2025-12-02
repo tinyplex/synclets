@@ -1,13 +1,13 @@
 import {UNDEFINED} from '@synclets';
 
-export const jsonString = (obj: unknown): string =>
-  JSON.stringify(obj, (_key, value) =>
+export const jsonString = (value: unknown): string =>
+  JSON.stringify(value, (_key, value) =>
     value === undefined ? UNDEFINED : value,
   );
 
-export const jsonParse = (str: string): any => {
+export const jsonParse = (string: string): any => {
   try {
-    return JSON.parse(str, (_key, value) =>
+    return JSON.parse(string, (_key, value) =>
       value === UNDEFINED ? undefined : value,
     );
   } catch {

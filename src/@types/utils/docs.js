@@ -29,7 +29,7 @@
  * This is a wrapper around JSON.parse that provides type safety and handles
  * potential parsing errors gracefully. Use this to deserialize strings
  * created by jsonString.
- * @param json The JSON string to parse.
+ * @param string The JSON string to parse.
  * @returns The parsed value.
  * @category Utility
  * @since v0.0.0
@@ -56,7 +56,7 @@
  * This function generates a deterministic hash value used in Merkle tree
  * construction for efficient synchronization. The hash is computed using a
  * fast, non-cryptographic algorithm suitable for detecting data changes.
- * @param payload The string to hash.
+ * @param string The string to hash.
  * @returns A Hash string representing the payload.
  * @category Utility
  * @since v0.0.0
@@ -69,7 +69,7 @@
  * This function checks whether a value conforms to the Timestamp type,
  * which is a string representing a Hybrid Logical Clock (HLC) timestamp. Use
  * this for runtime validation of timestamp data before processing.
- * @param value The value to test.
+ * @param thing The value to test.
  * @returns True if the value is a valid Timestamp.
  * @category Utility
  * @since v0.0.0
@@ -82,7 +82,7 @@
  * This function checks whether a value conforms to the Atom type,
  * which is a primitive value (string, number, boolean, null, or Undefined).
  * Use this for runtime validation of atom data before processing.
- * @param value The value to test.
+ * @param thing The value to test.
  * @returns True if the value is a valid Atom.
  * @category Utility
  * @since v0.0.0
@@ -107,10 +107,10 @@
  * The getPacketFromParts function encodes a destination and body into a
  * packet string.
  *
- * This function serializes a destination address and message body into a
+ * This function serializes a address and message body into a
  * packet format suitable for transmission over a transport. Use this when
  * implementing custom transport send handlers.
- * @param destination The destination address.
+ * @param toOrFrom The address.
  * @param body The message body.
  * @returns A packet string ready for transmission.
  * @category Utility
