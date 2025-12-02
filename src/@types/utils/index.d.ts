@@ -3,10 +3,10 @@
 import {Atom, Hash, Timestamp} from '@synclets/@types';
 
 /// jsonString
-export function jsonString(obj: unknown): string;
+export function jsonString(value: unknown): string;
 
 /// jsonParse
-export function jsonParse(str: string): any;
+export function jsonParse(string: string): any;
 
 /// getUniqueId
 export function getUniqueId(length?: number): string;

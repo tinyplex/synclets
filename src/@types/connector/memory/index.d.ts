@@ -2,8 +2,6 @@
 
 import type {Connectors, DataConnector, MetaConnector} from '../../index.d.ts';
 
-export type {Connectors};
-
 /// createMemoryDataConnector
 export function createMemoryDataConnector<Depth extends number>(
   depth: Depth,

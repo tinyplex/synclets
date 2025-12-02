@@ -2,8 +2,6 @@
 
 import type {Connectors, DataConnector, MetaConnector} from '../../index.js';
 
-export type {Connectors};
-
 /// LocalStorageDataConnector
 export interface LocalStorageDataConnector<Depth extends number>
   extends DataConnector<Depth> {

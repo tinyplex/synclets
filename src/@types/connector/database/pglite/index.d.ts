@@ -8,8 +8,6 @@ import type {
 } from '../../../index.d.ts';
 import type {DatabaseDataOptions, DatabaseMetaOptions} from '../index.d.ts';
 
-export type {Connectors};
-
 /// PgliteDataConnector
 export interface PgliteDataConnector<Depth extends number>
   extends DataConnector<Depth> {

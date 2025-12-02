@@ -2,8 +2,6 @@
 
 import type {Connectors, DataConnector, MetaConnector} from '../../index.d.ts';
 
-export type {Connectors};
-
 /// FileDataConnector
 export interface FileDataConnector<Depth extends number>
   extends DataConnector<Depth> {
