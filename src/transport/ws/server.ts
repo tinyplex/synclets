@@ -113,7 +113,7 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
   const [addConnection, clearConnections] = getConnectionFunctions();
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
-    ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, path]) =>
+    ifNotUndefined(strMatch(request.url, PATH_REGEX) ?? undefined, ([, path]) =>
       addWebSocketConnection(webSocket, request, path, addConnection),
     );
 

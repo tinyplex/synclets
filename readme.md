@@ -2,21 +2,17 @@
 
 ```js
 import {PGlite} from '@electric-sql/pglite';
-import {createPgliteConnectors} from 'synclets/connector/database/pglite';
+import {createPgliteDataConnector} from 'synclets/connector/database/pglite';
 
 const db = await PGlite.create();
-const connector = createPgliteConnectors(1, db);
+const dataConnector = createPgliteDataConnector(1, db);
 ```
 
-<section><h2 id="metadata-is-stored-separately">Metadata is stored separately</h2><p>The <code>createPgliteConnectors</code> function creates both data and meta connectors that use the same database. You can also create them separately if you want to use different storage backends.</p></section>
+<section><h2 id="metadata-is-stored-separately">Metadata is stored separately</h2><p>You can store metadata about your data (primarily timestamps) separately, or in the same data store. For example, here we&#x27;re using PGlite for metadata too.</p></section>
 
 ```js
-import {
-  createPgliteDataConnector,
-  createPgliteMetaConnector,
-} from 'synclets/connector/database/pglite';
+import {createPgliteMetaConnector} from 'synclets/connector/database/pglite';
 
-const dataConnector = createPgliteDataConnector(1, db);
 const metaConnector = createPgliteMetaConnector(1, db);
 ```
 
@@ -36,7 +32,11 @@ const transport = createWsClientTransport(
 ```js
 import {createSynclet} from 'synclets';
 
-const synclet = await createSynclet({connector, transport});
+const synclet = await createSynclet({
+  dataConnector,
+  metaConnector,
+  transport,
+});
 await synclet.start();
 
 // ...
