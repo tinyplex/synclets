@@ -46,7 +46,7 @@ export const getConnectionFunctions = (): [
           mapForEach(sends, (otherId, otherSend) =>
             otherId !== id ? otherSend(forwardedPacket) : 0,
           );
-        } else {
+        } else if (to != id) {
           mapGet(sends, to)?.(forwardedPacket);
         }
       }

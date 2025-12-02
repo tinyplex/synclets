@@ -1,6 +1,14 @@
 import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 
 export default defineConfig({
+  // resolve: {
+  //   alias: {
+  //     'cloudflare:workers': resolve(
+  //       __dirname,
+  //       'test/vitest/mocks/cloudflare-workers.ts',
+  //     ),
+  //   },
+  // },
   test: {
     environment: 'happy-dom',
     setupFiles: ['test/vitest/setup.ts'],

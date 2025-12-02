@@ -1,6 +1,16 @@
+const promise = Promise;
+
+const getIfNotFunction =
+  (predicate: (value: unknown) => value is unknown) =>
+  <Value, Return>(
+    value: Value | null | undefined,
+    then: (value: Value) => Return,
+    otherwise?: () => Return,
+  ): Return | undefined =>
+    predicate(value) ? otherwise?.() : then(value);
+
 export const GLOBAL = globalThis;
 
-const promise = Promise;
 export const promiseAll = <Return>(promises: Promise<Return>[]) =>
   promise.all(promises);
 export const promiseResolve = promise.resolve;
@@ -22,14 +32,14 @@ export const errorNew = (message: string) => {
   throw new Error(message);
 };
 
+export const isNull = (thing: unknown): thing is null => thing === null;
+
 export const isUndefined = (thing: unknown): thing is undefined =>
   thing === undefined;
 
-export const ifNotUndefined = <Value, Return>(
-  value: Value | undefined,
-  then: (value: Value) => Return,
-  otherwise?: () => Return,
-): Return | undefined => (isUndefined(value) ? otherwise?.() : then(value));
+export const ifNotNull = getIfNotFunction(isNull);
+
+export const ifNotUndefined = getIfNotFunction(isUndefined);
 
 export const slice = <ArrayOrString extends string | any[]>(
   arrayOrString: ArrayOrString,

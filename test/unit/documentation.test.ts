@@ -12,6 +12,7 @@ const MODULES = [
     ).compilerOptions.paths,
   )
     .filter((alias) => alias.startsWith('@synclets/@types'))
+    .filter((alias) => !alias.includes('durable-object'))
     .map((alias) => alias.replace('@synclets/@types', 'synclets')),
 ].concat(['ws', 'fs', '@electric-sql/pglite', 'sqlite3']);
 
