@@ -31,6 +31,11 @@ Synclets is a storage-agnostic sync engine development kit. It enables data sync
   - `npm run ts`: Runs TypeScript type checking (`gulp ts`).
   - `npm run preCommit`: Runs the full suite of checks (lint, spell, ts, test, build).
 - **Build**: `gulpfile.mjs` dynamically builds modules defined in `src/tsconfig.json`.
+- **Code Reuse**: Always check for existing helper functions before implementing new functionality:
+  - Look in the current file first (e.g., `gulpfile.mjs` has `execute()` for running commands)
+  - Check `src/common/` for utility functions
+  - Review similar implementations in the same file for patterns
+  - Use established project patterns rather than reinventing solutions
 
 ## Coding Conventions
 
