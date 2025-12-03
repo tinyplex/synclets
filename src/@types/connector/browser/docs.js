@@ -186,10 +186,35 @@
  *
  * This connector is designed for browser environments only and will not work in
  * Node.js without a sessionStorage polyfill.
+ * @param options Configuration options for the SessionStorage data connector.
+ * @returns A SessionStorageDataConnector instance.
  * @category Connector
  * @since v0.0.0
  */
 /// createSessionStorageDataConnector
+
+/**
+ * The SessionStorageDataConnectorOptions type describes the configuration
+ * options for creating a sessionStorage-backed DataConnector.
+ * @category Type
+ * @since v0.0.5
+ */
+/// SessionStorageDataConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth the connector will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// SessionStorageDataConnectorOptions.depth
+  /**
+   * The dataStorageName property specifies the sessionStorage key for data
+   * storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// SessionStorageDataConnectorOptions.dataStorageName
+}
 
 /**
  * The SessionStorageMetaConnector interface describes a MetaConnector backed by
@@ -215,27 +240,75 @@
  * connector, this storage is ephemeral and scoped to a single tab. The metadata
  * structure mirrors the data tree but contains HLC timestamps for conflict
  * resolution.
+ * @param options Configuration options for the SessionStorage meta connector.
+ * @returns A SessionStorageMetaConnector instance.
  * @category Connector
  * @since v0.0.0
  */
 /// createSessionStorageMetaConnector
 
 /**
- * The createSessionStorageConnectors function creates both a
- * sessionStorage-backed DataConnector and MetaConnector together in a single
- * call, returning them as a tuple.
- *
- * This is the recommended approach for browser-based Synclets where both data
- * and metadata should be ephemeral and scoped to a single tab. The function
- * provides a simplified API compared to creating the connectors separately.
- *
- * The data and metadata are stored under separate sessionStorage keys,
- * allowing you to organize your storage namespace.
- * @param depth The tree depth the Synclet will operate at.
- * @param dataStorageName The sessionStorage key for data storage.
- * @param metaStorageName The sessionStorage key for metadata storage.
- * @returns A tuple of [DataConnector, MetaConnector].
- * @category Connector
+ * The SessionStorageMetaConnectorOptions type describes the configuration
+ * options for creating a sessionStorage-backed MetaConnector.
+ * @category Type
  * @since v0.0.5
  */
-/// createSessionStorageConnectors
+/// SessionStorageMetaConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth the connector will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// SessionStorageMetaConnectorOptions.depth
+  /**
+   * The metaStorageName property specifies the sessionStorage key for metadata
+   * storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// SessionStorageMetaConnectorOptions.metaStorageName
+}
+
+/**
+ * The SessionStorageSyncletOptions type describes the configuration options for
+ * creating a complete Synclet with sessionStorage-backed data and meta
+ * connectors.
+ *
+ * This type combines the options for both DataConnector and MetaConnector,
+ * along with optional transport, implementations, and other synclet
+ * configuration.
+ * @category Type
+ * @since v0.0.5
+ */
+/// SessionStorageSyncletOptions
+{
+  /**
+   * The transport property specifies the transport or transports to use.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// SessionStorageSyncletOptions.transport
+  /**
+   * The implementations property specifies custom synclet implementations.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// SessionStorageSyncletOptions.implementations
+}
+
+/**
+ * The createSessionStorageSynclet function creates a complete Synclet with
+ * sessionStorage-backed data and meta connectors in a single call.
+ *
+ * This is the most convenient way to create a browser-based Synclet with
+ * ephemeral, tab-scoped storage, handling connector creation and synclet setup
+ * with a single options object. Data and metadata are cleared when the tab
+ * closes.
+ * @param options Configuration options including storage names, depth,
+ * transport, and other synclet settings.
+ * @returns A Promise that resolves to a fully configured Synclet instance.
+ * @category Synclet
+ * @since v0.0.5
+ */
+/// createSessionStorageSynclet

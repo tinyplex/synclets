@@ -4,7 +4,7 @@ export {
   createLocalStorageSynclet,
 } from './local.ts';
 export {
-  createSessionStorageConnectors,
   createSessionStorageDataConnector,
   createSessionStorageMetaConnector,
+  createSessionStorageSynclet,
 } from './session.ts';

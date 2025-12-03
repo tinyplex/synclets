@@ -1,7 +1,6 @@
 /// connector/browser
 
 import type {
-  Connectors,
   DataConnector,
   MetaConnector,
   Synclet,
@@ -81,10 +80,18 @@ export interface SessionStorageDataConnector<Depth extends number>
   getStorageName(): string;
 }
 
+/// SessionStorageDataConnectorOptions
+export type SessionStorageDataConnectorOptions<Depth extends number> = {
+  /// SessionStorageDataConnectorOptions.depth
+  depth: Depth;
+
+  /// SessionStorageDataConnectorOptions.dataStorageName
+  dataStorageName: string;
+};
+
 /// createSessionStorageDataConnector
 export function createSessionStorageDataConnector<Depth extends number>(
-  depth: Depth,
-  storageName: string,
+  options: SessionStorageDataConnectorOptions<Depth>,
 ): SessionStorageDataConnector<Depth>;
 
 /// SessionStorageMetaConnector
@@ -94,19 +101,38 @@ export interface SessionStorageMetaConnector<Depth extends number>
   getStorageName(): string;
 }
 
+/// SessionStorageMetaConnectorOptions
+export type SessionStorageMetaConnectorOptions<Depth extends number> = {
+  /// SessionStorageMetaConnectorOptions.depth
+  depth: Depth;
+
+  /// SessionStorageMetaConnectorOptions.metaStorageName
+  metaStorageName: string;
+};
+
 /// createSessionStorageMetaConnector
 export function createSessionStorageMetaConnector<Depth extends number>(
-  depth: Depth,
-  storageName: string,
+  options: SessionStorageMetaConnectorOptions<Depth>,
 ): SessionStorageMetaConnector<Depth>;
 
-/// createSessionStorageConnectors
-export function createSessionStorageConnectors<Depth extends number>(
-  depth: Depth,
-  dataStorageName: string,
-  metaStorageName: string,
-): Connectors<
-  Depth,
-  SessionStorageDataConnector<Depth>,
-  SessionStorageMetaConnector<Depth>
+/// SessionStorageSyncletOptions
+export type SessionStorageSyncletOptions<Depth extends number> =
+  SessionStorageDataConnectorOptions<Depth> &
+    SessionStorageMetaConnectorOptions<Depth> & {
+      /// SessionStorageSyncletOptions.transport
+      transport?: Transport | Transport[];
+
+      /// SessionStorageSyncletOptions.implementations
+      implementations?: SyncletImplementations<Depth>;
+    } & SyncletOptions;
+
+/// createSessionStorageSynclet
+export function createSessionStorageSynclet<Depth extends number>(
+  options: SessionStorageSyncletOptions<Depth>,
+): Promise<
+  Synclet<
+    Depth,
+    SessionStorageDataConnector<Depth>,
+    SessionStorageMetaConnector<Depth>
+  >
 >;

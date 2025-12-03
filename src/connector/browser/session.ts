@@ -1,42 +1,41 @@
+import {createSynclet} from '@synclets';
 import type {
-  createSessionStorageConnectors as createSessionStorageConnectorsDecl,
   createSessionStorageDataConnector as createSessionStorageDataConnectorDecl,
   createSessionStorageMetaConnector as createSessionStorageMetaConnectorDecl,
-  SessionStorageDataConnector,
-  SessionStorageMetaConnector,
+  createSessionStorageSynclet as createSessionStorageSyncletDecl,
 } from '@synclets/@types/connector/browser';
 import {createStorageConnector} from './common.ts';
 
-export const createSessionStorageConnectors: typeof createSessionStorageConnectorsDecl =
-  <Depth extends number>(
-    depth: Depth,
-    dataStorageName: string,
-    metaStorageName: string,
-  ) => {
-    const dataConnector = createSessionStorageDataConnector(
-      depth,
-      dataStorageName,
-    );
-    const metaConnector = createSessionStorageMetaConnector(
-      depth,
-      metaStorageName,
-    );
-    return {
-      getDataConnector: () => dataConnector,
-      getMetaConnector: () => metaConnector,
-    };
-  };
-
 export const createSessionStorageDataConnector: typeof createSessionStorageDataConnectorDecl =
-  <Depth extends number>(
-    depth: Depth,
-    storageName: string,
-  ): SessionStorageDataConnector<Depth> =>
-    createStorageConnector(false, false, depth, storageName);
+  ({depth, dataStorageName}) =>
+    createStorageConnector(false, false, depth, dataStorageName);
 
 export const createSessionStorageMetaConnector: typeof createSessionStorageMetaConnectorDecl =
-  <Depth extends number>(
-    depth: Depth,
-    storageName: string,
-  ): SessionStorageMetaConnector<Depth> =>
-    createStorageConnector(false, true, depth, storageName);
+  ({depth, metaStorageName}) =>
+    createStorageConnector(false, true, depth, metaStorageName);
+
+export const createSessionStorageSynclet: typeof createSessionStorageSyncletDecl =
+  async ({
+    depth,
+    dataStorageName,
+    metaStorageName,
+    transport,
+    implementations,
+    id,
+    logger,
+  }) =>
+    await createSynclet(
+      {
+        dataConnector: createSessionStorageDataConnector({
+          depth,
+          dataStorageName,
+        }),
+        metaConnector: createSessionStorageMetaConnector({
+          depth,
+          metaStorageName,
+        }),
+        transport,
+      },
+      implementations,
+      {id, logger},
+    );
