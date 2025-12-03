@@ -184,6 +184,28 @@
 }
 
 /**
+ * The DirectoryDataConnectorOptions type specifies configuration for creating
+ * a directory-backed DataConnector.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// DirectoryDataConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth the connector will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectoryDataConnectorOptions.depth
+  /**
+   * The dataDirectory property specifies the directory path for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectoryDataConnectorOptions.dataDirectory
+}
+
+/**
  * The createDirectoryDataConnector function creates a DataConnector that
  * persists Atom data across multiple individual files within a directory.
  *
@@ -216,6 +238,28 @@
 }
 
 /**
+ * The DirectoryMetaConnectorOptions type specifies configuration for creating
+ * a directory-backed MetaConnector.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// DirectoryMetaConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth the connector will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectoryMetaConnectorOptions.depth
+  /**
+   * The metaDirectory property specifies the directory path for metadata storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectoryMetaConnectorOptions.metaDirectory
+}
+
+/**
  * The createDirectoryMetaConnector function creates a MetaConnector that
  * persists Timestamp metadata across multiple individual files within a
  * directory.
@@ -232,22 +276,58 @@
 /// createDirectoryMetaConnector
 
 /**
- * The createDirectoryConnectors function creates both a directory-backed
- * DataConnector and MetaConnector together in a single call, returning them as
- * a tuple.
- *
- * This is the recommended approach for directory-based persistence in Node.js,
- * particularly for large datasets that benefit from granular file storage. The
- * function provides a simplified API compared to creating the connectors
- * separately.
- *
- * You must provide separate directory paths for data and metadata to avoid
- * naming conflicts.
- * @param depth The tree depth the Synclet will operate at.
- * @param dataDirectory The directory path for data storage.
- * @param metaDirectory The directory path for metadata storage.
- * @returns A tuple of [DataConnector, MetaConnector].
+ * The DirectorySyncletOptions type specifies configuration for creating a
+ * directory-backed Synclet.
  * @category Connector
  * @since v0.0.5
  */
-/// createDirectoryConnectors
+/// DirectorySyncletOptions
+{
+  /**
+   * The depth property specifies the tree depth the Synclet will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectorySyncletOptions.depth
+  /**
+   * The dataDirectory property specifies the directory path for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectorySyncletOptions.dataDirectory
+  /**
+   * The metaDirectory property specifies the directory path for metadata storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectorySyncletOptions.metaDirectory
+  /**
+   * The transport property specifies the Transport instance for synchronization.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectorySyncletOptions.transport
+  /**
+   * The implementations property optionally specifies custom conflict resolution
+   * implementations.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// DirectorySyncletOptions.implementations
+}
+
+/**
+ * The createDirectorySynclet function creates a directory-backed Synclet with
+ * both data and metadata persistence in a single call.
+ *
+ * This is the recommended approach for directory-based persistence in Node.js,
+ * particularly for large datasets that benefit from granular file storage. The
+ * function provides a simplified API that creates both the DataConnector and
+ * MetaConnector internally, along with the Synclet instance.
+ * @param options Configuration object specifying directory paths, transport,
+ * and other Synclet options.
+ * @returns A Promise resolving to the configured Synclet instance.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// createDirectorySynclet

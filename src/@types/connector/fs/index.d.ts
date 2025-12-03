@@ -1,7 +1,6 @@
 /// connector/fs
 
 import type {
-  Connectors,
   DataConnector,
   MetaConnector,
   Synclet,
@@ -75,10 +74,18 @@ export interface DirectoryDataConnector<Depth extends number>
   getDirectory(): string;
 }
 
+/// DirectoryDataConnectorOptions
+export type DirectoryDataConnectorOptions<Depth extends number> = {
+  /// DirectoryDataConnectorOptions.depth
+  depth: Depth;
+
+  /// DirectoryDataConnectorOptions.dataDirectory
+  dataDirectory: string;
+};
+
 /// createDirectoryDataConnector
 export function createDirectoryDataConnector<Depth extends number>(
-  depth: Depth,
-  directory: string,
+  options: DirectoryDataConnectorOptions<Depth>,
 ): DirectoryDataConnector<Depth>;
 
 /// DirectoryMetaConnector
@@ -88,19 +95,34 @@ export interface DirectoryMetaConnector<Depth extends number>
   getDirectory(): string;
 }
 
+/// DirectoryMetaConnectorOptions
+export type DirectoryMetaConnectorOptions<Depth extends number> = {
+  /// DirectoryMetaConnectorOptions.depth
+  depth: Depth;
+
+  /// DirectoryMetaConnectorOptions.metaDirectory
+  metaDirectory: string;
+};
+
 /// createDirectoryMetaConnector
 export function createDirectoryMetaConnector<Depth extends number>(
-  depth: Depth,
-  directory: string,
+  options: DirectoryMetaConnectorOptions<Depth>,
 ): DirectoryMetaConnector<Depth>;
 
-/// createDirectoryConnectors
-export function createDirectoryConnectors<Depth extends number>(
-  depth: Depth,
-  dataDirectory: string,
-  metaDirectory: string,
-): Connectors<
-  Depth,
-  DirectoryDataConnector<Depth>,
-  DirectoryMetaConnector<Depth>
+/// DirectorySyncletOptions
+export type DirectorySyncletOptions<Depth extends number> =
+  DirectoryDataConnectorOptions<Depth> &
+    DirectoryMetaConnectorOptions<Depth> & {
+      /// DirectorySyncletOptions.transport
+      transport: Transport;
+
+      /// DirectorySyncletOptions.implementations
+      implementations?: SyncletImplementations<Depth>;
+    } & SyncletOptions;
+
+/// createDirectorySynclet
+export function createDirectorySynclet<Depth extends number>(
+  options: DirectorySyncletOptions<Depth>,
+): Promise<
+  Synclet<Depth, DirectoryDataConnector<Depth>, DirectoryMetaConnector<Depth>>
 >;

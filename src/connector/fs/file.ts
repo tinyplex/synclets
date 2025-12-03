@@ -1,3 +1,4 @@
+import {createSynclet} from '@synclets';
 import type {
   createFileDataConnector as createFileDataConnectorDecl,
   createFileMetaConnector as createFileMetaConnectorDecl,
@@ -8,7 +9,6 @@ import type {
   FileMetaConnectorOptions,
   FileSyncletOptions,
 } from '@synclets/@types/connector/fs';
-import {createSynclet} from '@synclets';
 import {createFileConnector} from './common.ts';
 
 export const createFileDataConnector: typeof createFileDataConnectorDecl = <

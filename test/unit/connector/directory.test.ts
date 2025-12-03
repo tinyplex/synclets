@@ -3,9 +3,9 @@ import {tmpdir} from 'os';
 import {join, sep} from 'path';
 import {createSynclet} from 'synclets';
 import {
-  createDirectoryConnectors,
   createDirectoryDataConnector,
   createDirectoryMetaConnector,
+  createDirectorySynclet,
 } from 'synclets/connector/fs';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
@@ -17,9 +17,15 @@ describeCommonConnectorTests(
   async ({tempDir}: {tempDir: string}) =>
     await rm(tempDir, {recursive: true, force: true}),
   (depth: number, {tempDir}: {tempDir: string}) =>
-    createDirectoryDataConnector(depth, join(tempDir, getUniqueId() + '.data')),
+    createDirectoryDataConnector({
+      depth,
+      dataDirectory: join(tempDir, getUniqueId() + '.data'),
+    }),
   (depth: number, {tempDir}: {tempDir: string}) =>
-    createDirectoryMetaConnector(depth, join(tempDir, getUniqueId() + '.meta')),
+    createDirectoryMetaConnector({
+      depth,
+      metaDirectory: join(tempDir, getUniqueId() + '.meta'),
+    }),
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
 );
 
@@ -27,10 +33,16 @@ test('getDirectory', async () => {
   const tmpDir = await mkdtemp(tmpdir() + sep);
 
   const dataDir = join(tmpDir, getUniqueId() + '.data');
-  const dataConnector = createDirectoryDataConnector(1, dataDir);
+  const dataConnector = createDirectoryDataConnector({
+    depth: 1,
+    dataDirectory: dataDir,
+  });
 
   const metaDir = join(tmpDir, getUniqueId() + '.meta');
-  const metaConnector = createDirectoryMetaConnector(1, metaDir);
+  const metaConnector = createDirectoryMetaConnector({
+    depth: 1,
+    metaDirectory: metaDir,
+  });
 
   const synclet = await createSynclet({dataConnector, metaConnector});
 
@@ -44,17 +56,19 @@ test('getDirectory', async () => {
   await synclet.destroy();
 });
 
-test('getDirectory, connectors', async () => {
+test('getDirectory, createDirectorySynclet', async () => {
   const tmpDir = await mkdtemp(tmpdir() + sep);
 
   const dataDirectory = join(tmpDir, getUniqueId() + '.data');
   const metaDirectory = join(tmpDir, getUniqueId() + '.meta');
-  const connectors = createDirectoryConnectors(1, dataDirectory, metaDirectory);
-  const synclet = await createSynclet({connectors});
+  const synclet = await createDirectorySynclet({
+    depth: 1,
+    dataDirectory,
+    metaDirectory,
+    transport: createMemoryTransport({poolId: getUniqueId()}),
+  });
 
-  expect(connectors.getDataConnector().getDirectory()).toEqual(dataDirectory);
   expect(synclet.getDataConnector().getDirectory()).toEqual(dataDirectory);
-  expect(connectors.getMetaConnector().getDirectory()).toEqual(metaDirectory);
   expect(synclet.getMetaConnector().getDirectory()).toEqual(metaDirectory);
 
   await rm(tmpDir, {recursive: true, force: true});
@@ -66,10 +80,16 @@ test('non-path addresses', async () => {
   const tmpDir = await mkdtemp(tmpdir() + sep);
 
   const dataDir = join(tmpDir, getUniqueId() + '.data');
-  const dataConnector = createDirectoryDataConnector(2, dataDir);
+  const dataConnector = createDirectoryDataConnector({
+    depth: 2,
+    dataDirectory: dataDir,
+  });
 
   const metaDir = join(tmpDir, getUniqueId() + '.meta');
-  const metaConnector = createDirectoryMetaConnector(2, metaDir);
+  const metaConnector = createDirectoryMetaConnector({
+    depth: 2,
+    metaDirectory: metaDir,
+  });
 
   const synclet = await createSynclet({dataConnector, metaConnector});
   await synclet.setAtom(['.', 'a/b'], 'A');

@@ -1,7 +1,7 @@
 export {
-  createDirectoryConnectors,
   createDirectoryDataConnector,
   createDirectoryMetaConnector,
+  createDirectorySynclet,
 } from './directory.ts';
 export {
   createFileDataConnector,
