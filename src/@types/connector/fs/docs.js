@@ -24,6 +24,28 @@
 }
 
 /**
+ * The FileDataConnectorOptions type specifies configuration for creating a
+ * file-backed DataConnector.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// FileDataConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth the connector will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileDataConnectorOptions.depth
+  /**
+   * The dataFile property specifies the file path for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileDataConnectorOptions.dataFile
+}
+
+/**
  * The createFileDataConnector function creates a DataConnector that persists
  * Atom data in a single JSON file on the file system.
  *
@@ -56,6 +78,28 @@
 }
 
 /**
+ * The FileMetaConnectorOptions type specifies configuration for creating a
+ * file-backed MetaConnector.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// FileMetaConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth the connector will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileMetaConnectorOptions.depth
+  /**
+   * The metaFile property specifies the file path for metadata storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileMetaConnectorOptions.metaFile
+}
+
+/**
  * The createFileMetaConnector function creates a MetaConnector that persists
  * Timestamp metadata in a single JSON file on the file system.
  *
@@ -68,47 +112,60 @@
 /// createFileMetaConnector
 
 /**
- * The FileConnectorsOptions type specifies configuration for both data and
- * meta connectors when using createFileConnectors.
+ * The FileSyncletOptions type specifies configuration for creating a
+ * file-backed Synclet.
  * @category Connector
  * @since v0.0.5
  */
-/// FileConnectorsOptions
+/// FileSyncletOptions
 {
+  /**
+   * The depth property specifies the tree depth the Synclet will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileSyncletOptions.depth
   /**
    * The dataFile property specifies the file path for data storage.
    * @category Option
    * @since v0.0.5
    */
-  /// FileConnectorsOptions.dataFile
+  /// FileSyncletOptions.dataFile
   /**
    * The metaFile property specifies the file path for metadata storage.
    * @category Option
    * @since v0.0.5
    */
-  /// FileConnectorsOptions.metaFile
+  /// FileSyncletOptions.metaFile
+  /**
+   * The transport property specifies the Transport instance for synchronization.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileSyncletOptions.transport
+  /**
+   * The implementations property optionally specifies custom conflict resolution
+   * implementations.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// FileSyncletOptions.implementations
 }
 
 /**
- * The createFileConnectors function creates both a file-backed DataConnector
- * and MetaConnector together in a single call, returning them as a tuple.
+ * The createFileSynclet function creates a file-backed Synclet with both data
+ * and metadata persistence in a single call.
  *
  * This is the recommended approach for file-based persistence in Node.js. The
- * function provides a simplified API compared to creating the connectors
- * separately.
- *
- * When options are not provided, both data and metadata are stored in the same
- * file. For better organization and to avoid potential conflicts in large
- * datasets, you can specify separate file paths via the options parameter.
- * @param depth The tree depth the Synclet will operate at.
- * @param file The base file path (used for both connectors if options not
- * provided).
- * @param options Optional configuration to use separate file paths.
- * @returns A tuple of [DataConnector, MetaConnector].
+ * function provides a simplified API that creates both the DataConnector and
+ * MetaConnector internally, along with the Synclet instance.
+ * @param options Configuration object specifying file paths, transport, and
+ * other Synclet options.
+ * @returns A Promise resolving to the configured Synclet instance.
  * @category Connector
  * @since v0.0.5
  */
-/// createFileConnectors
+/// createFileSynclet
 
 /**
  * The DirectoryDataConnector interface describes a DataConnector that stores
