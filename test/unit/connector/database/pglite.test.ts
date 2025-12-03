@@ -2,9 +2,9 @@
 import {PGlite} from '@electric-sql/pglite';
 import {createSynclet} from 'synclets';
 import {
-  createPgliteConnectors,
   createPgliteDataConnector,
   createPgliteMetaConnector,
+  createPgliteSynclet,
 } from 'synclets/connector/database/pglite';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
@@ -29,9 +29,17 @@ describeCommonConnectorTests(
   async () => await PGlite.create(),
   async () => {},
   <Depth extends number>(depth: Depth, pglite: PGlite) =>
-    createPgliteDataConnector(depth, pglite, {table: 'data' + getUniqueId()}),
+    createPgliteDataConnector({
+      depth,
+      pglite,
+      dataTable: 'data' + getUniqueId(),
+    }),
   <Depth extends number>(depth: Depth, pglite: PGlite) =>
-    createPgliteMetaConnector(depth, pglite, {table: 'meta' + getUniqueId()}),
+    createPgliteMetaConnector({
+      depth,
+      pglite,
+      metaTable: 'meta' + getUniqueId(),
+    }),
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
 );
 
@@ -39,8 +47,14 @@ test('getPglite', async () => {
   const dataPglite = await PGlite.create();
   const metaPglite = await PGlite.create();
 
-  const dataConnector = createPgliteDataConnector(1, dataPglite);
-  const metaConnector = createPgliteMetaConnector(1, metaPglite);
+  const dataConnector = createPgliteDataConnector({
+    depth: 1,
+    pglite: dataPglite,
+  });
+  const metaConnector = createPgliteMetaConnector({
+    depth: 1,
+    pglite: metaPglite,
+  });
 
   const synclet = await createSynclet({dataConnector, metaConnector});
 
@@ -56,18 +70,15 @@ test('getPglite', async () => {
   await synclet.destroy();
 });
 
-test('getPglite, connectors', async () => {
+test('getPglite, synclet', async () => {
   const pglite = await PGlite.create();
-  const connectors = createPgliteConnectors(1, pglite, {
-    dataTable: 'data',
-    metaTable: 'meta',
+  const synclet = await createPgliteSynclet({
+    depth: 1,
+    pglite,
   });
 
-  const synclet = await createSynclet({connectors});
-  expect(connectors.getDataConnector().getPglite()).toEqual(pglite);
   expect(synclet.getDataConnector().getPglite()).toEqual(pglite);
-
-  expect(connectors.getMetaConnector().getPglite()).toEqual(pglite);
+  expect(synclet.getMetaConnector().getPglite()).toEqual(pglite);
   expect(synclet.getMetaConnector().getPglite()).toEqual(pglite);
   await pglite.close();
 
@@ -89,7 +100,7 @@ describe('data schema checks', async () => {
 
   test('create if table missing', async () => {
     const logger = {info: vi.fn()};
-    const dataConnector = createPgliteDataConnector(3, pglite);
+    const dataConnector = createPgliteDataConnector({depth: 3, pglite});
     const metaConnector = createMockMetaConnector(3);
     const synclet = await createSynclet(
       {dataConnector, metaConnector},
@@ -109,8 +120,10 @@ describe('data schema checks', async () => {
 
   test('create if table missing, custom options', async () => {
     const logger = {info: vi.fn()};
-    const dataConnector = createPgliteDataConnector(3, pglite, {
-      table: 'd',
+    const dataConnector = createPgliteDataConnector({
+      depth: 3,
+      pglite,
+      dataTable: 'd',
       addressColumn: 'a',
       atomColumn: 'x',
     });
@@ -133,7 +146,7 @@ describe('data schema checks', async () => {
 
   test('no error if table is correct', async () => {
     await pglite.sql`CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, atom TEXT);`;
-    const dataConnector = createPgliteDataConnector(3, pglite);
+    const dataConnector = createPgliteDataConnector({depth: 3, pglite});
     const metaConnector = createMockMetaConnector(3);
     const synclet = await createSynclet({dataConnector, metaConnector});
     await synclet.destroy();
@@ -141,7 +154,7 @@ describe('data schema checks', async () => {
 
   test('error if table has wrong number of columns', async () => {
     await pglite.sql`CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, atom TEXT);`;
-    const dataConnector = createPgliteDataConnector(3, pglite);
+    const dataConnector = createPgliteDataConnector({depth: 3, pglite});
     const metaConnector = createMockMetaConnector(3);
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
@@ -150,7 +163,7 @@ describe('data schema checks', async () => {
 
   test('error if table has wrong type of columns', async () => {
     await pglite.sql`CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, address3 INTEGER, atom TEXT);`;
-    const dataConnector = createPgliteDataConnector(3, pglite);
+    const dataConnector = createPgliteDataConnector({depth: 3, pglite});
     const metaConnector = createMockMetaConnector(3);
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
@@ -159,7 +172,7 @@ describe('data schema checks', async () => {
 
   test('error if table needs address', async () => {
     await pglite.sql`CREATE TABLE data (whoops TEXT, address1 TEXT, address2 TEXT, address3 TEXT, atom TEXT);`;
-    const dataConnector = createPgliteDataConnector(3, pglite);
+    const dataConnector = createPgliteDataConnector({depth: 3, pglite});
     const metaConnector = createMockMetaConnector(3);
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
@@ -168,7 +181,7 @@ describe('data schema checks', async () => {
 
   test('error if table needs atom', async () => {
     await pglite.sql`CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, whoops TEXT);`;
-    const dataConnector = createPgliteDataConnector(3, pglite);
+    const dataConnector = createPgliteDataConnector({depth: 3, pglite});
     const metaConnector = createMockMetaConnector(3);
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
@@ -177,7 +190,7 @@ describe('data schema checks', async () => {
 
   test('error if table needs addressN', async () => {
     await pglite.sql`CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, whoops TEXT, atom TEXT);`;
-    const dataConnector = createPgliteDataConnector(3, pglite);
+    const dataConnector = createPgliteDataConnector({depth: 3, pglite});
     const metaConnector = createMockMetaConnector(3);
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
@@ -201,7 +214,7 @@ describe('meta schema checks', async () => {
   test('create if table missing', async () => {
     const logger = {info: vi.fn()};
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, pglite);
+    const metaConnector = createPgliteMetaConnector({depth: 3, pglite});
     const synclet = await createSynclet(
       {dataConnector, metaConnector},
       {},
@@ -221,8 +234,10 @@ describe('meta schema checks', async () => {
   test('create if table missing, custom options', async () => {
     const logger = {info: vi.fn()};
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, pglite, {
-      table: 'm',
+    const metaConnector = createPgliteMetaConnector({
+      depth: 3,
+      pglite,
+      metaTable: 'm',
       addressColumn: 'a',
       timestampColumn: 't',
     });
@@ -245,7 +260,7 @@ describe('meta schema checks', async () => {
   test('no error if table is correct', async () => {
     await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, pglite);
+    const metaConnector = createPgliteMetaConnector({depth: 3, pglite});
     const synclet = await createSynclet({dataConnector, metaConnector});
     await synclet.destroy();
   });
@@ -253,7 +268,7 @@ describe('meta schema checks', async () => {
   test('error if table has wrong number of columns', async () => {
     await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, pglite);
+    const metaConnector = createPgliteMetaConnector({depth: 3, pglite});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
@@ -262,7 +277,7 @@ describe('meta schema checks', async () => {
   test('error if table has wrong type of columns', async () => {
     await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 INTEGER, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, pglite);
+    const metaConnector = createPgliteMetaConnector({depth: 3, pglite});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
@@ -271,7 +286,7 @@ describe('meta schema checks', async () => {
   test('error if table needs address', async () => {
     await pglite.sql`CREATE TABLE meta (whoops TEXT, address1 TEXT, address2 TEXT, address3 TEXT, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, pglite);
+    const metaConnector = createPgliteMetaConnector({depth: 3, pglite});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
@@ -280,7 +295,7 @@ describe('meta schema checks', async () => {
   test('error if table needs timestamp', async () => {
     await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, whoops TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, pglite);
+    const metaConnector = createPgliteMetaConnector({depth: 3, pglite});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
@@ -289,7 +304,7 @@ describe('meta schema checks', async () => {
   test('error if table needs addressN', async () => {
     await pglite.sql`CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, whoops TEXT, timestamp TEXT);`;
     const dataConnector = createMockDataConnector(3);
-    const metaConnector = createPgliteMetaConnector(3, pglite);
+    const metaConnector = createPgliteMetaConnector({depth: 3, pglite});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');

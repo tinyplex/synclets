@@ -24,6 +24,46 @@
 }
 
 /**
+ * The PgliteDataConnectorOptions type specifies configuration for a PGlite
+ * DataConnector.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// PgliteDataConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteDataConnectorOptions.depth
+  /**
+   * The pglite property specifies the PGlite database instance.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteDataConnectorOptions.pglite
+  /**
+   * The dataTable property specifies the table name for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteDataConnectorOptions.dataTable
+  /**
+   * The addressColumn property specifies the column name for addresses.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteDataConnectorOptions.addressColumn
+  /**
+   * The atomColumn property specifies the column name for atom values.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteDataConnectorOptions.atomColumn
+}
+
+/**
  * The createPgliteDataConnector function creates a DataConnector that persists
  * Atom data in a PGlite database table.
  *
@@ -57,6 +97,46 @@
 }
 
 /**
+ * The PgliteMetaConnectorOptions type specifies configuration for a PGlite
+ * MetaConnector.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// PgliteMetaConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteMetaConnectorOptions.depth
+  /**
+   * The pglite property specifies the PGlite database instance.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteMetaConnectorOptions.pglite
+  /**
+   * The metaTable property specifies the table name for metadata storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteMetaConnectorOptions.metaTable
+  /**
+   * The addressColumn property specifies the column name for addresses.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteMetaConnectorOptions.addressColumn
+  /**
+   * The timestampColumn property specifies the column name for timestamps.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteMetaConnectorOptions.timestampColumn
+}
+
+/**
  * The createPgliteMetaConnector function creates a MetaConnector that persists
  * Timestamp metadata in a PGlite database table.
  *
@@ -71,63 +151,86 @@
 /// createPgliteMetaConnector
 
 /**
- * The PgliteConnectorsOptions type specifies configuration for both data and
- * meta connectors when using createPgliteConnectors.
+ * The PgliteSyncletOptions type specifies configuration for creating a PGlite
+ * Synclet.
  * @category Connector
  * @since v0.0.5
  */
-/// PgliteConnectorsOptions
+/// PgliteSyncletOptions
 {
+  /**
+   * The depth property specifies the tree depth.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteSyncletOptions.depth
+  /**
+   * The pglite property specifies the PGlite database instance.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteSyncletOptions.pglite
   /**
    * The dataTable property specifies the table name for data storage.
    * @category Option
    * @since v0.0.5
    */
-  /// PgliteConnectorsOptions.dataTable
+  /// PgliteSyncletOptions.dataTable
   /**
    * The metaTable property specifies the table name for metadata storage.
    * @category Option
    * @since v0.0.5
    */
-  /// PgliteConnectorsOptions.metaTable
+  /// PgliteSyncletOptions.metaTable
   /**
    * The addressColumn property specifies the column name for addresses.
    * @category Option
    * @since v0.0.5
    */
-  /// PgliteConnectorsOptions.addressColumn
+  /// PgliteSyncletOptions.addressColumn
   /**
    * The atomColumn property specifies the column name for atom values.
    * @category Option
    * @since v0.0.5
    */
-  /// PgliteConnectorsOptions.atomColumn
+  /// PgliteSyncletOptions.atomColumn
   /**
    * The timestampColumn property specifies the column name for timestamps.
    * @category Option
    * @since v0.0.5
    */
-  /// PgliteConnectorsOptions.timestampColumn
+  /// PgliteSyncletOptions.timestampColumn
+  /**
+   * The transport property specifies the Transport or Transports to use.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteSyncletOptions.transport
+  /**
+   * The implementations property specifies custom Synclet implementations.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// PgliteSyncletOptions.implementations
 }
 
 /**
- * The createPgliteConnectors function creates both a PGlite-backed
- * DataConnector and MetaConnector together in a single call, returning them as
- * a tuple.
+ * The createPgliteSynclet function creates a Synclet with PGlite-backed
+ * connectors.
  *
- * This is the recommended approach when both data and metadata are stored in
- * the same PGlite database instance. The function provides a simplified API
- * compared to creating the connectors separately, while still allowing
- * customization of table and column names for both connectors.
+ * This is the recommended approach for creating a PGlite Synclet, providing a
+ * simplified API that creates both the DataConnector and MetaConnector
+ * internally. The function uses the same PGlite database instance for both
+ * connectors and allows customization of all table and column names.
  *
- * When options are not provided, the connectors use default table names 'data'
- * and 'meta' with standard column names. All table structures are created
+ * When table/column options are not provided, the connectors use defaults:
+ * data table 'data' with columns 'address' and 'atom', and meta table 'meta'
+ * with columns 'address' and 'timestamp'. All table structures are created
  * automatically on first use.
- * @param depth The tree depth the Synclet will operate at.
- * @param pglite The PGlite database instance to use for both connectors.
- * @param options Optional configuration for table and column names.
- * @returns A tuple of [DataConnector, MetaConnector].
+ * @param options Configuration including depth, pglite instance, and optional
+ * table/column names.
+ * @returns A Promise that resolves to the Synclet.
  * @category Connector
  * @since v0.0.5
  */
-/// createPgliteConnectors
+/// createPgliteSynclet

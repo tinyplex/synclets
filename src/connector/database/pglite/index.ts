@@ -1,85 +1,46 @@
 import type {PGlite} from '@electric-sql/pglite';
-import type {
-  DatabaseDataOptions,
-  DatabaseMetaOptions,
-} from '@synclets/@types/connector/database';
+import {createSynclet} from '@synclets';
 import {Sql} from '@synclets/@types/connector/database';
 import type {
-  createPgliteConnectors as createPgliteConnectorsDecl,
   createPgliteDataConnector as createPgliteDataConnectorDecl,
   createPgliteMetaConnector as createPgliteMetaConnectorDecl,
+  createPgliteSynclet as createPgliteSyncletDecl,
   PgliteDataConnector,
+  PgliteDataConnectorOptions,
   PgliteMetaConnector,
+  PgliteMetaConnectorOptions,
+  PgliteSyncletOptions,
 } from '@synclets/@types/connector/database/pglite';
 import {objFromEntries} from '../../../common/object.ts';
 import {createDatabaseConnector} from '../common.ts';
 import {getQuery, sql} from '../index.ts';
 
-export const createPgliteConnectors: typeof createPgliteConnectorsDecl = <
-  Depth extends number,
->(
-  depth: Depth,
-  pglite: PGlite,
-  {
-    dataTable = 'data',
-    metaTable = 'meta',
-    addressColumn = 'address',
-    atomColumn = 'atom',
-    timestampColumn = 'timestamp',
-  }: {
-    dataTable?: string;
-    metaTable?: string;
-    addressColumn?: string;
-    atomColumn?: string;
-    timestampColumn?: string;
-  } = {},
-) => {
-  const dataConnector = createPgliteDataConnector(depth, pglite, {
-    table: dataTable,
-    addressColumn,
-    atomColumn,
-  } as DatabaseDataOptions);
-  const metaConnector = createPgliteMetaConnector(depth, pglite, {
-    table: metaTable,
-    addressColumn,
-    timestampColumn,
-  } as DatabaseMetaOptions);
-  return {
-    getDataConnector: () => dataConnector,
-    getMetaConnector: () => metaConnector,
-  };
-};
-
 export const createPgliteDataConnector: typeof createPgliteDataConnectorDecl = <
   Depth extends number,
->(
-  depth: Depth,
-  pglite: PGlite,
-  {
-    table = 'data',
-    addressColumn = 'address',
-    atomColumn = 'atom',
-  }: DatabaseDataOptions = {},
-): PgliteDataConnector<Depth> =>
+>({
+  depth,
+  pglite,
+  dataTable = 'data',
+  addressColumn = 'address',
+  atomColumn = 'atom',
+}: PgliteDataConnectorOptions<Depth>): PgliteDataConnector<Depth> =>
   createPgliteConnector(false, depth, pglite, {
-    table,
+    table: dataTable,
     addressColumn,
     leafColumn: atomColumn,
   });
 
 export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
   Depth extends number,
->(
-  depth: Depth,
-  pglite: PGlite,
-  {
-    table = 'meta',
-    addressColumn = 'address',
-    timestampColumn = 'timestamp',
-  }: DatabaseMetaOptions = {},
-): PgliteMetaConnector<Depth> =>
+>({
+  depth,
+  pglite,
+  metaTable = 'meta',
+  addressColumn = 'address',
+  timestampColumn = 'timestamp',
+}: PgliteMetaConnectorOptions<Depth>): PgliteMetaConnector<Depth> =>
   createPgliteConnector(true, depth, pglite, {
-    table,
+    table: metaTable,
     addressColumn,
     leafColumn: timestampColumn,
   });
@@ -125,3 +86,40 @@ const createPgliteConnector = <
     ? PgliteMetaConnector<Depth>
     : PgliteDataConnector<Depth>;
 };
+
+export const createPgliteSynclet: typeof createPgliteSyncletDecl = <
+  Depth extends number,
+>({
+  depth,
+  pglite,
+  dataTable,
+  metaTable,
+  addressColumn,
+  atomColumn,
+  timestampColumn,
+  transport,
+  implementations,
+  id,
+  logger,
+}: PgliteSyncletOptions<Depth>) =>
+  createSynclet(
+    {
+      dataConnector: createPgliteDataConnector({
+        depth,
+        pglite,
+        dataTable,
+        addressColumn,
+        atomColumn,
+      }),
+      metaConnector: createPgliteMetaConnector({
+        depth,
+        pglite,
+        metaTable,
+        addressColumn,
+        timestampColumn,
+      }),
+      transport,
+    },
+    implementations,
+    {id, logger},
+  );

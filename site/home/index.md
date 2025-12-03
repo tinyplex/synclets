@@ -93,8 +93,11 @@
 import {PGlite} from '@electric-sql/pglite';
 import {createPgliteDataConnector} from 'synclets/connector/database/pglite';
 
-const db = await PGlite.create();
-const dataConnector = createPgliteDataConnector(1, db);
+const pglite = await PGlite.create();
+const dataConnector = createPgliteDataConnector({
+  depth: 1,
+  pglite,
+});
 ```
 
 > ## Metadata is stored separately
@@ -105,7 +108,10 @@ const dataConnector = createPgliteDataConnector(1, db);
 ```js
 import {createPgliteMetaConnector} from 'synclets/connector/database/pglite';
 
-const metaConnector = createPgliteMetaConnector(1, db);
+const metaConnector = createPgliteMetaConnector({
+  depth: 1,
+  pglite,
+});
 ```
 
 > ## Pick a transport layer

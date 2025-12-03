@@ -2,11 +2,13 @@
 
 import type {PGlite} from '@electric-sql/pglite';
 import type {
-  Connectors,
   DataConnector,
   MetaConnector,
+  Synclet,
+  SyncletImplementations,
+  SyncletOptions,
+  Transport,
 } from '../../../index.d.ts';
-import type {DatabaseDataOptions, DatabaseMetaOptions} from '../index.d.ts';
 
 /// PgliteDataConnector
 export interface PgliteDataConnector<Depth extends number>
@@ -15,11 +17,27 @@ export interface PgliteDataConnector<Depth extends number>
   getPglite(): PGlite;
 }
 
+/// PgliteDataConnectorOptions
+export type PgliteDataConnectorOptions<Depth extends number> = {
+  /// PgliteDataConnectorOptions.depth
+  depth: Depth;
+
+  /// PgliteDataConnectorOptions.pglite
+  pglite: PGlite;
+
+  /// PgliteDataConnectorOptions.dataTable
+  dataTable?: string;
+
+  /// PgliteDataConnectorOptions.addressColumn
+  addressColumn?: string;
+
+  /// PgliteDataConnectorOptions.atomColumn
+  atomColumn?: string;
+};
+
 /// createPgliteDataConnector
 export function createPgliteDataConnector<Depth extends number>(
-  depth: Depth,
-  pglite: PGlite,
-  options?: DatabaseDataOptions,
+  options: PgliteDataConnectorOptions<Depth>,
 ): PgliteDataConnector<Depth>;
 
 /// PgliteMetaConnector
@@ -29,34 +47,43 @@ export interface PgliteMetaConnector<Depth extends number>
   getPglite(): PGlite;
 }
 
-/// createPgliteMetaConnector
-export function createPgliteMetaConnector<Depth extends number>(
-  depth: Depth,
-  pglite: PGlite,
-  options?: DatabaseMetaOptions,
-): PgliteMetaConnector<Depth>;
+/// PgliteMetaConnectorOptions
+export type PgliteMetaConnectorOptions<Depth extends number> = {
+  /// PgliteMetaConnectorOptions.depth
+  depth: Depth;
 
-/// PgliteConnectorsOptions
-export type PgliteConnectorsOptions = {
-  /// PgliteConnectorsOptions.dataTable
-  dataTable?: string;
+  /// PgliteMetaConnectorOptions.pglite
+  pglite: PGlite;
 
-  /// PgliteConnectorsOptions.metaTable
+  /// PgliteMetaConnectorOptions.metaTable
   metaTable?: string;
 
-  /// PgliteConnectorsOptions.addressColumn
+  /// PgliteMetaConnectorOptions.addressColumn
   addressColumn?: string;
 
-  /// PgliteConnectorsOptions.atomColumn
-  atomColumn?: string;
-
-  /// PgliteConnectorsOptions.timestampColumn
+  /// PgliteMetaConnectorOptions.timestampColumn
   timestampColumn?: string;
 };
 
-/// createPgliteConnectors
-export function createPgliteConnectors<Depth extends number>(
-  depth: Depth,
-  pglite: PGlite,
-  options?: PgliteConnectorsOptions,
-): Connectors<Depth, PgliteDataConnector<Depth>, PgliteMetaConnector<Depth>>;
+/// createPgliteMetaConnector
+export function createPgliteMetaConnector<Depth extends number>(
+  options: PgliteMetaConnectorOptions<Depth>,
+): PgliteMetaConnector<Depth>;
+
+/// PgliteSyncletOptions
+export type PgliteSyncletOptions<Depth extends number> =
+  PgliteDataConnectorOptions<Depth> &
+    PgliteMetaConnectorOptions<Depth> & {
+      /// PgliteSyncletOptions.transport
+      transport?: Transport | Transport[];
+
+      /// PgliteSyncletOptions.implementations
+      implementations?: SyncletImplementations<Depth>;
+    } & SyncletOptions;
+
+/// createPgliteSynclet
+export function createPgliteSynclet<Depth extends number>(
+  options: PgliteSyncletOptions<Depth>,
+): Promise<
+  Synclet<Depth, PgliteDataConnector<Depth>, PgliteMetaConnector<Depth>>
+>;

@@ -121,8 +121,8 @@ const SERVER = 'wss://demo.synclets.org/' + getUniqueId();
 // Synclet 1 (PGlite)
 const pglite = await PGlite.create();
 const synclet1 = await createSynclet({
-  dataConnector: createPgliteDataConnector(1, pglite),
-  metaConnector: createPgliteMetaConnector(1, pglite),
+  dataConnector: createPgliteDataConnector({depth: 1, pglite}),
+  metaConnector: createPgliteMetaConnector({depth: 1, pglite}),
   transport: createWsClientTransport(new WebSocket(SERVER)),
 });
 await synclet1.start();
