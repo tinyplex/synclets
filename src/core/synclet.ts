@@ -6,6 +6,7 @@ import {
   AtomAddress,
   AtomsAddress,
   Context,
+  createSynclet as createSyncletDecl,
   Data,
   Hash,
   LogLevel,
@@ -73,7 +74,7 @@ const ATTACH = 0;
 const DETACH = 1;
 const SEND_MESSAGE = 2;
 
-export const createSynclet = async <
+export const createSynclet = (async <
   Depth extends number,
   ProtectedDataConnectorType extends ProtectedDataConnector<Depth>,
   ProtectedMetaConnectorType extends ProtectedMetaConnector<Depth>,
@@ -693,4 +694,4 @@ export const createSynclet = async <
   );
 
   return objFreeze(synclet);
-};
+}) as typeof createSyncletDecl;

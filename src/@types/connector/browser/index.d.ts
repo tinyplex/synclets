@@ -1,6 +1,14 @@
 /// connector/browser
 
-import type {Connectors, DataConnector, MetaConnector} from '../../index.js';
+import type {
+  Connectors,
+  DataConnector,
+  MetaConnector,
+  Synclet,
+  SyncletImplementations,
+  SyncletOptions,
+  Transport,
+} from '../../index.js';
 
 /// LocalStorageDataConnector
 export interface LocalStorageDataConnector<Depth extends number>
@@ -9,10 +17,18 @@ export interface LocalStorageDataConnector<Depth extends number>
   getStorageName(): string;
 }
 
+/// LocalStorageDataConnectorOptions
+export type LocalStorageDataConnectorOptions<Depth extends number> = {
+  /// LocalStorageDataConnectorOptions.depth
+  depth: Depth;
+
+  /// LocalStorageDataConnectorOptions.dataStorageName
+  dataStorageName: string;
+};
+
 /// createLocalStorageDataConnector
 export function createLocalStorageDataConnector<Depth extends number>(
-  depth: Depth,
-  storageName: string,
+  options: LocalStorageDataConnectorOptions<Depth>,
 ): LocalStorageDataConnector<Depth>;
 
 /// LocalStorageMetaConnector
@@ -22,21 +38,40 @@ export interface LocalStorageMetaConnector<Depth extends number>
   getStorageName(): string;
 }
 
+/// LocalStorageMetaConnectorOptions
+export type LocalStorageMetaConnectorOptions<Depth extends number> = {
+  /// LocalStorageMetaConnectorOptions.depth
+  depth: Depth;
+
+  /// LocalStorageMetaConnectorOptions.metaStorageName
+  metaStorageName: string;
+};
+
 /// createLocalStorageMetaConnector
 export function createLocalStorageMetaConnector<Depth extends number>(
-  depth: Depth,
-  storageName: string,
+  options: LocalStorageMetaConnectorOptions<Depth>,
 ): LocalStorageMetaConnector<Depth>;
 
-/// createLocalStorageConnectors
-export function createLocalStorageConnectors<Depth extends number>(
-  depth: Depth,
-  dataStorageName: string,
-  metaStorageName: string,
-): Connectors<
-  Depth,
-  LocalStorageDataConnector<Depth>,
-  LocalStorageMetaConnector<Depth>
+/// LocalStorageSyncletOptions
+export type LocalStorageSyncletOptions<Depth extends number> =
+  LocalStorageDataConnectorOptions<Depth> &
+    LocalStorageMetaConnectorOptions<Depth> & {
+      /// LocalStorageSyncletOptions.transport
+      transport?: Transport | Transport[];
+
+      /// LocalStorageSyncletOptions.implementations
+      implementations?: SyncletImplementations<Depth>;
+    } & SyncletOptions;
+
+/// createLocalStorageSynclet
+export function createLocalStorageSynclet<Depth extends number>(
+  options: LocalStorageSyncletOptions<Depth>,
+): Promise<
+  Synclet<
+    Depth,
+    LocalStorageDataConnector<Depth>,
+    LocalStorageMetaConnector<Depth>
+  >
 >;
 
 /// SessionStorageDataConnector

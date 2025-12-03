@@ -34,10 +34,35 @@
  *
  * This connector is designed for browser environments only and will not work in
  * Node.js without a localStorage polyfill.
+ * @param options Configuration options for the LocalStorage data connector.
+ * @returns A LocalStorageDataConnector instance.
  * @category Connector
  * @since v0.0.0
  */
 /// createLocalStorageDataConnector
+
+/**
+ * The LocalStorageDataConnectorOptions type describes the configuration options
+ * for creating a localStorage-backed DataConnector.
+ * @category Type
+ * @since v0.0.5
+ */
+/// LocalStorageDataConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth the connector will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// LocalStorageDataConnectorOptions.depth
+  /**
+   * The dataStorageName property specifies the localStorage key for data
+   * storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// LocalStorageDataConnectorOptions.dataStorageName
+}
 
 /**
  * The LocalStorageMetaConnector interface describes a MetaConnector backed by
@@ -62,31 +87,77 @@
  * Metadata is stored as JSON under the specified storage key. The metadata
  * structure mirrors the data tree but contains HLC timestamps instead of Atom
  * values, enabling conflict resolution during synchronization.
+ * @param options Configuration options for the LocalStorage meta connector.
+ * @returns A LocalStorageMetaConnector instance.
  * @category Connector
  * @since v0.0.0
  */
 /// createLocalStorageMetaConnector
 
 /**
- * The createLocalStorageConnectors function creates both a localStorage-backed
- * DataConnector and MetaConnector together in a single call, returning them as
- * a tuple.
- *
- * This is the recommended approach for browser-based Synclets where both data
- * and metadata should persist across sessions. The function provides a
- * simplified API compared to creating the connectors separately.
- *
- * The data and metadata are stored under separate localStorage keys, allowing
- * you to organize your storage or work around size limits by using different
- * keys for each connector.
- * @param depth The tree depth the Synclet will operate at.
- * @param dataStorageName The localStorage key for data storage.
- * @param metaStorageName The localStorage key for metadata storage.
- * @returns A tuple of [DataConnector, MetaConnector].
- * @category Connector
+ * The LocalStorageMetaConnectorOptions type describes the configuration options
+ * for creating a localStorage-backed MetaConnector.
+ * @category Type
  * @since v0.0.5
  */
-/// createLocalStorageConnectors
+/// LocalStorageMetaConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth the connector will operate at.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// LocalStorageMetaConnectorOptions.depth
+  /**
+   * The metaStorageName property specifies the localStorage key for metadata
+   * storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// LocalStorageMetaConnectorOptions.metaStorageName
+}
+
+/**
+ * The LocalStorageSyncletOptions type describes the configuration options for
+ * creating a complete Synclet with localStorage-backed data and meta
+ * connectors.
+ *
+ * This type combines the options for both DataConnector and MetaConnector,
+ * along with optional transport, implementations, and other synclet
+ * configuration.
+ * @category Type
+ * @since v0.0.5
+ */
+/// LocalStorageSyncletOptions
+{
+  /**
+   * The transport property specifies the transport or transports to use.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// LocalStorageSyncletOptions.transport
+  /**
+   * The implementations property specifies custom synclet implementations.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// LocalStorageSyncletOptions.implementations
+}
+
+/**
+ * The createLocalStorageSynclet function creates a complete Synclet with
+ * localStorage-backed data and meta connectors in a single call.
+ *
+ * This is the most convenient way to create a browser-based Synclet, handling
+ * connector creation and synclet setup with a single options object. Both data
+ * and metadata persist across browser sessions.
+ * @param options Configuration options including storage names, depth,
+ * transport, and other synclet settings.
+ * @returns A Promise that resolves to a fully configured Synclet instance.
+ * @category Synclet
+ * @since v0.0.5
+ */
+/// createLocalStorageSynclet
 
 /**
  * The SessionStorageDataConnector interface describes a DataConnector backed by

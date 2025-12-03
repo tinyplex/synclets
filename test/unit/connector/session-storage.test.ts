@@ -50,11 +50,15 @@ test('getStorageName, connectors', async () => {
   expect(connectors.getDataConnector().getStorageName()).toEqual(
     dataStorageName,
   );
-  expect(synclet.getDataConnector().getStorageName()).toEqual(dataStorageName);
+  expect((synclet.getDataConnector() as any).getStorageName()).toEqual(
+    dataStorageName,
+  );
   expect(connectors.getMetaConnector().getStorageName()).toEqual(
     metaStorageName,
   );
-  expect(synclet.getMetaConnector().getStorageName()).toEqual(metaStorageName);
+  expect((synclet.getMetaConnector() as any).getStorageName()).toEqual(
+    metaStorageName,
+  );
 
   await synclet.destroy();
 });
