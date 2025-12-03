@@ -29,6 +29,7 @@ const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 
 const EXTERNAL = [
+  'cloudflare:workers',
   'fs/promises',
   'path',
   '@electric-sql/pglite',
