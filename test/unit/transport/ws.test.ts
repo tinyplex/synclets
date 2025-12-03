@@ -16,8 +16,8 @@ describeCommonConnectorTests(
     wsServer.destroy();
     wsServer.getWebSocketServer().close();
   },
-  <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
-  <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
+  <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
+  <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
   (uniqueId: string) =>
     createWsClientTransport(
       new WebSocket('ws://localhost:' + WS_PORT + '/' + uniqueId),

@@ -12,7 +12,7 @@ describeCommonConnectorTests(
   async () => {},
   async () => {},
   () => createTinyBaseDataConnector(createStore()),
-  (depth: number) => createMemoryMetaConnector(depth),
+  (depth: number) => createMemoryMetaConnector({depth}),
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
   0,
   [3],

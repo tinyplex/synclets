@@ -16,8 +16,8 @@ const WS_PORT = 9002;
 describeCommonConnectorTests(
   async () => new WebSocketServer({port: WS_PORT}),
   async (wss: WebSocketServer) => wss.close(),
-  <Depth extends number>(depth: Depth) => createMemoryDataConnector(depth),
-  <Depth extends number>(depth: Depth) => createMemoryMetaConnector(depth),
+  <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
+  <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
   (_: string, wss: WebSocketServer, syncletNumber: number) =>
     syncletNumber === 0
       ? createWsServerTransport(wss)

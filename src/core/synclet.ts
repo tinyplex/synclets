@@ -82,11 +82,11 @@ export const createSynclet = (async <
   {
     connectors,
     dataConnector = (connectors?.getDataConnector() ??
-      createMemoryDataConnector(1)) as ProtectedDataConnectorType,
+      createMemoryDataConnector({depth: 1})) as ProtectedDataConnectorType,
     metaConnector = (connectors?.getMetaConnector() ??
-      createMemoryMetaConnector(
-        dataConnector?.depth ?? 1,
-      )) as ProtectedMetaConnectorType,
+      createMemoryMetaConnector({
+        depth: dataConnector?.depth ?? 1,
+      })) as ProtectedMetaConnectorType,
     transport = createMemoryTransport() as
       | ProtectedTransport
       | ProtectedTransport[],

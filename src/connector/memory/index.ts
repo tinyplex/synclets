@@ -1,32 +1,44 @@
+import {createSynclet} from '@synclets';
 import type {DataConnector, MetaConnector} from '@synclets/@types';
 import type {
-  createMemoryConnectors as createMemoryConnectorsDecl,
   createMemoryDataConnector as createMemoryDataConnectorDecl,
   createMemoryMetaConnector as createMemoryMetaConnectorDecl,
+  createMemorySynclet as createMemorySyncletDecl,
+  MemoryDataConnectorOptions,
+  MemoryMetaConnectorOptions,
+  MemorySyncletOptions,
 } from '@synclets/@types/connector/memory';
 import {createMemoryConnector} from '../../common/memory.ts';
 
-export const createMemoryConnectors: typeof createMemoryConnectorsDecl = <
-  Depth extends number,
->(
-  depth: Depth,
-) => {
-  const dataConnector = createMemoryDataConnector(depth);
-  const metaConnector = createMemoryMetaConnector(depth);
-  return {
-    getDataConnector: () => dataConnector,
-    getMetaConnector: () => metaConnector,
-  };
-};
-
 export const createMemoryDataConnector: typeof createMemoryDataConnectorDecl = <
   Depth extends number,
->(
-  depth: Depth,
-): DataConnector<Depth> => createMemoryConnector(false, depth);
+>({
+  depth,
+}: MemoryDataConnectorOptions<Depth>): DataConnector<Depth> =>
+  createMemoryConnector(false, depth);
 
 export const createMemoryMetaConnector: typeof createMemoryMetaConnectorDecl = <
   Depth extends number,
->(
-  depth: Depth,
-): MetaConnector<Depth> => createMemoryConnector(true, depth);
+>({
+  depth,
+}: MemoryMetaConnectorOptions<Depth>): MetaConnector<Depth> =>
+  createMemoryConnector(true, depth);
+
+export const createMemorySynclet: typeof createMemorySyncletDecl = <
+  Depth extends number,
+>({
+  depth,
+  transport,
+  implementations,
+  id,
+  logger,
+}: MemorySyncletOptions<Depth>) =>
+  createSynclet(
+    {
+      dataConnector: createMemoryDataConnector({depth}),
+      metaConnector: createMemoryMetaConnector({depth}),
+      transport,
+    },
+    implementations,
+    {id, logger},
+  );
