@@ -592,6 +592,14 @@ export const testE2e = async () => {
 };
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
 
+export const testDurableObject = async () =>
+  await test(['test/durable-object']);
+
+export const compileAndTestDurableObject = series(
+  compileForTest,
+  testDurableObject,
+);
+
 export const testProd = async () => {
   await execute('attw --pack dist --format table-flipped --profile esm-only');
   await test(['test/prod']);
@@ -615,6 +623,7 @@ export const prePublishPackage = series(
   compileForTest,
   parallel(lint, spell, ts),
   testUnit,
+  testDurableObject,
   testPerf,
   compileForProd,
   testProd,

@@ -54,6 +54,15 @@ export default defineConfig({
           retry: 0,
         },
       },
+      {
+        extends: true,
+        test: {
+          name: 'durable-object',
+          include: ['test/durable-object/**/*.test.ts'],
+          environment: 'node',
+          retry: 0,
+        },
+      },
     ],
   },
 });
