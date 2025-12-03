@@ -128,10 +128,10 @@ const synclet1 = await createSynclet({
 await synclet1.start();
 
 // Synclet 2 (SQLite)
-const sqlite = new Database(':memory:');
+const database = new Database(':memory:');
 const synclet2 = await createSynclet({
-  dataConnector: createSqlite3DataConnector(1, sqlite),
-  metaConnector: createSqlite3MetaConnector(1, sqlite),
+  dataConnector: createSqlite3DataConnector({depth: 1, database}),
+  metaConnector: createSqlite3MetaConnector({depth: 1, database}),
   transport: createWsClientTransport(new WebSocket(SERVER)),
 });
 await synclet2.start();

@@ -24,6 +24,46 @@
 }
 
 /**
+ * The Sqlite3DataConnectorOptions type specifies configuration for a SQLite3
+ * DataConnector.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// Sqlite3DataConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3DataConnectorOptions.depth
+  /**
+   * The database property specifies the SQLite3 Database instance.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3DataConnectorOptions.database
+  /**
+   * The dataTable property specifies the table name for data storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3DataConnectorOptions.dataTable
+  /**
+   * The addressColumn property specifies the column name for addresses.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3DataConnectorOptions.addressColumn
+  /**
+   * The atomColumn property specifies the column name for atom values.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3DataConnectorOptions.atomColumn
+}
+
+/**
  * The createSqlite3DataConnector function creates a DataConnector that persists
  * Atom data in a SQLite3 database table.
  *
@@ -56,6 +96,46 @@
 }
 
 /**
+ * The Sqlite3MetaConnectorOptions type specifies configuration for a SQLite3
+ * MetaConnector.
+ * @category Connector
+ * @since v0.0.5
+ */
+/// Sqlite3MetaConnectorOptions
+{
+  /**
+   * The depth property specifies the tree depth.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3MetaConnectorOptions.depth
+  /**
+   * The database property specifies the SQLite3 Database instance.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3MetaConnectorOptions.database
+  /**
+   * The metaTable property specifies the table name for metadata storage.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3MetaConnectorOptions.metaTable
+  /**
+   * The addressColumn property specifies the column name for addresses.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3MetaConnectorOptions.addressColumn
+  /**
+   * The timestampColumn property specifies the column name for timestamps.
+   * @category Option
+   * @since v0.0.5
+   */
+  /// Sqlite3MetaConnectorOptions.timestampColumn
+}
+
+/**
  * The createSqlite3MetaConnector function creates a MetaConnector that persists
  * Timestamp metadata in a SQLite3 database table.
  *
@@ -70,63 +150,44 @@
 /// createSqlite3MetaConnector
 
 /**
- * The Sqlite3ConnectorsOptions type specifies configuration for both data and
- * meta connectors when using createSqlite3Connectors.
+ * The Sqlite3SyncletOptions type specifies configuration for creating a SQLite3
+ * Synclet.
  * @category Connector
  * @since v0.0.5
  */
-/// Sqlite3ConnectorsOptions
+/// Sqlite3SyncletOptions
 {
   /**
-   * The dataTable property specifies the table name for data storage.
+   * The transport property specifies the Transport or Transports to use.
    * @category Option
    * @since v0.0.5
    */
-  /// Sqlite3ConnectorsOptions.dataTable
+  /// Sqlite3SyncletOptions.transport
   /**
-   * The metaTable property specifies the table name for metadata storage.
+   * The implementations property specifies custom Synclet implementations.
    * @category Option
    * @since v0.0.5
    */
-  /// Sqlite3ConnectorsOptions.metaTable
-  /**
-   * The addressColumn property specifies the column name for addresses.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// Sqlite3ConnectorsOptions.addressColumn
-  /**
-   * The atomColumn property specifies the column name for atom values.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// Sqlite3ConnectorsOptions.atomColumn
-  /**
-   * The timestampColumn property specifies the column name for timestamps.
-   * @category Option
-   * @since v0.0.5
-   */
-  /// Sqlite3ConnectorsOptions.timestampColumn
+  /// Sqlite3SyncletOptions.implementations
 }
 
 /**
- * The createSqlite3Connectors function creates both a SQLite3-backed
- * DataConnector and MetaConnector together in a single call, returning them as
- * a tuple.
+ * The createSqlite3Synclet function creates a Synclet with SQLite3-backed
+ * connectors.
  *
- * This is the recommended approach when both data and metadata are stored in
- * the same SQLite3 database instance. The function provides a simplified API
- * compared to creating the connectors separately, while still allowing
- * customization of table and column names for both connectors.
+ * This is the recommended approach for creating a SQLite3 Synclet, providing a
+ * simplified API that creates both the DataConnector and MetaConnector
+ * internally. The function uses the same SQLite3 database instance for both
+ * connectors and allows customization of all table and column names.
  *
- * When options are not provided, the connectors use default table names 'data'
- * and 'meta' with standard column names. All table structures are created
+ * When table/column options are not provided, the connectors use defaults:
+ * data table 'data' with columns 'address' and 'atom', and meta table 'meta'
+ * with columns 'address' and 'timestamp'. All table structures are created
  * automatically on first use.
- * @param depth The tree depth the Synclet will operate at.
- * @param database The SQLite3 Database instance to use for both connectors.
- * @param options Optional configuration for table and column names.
- * @returns A tuple of [DataConnector, MetaConnector].
+ * @param options Configuration including depth, database instance, and optional
+ * table/column names.
+ * @returns A Promise that resolves to the Synclet.
  * @category Connector
  * @since v0.0.5
  */
-/// createSqlite3Connectors
+/// createSqlite3Synclet

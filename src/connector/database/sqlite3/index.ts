@@ -1,14 +1,14 @@
+import {createSynclet} from '@synclets';
+import type {Sql} from '@synclets/@types/connector/database';
 import type {
-  DatabaseDataOptions,
-  DatabaseMetaOptions,
-  Sql,
-} from '@synclets/@types/connector/database';
-import type {
-  createSqlite3Connectors as createSqlite3ConnectorsDecl,
   createSqlite3DataConnector as createSqlite3DataConnectorDecl,
   createSqlite3MetaConnector as createSqlite3MetaConnectorDecl,
+  createSqlite3Synclet as createSqlite3SyncletDecl,
   Sqlite3DataConnector,
+  Sqlite3DataConnectorOptions,
   Sqlite3MetaConnector,
+  Sqlite3MetaConnectorOptions,
+  Sqlite3SyncletOptions,
 } from '@synclets/@types/connector/database/sqlite3';
 import type {Database} from 'sqlite3';
 import {objFromEntries} from '../../../common/object.ts';
@@ -16,72 +16,70 @@ import {promiseNew} from '../../../common/other.ts';
 import {createDatabaseConnector} from '../common.ts';
 import {getQuery, sql} from '../index.ts';
 
-export const createSqlite3Connectors: typeof createSqlite3ConnectorsDecl = <
-  Depth extends number,
->(
-  depth: Depth,
-  database: Database,
-  {
+export const createSqlite3DataConnector: typeof createSqlite3DataConnectorDecl =
+  <Depth extends number>({
+    depth,
+    database,
     dataTable = 'data',
-    metaTable = 'meta',
     addressColumn = 'address',
     atomColumn = 'atom',
-    timestampColumn = 'timestamp',
-  }: {
-    dataTable?: string;
-    metaTable?: string;
-    addressColumn?: string;
-    atomColumn?: string;
-    timestampColumn?: string;
-  } = {},
-) => {
-  const dataConnector = createSqlite3DataConnector(depth, database, {
-    table: dataTable,
-    addressColumn,
-    atomColumn,
-  } as DatabaseDataOptions);
-  const metaConnector = createSqlite3MetaConnector(depth, database, {
-    table: metaTable,
-    addressColumn,
-    timestampColumn,
-  } as DatabaseMetaOptions);
-  return {
-    getDataConnector: () => dataConnector,
-    getMetaConnector: () => metaConnector,
-  };
-};
+  }: Sqlite3DataConnectorOptions<Depth>): Sqlite3DataConnector<Depth> =>
+    createSqlite3Connector(false, depth, database, {
+      table: dataTable,
+      addressColumn,
+      leafColumn: atomColumn,
+    });
 
 export const createSqlite3MetaConnector: typeof createSqlite3MetaConnectorDecl =
-  <Depth extends number>(
-    depth: Depth,
-    database: Database,
-    {
-      table = 'meta',
-      addressColumn = 'address',
-      timestampColumn = 'timestamp',
-    }: DatabaseMetaOptions = {},
-  ): Sqlite3MetaConnector<Depth> =>
+  <Depth extends number>({
+    depth,
+    database,
+    metaTable = 'meta',
+    addressColumn = 'address',
+    timestampColumn = 'timestamp',
+  }: Sqlite3MetaConnectorOptions<Depth>): Sqlite3MetaConnector<Depth> =>
     createSqlite3Connector(true, depth, database, {
-      table,
+      table: metaTable,
       addressColumn,
       leafColumn: timestampColumn,
     });
 
-export const createSqlite3DataConnector: typeof createSqlite3DataConnectorDecl =
-  <Depth extends number>(
-    depth: Depth,
-    database: Database,
+export const createSqlite3Synclet: typeof createSqlite3SyncletDecl = <
+  Depth extends number,
+>({
+  depth,
+  database,
+  dataTable,
+  metaTable,
+  addressColumn,
+  atomColumn,
+  timestampColumn,
+  transport,
+  implementations,
+  id,
+  logger,
+}: Sqlite3SyncletOptions<Depth>) =>
+  createSynclet(
     {
-      table = 'data',
-      addressColumn = 'address',
-      atomColumn = 'atom',
-    }: DatabaseDataOptions = {},
-  ): Sqlite3DataConnector<Depth> =>
-    createSqlite3Connector(false, depth, database, {
-      table,
-      addressColumn,
-      leafColumn: atomColumn,
-    });
+      dataConnector: createSqlite3DataConnector({
+        depth,
+        database,
+        dataTable,
+        addressColumn,
+        atomColumn,
+      }),
+      metaConnector: createSqlite3MetaConnector({
+        depth,
+        database,
+        metaTable,
+        addressColumn,
+        timestampColumn,
+      }),
+      transport,
+    },
+    implementations,
+    {id, logger},
+  );
 
 const createSqlite3Connector = <
   CreateMeta extends boolean,
