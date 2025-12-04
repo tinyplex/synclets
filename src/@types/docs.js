@@ -165,28 +165,6 @@
 /// Hash
 
 /**
- * The Connectors interface provides accessor methods for obtaining both the
- * DataConnector and MetaConnector from combined connector factory functions.
- * @category Connector
- * @since v0.0.5
- */
-/// Connectors
-{
-  /**
-   * The getDataConnector method returns the DataConnector instance.
-   * @category Connector
-   * @since v0.0.5
-   */
-  /// Connectors.getDataConnector
-  /**
-   * The getMetaConnector method returns the MetaConnector instance.
-   * @category Connector
-   * @since v0.0.5
-   */
-  /// Connectors.getMetaConnector
-}
-
-/**
  * The MessageType type enumerates the allowed message kinds, currently the
  * single value 0.
  * @category Message
@@ -441,13 +419,6 @@
  */
 /// SyncletComponents
 {
-  /**
-   * The connectors property supplies both DataConnector and MetaConnector as a
-   * tuple for convenience.
-   * @category Component
-   * @since v0.0.5
-   */
-  /// SyncletComponents.connectors
   /**
    * The dataConnector property supplies the DataConnector instance to use.
    * @category Component
