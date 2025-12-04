@@ -27,20 +27,20 @@
  * The FileDataConnectorOptions type specifies configuration for creating a
  * file-backed DataConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// FileDataConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileDataConnectorOptions.depth
   /**
    * The dataFile property specifies the file path for data storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileDataConnectorOptions.dataFile
 }
@@ -81,20 +81,20 @@
  * The FileMetaConnectorOptions type specifies configuration for creating a
  * file-backed MetaConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// FileMetaConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileMetaConnectorOptions.depth
   /**
    * The metaFile property specifies the file path for metadata storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileMetaConnectorOptions.metaFile
 }
@@ -115,39 +115,40 @@
  * The FileSyncletOptions type specifies configuration for creating a
  * file-backed Synclet.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// FileSyncletOptions
 {
   /**
    * The depth property specifies the tree depth the Synclet will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileSyncletOptions.depth
   /**
    * The dataFile property specifies the file path for data storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileSyncletOptions.dataFile
   /**
    * The metaFile property specifies the file path for metadata storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileSyncletOptions.metaFile
   /**
-   * The transport property specifies the Transport instance for synchronization.
+   * The transport property specifies the Transport instance for
+   * synchronization.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileSyncletOptions.transport
   /**
-   * The implementations property optionally specifies custom conflict resolution
-   * implementations.
+   * The implementations property optionally specifies custom conflict
+   * resolution implementations.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// FileSyncletOptions.implementations
 }
@@ -163,7 +164,7 @@
  * other Synclet options.
  * @returns A Promise resolving to the configured Synclet instance.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// createFileSynclet
 
@@ -184,23 +185,23 @@
 }
 
 /**
- * The DirectoryDataConnectorOptions type specifies configuration for creating
- * a directory-backed DataConnector.
+ * The DirectoryDataConnectorOptions type specifies configuration for creating a
+ * directory-backed DataConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// DirectoryDataConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectoryDataConnectorOptions.depth
   /**
    * The dataDirectory property specifies the directory path for data storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectoryDataConnectorOptions.dataDirectory
 }
@@ -211,8 +212,8 @@
  *
  * Each leaf address in the data tree is stored as a separate file, with the
  * file path reflecting the address hierarchy. This approach is more scalable
- * than file-based storage for large datasets, as only modified values need to be
- * read or written rather than the entire tree.
+ * than file-based storage for large datasets, as only modified values need to
+ * be read or written rather than the entire tree.
  *
  * The directory structure is created automatically. This connector is designed
  * for Node.js environments and requires file system access.
@@ -238,23 +239,24 @@
 }
 
 /**
- * The DirectoryMetaConnectorOptions type specifies configuration for creating
- * a directory-backed MetaConnector.
+ * The DirectoryMetaConnectorOptions type specifies configuration for creating a
+ * directory-backed MetaConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// DirectoryMetaConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectoryMetaConnectorOptions.depth
   /**
-   * The metaDirectory property specifies the directory path for metadata storage.
+   * The metaDirectory property specifies the directory path for metadata
+   * storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectoryMetaConnectorOptions.metaDirectory
 }
@@ -264,9 +266,9 @@
  * persists Timestamp metadata across multiple individual files within a
  * directory.
  *
- * Each leaf address in the metadata tree is stored as a separate file, mirroring
- * the data tree structure. This approach provides better scalability for large
- * datasets compared to storing all timestamps in a single file.
+ * Each leaf address in the metadata tree is stored as a separate file,
+ * mirroring the data tree structure. This approach provides better scalability
+ * for large datasets compared to storing all timestamps in a single file.
  *
  * The directory structure is created automatically. This connector is designed
  * for Node.js environments and requires file system access.
@@ -279,39 +281,41 @@
  * The DirectorySyncletOptions type specifies configuration for creating a
  * directory-backed Synclet.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// DirectorySyncletOptions
 {
   /**
    * The depth property specifies the tree depth the Synclet will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectorySyncletOptions.depth
   /**
    * The dataDirectory property specifies the directory path for data storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectorySyncletOptions.dataDirectory
   /**
-   * The metaDirectory property specifies the directory path for metadata storage.
+   * The metaDirectory property specifies the directory path for metadata
+   * storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectorySyncletOptions.metaDirectory
   /**
-   * The transport property specifies the Transport instance for synchronization.
+   * The transport property specifies the Transport instance for
+   * synchronization.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectorySyncletOptions.transport
   /**
-   * The implementations property optionally specifies custom conflict resolution
-   * implementations.
+   * The implementations property optionally specifies custom conflict
+   * resolution implementations.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// DirectorySyncletOptions.implementations
 }
@@ -328,6 +332,6 @@
  * and other Synclet options.
  * @returns A Promise resolving to the configured Synclet instance.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// createDirectorySynclet

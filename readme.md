@@ -4,8 +4,11 @@
 import {PGlite} from '@electric-sql/pglite';
 import {createPgliteDataConnector} from 'synclets/connector/database/pglite';
 
-const db = await PGlite.create();
-const dataConnector = createPgliteDataConnector(1, db);
+const pglite = await PGlite.create();
+const dataConnector = createPgliteDataConnector({
+  depth: 1,
+  pglite,
+});
 ```
 
 <section><h2 id="metadata-is-stored-separately">Metadata is stored separately</h2><p>You can store metadata about your data (primarily timestamps) separately, or in the same data store. For example, here we&#x27;re using PGlite for metadata too.</p></section>
@@ -13,7 +16,10 @@ const dataConnector = createPgliteDataConnector(1, db);
 ```js
 import {createPgliteMetaConnector} from 'synclets/connector/database/pglite';
 
-const metaConnector = createPgliteMetaConnector(1, db);
+const metaConnector = createPgliteMetaConnector({
+  depth: 1,
+  pglite,
+});
 ```
 
 <section><h2 id="pick-a-transport-layer">Pick a transport layer</h2><p>Synclets are designed to work over a variety of transport layers. For example, to use WebSockets via a server use the <a href="https://synclets.org/api/transport-ws/functions/transport/createwsclienttransport/"><code>createWsClientTransport</code></a> function.</p></section>

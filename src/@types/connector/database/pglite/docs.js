@@ -27,38 +27,38 @@
  * The PgliteDataConnectorOptions type specifies configuration for a PGlite
  * DataConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// PgliteDataConnectorOptions
 {
   /**
    * The depth property specifies the tree depth.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteDataConnectorOptions.depth
   /**
    * The pglite property specifies the PGlite database instance.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteDataConnectorOptions.pglite
   /**
    * The dataTable property specifies the table name for data storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteDataConnectorOptions.dataTable
   /**
    * The addressColumn property specifies the column name for addresses.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteDataConnectorOptions.addressColumn
   /**
    * The atomColumn property specifies the column name for atom values.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteDataConnectorOptions.atomColumn
 }
@@ -100,38 +100,38 @@
  * The PgliteMetaConnectorOptions type specifies configuration for a PGlite
  * MetaConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// PgliteMetaConnectorOptions
 {
   /**
    * The depth property specifies the tree depth.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteMetaConnectorOptions.depth
   /**
    * The pglite property specifies the PGlite database instance.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteMetaConnectorOptions.pglite
   /**
    * The metaTable property specifies the table name for metadata storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteMetaConnectorOptions.metaTable
   /**
    * The addressColumn property specifies the column name for addresses.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteMetaConnectorOptions.addressColumn
   /**
    * The timestampColumn property specifies the column name for timestamps.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteMetaConnectorOptions.timestampColumn
 }
@@ -154,62 +154,62 @@
  * The PgliteSyncletOptions type specifies configuration for creating a PGlite
  * Synclet.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// PgliteSyncletOptions
 {
   /**
    * The depth property specifies the tree depth.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.depth
   /**
    * The pglite property specifies the PGlite database instance.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.pglite
   /**
    * The dataTable property specifies the table name for data storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.dataTable
   /**
    * The metaTable property specifies the table name for metadata storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.metaTable
   /**
    * The addressColumn property specifies the column name for addresses.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.addressColumn
   /**
    * The atomColumn property specifies the column name for atom values.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.atomColumn
   /**
    * The timestampColumn property specifies the column name for timestamps.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.timestampColumn
   /**
    * The transport property specifies the Transport or Transports to use.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.transport
   /**
    * The implementations property specifies custom Synclet implementations.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// PgliteSyncletOptions.implementations
 }
@@ -231,6 +231,6 @@
  * table/column names.
  * @returns A Promise that resolves to the Synclet.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// createPgliteSynclet

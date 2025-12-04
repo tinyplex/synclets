@@ -27,38 +27,38 @@
  * The Sqlite3DataConnectorOptions type specifies configuration for a SQLite3
  * DataConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// Sqlite3DataConnectorOptions
 {
   /**
    * The depth property specifies the tree depth.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3DataConnectorOptions.depth
   /**
    * The database property specifies the SQLite3 Database instance.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3DataConnectorOptions.database
   /**
    * The dataTable property specifies the table name for data storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3DataConnectorOptions.dataTable
   /**
    * The addressColumn property specifies the column name for addresses.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3DataConnectorOptions.addressColumn
   /**
    * The atomColumn property specifies the column name for atom values.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3DataConnectorOptions.atomColumn
 }
@@ -99,38 +99,38 @@
  * The Sqlite3MetaConnectorOptions type specifies configuration for a SQLite3
  * MetaConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// Sqlite3MetaConnectorOptions
 {
   /**
    * The depth property specifies the tree depth.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3MetaConnectorOptions.depth
   /**
    * The database property specifies the SQLite3 Database instance.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3MetaConnectorOptions.database
   /**
    * The metaTable property specifies the table name for metadata storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3MetaConnectorOptions.metaTable
   /**
    * The addressColumn property specifies the column name for addresses.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3MetaConnectorOptions.addressColumn
   /**
    * The timestampColumn property specifies the column name for timestamps.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3MetaConnectorOptions.timestampColumn
 }
@@ -153,20 +153,20 @@
  * The Sqlite3SyncletOptions type specifies configuration for creating a SQLite3
  * Synclet.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// Sqlite3SyncletOptions
 {
   /**
    * The transport property specifies the Transport or Transports to use.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3SyncletOptions.transport
   /**
    * The implementations property specifies custom Synclet implementations.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// Sqlite3SyncletOptions.implementations
 }
@@ -188,6 +188,6 @@
  * table/column names.
  * @returns A Promise that resolves to the Synclet.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// createSqlite3Synclet

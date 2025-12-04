@@ -11,14 +11,14 @@
  * The MemoryDataConnectorOptions type specifies configuration for creating an
  * in-memory DataConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// MemoryDataConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// MemoryDataConnectorOptions.depth
 }
@@ -43,14 +43,14 @@
  * The MemoryMetaConnectorOptions type specifies configuration for creating an
  * in-memory MetaConnector.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// MemoryMetaConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// MemoryMetaConnectorOptions.depth
 }
@@ -75,28 +75,28 @@
  * The MemorySyncletOptions type specifies configuration for creating an
  * in-memory Synclet.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// MemorySyncletOptions
 {
   /**
    * The depth property specifies the tree depth the Synclet will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// MemorySyncletOptions.depth
   /**
    * The transport property specifies the Transport instance for
    * synchronization.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// MemorySyncletOptions.transport
   /**
    * The implementations property optionally specifies custom conflict
    * resolution implementations.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// MemorySyncletOptions.implementations
 }
@@ -114,6 +114,6 @@
  * options.
  * @returns A Promise resolving to the configured Synclet instance.
  * @category Connector
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// createMemorySynclet

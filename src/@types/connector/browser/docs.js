@@ -45,21 +45,21 @@
  * The LocalStorageDataConnectorOptions type describes the configuration options
  * for creating a localStorage-backed DataConnector.
  * @category Type
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// LocalStorageDataConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// LocalStorageDataConnectorOptions.depth
   /**
    * The dataStorageName property specifies the localStorage key for data
    * storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// LocalStorageDataConnectorOptions.dataStorageName
 }
@@ -98,21 +98,21 @@
  * The LocalStorageMetaConnectorOptions type describes the configuration options
  * for creating a localStorage-backed MetaConnector.
  * @category Type
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// LocalStorageMetaConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// LocalStorageMetaConnectorOptions.depth
   /**
    * The metaStorageName property specifies the localStorage key for metadata
    * storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// LocalStorageMetaConnectorOptions.metaStorageName
 }
@@ -126,20 +126,20 @@
  * along with optional transport, implementations, and other synclet
  * configuration.
  * @category Type
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// LocalStorageSyncletOptions
 {
   /**
    * The transport property specifies the transport or transports to use.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// LocalStorageSyncletOptions.transport
   /**
    * The implementations property specifies custom synclet implementations.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// LocalStorageSyncletOptions.implementations
 }
@@ -155,7 +155,7 @@
  * transport, and other synclet settings.
  * @returns A Promise that resolves to a fully configured Synclet instance.
  * @category Synclet
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// createLocalStorageSynclet
 
@@ -197,21 +197,21 @@
  * The SessionStorageDataConnectorOptions type describes the configuration
  * options for creating a sessionStorage-backed DataConnector.
  * @category Type
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// SessionStorageDataConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// SessionStorageDataConnectorOptions.depth
   /**
    * The dataStorageName property specifies the sessionStorage key for data
    * storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// SessionStorageDataConnectorOptions.dataStorageName
 }
@@ -251,21 +251,21 @@
  * The SessionStorageMetaConnectorOptions type describes the configuration
  * options for creating a sessionStorage-backed MetaConnector.
  * @category Type
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// SessionStorageMetaConnectorOptions
 {
   /**
    * The depth property specifies the tree depth the connector will operate at.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// SessionStorageMetaConnectorOptions.depth
   /**
    * The metaStorageName property specifies the sessionStorage key for metadata
    * storage.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// SessionStorageMetaConnectorOptions.metaStorageName
 }
@@ -279,20 +279,20 @@
  * along with optional transport, implementations, and other synclet
  * configuration.
  * @category Type
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// SessionStorageSyncletOptions
 {
   /**
    * The transport property specifies the transport or transports to use.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// SessionStorageSyncletOptions.transport
   /**
    * The implementations property specifies custom synclet implementations.
    * @category Option
-   * @since v0.0.5
+   * @since v0.0.0
    */
   /// SessionStorageSyncletOptions.implementations
 }
@@ -309,6 +309,6 @@
  * transport, and other synclet settings.
  * @returns A Promise that resolves to a fully configured Synclet instance.
  * @category Synclet
- * @since v0.0.5
+ * @since v0.0.0
  */
 /// createSessionStorageSynclet
