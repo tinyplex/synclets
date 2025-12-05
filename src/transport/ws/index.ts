@@ -1,2 +1,2 @@
 export {createWsClientTransport} from './client.ts';
-export {createWsServer, createWsServerTransport} from './server.ts';
+export {createWsBrokerTransport, createWsServer} from './server.ts';

@@ -26,7 +26,7 @@ Synclets is a storage-agnostic sync engine development kit. It enables data sync
 
 - **Task Runner**: The project uses `gulp` for all build and maintenance tasks.
 - **Commands**:
-  - `npm run test`: Runs unit and performance tests (`gulp test`).
+  - `npm run compileAndTestUnit`: Compiles and runs unit tests (`gulp compileAndTestUnit`).
   - `npm run lint`: Runs ESLint and Prettier (`gulp lint`).
   - `npm run ts`: Runs TypeScript type checking (`gulp ts`).
   - `npm run preCommit`: Runs the full suite of checks (lint, spell, ts, test, build).

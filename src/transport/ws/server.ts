@@ -1,9 +1,9 @@
 import {TransportOptions} from '@synclets/@types';
 import {
+  createWsBrokerTransport as createWsBrokerTransportDecl,
   createWsServer as createWsServerDecl,
-  createWsServerTransport as createWsServerTransportDecl,
+  WsBrokerTransport,
   WsServer,
-  WsServerTransport,
 } from '@synclets/@types/transport/ws';
 import {IncomingMessage} from 'http';
 import {WebSocket, WebSocketServer} from 'ws';
@@ -59,7 +59,7 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
   return objFreeze({getWebSocketServer, destroy} as WsServer);
 }) as typeof createWsServerDecl;
 
-export const createWsServerTransport = ((
+export const createWsBrokerTransport = ((
   webSocketServer: WebSocketServer,
   options: TransportOptions & {path?: string} = {},
 ) => {
@@ -101,5 +101,5 @@ export const createWsServerTransport = ((
 
   const getWebSocketServer = () => webSocketServer;
 
-  return objFreeze({...transport, getWebSocketServer}) as WsServerTransport;
-}) as typeof createWsServerTransportDecl;
+  return objFreeze({...transport, getWebSocketServer}) as WsBrokerTransport;
+}) as typeof createWsBrokerTransportDecl;

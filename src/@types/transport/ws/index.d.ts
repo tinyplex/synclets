@@ -19,17 +19,17 @@ export function createWsClientTransport<WebSocketType extends WebSocketTypes>(
   options?: TransportOptions,
 ): WsClientTransport<WebSocketType>;
 
-/// WsServerTransport
-export interface WsServerTransport extends Transport {
-  /// WsServerTransport.getWebSocketServer
+/// WsBrokerTransport
+export interface WsBrokerTransport extends Transport {
+  /// WsBrokerTransport.getWebSocketServer
   getWebSocketServer(): WebSocketServer;
 }
 
-/// createWsServerTransport
-export function createWsServerTransport(
+/// createWsBrokerTransport
+export function createWsBrokerTransport(
   webSocketServer: WebSocketServer,
   options?: TransportOptions,
-): WsServerTransport;
+): WsBrokerTransport;
 
 /// WsServer
 export interface WsServer {

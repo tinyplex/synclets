@@ -53,24 +53,24 @@
 /// createWsClientTransport
 
 /**
- * The WsServerTransport interface describes a Transport that proxies an
- * existing WebSocket.
+ * The WsBrokerTransport interface describes a Transport that creates a
+ * broker for both this synclet and others that connect over WebSockets.
  * @category Transport
  * @since v0.0.0
  */
-/// WsServerTransport
+/// WsBrokerTransport
 {
   /**
    * The getWebSocketServer method returns the wrapped WebSocketServer instance.
    * @category Accessor
    * @since v0.0.0
    */
-  /// WsServerTransport.getWebSocketServer
+  /// WsBrokerTransport.getWebSocketServer
 }
 
 /**
- * The createWsServerTransport function wraps a WebSocketServer in a
- * WsServerTransport implementation.
+ * The createWsBrokerTransport function wraps a WebSocketServer in a
+ * WsBrokerTransport implementation.
  *
  * This transport enables a Synclet running on a server to communicate with
  * multiple client Synclets over WebSocket connections. It handles packet
@@ -81,12 +81,12 @@
  * broadcasts packets to all connected clients.
  * @param webSocketServer The WebSocketServer instance to wrap.
  * @param options Optional TransportOptions for configuring the transport.
- * @returns A WsServerTransport instance for server-side WebSocket
+ * @returns A WsBrokerTransport instance for server-side WebSocket
  * communication.
  * @category Transport
  * @since v0.0.0
  */
-/// createWsServerTransport
+/// createWsBrokerTransport
 
 /**
  * The WsServer interface describes the minimal API for a stateless WebSocket
@@ -122,7 +122,7 @@
  * The server requires the 'ws' package and is only available in Node.js
  * environments.
  * @param webSocketServer The WebSocketServer instance to wrap.
- * @returns A WsServer instance that can be used with createWsServerTransport.
+ * @returns A WsServer instance that can be used with createWsBrokerTransport.
  * @category Server
  * @since v0.0.0
  */
