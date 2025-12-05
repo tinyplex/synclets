@@ -1,19 +1,19 @@
+import {createSynclet, createTransport, RESERVED} from '@synclets';
 import {TransportOptions} from '@synclets/@types';
 import {
+  createWsBroker as createWsBrokerDecl,
   createWsBrokerTransport as createWsBrokerTransportDecl,
-  createWsServer as createWsServerDecl,
+  WsBroker,
   WsBrokerTransport,
-  WsServer,
+  WsBrokerTransportOptions,
 } from '@synclets/@types/transport/ws';
 import {IncomingMessage} from 'http';
 import {WebSocket, WebSocketServer} from 'ws';
 import {objFreeze} from '../../common/object.ts';
 import {ifNotUndefined} from '../../common/other.ts';
-import {EMPTY_STRING, strMatch, UTF8} from '../../common/string.ts';
-import {createTransport, RESERVED} from '../../core/index.ts';
+import {EMPTY_STRING, strMatch, strSub, UTF8} from '../../common/string.ts';
 import {getConnectionFunctions} from '../common.ts';
 
-const PATH_REGEX = /\/([^?]*)/;
 const SERVER_ID = RESERVED + 's';
 
 const addWebSocketConnection = (
@@ -38,41 +38,42 @@ const addWebSocketConnection = (
       .on('close', close);
   });
 
-export const createWsServer = ((webSocketServer: WebSocketServer) => {
-  const [addConnection, clearConnections] = getConnectionFunctions();
-
-  const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
-    ifNotUndefined(strMatch(request.url, PATH_REGEX) ?? undefined, ([, path]) =>
-      addWebSocketConnection(webSocket, request, path, addConnection),
-    );
-
-  webSocketServer.on('connection', onConnection);
+export const createWsBroker = (async (
+  webSocketServer: WebSocketServer,
+  brokerPaths?: RegExp,
+) => {
+  const synclet = await createSynclet({
+    transport: createWsBrokerTransport(webSocketServer, {brokerPaths}),
+  });
 
   const getWebSocketServer = () => webSocketServer;
 
-  const destroy = () => {
-    webSocketServer.off('connection', onConnection);
-    clearConnections();
-  };
+  const destroy = synclet.destroy;
 
-  return objFreeze({getWebSocketServer, destroy} as WsServer);
-}) as typeof createWsServerDecl;
+  return objFreeze({getWebSocketServer, destroy} as WsBroker);
+}) as typeof createWsBrokerDecl;
 
 export const createWsBrokerTransport = ((
   webSocketServer: WebSocketServer,
-  options: TransportOptions & {path?: string} = {},
+  {
+    path = EMPTY_STRING,
+    brokerPaths = /([^?]*)/,
+    ...options
+  }: WsBrokerTransportOptions & TransportOptions = {},
 ) => {
   let handleSendPacket: ((packet: string) => void) | undefined;
   let handleClose: (() => void) | undefined;
 
-  const path = options.path ?? EMPTY_STRING;
-
   const [addConnection, clearConnections] = getConnectionFunctions();
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
-    request.url == '/' + path
-      ? addWebSocketConnection(webSocket, request, path, addConnection)
-      : 0;
+    ifNotUndefined(
+      request.url == '/' + path
+        ? [EMPTY_STRING, path]
+        : (strMatch(strSub(request.url ?? '/', 0), brokerPaths) ?? undefined),
+      ([, path]) =>
+        addWebSocketConnection(webSocket, request, path, addConnection),
+    );
 
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,

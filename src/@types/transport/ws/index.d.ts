@@ -25,20 +25,29 @@ export interface WsBrokerTransport extends Transport {
   getWebSocketServer(): WebSocketServer;
 }
 
+/// WsBrokerTransportOptions
+export type WsBrokerTransportOptions = {
+  path?: string;
+  brokerPaths?: RegExp;
+};
+
 /// createWsBrokerTransport
 export function createWsBrokerTransport(
   webSocketServer: WebSocketServer,
-  options?: TransportOptions,
+  options?: WsBrokerTransportOptions & TransportOptions,
 ): WsBrokerTransport;
 
-/// WsServer
-export interface WsServer {
-  /// WsServer.getWebSocketServer
+/// WsBroker
+export interface WsBroker {
+  /// WsBroker.getWebSocketServer
   getWebSocketServer(): WebSocketServer;
 
-  /// WsServer.destroy
+  /// WsBroker.destroy
   destroy(): void;
 }
 
-/// createWsServer
-export function createWsServer(webSocketServer: WebSocketServer): WsServer;
+/// createWsBroker
+export function createWsBroker(
+  webSocketServer: WebSocketServer,
+  brokerPaths?: RegExp,
+): Promise<WsBroker>;
