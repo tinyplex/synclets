@@ -43,7 +43,7 @@ export interface WsBroker {
   getWebSocketServer(): WebSocketServer;
 
   /// WsBroker.destroy
-  destroy(): void;
+  destroy(): Promise<void>;
 }
 
 /// createWsBroker
