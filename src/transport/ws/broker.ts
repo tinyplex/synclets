@@ -11,7 +11,7 @@ import {IncomingMessage} from 'http';
 import {WebSocket, WebSocketServer} from 'ws';
 import {objFreeze} from '../../common/object.ts';
 import {ifNotUndefined, isNull} from '../../common/other.ts';
-import {EMPTY_STRING, strMatch, strSub, UTF8} from '../../common/string.ts';
+import {EMPTY_STRING, strMatch, strTest, UTF8} from '../../common/string.ts';
 import {getConnectionFunctions} from '../common.ts';
 
 const SERVER_ID = RESERVED + 's';
@@ -59,7 +59,7 @@ export const createWsBrokerTransport = ((
   webSocketServer: WebSocketServer,
   {
     path = EMPTY_STRING,
-    brokerPaths = /([^?]*)/,
+    brokerPaths = /.*/,
     ...options
   }: WsBrokerTransportOptions & TransportOptions = {},
 ) => {
@@ -68,13 +68,18 @@ export const createWsBrokerTransport = ((
 
   const [addConnection, clearConnections] = getConnectionFunctions();
 
-  const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
+  const getValidPath = (request: IncomingMessage): string | undefined =>
     ifNotUndefined(
-      !isNull(path) && request.url == '/' + path
-        ? [EMPTY_STRING, path]
-        : (strMatch(strSub(request.url ?? '/', 0), brokerPaths) ?? undefined),
-      ([, path]) =>
-        addWebSocketConnection(webSocket, request, path, addConnection),
+      strMatch(request.url ?? '/', /\/([^?]*)/),
+      ([, requestPath]) =>
+        requestPath === path || strTest(requestPath, brokerPaths)
+          ? requestPath
+          : undefined,
+    );
+
+  const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
+    ifNotUndefined(getValidPath(request), (requestPath) =>
+      addWebSocketConnection(webSocket, request, requestPath, addConnection),
     );
 
   const connect = async (

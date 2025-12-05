@@ -16,6 +16,8 @@ export const strSplit = (
 export const strMatch = (str: string | undefined, regex: RegExp) =>
   str?.match(regex) ?? undefined;
 
+export const strTest = (str: string, regex: RegExp): boolean => regex.test(str);
+
 export const strReplaceAll = (str: string, search: string, replace: string) =>
   str.replaceAll(search, replace);
 
