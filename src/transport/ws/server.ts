@@ -46,7 +46,6 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
       addWebSocketConnection(webSocket, request, path, addConnection),
     );
 
-  webSocketServer.setMaxListeners(0);
   webSocketServer.on('connection', onConnection);
 
   const getWebSocketServer = () => webSocketServer;

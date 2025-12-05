@@ -12,6 +12,7 @@ const WS_PORT = 9000;
 
 test('getWebSocketServer', async () => {
   const wss = new WebSocketServer({port: WS_PORT});
+  wss.setMaxListeners(0);
   const wsServer = createWsServer(wss);
   expect(wsServer.getWebSocketServer()).toEqual(wss);
   wsServer.destroy();
@@ -19,7 +20,9 @@ test('getWebSocketServer', async () => {
 });
 
 test('Two synclets on single server', async () => {
-  const wsServer = createWsServer(new WebSocketServer({port: WS_PORT}));
+  const wss = new WebSocketServer({port: WS_PORT});
+  wss.setMaxListeners(0);
+  const wsServer = createWsServer(wss);
 
   const synclet1 = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),

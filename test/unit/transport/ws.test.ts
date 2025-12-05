@@ -11,7 +11,11 @@ import {describeCommonConnectorTests} from '../common.ts';
 const WS_PORT = 9001;
 
 describeCommonConnectorTests(
-  async () => createWsServer(new WebSocketServer({port: WS_PORT})),
+  async () => {
+    const wss = new WebSocketServer({port: WS_PORT});
+    wss.setMaxListeners(0);
+    return createWsServer(wss);
+  },
   async (wsServer) => {
     wsServer.destroy();
     wsServer.getWebSocketServer().close();
@@ -26,7 +30,9 @@ describeCommonConnectorTests(
 );
 
 test('getWebSocket', async () => {
-  const wsServer = createWsServer(new WebSocketServer({port: WS_PORT}));
+  const wss = new WebSocketServer({port: WS_PORT});
+  wss.setMaxListeners(0);
+  const wsServer = createWsServer(wss);
   const webSocket = new WebSocket('ws://localhost:' + WS_PORT);
 
   const transport = createWsClientTransport(webSocket);
