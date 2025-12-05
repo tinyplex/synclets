@@ -59,10 +59,10 @@ test('getPglite', async () => {
   const synclet = await createSynclet({dataConnector, metaConnector});
 
   expect(dataConnector.getPglite()).toEqual(dataPglite);
-  expect(synclet.getDataConnector().getPglite()).toEqual(dataPglite);
+  expect(synclet.getDataConnector()!.getPglite()).toEqual(dataPglite);
 
   expect(metaConnector.getPglite()).toEqual(metaPglite);
-  expect(synclet.getMetaConnector().getPglite()).toEqual(metaPglite);
+  expect(synclet.getMetaConnector()!.getPglite()).toEqual(metaPglite);
 
   await dataPglite.close();
   await metaPglite.close();
@@ -77,9 +77,9 @@ test('getPglite, synclet', async () => {
     pglite,
   });
 
-  expect(synclet.getDataConnector().getPglite()).toEqual(pglite);
-  expect(synclet.getMetaConnector().getPglite()).toEqual(pglite);
-  expect(synclet.getMetaConnector().getPglite()).toEqual(pglite);
+  expect(synclet.getDataConnector()!.getPglite()).toEqual(pglite);
+  expect(synclet.getMetaConnector()!.getPglite()).toEqual(pglite);
+  expect(synclet.getMetaConnector()!.getPglite()).toEqual(pglite);
   await pglite.close();
 
   await synclet.destroy();

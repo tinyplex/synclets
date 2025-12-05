@@ -41,9 +41,9 @@ test('getStorageName', async () => {
   const synclet = await createSynclet({dataConnector, metaConnector});
 
   expect(dataConnector.getStorageName()).toEqual(dataStorageName);
-  expect(synclet.getDataConnector().getStorageName()).toEqual(dataStorageName);
+  expect(synclet.getDataConnector()!.getStorageName()).toEqual(dataStorageName);
   expect(metaConnector.getStorageName()).toEqual(metaStorageName);
-  expect(synclet.getMetaConnector().getStorageName()).toEqual(metaStorageName);
+  expect(synclet.getMetaConnector()!.getStorageName()).toEqual(metaStorageName);
 
   await synclet.destroy();
 });
@@ -58,8 +58,8 @@ test('createLocalStorageSynclet', async () => {
     metaStorageName,
   });
 
-  expect(synclet.getDataConnector().getStorageName()).toEqual(dataStorageName);
-  expect(synclet.getMetaConnector().getStorageName()).toEqual(metaStorageName);
+  expect(synclet.getDataConnector()!.getStorageName()).toEqual(dataStorageName);
+  expect(synclet.getMetaConnector()!.getStorageName()).toEqual(metaStorageName);
 
   await synclet.destroy();
 });

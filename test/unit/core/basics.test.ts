@@ -22,15 +22,129 @@ beforeEach(async () => {
   transport = createMockTransport();
 });
 
-test('createSynclet', async () => {
-  const synclet = await createSynclet({
-    dataConnector,
-    metaConnector,
-    transport,
-  });
-  expect(synclet).toBeDefined();
+describe('createSynclet', () => {
+  test('plain', async () => {
+    const synclet = await createSynclet({
+      dataConnector,
+      metaConnector,
+      transport,
+    });
+    expect(synclet).toBeDefined();
 
-  await synclet.destroy();
+    await synclet.destroy();
+  });
+
+  test('error when only dataConnector provided', async () => {
+    await expect(
+      createSynclet({
+        dataConnector: createMockDataConnector(1),
+      }),
+    ).rejects.toThrow('both connectors must be provided, or both omitted');
+  });
+
+  test('error when only metaConnector provided', async () => {
+    await expect(
+      createSynclet({
+        metaConnector: createMockMetaConnector(1),
+      }),
+    ).rejects.toThrow('both connectors must be provided, or both omitted');
+  });
+
+  test('no connectors, only transport', async () => {
+    const transport = createMockTransport();
+    const synclet = await createSynclet({
+      transport,
+    });
+
+    expect(synclet).toBeDefined();
+    expect(synclet.getDataConnector()).toBeUndefined();
+    expect(synclet.getMetaConnector()).toBeUndefined();
+    expect(synclet.getTransport()).toEqual([transport]);
+
+    await synclet.start();
+
+    const data = await synclet.getData();
+    expect(data).toEqual({});
+
+    const meta = await synclet.getMeta();
+    expect(meta).toEqual({});
+
+    await synclet.stop();
+    await synclet.destroy();
+  });
+
+  test('no connectors, no transport', async () => {
+    const synclet = await createSynclet({});
+
+    expect(synclet).toBeDefined();
+    expect(synclet.getDataConnector()).toBeUndefined();
+    expect(synclet.getMetaConnector()).toBeUndefined();
+    expect(synclet.getTransport()).toEqual([]);
+
+    await synclet.start();
+    await synclet.stop();
+    await synclet.destroy();
+  });
+
+  test('full synclet: both connectors provided', async () => {
+    const dataConnector = createMockDataConnector(1);
+    const metaConnector = createMockMetaConnector(1);
+    const transport = createMockTransport();
+
+    const synclet = await createSynclet({
+      dataConnector,
+      metaConnector,
+      transport,
+    });
+
+    expect(synclet).toBeDefined();
+    expect(synclet.getDataConnector()).toBe(dataConnector);
+    expect(synclet.getMetaConnector()).toBe(metaConnector);
+    expect(synclet.getTransport()).toEqual([transport]);
+
+    await synclet.start();
+    await synclet.stop();
+    await synclet.destroy();
+  });
+
+  test('local-only synclet: both connectors, no transport', async () => {
+    const dataConnector = createMockDataConnector(1);
+    const metaConnector = createMockMetaConnector(1);
+
+    const synclet = await createSynclet({
+      dataConnector,
+      metaConnector,
+    });
+
+    expect(synclet).toBeDefined();
+    expect(synclet.getDataConnector()).toBe(dataConnector);
+    expect(synclet.getMetaConnector()).toBe(metaConnector);
+    expect(synclet.getTransport()).toEqual([]);
+
+    await synclet.start();
+    await synclet.stop();
+    await synclet.destroy();
+  });
+
+  test('no connectors, multiple transports', async () => {
+    const transport1 = createMockTransport();
+    const transport2 = createMemoryTransport();
+
+    const synclet = await createSynclet({
+      transport: [transport1, transport2],
+    });
+
+    expect(synclet).toBeDefined();
+    expect(synclet.getDataConnector()).toBeUndefined();
+    expect(synclet.getMetaConnector()).toBeUndefined();
+    expect(synclet.getTransport()).toHaveLength(2);
+    expect(synclet.getTransport()).toContain(transport1);
+    expect(synclet.getTransport()).toContain(transport2);
+
+    await synclet.start();
+    await synclet.stop();
+    await synclet.destroy();
+  });
 });
 
 test('log', async () => {

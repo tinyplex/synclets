@@ -137,10 +137,10 @@ export interface Synclet<
   destroy(): Promise<void>;
 
   /// Synclet.getDataConnector
-  getDataConnector(): DataConnectorType;
+  getDataConnector(): DataConnectorType | undefined;
 
   /// Synclet.getMetaConnector
-  getMetaConnector(): MetaConnectorType;
+  getMetaConnector(): MetaConnectorType | undefined;
 
   /// Synclet.getTransport
   getTransport(): Transport[];

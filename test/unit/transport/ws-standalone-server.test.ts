@@ -1,4 +1,8 @@
 import {createSynclet} from 'synclets';
+import {
+  createMemoryDataConnector,
+  createMemoryMetaConnector,
+} from 'synclets/connector/memory';
 import {createWsClientTransport, createWsServer} from 'synclets/transport/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
@@ -18,6 +22,8 @@ test('Two synclets on single server', async () => {
   const wsServer = createWsServer(new WebSocketServer({port: WS_PORT}));
 
   const synclet1 = await createSynclet({
+    dataConnector: createMemoryDataConnector({depth: 1}),
+    metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
       new WebSocket('ws://localhost:' + WS_PORT),
     ),
@@ -25,6 +31,8 @@ test('Two synclets on single server', async () => {
   await synclet1.start();
 
   const synclet2 = await createSynclet({
+    dataConnector: createMemoryDataConnector({depth: 1}),
+    metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
       new WebSocket('ws://localhost:' + WS_PORT),
     ),

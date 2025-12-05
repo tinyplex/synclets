@@ -51,10 +51,10 @@ test('getDatabase', async () => {
   const synclet = await createSynclet({dataConnector, metaConnector});
 
   expect(dataConnector.getDatabase()).toEqual(dataDatabase);
-  expect(synclet.getDataConnector().getDatabase()).toEqual(dataDatabase);
+  expect(synclet.getDataConnector()!.getDatabase()).toEqual(dataDatabase);
 
   expect(metaConnector.getDatabase()).toEqual(metaDatabase);
-  expect(synclet.getMetaConnector().getDatabase()).toEqual(metaDatabase);
+  expect(synclet.getMetaConnector()!.getDatabase()).toEqual(metaDatabase);
 
   dataDatabase.close();
   metaDatabase.close();
@@ -69,8 +69,8 @@ test('getDatabase, synclet', async () => {
     database,
   });
 
-  expect(synclet.getDataConnector().getDatabase()).toEqual(database);
-  expect(synclet.getMetaConnector().getDatabase()).toEqual(database);
+  expect(synclet.getDataConnector()!.getDatabase()).toEqual(database);
+  expect(synclet.getMetaConnector()!.getDatabase()).toEqual(database);
 
   database.close();
 

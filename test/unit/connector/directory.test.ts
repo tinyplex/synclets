@@ -47,9 +47,9 @@ test('getDirectory', async () => {
   const synclet = await createSynclet({dataConnector, metaConnector});
 
   expect(dataConnector.getDirectory()).toEqual(dataDir);
-  expect(synclet.getDataConnector().getDirectory()).toEqual(dataDir);
+  expect(synclet.getDataConnector()!.getDirectory()).toEqual(dataDir);
   expect(metaConnector.getDirectory()).toEqual(metaDir);
-  expect(synclet.getMetaConnector().getDirectory()).toEqual(metaDir);
+  expect(synclet.getMetaConnector()!.getDirectory()).toEqual(metaDir);
 
   await rm(tmpDir, {recursive: true, force: true});
 
@@ -68,8 +68,8 @@ test('getDirectory, createDirectorySynclet', async () => {
     transport: createMemoryTransport({poolId: getUniqueId()}),
   });
 
-  expect(synclet.getDataConnector().getDirectory()).toEqual(dataDirectory);
-  expect(synclet.getMetaConnector().getDirectory()).toEqual(metaDirectory);
+  expect(synclet.getDataConnector()!.getDirectory()).toEqual(dataDirectory);
+  expect(synclet.getMetaConnector()!.getDirectory()).toEqual(metaDirectory);
 
   await rm(tmpDir, {recursive: true, force: true});
 
