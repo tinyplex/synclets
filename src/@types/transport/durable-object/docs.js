@@ -8,7 +8,7 @@
 /// transport/durable-object
 
 /**
- * The ServerDurableObject class is a base class for creating Synclet-powered
+ * The SyncletDurableObject class is a base class for creating Synclet-powered
  * Durable Objects.
  *
  * Extend this class and implement `createDataConnector` and
@@ -16,7 +16,7 @@
  * @category Class
  * @since v0.0.0
  */
-/// ServerDurableObject
+/// SyncletDurableObject
 {
   /**
    * The constructor initializes the Durable Object and sets up the synclet.
@@ -25,13 +25,13 @@
    * @category Constructor
    * @since v0.0.0
    */
-  /// ServerDurableObject.constructor
+  /// SyncletDurableObject.constructor
 }
 
 /**
- * The getServerDurableObjectFetch function returns a convenient handler for a
+ * The getSyncletDurableObjectFetch function returns a convenient handler for a
  * Cloudflare worker to route requests to the fetch handler of a
- * ServerDurableObject for the given namespace.
+ * SyncletDurableObject for the given namespace.
  *
  * The implementation of the function that this returns requires the request to
  * be a WebSocket 'Upgrade' request, and for the client to have provided a
@@ -70,4 +70,4 @@
  * @category Creation
  * @since v0.0.0
  */
-/// getServerDurableObjectFetch
+/// getSyncletDurableObjectFetch

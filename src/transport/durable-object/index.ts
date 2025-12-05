@@ -23,7 +23,7 @@ const createResponse = (
 const createUpgradeRequiredResponse = (): Response =>
   createResponse(426, null, 'Upgrade required');
 
-export class ServerDurableObject<Env = unknown>
+export class SyncletDurableObject<Env = unknown>
   extends DurableObject<Env>
   implements DurableObject<Env>
 {
@@ -73,12 +73,12 @@ export class ServerDurableObject<Env = unknown>
   }
 }
 
-export const getServerDurableObjectFetch =
+export const getSyncletDurableObjectFetch =
   <Namespace extends string>(namespace: Namespace) =>
   (
     request: Request,
     env: {
-      [namespace in Namespace]: DurableObjectNamespace<ServerDurableObject>;
+      [namespace in Namespace]: DurableObjectNamespace<SyncletDurableObject>;
     },
   ) =>
     getClientId(request)

@@ -2,18 +2,18 @@
 
 import {DurableObject} from 'cloudflare:workers';
 
-/// ServerDurableObject
-export class ServerDurableObject<Env = unknown> extends DurableObject<Env> {
-  /// ServerDurableObject.constructor
+/// SyncletDurableObject
+export class SyncletDurableObject<Env = unknown> extends DurableObject<Env> {
+  /// SyncletDurableObject.constructor
   constructor(ctx: DurableObjectState, env: Env);
 }
 
-/// getServerDurableObjectFetch
-export function getServerDurableObjectFetch<Namespace extends string>(
+/// getSyncletDurableObjectFetch
+export function getSyncletDurableObjectFetch<Namespace extends string>(
   namespace: Namespace,
 ): (
   request: Request,
   env: {
-    [namespace in Namespace]: DurableObjectNamespace<ServerDurableObject>;
+    [namespace in Namespace]: DurableObjectNamespace<SyncletDurableObject>;
   },
 ) => Response;
