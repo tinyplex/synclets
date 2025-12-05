@@ -1,4 +1,4 @@
-/// connector/fs
+/// fs
 
 import type {
   DataConnector,
@@ -7,7 +7,7 @@ import type {
   SyncletImplementations,
   SyncletOptions,
   Transport,
-} from '../../index.d.ts';
+} from '../index.d.ts';
 
 /// FileDataConnector
 export interface FileDataConnector<Depth extends number>

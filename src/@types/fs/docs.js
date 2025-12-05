@@ -1,11 +1,11 @@
 /**
- * The connector/fs module documents file- and directory-backed connector types
+ * The fs module documents file- and directory-backed connector types
  * for Node environments.
  * @packageDocumentation
- * @module connector/fs
+ * @module fs
  * @since v0.0.0
  */
-/// connector/fs
+/// fs
 
 /**
  * The FileDataConnector interface describes a DataConnector backed by a single

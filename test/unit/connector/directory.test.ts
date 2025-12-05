@@ -6,7 +6,7 @@ import {
   createDirectoryDataConnector,
   createDirectoryMetaConnector,
   createDirectorySynclet,
-} from 'synclets/connector/fs';
+} from 'synclets/fs';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
 import {expect, test} from 'vitest';

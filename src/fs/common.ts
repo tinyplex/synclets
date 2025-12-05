@@ -14,7 +14,7 @@ import {
   DirectoryMetaConnector,
   FileDataConnector,
   FileMetaConnector,
-} from '@synclets/@types/connector/fs';
+} from '@synclets/@types/fs';
 import {isAtom, isTimestamp, jsonParse, jsonString} from '@synclets/utils';
 import {
   access,
@@ -27,10 +27,10 @@ import {
   writeFile,
 } from 'fs/promises';
 import {dirname, resolve} from 'path';
-import {arrayMap, arrayReduce, arraySlice} from '../../common/array.ts';
-import {createMemoryConnector} from '../../common/memory.ts';
-import {errorNew, isEmpty} from '../../common/other.ts';
-import {strReplaceAll, UTF8} from '../../common/string.ts';
+import {arrayMap, arrayReduce, arraySlice} from '../common/array.ts';
+import {createMemoryConnector} from '../common/memory.ts';
+import {errorNew, isEmpty} from '../common/other.ts';
+import {strReplaceAll, UTF8} from '../common/string.ts';
 export {resolve} from 'path';
 
 const {R_OK, W_OK} = constants;

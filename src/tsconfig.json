@@ -33,7 +33,7 @@
       "@synclets/@types/connector/database/sqlite3": [
         "./@types/connector/database/sqlite3/index.d.ts"
       ],
-      "@synclets/@types/connector/fs": ["./@types/connector/fs/index.d.ts"],
+      "@synclets/@types/fs": ["./@types/fs/index.d.ts"],
       "@synclets/@types/connector/memory": [
         "./@types/connector/memory/index.d.ts"
       ],

@@ -8,7 +8,7 @@ import type {
   DirectoryMetaConnector,
   DirectoryMetaConnectorOptions,
   DirectorySyncletOptions,
-} from '@synclets/@types/connector/fs';
+} from '@synclets/@types/fs';
 import {createDirectoryConnector} from './common.ts';
 
 export const createDirectoryDataConnector: typeof createDirectoryDataConnectorDecl =

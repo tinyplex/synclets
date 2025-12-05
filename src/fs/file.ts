@@ -8,7 +8,7 @@ import type {
   FileMetaConnector,
   FileMetaConnectorOptions,
   FileSyncletOptions,
-} from '@synclets/@types/connector/fs';
+} from '@synclets/@types/fs';
 import {createFileConnector} from './common.ts';
 
 export const createFileDataConnector: typeof createFileDataConnectorDecl = <
