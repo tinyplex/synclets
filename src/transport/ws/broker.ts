@@ -10,7 +10,7 @@ import {
 import {IncomingMessage} from 'http';
 import {WebSocket, WebSocketServer} from 'ws';
 import {objFreeze} from '../../common/object.ts';
-import {ifNotUndefined} from '../../common/other.ts';
+import {ifNotUndefined, isNull} from '../../common/other.ts';
 import {EMPTY_STRING, strMatch, strSub, UTF8} from '../../common/string.ts';
 import {getConnectionFunctions} from '../common.ts';
 
@@ -43,7 +43,10 @@ export const createWsBroker = (async (
   brokerPaths?: RegExp,
 ) => {
   const synclet = await createSynclet({
-    transport: createWsBrokerTransport(webSocketServer, {brokerPaths}),
+    transport: createWsBrokerTransport(webSocketServer, {
+      path: null,
+      brokerPaths,
+    }),
   });
 
   const getWebSocketServer = () => webSocketServer;
@@ -68,7 +71,7 @@ export const createWsBrokerTransport = ((
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
     ifNotUndefined(
-      request.url == '/' + path
+      !isNull(path) && request.url == '/' + path
         ? [EMPTY_STRING, path]
         : (strMatch(strSub(request.url ?? '/', 0), brokerPaths) ?? undefined),
       ([, path]) =>
