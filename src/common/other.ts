@@ -46,3 +46,7 @@ export const slice = <ArrayOrString extends string | any[]>(
   start: number,
   end?: number,
 ): ArrayOrString => arrayOrString.slice(start, end) as ArrayOrString;
+
+export const getEmptyObject = async () => ({});
+
+export const getVoid = async () => {};

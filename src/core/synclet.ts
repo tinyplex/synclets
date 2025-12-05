@@ -42,6 +42,8 @@ import {
 } from '../common/object.ts';
 import {
   errorNew,
+  getEmptyObject,
+  getVoid,
   ifNotUndefined,
   isUndefined,
   promiseAll,
@@ -68,9 +70,6 @@ const VERSION = 1;
 const ATTACH = 0;
 const DETACH = 1;
 const SEND_MESSAGE = 2;
-
-const getEmptyObject = async () => ({});
-const getVoid = async () => {};
 
 export const createSynclet = (async <
   Depth extends number,

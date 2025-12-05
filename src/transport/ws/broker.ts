@@ -32,7 +32,6 @@ const addWebSocketConnection = (
       (packet: string) => webSocket.send(packet),
       path,
     );
-    webSocket.setMaxListeners(0);
     webSocket
       .on('message', (data) => receivePacket(data.toString(UTF8)))
       .on('close', close);
@@ -81,11 +80,12 @@ export const createWsBrokerTransport = ((
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
-    webSocketServer.setMaxListeners(0);
     webSocketServer.on('connection', onConnection);
-    const [sendPacket, close] = addConnection(SERVER_ID, receivePacket, path);
-    handleSendPacket = sendPacket;
-    handleClose = close;
+    if (!isNull(path)) {
+      const [sendPacket, close] = addConnection(SERVER_ID, receivePacket, path);
+      handleSendPacket = sendPacket;
+      handleClose = close;
+    }
   };
 
   const disconnect = async () => {
