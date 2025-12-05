@@ -1,11 +1,11 @@
 /**
- * The connector/browser module covers LocalStorage and SessionStorage connector
+ * The browser module covers LocalStorage and SessionStorage connector
  * types.
  * @packageDocumentation
- * @module connector/browser
+ * @module browser
  * @since v0.0.0
  */
-/// connector/browser
+/// browser
 
 /**
  * The LocalStorageDataConnector interface describes a DataConnector backed by

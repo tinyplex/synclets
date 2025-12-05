@@ -3,7 +3,7 @@ import type {
   createSessionStorageDataConnector as createSessionStorageDataConnectorDecl,
   createSessionStorageMetaConnector as createSessionStorageMetaConnectorDecl,
   createSessionStorageSynclet as createSessionStorageSyncletDecl,
-} from '@synclets/@types/connector/browser';
+} from '@synclets/@types/browser';
 import {createStorageConnector} from './common.ts';
 
 export const createSessionStorageDataConnector: typeof createSessionStorageDataConnectorDecl =

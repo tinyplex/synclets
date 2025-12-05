@@ -4,9 +4,9 @@ import {
   LocalStorageMetaConnector,
   SessionStorageDataConnector,
   SessionStorageMetaConnector,
-} from '@synclets/@types/connector/browser';
+} from '@synclets/@types/browser';
 import {jsonParse, jsonString} from '@synclets/utils';
-import {createMemoryConnector} from '../../common/memory.ts';
+import {createMemoryConnector} from '../common/memory.ts';
 
 export const createStorageConnector = <
   CreateLocal extends boolean,

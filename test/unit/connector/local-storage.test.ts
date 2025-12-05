@@ -3,7 +3,7 @@ import {
   createLocalStorageDataConnector,
   createLocalStorageMetaConnector,
   createLocalStorageSynclet,
-} from 'synclets/connector/browser';
+} from 'synclets/browser';
 import {createMemoryTransport} from 'synclets/transport/memory';
 import {getUniqueId} from 'synclets/utils';
 import {expect, test} from 'vitest';

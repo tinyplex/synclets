@@ -4,7 +4,7 @@ import type {
   createLocalStorageMetaConnector as createLocalStorageMetaConnectorDecl,
   createLocalStorageSynclet as createLocalStorageSyncletDecl,
   LocalStorageSyncletOptions,
-} from '@synclets/@types/connector/browser';
+} from '@synclets/@types/browser';
 import {createStorageConnector} from './common.ts';
 
 export const createLocalStorageDataConnector: typeof createLocalStorageDataConnectorDecl =

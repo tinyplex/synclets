@@ -21,9 +21,7 @@
 
       "@synclets/@types": ["./@types/index.d.ts"],
       "@synclets/@types/utils": ["./@types/utils/index.d.ts"],
-      "@synclets/@types/connector/browser": [
-        "./@types/connector/browser/index.d.ts"
-      ],
+      "@synclets/@types/browser": ["./@types/browser/index.d.ts"],
       "@synclets/@types/connector/database": [
         "./@types/connector/database/index.d.ts"
       ],

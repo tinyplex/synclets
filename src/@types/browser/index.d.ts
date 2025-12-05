@@ -1,4 +1,4 @@
-/// connector/browser
+/// browser
 
 import type {
   DataConnector,
@@ -7,7 +7,7 @@ import type {
   SyncletImplementations,
   SyncletOptions,
   Transport,
-} from '../../index.js';
+} from '../index.js';
 
 /// LocalStorageDataConnector
 export interface LocalStorageDataConnector<Depth extends number>
