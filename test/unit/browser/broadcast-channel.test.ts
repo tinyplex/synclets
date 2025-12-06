@@ -1,9 +1,9 @@
 import {createSynclet} from 'synclets';
+import {createBroadcastChannelTransport} from 'synclets/browser';
 import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/connector/memory';
-import {createBroadcastChannelTransport} from 'synclets/transport/broadcast-channel';
 import {expect, test} from 'vitest';
 import {describeCommonConnectorTests} from '../common.ts';
 

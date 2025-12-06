@@ -13,12 +13,12 @@ Synclets is a storage-agnostic sync engine development kit. It enables data sync
 - **Connectors**: Implementations for specific storage engines.
   - **Database Connectors**: `src/connector/database/common.ts` provides a generic SQL implementation used by `sqlite3` and `pglite`.
   - **File/Directory Connectors**: `src/fs/`
-  - **Browser Storage**: `src/browser/`
+  - **Browser Storage and Transport**: `src/browser/` (LocalStorage, SessionStorage, BroadcastChannel)
   - **Other Connectors**: `src/connector/` (memory, tinybase, database)
 - **Transports**: Implementations for communication channels.
   - **WebSocket Transport**: `src/ws/`
   - **Durable Object Transport**: `src/durable-object/`
-  - **Other Transports**: `src/transport/` (broadcast-channel, memory)
+  - **Other Transports**: `src/transport/` (memory)
 - **Types (`src/@types/`)**: Type definitions are explicitly separated into this directory, mirroring the source structure.
 
 ## Key Concepts

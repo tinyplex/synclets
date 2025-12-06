@@ -7,7 +7,20 @@ import type {
   SyncletImplementations,
   SyncletOptions,
   Transport,
+  TransportOptions,
 } from '../index.js';
+
+/// BroadcastChannelTransport
+export interface BroadcastChannelTransport extends Transport {
+  /// BroadcastChannelTransport.getChannelName
+  getChannelName(): string;
+}
+
+/// createBroadcastChannelTransport
+export function createBroadcastChannelTransport(
+  channelName: string,
+  options?: TransportOptions,
+): BroadcastChannelTransport;
 
 /// LocalStorageDataConnector
 export interface LocalStorageDataConnector<Depth extends number>

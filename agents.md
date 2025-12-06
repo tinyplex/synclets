@@ -97,8 +97,9 @@ synclets/connector/database/sqlite3 # SQLite3 database connectors
 synclets/connector/fs             # File system connectors
 synclets/connector/memory         # Memory connectors
 synclets/connector/tinybase       # TinyBase connectors
+synclets/browser                  # Browser connectors and transport (LocalStorage, SessionStorage, BroadcastChannel)
 synclets/ws                       # WebSocket transport
-synclets/transport/broadcast-channel # BroadcastChannel transport
+synclets/durable-object           # Durable Object transport
 synclets/transport/memory         # Memory transport
 synclets/server                   # Server utilities
 ```

@@ -1,5 +1,5 @@
 import type {Data, Meta} from '@synclets/@types';
-import {
+import type {
   LocalStorageDataConnector,
   LocalStorageMetaConnector,
   SessionStorageDataConnector,

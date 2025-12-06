@@ -1,10 +1,11 @@
+export {createBroadcastChannelTransport} from './broadcast-channel.ts';
 export {
   createLocalStorageDataConnector,
   createLocalStorageMetaConnector,
   createLocalStorageSynclet,
-} from './local.ts';
+} from './local-storage.ts';
 export {
   createSessionStorageDataConnector,
   createSessionStorageMetaConnector,
   createSessionStorageSynclet,
-} from './session.ts';
+} from './session-storage.ts';

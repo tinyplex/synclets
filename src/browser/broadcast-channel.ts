@@ -3,14 +3,14 @@ import type {TransportOptions} from '@synclets/@types';
 import type {
   BroadcastChannelTransport,
   createBroadcastChannelTransport as createBroadcastChannelTransportDecl,
-} from '@synclets/@types/transport/broadcast-channel';
+} from '@synclets/@types/browser';
 import {
   getPacketFromParts,
   getPartsFromPacket,
   getUniqueId,
 } from '@synclets/utils';
-import {objFreeze} from '../../common/object.ts';
-import {ASTERISK} from '../../common/string.ts';
+import {objFreeze} from '../common/object.ts';
+import {ASTERISK} from '../common/string.ts';
 
 const addEventListener = (
   channel: BroadcastChannel,
