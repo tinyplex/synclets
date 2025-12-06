@@ -1,5 +1,5 @@
 import {createSynclet} from '@synclets';
-import type {Sql} from '@synclets/@types/connector/database';
+import type {Sql} from '@synclets/@types/database';
 import type {
   createSqlite3DataConnector as createSqlite3DataConnectorDecl,
   createSqlite3MetaConnector as createSqlite3MetaConnectorDecl,
@@ -11,10 +11,10 @@ import type {
   Sqlite3SyncletOptions,
 } from '@synclets/@types/sqlite3';
 import type {Database} from 'sqlite3';
+import {createDatabaseConnector} from '../common/database.ts';
 import {objFromEntries} from '../common/object.ts';
 import {promiseNew} from '../common/other.ts';
-import {createDatabaseConnector} from '../connector/database/common.ts';
-import {getQuery, sql} from '../connector/database/index.ts';
+import {getQuery, sql} from '../database/index.ts';
 
 export const createSqlite3DataConnector: typeof createSqlite3DataConnectorDecl =
   <Depth extends number>({

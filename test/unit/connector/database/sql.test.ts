@@ -1,4 +1,4 @@
-import {getQuery, sql} from 'synclets/connector/database';
+import {getQuery, sql} from 'synclets/database';
 import {describe, expect, test} from 'vitest';
 
 describe('simple', () => {

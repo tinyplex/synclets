@@ -8,12 +8,12 @@ import {
   TimestampAddress,
   TimestampsAddress,
 } from '@synclets/@types';
-import {Sql} from '@synclets/@types/connector/database';
+import {Sql} from '@synclets/@types/database';
 import {jsonString} from '@synclets/utils';
-import {arrayMap, arrayNew, arraySlice} from '../../common/array.ts';
-import {objFromEntries, objIsEqual, objNotEmpty} from '../../common/object.ts';
-import {errorNew, promiseAll, size} from '../../common/other.ts';
-import {sql} from './index.ts';
+import {sql} from '../database/index.ts';
+import {arrayMap, arrayNew, arraySlice} from './array.ts';
+import {objFromEntries, objIsEqual, objNotEmpty} from './object.ts';
+import {errorNew, promiseAll, size} from './other.ts';
 
 export const createDatabaseConnector = <
   CreateMeta extends boolean,

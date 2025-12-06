@@ -11,7 +11,7 @@ Synclets is a storage-agnostic sync engine development kit. It enables data sync
   - **Meta Connector**: Handles reading/writing of metadata (Timestamps/HLC).
   - **Transport**: Handles sending/receiving messages.
 - **Connectors**: Implementations for specific storage engines.
-  - **Database Connectors**: `src/connector/database/common.ts` provides a generic SQL implementation used by `sqlite3` and `pglite`.
+  - **Database Connectors**: `src/database/common.ts` provides a generic SQL implementation used by `sqlite3` and `pglite`.
   - **File/Directory Connectors**: `src/fs/`
   - **Browser Storage and Transport**: `src/browser/` (LocalStorage, SessionStorage, BroadcastChannel)
   - **Memory Connectors and Transport**: `src/memory/`
@@ -56,13 +56,13 @@ Synclets is a storage-agnostic sync engine development kit. It enables data sync
   - The label in `index.d.ts` must exactly match the key in the `TYPES` object in `docs.js`
   - **Indentation matters**: Properties and methods must be indented in `docs.js` to match the alignment in the generated `index.d.ts` files
   - When adding new types or properties, update both files to avoid build errors
-- **Database Abstraction**: When implementing a new SQL-based connector, adapt `createDatabaseConnector` (`src/connector/database/common.ts`) instead of writing from scratch.
+- **Database Abstraction**: When implementing a new SQL-based connector, adapt `createDatabaseConnector` (`src/database/common.ts`) instead of writing from scratch.
 - **Utilities**: Use shared utilities from `src/common` (internal) and `src/utils` (public).
 
 ## Important Files
 
 - `src/core/synclet.ts`: The core synchronization logic and protocol implementation.
-- `src/connector/database/common.ts`: Shared logic for SQL-based connectors.
+- `src/database/common.ts`: Shared logic for SQL-based connectors.
 - `gulpfile.mjs`: The build, test, and linting orchestration script.
 - `src/tsconfig.json`: Defines the module structure and path mappings used by the build system.
 

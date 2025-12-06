@@ -1,4 +1,4 @@
-/// connector/database
+/// database
 
 /// Sql
 export type Sql = {__brand: 'Sql'; strings: string[]; args: any[]};

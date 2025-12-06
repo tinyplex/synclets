@@ -1,4 +1,4 @@
-import {Sql} from '@synclets/@types/connector/database';
+import {Sql} from '@synclets/@types/database';
 import {
   arrayForEach,
   arrayJoin,
@@ -7,15 +7,10 @@ import {
   arrayPop,
   arrayShift,
   arraySome,
-} from '../../common/array.ts';
-import {
-  isObject,
-  objEntries,
-  objKeys,
-  objNotEmpty,
-} from '../../common/object.ts';
-import {isEmpty, size} from '../../common/other.ts';
-import {strEndsWith, strReplaceAll, strSub} from '../../common/string.ts';
+} from '../common/array.ts';
+import {isObject, objEntries, objKeys, objNotEmpty} from '../common/object.ts';
+import {isEmpty, size} from '../common/other.ts';
+import {strEndsWith, strReplaceAll, strSub} from '../common/string.ts';
 
 export const sql = (
   templateStringsArray: TemplateStringsArray | string[],

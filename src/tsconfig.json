@@ -16,17 +16,11 @@
     "paths": {
       "@synclets": ["./index.ts"],
       "@synclets/utils": ["./utils/index.ts"],
-      "@synclets/memory": ["./memory/index.ts"],
-      "@synclets/pglite": ["./pglite/index.ts"],
-      "@synclets/sqlite3": ["./sqlite3/index.ts"],
-      "@synclets/tinybase": ["./tinybase/index.ts"],
 
       "@synclets/@types": ["./@types/index.d.ts"],
       "@synclets/@types/utils": ["./@types/utils/index.d.ts"],
       "@synclets/@types/browser": ["./@types/browser/index.d.ts"],
-      "@synclets/@types/connector/database": [
-        "./@types/connector/database/index.d.ts"
-      ],
+      "@synclets/@types/database": ["./@types/database/index.d.ts"],
       "@synclets/@types/pglite": ["./@types/pglite/index.d.ts"],
       "@synclets/@types/sqlite3": ["./@types/sqlite3/index.d.ts"],
       "@synclets/@types/fs": ["./@types/fs/index.d.ts"],

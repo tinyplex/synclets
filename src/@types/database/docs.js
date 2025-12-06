@@ -1,11 +1,11 @@
 /**
- * The connector/database module defines shared option types for SQL-style
+ * The database module defines shared option types for SQL-style
  * connectors.
  * @packageDocumentation
- * @module connector/database
+ * @module database
  * @since v0.0.0
  */
-/// connector/database
+/// database
 
 /**
  * The Sql type represents a parameterized SQL query.

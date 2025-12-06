@@ -1,6 +1,6 @@
 import type {PGlite} from '@electric-sql/pglite';
 import {createSynclet} from '@synclets';
-import {Sql} from '@synclets/@types/connector/database';
+import {Sql} from '@synclets/@types/database';
 import type {
   createPgliteDataConnector as createPgliteDataConnectorDecl,
   createPgliteMetaConnector as createPgliteMetaConnectorDecl,
@@ -11,9 +11,9 @@ import type {
   PgliteMetaConnectorOptions,
   PgliteSyncletOptions,
 } from '@synclets/@types/pglite';
+import {createDatabaseConnector} from '../common/database.ts';
 import {objFromEntries} from '../common/object.ts';
-import {createDatabaseConnector} from '../connector/database/common.ts';
-import {getQuery, sql} from '../connector/database/index.ts';
+import {getQuery, sql} from '../database/index.ts';
 
 export const createPgliteDataConnector: typeof createPgliteDataConnectorDecl = <
   Depth extends number,
