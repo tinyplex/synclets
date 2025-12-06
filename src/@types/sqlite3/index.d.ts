@@ -1,4 +1,4 @@
-/// connector/database/sqlite3
+/// sqlite3
 
 import type {Database} from 'sqlite3';
 import type {
@@ -8,7 +8,7 @@ import type {
   SyncletImplementations,
   SyncletOptions,
   Transport,
-} from '../../../index.d.ts';
+} from '../index.d.ts';
 
 /// Sqlite3DataConnector
 export interface Sqlite3DataConnector<Depth extends number>

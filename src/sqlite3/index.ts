@@ -9,12 +9,12 @@ import type {
   Sqlite3MetaConnector,
   Sqlite3MetaConnectorOptions,
   Sqlite3SyncletOptions,
-} from '@synclets/@types/connector/database/sqlite3';
+} from '@synclets/@types/sqlite3';
 import type {Database} from 'sqlite3';
-import {objFromEntries} from '../../../common/object.ts';
-import {promiseNew} from '../../../common/other.ts';
-import {createDatabaseConnector} from '../common.ts';
-import {getQuery, sql} from '../index.ts';
+import {objFromEntries} from '../common/object.ts';
+import {promiseNew} from '../common/other.ts';
+import {createDatabaseConnector} from '../connector/database/common.ts';
+import {getQuery, sql} from '../connector/database/index.ts';
 
 export const createSqlite3DataConnector: typeof createSqlite3DataConnectorDecl =
   <Depth extends number>({

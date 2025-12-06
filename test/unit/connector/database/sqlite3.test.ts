@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import {Database} from 'sqlite3';
 import {createSynclet} from 'synclets';
+import {createMemoryTransport} from 'synclets/memory';
 import {
   createSqlite3DataConnector,
   createSqlite3MetaConnector,
   createSqlite3Synclet,
-} from 'synclets/connector/database/sqlite3';
-import {createMemoryTransport} from 'synclets/memory';
+} from 'synclets/sqlite3';
 import {afterAll, afterEach, beforeAll, describe, expect, test} from 'vitest';
 import {
   createMockDataConnector,

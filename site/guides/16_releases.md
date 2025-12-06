@@ -112,7 +112,7 @@ import {
 import {
   createSqlite3DataConnector,
   createSqlite3MetaConnector,
-} from 'synclets/connector/database/sqlite3';
+} from 'synclets/sqlite3';
 import {createWsClientTransport} from 'synclets/ws';
 import {WebSocket} from 'ws';
 

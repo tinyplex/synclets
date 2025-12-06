@@ -91,13 +91,13 @@ that can be imported separately:
 ```
 synclets                          # Core synclet module
 synclets/core                     # Core types and utilities
-synclets/connector/database/sqlite3 # SQLite3 database connectors
 synclets/browser                  # Browser connectors and transport (LocalStorage, SessionStorage, BroadcastChannel)
 synclets/durable-object           # Durable Object transport
 synclets/fs                       # File system connectors
 synclets/memory                   # Memory connectors and transport
 synclets/pglite                   # PGlite database connectors
 synclets/server                   # Server utilities
+synclets/sqlite3                  # SQLite3 database connectors
 synclets/tinybase                 # TinyBase connectors
 synclets/ws                       # WebSocket transport and broker
 ```
