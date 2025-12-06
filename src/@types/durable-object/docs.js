@@ -1,11 +1,11 @@
 /**
- * The transport/durable-object module provides transport layer integration for
+ * The durable-object module provides transport layer integration for
  * Cloudflare Durable Objects.
  * @packageDocumentation
- * @module transport/durable-object
+ * @module durable-object
  * @since v0.0.0
  */
-/// transport/durable-object
+/// durable-object
 
 /**
  * The SyncletDurableObject class is a base class for creating Synclet-powered

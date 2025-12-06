@@ -1,8 +1,8 @@
 import {DurableObject} from 'cloudflare:workers';
-import {arrayForEach} from '../../common/array.ts';
-import {objValues} from '../../common/object.ts';
-import {ifNotNull, ifNotUndefined, slice} from '../../common/other.ts';
-import {ASTERISK, EMPTY_STRING, SPACE, strMatch} from '../../common/string.ts';
+import {arrayForEach} from '../common/array.ts';
+import {objValues} from '../common/object.ts';
+import {ifNotNull, ifNotUndefined, slice} from '../common/other.ts';
+import {ASTERISK, EMPTY_STRING, SPACE, strMatch} from '../common/string.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
 

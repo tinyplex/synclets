@@ -17,7 +17,8 @@ Synclets is a storage-agnostic sync engine development kit. It enables data sync
   - **Other Connectors**: `src/connector/` (memory, tinybase, database)
 - **Transports**: Implementations for communication channels.
   - **WebSocket Transport**: `src/ws/`
-  - **Other Transports**: `src/transport/` (broadcast-channel, memory, durable-object)
+  - **Durable Object Transport**: `src/durable-object/`
+  - **Other Transports**: `src/transport/` (broadcast-channel, memory)
 - **Types (`src/@types/`)**: Type definitions are explicitly separated into this directory, mirroring the source structure.
 
 ## Key Concepts

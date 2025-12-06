@@ -1,4 +1,4 @@
-/// transport/durable-object
+/// durable-object
 
 import {DurableObject} from 'cloudflare:workers';
 
