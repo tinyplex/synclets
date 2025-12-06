@@ -1,6 +1,6 @@
 import {createSynclet, createTransport, RESERVED} from '@synclets';
 import {TransportOptions} from '@synclets/@types';
-import {
+import type {
   createWsBroker as createWsBrokerDecl,
   createWsBrokerTransport as createWsBrokerTransportDecl,
   WsBroker,
@@ -9,10 +9,10 @@ import {
 } from '@synclets/@types/ws';
 import {IncomingMessage} from 'http';
 import {WebSocket, WebSocketServer} from 'ws';
+import {getBrokerFunctions} from '../common/broker.ts';
 import {objFreeze} from '../common/object.ts';
 import {ifNotUndefined, isNull} from '../common/other.ts';
 import {EMPTY_STRING, strMatch, strTest, UTF8} from '../common/string.ts';
-import {getConnectionFunctions} from '../transport/common.ts';
 
 const SERVER_ID = RESERVED + 's';
 
@@ -66,7 +66,7 @@ export const createWsBrokerTransport = ((
   let handleSendPacket: ((packet: string) => void) | undefined;
   let handleClose: (() => void) | undefined;
 
-  const [addConnection, clearConnections] = getConnectionFunctions();
+  const [addConnection, clearConnections] = getBrokerFunctions();
 
   const getValidPath = (request: IncomingMessage): string | undefined =>
     ifNotUndefined(

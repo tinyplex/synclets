@@ -7,11 +7,11 @@ import {
   mapIsEmpty,
   mapNew,
   mapSet,
-} from '../common/map.ts';
-import {slice} from '../common/other.ts';
-import {ASTERISK, SPACE} from '../common/string.ts';
+} from './map.ts';
+import {slice} from './other.ts';
+import {ASTERISK, SPACE} from './string.ts';
 
-export const getConnectionFunctions = (): [
+export const getBrokerFunctions = (): [
   addConnection: (
     id: string,
     send: (packet: string) => void,
