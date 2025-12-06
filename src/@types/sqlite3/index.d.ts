@@ -11,8 +11,9 @@ import type {
 } from '../index.d.ts';
 
 /// Sqlite3DataConnector
-export interface Sqlite3DataConnector<Depth extends number>
-  extends DataConnector<Depth> {
+export interface Sqlite3DataConnector<
+  Depth extends number,
+> extends DataConnector<Depth> {
   /// Sqlite3DataConnector.getDatabase
   getDatabase(): Database;
 }
@@ -41,8 +42,9 @@ export function createSqlite3DataConnector<Depth extends number>(
 ): Sqlite3DataConnector<Depth>;
 
 /// Sqlite3MetaConnector
-export interface Sqlite3MetaConnector<Depth extends number>
-  extends MetaConnector<Depth> {
+export interface Sqlite3MetaConnector<
+  Depth extends number,
+> extends MetaConnector<Depth> {
   /// Sqlite3MetaConnector.getDatabase
   getDatabase(): Database;
 }

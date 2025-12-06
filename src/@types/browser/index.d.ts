@@ -23,8 +23,9 @@ export function createBroadcastChannelTransport(
 ): BroadcastChannelTransport;
 
 /// LocalStorageDataConnector
-export interface LocalStorageDataConnector<Depth extends number>
-  extends DataConnector<Depth> {
+export interface LocalStorageDataConnector<
+  Depth extends number,
+> extends DataConnector<Depth> {
   /// LocalStorageDataConnector.getStorageName
   getStorageName(): string;
 }
@@ -44,8 +45,9 @@ export function createLocalStorageDataConnector<Depth extends number>(
 ): LocalStorageDataConnector<Depth>;
 
 /// LocalStorageMetaConnector
-export interface LocalStorageMetaConnector<Depth extends number>
-  extends MetaConnector<Depth> {
+export interface LocalStorageMetaConnector<
+  Depth extends number,
+> extends MetaConnector<Depth> {
   /// LocalStorageMetaConnector.getStorageName
   getStorageName(): string;
 }
@@ -87,8 +89,9 @@ export function createLocalStorageSynclet<Depth extends number>(
 >;
 
 /// SessionStorageDataConnector
-export interface SessionStorageDataConnector<Depth extends number>
-  extends DataConnector<Depth> {
+export interface SessionStorageDataConnector<
+  Depth extends number,
+> extends DataConnector<Depth> {
   /// SessionStorageDataConnector.getStorageName
   getStorageName(): string;
 }
@@ -108,8 +111,9 @@ export function createSessionStorageDataConnector<Depth extends number>(
 ): SessionStorageDataConnector<Depth>;
 
 /// SessionStorageMetaConnector
-export interface SessionStorageMetaConnector<Depth extends number>
-  extends MetaConnector<Depth> {
+export interface SessionStorageMetaConnector<
+  Depth extends number,
+> extends MetaConnector<Depth> {
   /// SessionStorageMetaConnector.getStorageName
   getStorageName(): string;
 }

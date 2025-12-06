@@ -7,8 +7,9 @@ import type {Transport, TransportOptions} from '../index.js';
 export type WebSocketTypes = WebSocket | WsWebSocket;
 
 /// WsClientTransport
-export interface WsClientTransport<WebSocketType extends WebSocketTypes>
-  extends Transport {
+export interface WsClientTransport<
+  WebSocketType extends WebSocketTypes,
+> extends Transport {
   /// WsClientTransport.getWebSocket
   getWebSocket(): WebSocketType;
 }

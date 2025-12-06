@@ -10,8 +10,9 @@ import type {
 } from '../index.d.ts';
 
 /// FileDataConnector
-export interface FileDataConnector<Depth extends number>
-  extends DataConnector<Depth> {
+export interface FileDataConnector<
+  Depth extends number,
+> extends DataConnector<Depth> {
   /// FileDataConnector.getFile
   getFile(): string;
 }
@@ -31,8 +32,9 @@ export function createFileDataConnector<Depth extends number>(
 ): FileDataConnector<Depth>;
 
 /// FileMetaConnector
-export interface FileMetaConnector<Depth extends number>
-  extends MetaConnector<Depth> {
+export interface FileMetaConnector<
+  Depth extends number,
+> extends MetaConnector<Depth> {
   /// FileMetaConnector.getFile
   getFile(): string;
 }
@@ -68,8 +70,9 @@ export function createFileSynclet<Depth extends number>(
 ): Promise<Synclet<Depth, FileDataConnector<Depth>, FileMetaConnector<Depth>>>;
 
 /// DirectoryDataConnector
-export interface DirectoryDataConnector<Depth extends number>
-  extends DataConnector<Depth> {
+export interface DirectoryDataConnector<
+  Depth extends number,
+> extends DataConnector<Depth> {
   /// DirectoryDataConnector.getDirectory
   getDirectory(): string;
 }
@@ -89,8 +92,9 @@ export function createDirectoryDataConnector<Depth extends number>(
 ): DirectoryDataConnector<Depth>;
 
 /// DirectoryMetaConnector
-export interface DirectoryMetaConnector<Depth extends number>
-  extends MetaConnector<Depth> {
+export interface DirectoryMetaConnector<
+  Depth extends number,
+> extends MetaConnector<Depth> {
   /// DirectoryMetaConnector.getDirectory
   getDirectory(): string;
 }

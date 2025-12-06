@@ -35,8 +35,9 @@ export interface ProtectedSynclet<Depth extends number> extends Synclet<Depth> {
   ];
 }
 
-export interface ProtectedDataConnector<Depth extends number>
-  extends DataConnector<Depth> {
+export interface ProtectedDataConnector<
+  Depth extends number,
+> extends DataConnector<Depth> {
   _: [
     attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
     detach: () => Promise<void>,
@@ -51,8 +52,9 @@ export interface ProtectedDataConnector<Depth extends number>
   ];
 }
 
-export interface ProtectedMetaConnector<Depth extends number>
-  extends MetaConnector<Depth> {
+export interface ProtectedMetaConnector<
+  Depth extends number,
+> extends MetaConnector<Depth> {
   _: [
     attach: (synclet: ProtectedSynclet<Depth>) => Promise<void>,
     detach: () => Promise<void>,

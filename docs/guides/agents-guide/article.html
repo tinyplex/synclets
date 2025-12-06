@@ -1,15 +1,14 @@
 <nav><ul><li><a href="/">Synclets</a></li><li><a href="/guides/">Guides</a></li><li><a href="/guides/agents-guide/">Agents Guide</a></li></ul></nav><section class="s1" id="/guides/agents-guide/" data-id="AG"><h1>Agents Guide</h1><p>This file follows the <a href="https://agents.md/">agents.md</a> specification for AI agent context. If you&#x27;re a human reading this, it provides a comprehensive overview of the Synclets project for AI assistants working with the codebase.</p><h3 id="overview">Overview</h3><p><strong>Synclets</strong> is an open, storage-agnostic sync engine development kit. It is a TypeScript library that provides a flexible synchronization framework for local-first applications. It&#x27;s designed to make it easy to synchronize data between different parts of your applications, whether between local storage and remote servers, between different devices, or even across worker boundaries. The library is modular, extensible, and not locked to any specific storage solution, transport layer, or vendor.</p><ul><li><strong>Website</strong>: <a href="https://synclets.org">https://synclets.org</a></li><li><strong>Repository</strong>: <a href="https://github.com/tinyplex/synclets">https://github.com/tinyplex/synclets</a></li><li><strong>Documentation</strong>: <a href="https://synclets.org/api/">https://synclets.org/api/</a></li><li><strong>License</strong>: MIT</li><li><strong>Author</strong>: James Pearce (@jamesgpearce)</li></ul><h3 id="core-concepts"><a href="/guides/the-basics/core-concepts/">Core Concepts</a></h3><h4 id="synclets">Synclets</h4><p>A <a href="/api/synclets/interfaces/core/synclet/"><code>Synclet</code></a> is the main synchronization unit that coordinates data sync between storage and transport layers. It combines:</p><ul><li><strong><a href="/api/synclets/type-aliases/dataconnector/data/"><code>Data</code></a> Connector</strong>: Manages the actual application data storage</li><li><strong><a href="/api/synclets/type-aliases/metaconnector/meta/"><code>Meta</code></a> Connector</strong>: Manages synchronization metadata (versions, checksums, etc.)</li><li><strong><a href="/api/synclets/interfaces/core/transport/"><code>Transport</code></a></strong>: Handles communication between different <a href="/api/synclets/interfaces/core/synclet/"><code>Synclet</code></a> instances</li></ul><p>Synclets work by tracking changes to data, propagating those changes to remote instances, and resolving conflicts when they occur.</p><h4 id="connectors">Connectors</h4><p>Connectors provide an abstraction layer over different storage backends. They come in two types:</p><ul><li><strong><a href="/api/synclets/type-aliases/dataconnector/data/"><code>Data</code></a> Connectors</strong>: Store and retrieve actual application data</li><li><strong><a href="/api/synclets/type-aliases/metaconnector/meta/"><code>Meta</code></a> Connectors</strong>: Store synchronization metadata separately</li></ul><p>This separation allows mixing and matching different storage backends for data and metadata based on your needs.</p><h4 id="transports">Transports</h4><p>Transports handle the communication layer between <a href="/api/synclets/interfaces/core/synclet/"><code>Synclet</code></a> instances. They define how data changes are sent and received between different parts of your application, whether across network boundaries or within the same process.</p><h3 id="key-features">Key Features</h3><h4 id="storage-agnostic">Storage Agnostic</h4><p>Multiple storage backends supported via Connectors:</p><ul><li><strong>Browser</strong>: localStorage, sessionStorage, IndexedDB</li><li><strong>Databases</strong>: PGlite, SQLite3</li><li><strong>TinyBase</strong>: Integration with TinyBase reactive data store</li><li><strong>Files</strong>: Node.js file system</li><li><strong>Memory</strong>: In-memory storage for testing</li></ul><h4 id="flexible-transport">Flexible <a href="/api/synclets/interfaces/core/transport/"><code>Transport</code></a></h4><p>Multiple transport layers supported:</p><ul><li><strong>WebSockets</strong>: Real-time sync over WebSocket connections (client and server)</li><li><strong>BroadcastChannel</strong>: Same-origin tab synchronization</li><li><strong>Memory</strong>: In-process communication for testing</li></ul><h4 id="modular-architecture">Modular Architecture</h4><p>Each connector and transport is independently importable, allowing tree-shaking and minimal bundle sizes. Only import what you need.</p><h4 id="type-safety">Type Safety</h4><p>Strong TypeScript support throughout the library with comprehensive type definitions and compile-time validation.</p><h3 id="architecture">Architecture</h3><h4 id="modular-design">Modular Design</h4><p>Synclets uses a modular architecture where each feature is an independent module that can be imported separately:</p><pre><code>synclets                          # Core synclet module
 synclets/core                     # Core types and utilities
-synclets/connector/browser        # Browser storage connectors
-synclets/connector/database/pglite # PGlite database connectors
-synclets/connector/database/sqlite3 # SQLite3 database connectors
-synclets/connector/fs             # File system connectors
-synclets/connector/memory         # Memory connectors
-synclets/connector/tinybase       # TinyBase connectors
-synclets/transport/ws             # WebSocket transport
-synclets/transport/broadcast-channel # BroadcastChannel transport
-synclets/transport/memory         # Memory transport
+synclets/browser                  # Browser connectors and transport (LocalStorage, SessionStorage, BroadcastChannel)
+synclets/durable-object           # Durable Object transport
+synclets/fs                       # File system connectors
+synclets/memory                   # Memory connectors and transport
+synclets/pglite                   # PGlite database connectors
 synclets/server                   # Server utilities
+synclets/sqlite3                  # SQLite3 database connectors
+synclets/tinybase                 # TinyBase connectors
+synclets/ws                       # WebSocket transport and broker
 </code></pre><h4 id="type-system">Type System</h4><p>Strong TypeScript support with:</p><ul><li>Generic types for extensibility</li><li>Conditional types for type-safe APIs</li><li>Comprehensive interface definitions</li><li>Full IntelliSense support</li></ul><h4 id="build-system">Build System</h4><ul><li><strong>Gulp</strong>: Build orchestration</li><li><strong>TypeScript</strong>: Source language with strict mode</li><li><strong>Rollup</strong>: Bundling</li><li><strong>ESM</strong>: Primary module format</li><li><strong>Tree-shaking</strong>: Modular design for minimal bundles</li></ul><h3 id="development">Development</h3><h4 id="prerequisites">Prerequisites</h4><ul><li>Node.js &gt;= 23.10.0</li><li>npm &gt;= 10.9.2</li></ul><h4 id="setup">Setup</h4><pre><code><span class="function">git</span> clone https://github.com/tinyplex/synclets.git
 <span class="builtin">cd</span> synclets
 <span class="function">npm</span> <span class="function">install</span>
@@ -23,20 +22,17 @@ synclets/server                   # Server utilities
 </code></pre><h4 id="testing">Testing</h4><ul><li><strong>Framework</strong>: Vitest</li><li><strong>Coverage</strong>: Istanbul coverage reporting</li><li><strong>Types</strong>: Unit, performance, end-to-end, production</li><li><strong>Environment</strong>: happy-dom (unit), puppeteer (e2e)</li></ul><h4 id="code-style">Code Style</h4><ul><li><strong>ESLint</strong>: Enforced with strict rules</li><li><strong>Prettier</strong>: Automatic formatting</li><li><strong>Max line length</strong>: 80 characters</li><li><strong>Quotes</strong>: Single quotes (template literals allowed)</li><li><strong>Semicolons</strong>: Required</li><li><strong>Object spacing</strong>: No spaces in braces <code>{key: value}</code></li></ul><h3 id="project-structure">Project Structure</h3><pre><code>synclets/
 ├── src/                       # Source code
 │   ├── @types/                # TypeScript declarations
+│   ├── browser/               # Browser storage and transport (LocalStorage, SessionStorage, BroadcastChannel)
 │   ├── core/                  # Core synclet implementation
-│   ├── connector/             # Storage connectors
-│   │   ├── browser/           # Browser storage (localStorage, etc.)
-│   │   ├── database/          # Database connectors
-│   │   │   ├── pglite/        # PGlite connector
-│   │   │   └── sqlite3/       # SQLite3 connector
-│   │   ├── fs/                # File system connector
-│   │   ├── memory/            # Memory connector
-│   │   └── tinybase/          # TinyBase connector
-│   ├── transport/             # Transport implementations
-│   │   ├── ws/                # WebSocket transport
-│   │   ├── broadcast-channel/ # BroadcastChannel transport
-│   │   └── memory/            # Memory transport
+│   ├── database/              # Shared SQL utilities
+│   ├── durable-object/        # Cloudflare Durable Object transport
+│   ├── fs/                    # File system connectors
+│   ├── memory/                # Memory connectors and transport
+│   ├── pglite/                # PGlite database connectors
 │   ├── server/                # Server utilities
+│   ├── sqlite3/               # SQLite3 database connectors
+│   ├── tinybase/              # TinyBase connectors
+│   ├── ws/                    # WebSocket transport and broker
 │   ├── utils/                 # Shared utilities
 │   ├── common/                # Common code
 │   └── index.ts               # Main entry point

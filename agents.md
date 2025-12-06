@@ -168,20 +168,17 @@ npm run serveDocs           # Preview documentation locally
 synclets/
 ├── src/                       # Source code
 │   ├── @types/                # TypeScript declarations
+│   ├── browser/               # Browser storage and transport (LocalStorage, SessionStorage, BroadcastChannel)
 │   ├── core/                  # Core synclet implementation
-│   ├── connector/             # Storage connectors
-│   │   ├── browser/           # Browser storage (localStorage, etc.)
-│   │   ├── database/          # Database connectors
-│   │   │   ├── pglite/        # PGlite connector
-│   │   │   └── sqlite3/       # SQLite3 connector
-│   │   ├── fs/                # File system connector
-│   │   ├── memory/            # Memory connector
-│   │   └── tinybase/          # TinyBase connector
-│   ├── transport/             # Transport implementations
-│   │   ├── ws/                # WebSocket transport
-│   │   ├── broadcast-channel/ # BroadcastChannel transport
-│   │   └── memory/            # Memory transport
+│   ├── database/              # Shared SQL utilities
+│   ├── durable-object/        # Cloudflare Durable Object transport
+│   ├── fs/                    # File system connectors
+│   ├── memory/                # Memory connectors and transport
+│   ├── pglite/                # PGlite database connectors
 │   ├── server/                # Server utilities
+│   ├── sqlite3/               # SQLite3 database connectors
+│   ├── tinybase/              # TinyBase connectors
+│   ├── ws/                    # WebSocket transport and broker
 │   ├── utils/                 # Shared utilities
 │   ├── common/                # Common code
 │   └── index.ts               # Main entry point
