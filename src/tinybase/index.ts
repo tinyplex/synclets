@@ -3,11 +3,11 @@ import {Address, AnyParentAddress, Atom, AtomAddress} from '@synclets/@types';
 import type {
   createTinyBaseDataConnector as createTinyBaseDataConnectorDecl,
   TinyBaseDataConnector,
-} from '@synclets/@types/connector/tinybase';
+} from '@synclets/@types/tinybase';
 import type {Cell, Id, Store, Value} from 'tinybase';
-import {arrayConcat} from '../../common/array.ts';
-import {size} from '../../common/other.ts';
-import {createDataConnector} from '../../core/index.ts';
+import {arrayConcat} from '../common/array.ts';
+import {size} from '../common/other.ts';
+import {createDataConnector} from '../core/index.ts';
 
 const VALUE_STEM = RESERVED + 'v';
 

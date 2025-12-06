@@ -1,7 +1,7 @@
-/// connector/tinybase
+/// tinybase
 
 import type {Store} from 'tinybase';
-import type {DataConnector} from '../../index.d.ts';
+import type {DataConnector} from '../index.d.ts';
 
 /// TinyBaseDataConnector
 export interface TinyBaseDataConnector extends DataConnector<3> {

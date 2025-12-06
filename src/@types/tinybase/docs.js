@@ -1,11 +1,11 @@
 /**
- * The connector/tinybase module describes the adapters that wrap TinyBase
+ * The tinybase module describes the adapters that wrap TinyBase
  * stores as connectors.
  * @packageDocumentation
- * @module connector/tinybase
+ * @module tinybase
  * @since v0.0.0
  */
-/// connector/tinybase
+/// tinybase
 
 /**
  * The TinyBaseDataConnector interface describes a DataConnector that wraps a

@@ -17,6 +17,7 @@
       "@synclets": ["./index.ts"],
       "@synclets/utils": ["./utils/index.ts"],
       "@synclets/memory": ["./memory/index.ts"],
+      "@synclets/tinybase": ["./tinybase/index.ts"],
 
       "@synclets/@types": ["./@types/index.d.ts"],
       "@synclets/@types/utils": ["./@types/utils/index.d.ts"],
@@ -31,9 +32,7 @@
         "./@types/connector/database/sqlite3/index.d.ts"
       ],
       "@synclets/@types/fs": ["./@types/fs/index.d.ts"],
-      "@synclets/@types/connector/tinybase": [
-        "./@types/connector/tinybase/index.d.ts"
-      ],
+      "@synclets/@types/tinybase": ["./@types/tinybase/index.d.ts"],
       "@synclets/@types/durable-object": ["./@types/durable-object/index.d.ts"],
       "@synclets/@types/memory": ["./@types/memory/index.d.ts"],
       "@synclets/@types/ws": ["./@types/ws/index.d.ts"]
