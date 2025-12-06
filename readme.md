@@ -25,7 +25,7 @@ const metaConnector = createPgliteMetaConnector({
 <section><h2 id="pick-a-transport-layer">Pick a transport layer</h2><p>Synclets are designed to work over a variety of transport layers. For example, to use WebSockets via a server use the <a href="https://synclets.org/api/transport-ws/functions/transport/createwsclienttransport/"><code>createWsClientTransport</code></a> function.</p></section>
 
 ```js
-import {createWsClientTransport} from 'synclets/transport/ws';
+import {createWsClientTransport} from 'synclets/ws';
 import {WebSocket} from 'ws';
 
 const transport = createWsClientTransport(

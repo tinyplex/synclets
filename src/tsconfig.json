@@ -47,7 +47,7 @@
       "@synclets/@types/transport/memory": [
         "./@types/transport/memory/index.d.ts"
       ],
-      "@synclets/@types/transport/ws": ["./@types/transport/ws/index.d.ts"]
+      "@synclets/@types/ws": ["./@types/ws/index.d.ts"]
     }
   }
 }

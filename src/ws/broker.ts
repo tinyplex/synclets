@@ -6,13 +6,13 @@ import {
   WsBroker,
   WsBrokerTransport,
   WsBrokerTransportOptions,
-} from '@synclets/@types/transport/ws';
+} from '@synclets/@types/ws';
 import {IncomingMessage} from 'http';
 import {WebSocket, WebSocketServer} from 'ws';
-import {objFreeze} from '../../common/object.ts';
-import {ifNotUndefined, isNull} from '../../common/other.ts';
-import {EMPTY_STRING, strMatch, strTest, UTF8} from '../../common/string.ts';
-import {getConnectionFunctions} from '../common.ts';
+import {objFreeze} from '../common/object.ts';
+import {ifNotUndefined, isNull} from '../common/other.ts';
+import {EMPTY_STRING, strMatch, strTest, UTF8} from '../common/string.ts';
+import {getConnectionFunctions} from '../transport/common.ts';
 
 const SERVER_ID = RESERVED + 's';
 

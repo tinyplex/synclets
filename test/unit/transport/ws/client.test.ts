@@ -3,7 +3,7 @@ import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/connector/memory';
-import {createWsBroker, createWsClientTransport} from 'synclets/transport/ws';
+import {createWsBroker, createWsClientTransport} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {describeCommonConnectorTests} from '../../common.ts';

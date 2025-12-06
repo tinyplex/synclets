@@ -18,7 +18,7 @@ connect to.
 The WsServer component is a standalone WebSocket server that can be used to
 accept incoming connections from multiple WsClientTransport synclets yet does
 not store its own data. This was previously in the synclet/server/stateless-ws
-module, but is now also part of the transport/ws module.
+module, but is now also part of the ws module.
 
 ---
 
@@ -113,7 +113,7 @@ import {
   createSqlite3DataConnector,
   createSqlite3MetaConnector,
 } from 'synclets/connector/database/sqlite3';
-import {createWsClientTransport} from 'synclets/transport/ws';
+import {createWsClientTransport} from 'synclets/ws';
 import {WebSocket} from 'ws';
 
 const SERVER = 'wss://demo.synclets.org/' + getUniqueId();

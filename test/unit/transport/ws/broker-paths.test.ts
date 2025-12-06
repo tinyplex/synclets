@@ -7,7 +7,7 @@ import {
   createWsBroker,
   createWsBrokerTransport,
   createWsClientTransport,
-} from 'synclets/transport/ws';
+} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../../common.ts';

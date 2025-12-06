@@ -4,10 +4,10 @@ import type {
   createWsClientTransport as createWsClientTransportDecl,
   WebSocketTypes,
   WsClientTransport,
-} from '@synclets/@types/transport/ws';
-import {objFreeze} from '../../common/object.ts';
-import {promiseNew} from '../../common/other.ts';
-import {UTF8} from '../../common/string.ts';
+} from '@synclets/@types/ws';
+import {objFreeze} from '../common/object.ts';
+import {promiseNew} from '../common/other.ts';
+import {UTF8} from '../common/string.ts';
 
 export const createWsClientTransport: typeof createWsClientTransportDecl = <
   WebSocketType extends WebSocketTypes,

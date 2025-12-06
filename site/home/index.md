@@ -120,7 +120,7 @@ const metaConnector = createPgliteMetaConnector({
 > to use WebSockets via a server use the createWsClientTransport function.
 
 ```js
-import {createWsClientTransport} from 'synclets/transport/ws';
+import {createWsClientTransport} from 'synclets/ws';
 import {WebSocket} from 'ws';
 
 const transport = createWsClientTransport(

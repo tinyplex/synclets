@@ -1,11 +1,11 @@
 /**
- * The transport/ws module documents WebSocket-based transports and servers for
+ * The ws module documents WebSocket-based transports and servers for
  * browser and Node runtimes.
  * @packageDocumentation
- * @module transport/ws
+ * @module ws
  * @since v0.0.0
  */
-/// transport/ws
+/// ws
 
 /**
  * The WebSocketTypes type unifies browser WebSocket and ws WebSocket
