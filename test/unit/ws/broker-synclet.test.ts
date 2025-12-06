@@ -6,7 +6,7 @@ import {
 import {createWsBrokerTransport, createWsClientTransport} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
-import {describeCommonConnectorTests} from '../../common.ts';
+import {describeCommonConnectorTests} from '../common.ts';
 
 const WS_PORT = 9002;
 

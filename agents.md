@@ -99,7 +99,6 @@ synclets/connector/memory         # Memory connectors
 synclets/connector/tinybase       # TinyBase connectors
 synclets/ws                       # WebSocket transport
 synclets/transport/broadcast-channel # BroadcastChannel transport
-synclets/durable-object           # Durable Object transport
 synclets/transport/memory         # Memory transport
 synclets/server                   # Server utilities
 ```

@@ -10,7 +10,7 @@ import {
 } from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
-import {pause} from '../../common.ts';
+import {pause} from '../common.ts';
 
 let portCounter = 9100;
 const getPort = () => portCounter++;
