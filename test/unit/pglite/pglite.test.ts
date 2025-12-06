@@ -21,7 +21,7 @@ import {
   createMockDataConnector,
   createMockMetaConnector,
   describeCommonConnectorTests,
-} from '../../common.ts';
+} from '../common.ts';
 
 const TEXT = 25;
 

@@ -12,7 +12,7 @@ import {
   createMockDataConnector,
   createMockMetaConnector,
   describeCommonConnectorTests,
-} from '../../common.ts';
+} from '../common.ts';
 
 const query = <Row>(
   database: Database,
