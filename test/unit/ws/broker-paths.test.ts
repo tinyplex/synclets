@@ -2,7 +2,7 @@ import {createSynclet} from 'synclets';
 import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
-} from 'synclets/connector/memory';
+} from 'synclets/memory';
 import {
   createWsBroker,
   createWsBrokerTransport,

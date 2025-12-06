@@ -3,7 +3,7 @@ import {createBroadcastChannelTransport} from 'synclets/browser';
 import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
-} from 'synclets/connector/memory';
+} from 'synclets/memory';
 import {expect, test} from 'vitest';
 import {describeCommonConnectorTests} from '../common.ts';
 

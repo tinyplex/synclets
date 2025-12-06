@@ -4,7 +4,7 @@ import {
   type MetaConnector,
   type Transport,
 } from 'synclets';
-import {createMemoryTransport} from 'synclets/transport/memory';
+import {createMemoryTransport} from 'synclets/memory';
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 import {
   createMockDataConnector,

@@ -6,7 +6,7 @@ import {
   createPgliteMetaConnector,
   createPgliteSynclet,
 } from 'synclets/connector/database/pglite';
-import {createMemoryTransport} from 'synclets/transport/memory';
+import {createMemoryTransport} from 'synclets/memory';
 import {getUniqueId} from 'synclets/utils';
 import {
   afterAll,

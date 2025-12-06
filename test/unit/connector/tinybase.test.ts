@@ -1,7 +1,9 @@
 import {createSynclet, type Synclet} from 'synclets';
-import {createMemoryMetaConnector} from 'synclets/connector/memory';
 import {createTinyBaseDataConnector} from 'synclets/connector/tinybase';
-import {createMemoryTransport} from 'synclets/transport/memory';
+import {
+  createMemoryMetaConnector,
+  createMemoryTransport,
+} from 'synclets/memory';
 import {createStore, getUniqueId, type Store} from 'tinybase';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {describeCommonConnectorTests, getTimeFunctions} from '../common.ts';

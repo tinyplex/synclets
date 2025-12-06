@@ -1,4 +1,4 @@
-/// connector/memory
+/// memory
 
 import type {
   DataConnector,
@@ -7,7 +7,8 @@ import type {
   SyncletImplementations,
   SyncletOptions,
   Transport,
-} from '../../index.d.ts';
+  TransportOptions,
+} from '../index.d.ts';
 
 /// MemoryDataConnectorOptions
 export type MemoryDataConnectorOptions<Depth extends number> = {
@@ -46,3 +47,8 @@ export type MemorySyncletOptions<Depth extends number> =
 export function createMemorySynclet<Depth extends number>(
   options: MemorySyncletOptions<Depth>,
 ): Promise<Synclet<Depth, DataConnector<Depth>, MetaConnector<Depth>>>;
+
+/// createMemoryTransport
+export function createMemoryTransport(
+  options?: TransportOptions & {poolId?: string},
+): Transport;

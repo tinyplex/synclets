@@ -1,6 +1,6 @@
 import {createTransport} from '@synclets';
 import type {Transport, TransportOptions} from '@synclets/@types';
-import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/transport/memory';
+import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/memory';
 import {
   getPacketFromParts,
   getPartsFromPacket,
@@ -13,9 +13,9 @@ import {
   mapMap,
   mapNew,
   mapSet,
-} from '../../common/map.ts';
-import {promiseAll} from '../../common/other.ts';
-import {ASTERISK} from '../../common/string.ts';
+} from '../common/map.ts';
+import {promiseAll} from '../common/other.ts';
+import {ASTERISK} from '../common/string.ts';
 
 type Pool = Map<string, (packet: string) => Promise<void>>;
 

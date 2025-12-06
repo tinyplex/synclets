@@ -7,8 +7,8 @@ import type {
   MemoryDataConnectorOptions,
   MemoryMetaConnectorOptions,
   MemorySyncletOptions,
-} from '@synclets/@types/connector/memory';
-import {createMemoryConnector} from '../../common/memory.ts';
+} from '@synclets/@types/memory';
+import {createMemoryConnector} from '../common/memory.ts';
 
 export const createMemoryDataConnector: typeof createMemoryDataConnectorDecl = <
   Depth extends number,

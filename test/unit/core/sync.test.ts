@@ -1,8 +1,8 @@
 import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
-} from 'synclets/connector/memory';
-import {createMemoryTransport} from 'synclets/transport/memory';
+  createMemoryTransport,
+} from 'synclets/memory';
 import {describeCommonConnectorTests} from '../common.ts';
 
 describeCommonConnectorTests(

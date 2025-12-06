@@ -7,7 +7,7 @@ import {
   createDirectoryMetaConnector,
   createDirectorySynclet,
 } from 'synclets/fs';
-import {createMemoryTransport} from 'synclets/transport/memory';
+import {createMemoryTransport} from 'synclets/memory';
 import {getUniqueId} from 'synclets/utils';
 import {expect, test} from 'vitest';
 import {describeCommonConnectorTests} from '../common.ts';

@@ -6,7 +6,7 @@ import {
   createSqlite3MetaConnector,
   createSqlite3Synclet,
 } from 'synclets/connector/database/sqlite3';
-import {createMemoryTransport} from 'synclets/transport/memory';
+import {createMemoryTransport} from 'synclets/memory';
 import {afterAll, afterEach, beforeAll, describe, expect, test} from 'vitest';
 import {
   createMockDataConnector,
