@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import {PGlite} from '@electric-sql/pglite';
 import {createSynclet} from 'synclets';
+import {createMemoryTransport} from 'synclets/memory';
 import {
   createPgliteDataConnector,
   createPgliteMetaConnector,
   createPgliteSynclet,
-} from 'synclets/connector/database/pglite';
-import {createMemoryTransport} from 'synclets/memory';
+} from 'synclets/pglite';
 import {getUniqueId} from 'synclets/utils';
 import {
   afterAll,

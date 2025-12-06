@@ -1,4 +1,4 @@
-/// connector/database/pglite
+/// pglite
 
 import type {PGlite} from '@electric-sql/pglite';
 import type {
@@ -8,7 +8,7 @@ import type {
   SyncletImplementations,
   SyncletOptions,
   Transport,
-} from '../../../index.d.ts';
+} from '../index.d.ts';
 
 /// PgliteDataConnector
 export interface PgliteDataConnector<Depth extends number>

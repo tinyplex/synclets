@@ -91,7 +91,7 @@
 
 ```js
 import {PGlite} from '@electric-sql/pglite';
-import {createPgliteDataConnector} from 'synclets/connector/database/pglite';
+import {createPgliteDataConnector} from 'synclets/pglite';
 
 const pglite = await PGlite.create();
 const dataConnector = createPgliteDataConnector({
@@ -106,7 +106,7 @@ const dataConnector = createPgliteDataConnector({
 > in the same data store. For example, here we're using PGlite for metadata too.
 
 ```js
-import {createPgliteMetaConnector} from 'synclets/connector/database/pglite';
+import {createPgliteMetaConnector} from 'synclets/pglite';
 
 const metaConnector = createPgliteMetaConnector({
   depth: 1,

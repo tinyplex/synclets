@@ -1,11 +1,11 @@
 /**
- * The connector/database/pglite module documents connectors backed by the
+ * The pglite module documents connectors backed by the
  * embedded PGlite database.
  * @packageDocumentation
- * @module connector/database/pglite
+ * @module pglite
  * @since v0.0.0
  */
-/// connector/database/pglite
+/// pglite
 
 /**
  * The PgliteDataConnector interface describes a DataConnector that wraps a

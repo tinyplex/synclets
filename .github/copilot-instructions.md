@@ -15,6 +15,7 @@ Synclets is a storage-agnostic sync engine development kit. It enables data sync
   - **File/Directory Connectors**: `src/fs/`
   - **Browser Storage and Transport**: `src/browser/` (LocalStorage, SessionStorage, BroadcastChannel)
   - **Memory Connectors and Transport**: `src/memory/`
+  - **PGlite Connectors**: `src/pglite/`
   - **TinyBase Connectors**: `src/tinybase/`
   - **Other Connectors**: `src/connector/` (database)
 - **Transports**: Implementations for communication channels.

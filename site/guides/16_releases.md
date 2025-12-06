@@ -108,7 +108,7 @@ import {getUniqueId} from 'synclets/utils';
 import {
   createPgliteDataConnector,
   createPgliteMetaConnector,
-} from 'synclets/connector/database/pglite';
+} from 'synclets/pglite';
 import {
   createSqlite3DataConnector,
   createSqlite3MetaConnector,

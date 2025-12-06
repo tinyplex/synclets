@@ -2,7 +2,7 @@
 
 ```js
 import {PGlite} from '@electric-sql/pglite';
-import {createPgliteDataConnector} from 'synclets/connector/database/pglite';
+import {createPgliteDataConnector} from 'synclets/pglite';
 
 const pglite = await PGlite.create();
 const dataConnector = createPgliteDataConnector({
@@ -14,7 +14,7 @@ const dataConnector = createPgliteDataConnector({
 <section><h2 id="metadata-is-stored-separately">Metadata is stored separately</h2><p>You can store metadata about your data (primarily timestamps) separately, or in the same data store. For example, here we&#x27;re using PGlite for metadata too.</p></section>
 
 ```js
-import {createPgliteMetaConnector} from 'synclets/connector/database/pglite';
+import {createPgliteMetaConnector} from 'synclets/pglite';
 
 const metaConnector = createPgliteMetaConnector({
   depth: 1,

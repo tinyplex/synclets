@@ -10,10 +10,10 @@ import type {
   PgliteMetaConnector,
   PgliteMetaConnectorOptions,
   PgliteSyncletOptions,
-} from '@synclets/@types/connector/database/pglite';
-import {objFromEntries} from '../../../common/object.ts';
-import {createDatabaseConnector} from '../common.ts';
-import {getQuery, sql} from '../index.ts';
+} from '@synclets/@types/pglite';
+import {objFromEntries} from '../common/object.ts';
+import {createDatabaseConnector} from '../connector/database/common.ts';
+import {getQuery, sql} from '../connector/database/index.ts';
 
 export const createPgliteDataConnector: typeof createPgliteDataConnectorDecl = <
   Depth extends number,
