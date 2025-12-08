@@ -43,7 +43,7 @@ beforeAll(async () => {
   miniflare = new Miniflare({
     script,
     modules: true,
-    durableObjects: {test: 'TestSyncletDurableObject'},
+    durableObjects: {test: 'TestPureBrokerDurableObject'},
     compatibilityDate: '2025-12-02',
   });
   await miniflare.ready;

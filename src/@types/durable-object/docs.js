@@ -1,6 +1,6 @@
 /**
- * The durable-object module provides transport layer integration for
- * Cloudflare Durable Objects.
+ * The durable-object module provides transport layer integration for Cloudflare
+ * Durable Objects.
  * @packageDocumentation
  * @module durable-object
  * @since v0.0.0
@@ -27,6 +27,15 @@
    */
   /// SyncletDurableObject.constructor
 }
+
+/**
+ * The PureBrokerDurableObject class is a convenience class for creating
+ * stateless Synclet-powered Durable Objects that act as brokers for multiple
+ * WebSocket clients.
+ * @category Class
+ * @since v0.0.0
+ */
+/// PureBrokerDurableObject
 
 /**
  * The getSyncletDurableObjectFetch function returns a convenient handler for a

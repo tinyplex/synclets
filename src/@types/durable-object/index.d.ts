@@ -8,6 +8,11 @@ export class SyncletDurableObject<Env = unknown> extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env);
 }
 
+/// PureBrokerDurableObject
+export class PureBrokerDurableObject<
+  Env = unknown,
+> extends SyncletDurableObject<Env> {}
+
 /// getSyncletDurableObjectFetch
 export function getSyncletDurableObjectFetch<Namespace extends string>(
   namespace: Namespace,

@@ -1,3 +1,3 @@
-import {SyncletDurableObject} from 'synclets/durable-object';
+import {PureBrokerDurableObject} from 'synclets/durable-object';
 
-export class TestSyncletDurableObject extends SyncletDurableObject {}
+export class TestPureBrokerDurableObject extends PureBrokerDurableObject {}
