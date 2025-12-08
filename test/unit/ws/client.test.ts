@@ -3,7 +3,7 @@ import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/memory';
-import {createWsBroker, createWsClientTransport} from 'synclets/ws';
+import {createWsClientTransport, createWsPureBroker} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {describeCommonConnectorTests} from '../common.ts';
@@ -14,7 +14,7 @@ describeCommonConnectorTests(
   async () => {
     const wss = new WebSocketServer({port: WS_PORT});
     wss.setMaxListeners(0);
-    return createWsBroker(wss);
+    return createWsPureBroker(wss);
   },
   async (wsServer) => {
     wsServer.destroy();
@@ -32,7 +32,7 @@ describeCommonConnectorTests(
 test('getWebSocket', async () => {
   const wss = new WebSocketServer({port: WS_PORT});
   wss.setMaxListeners(0);
-  const wsServer = await createWsBroker(wss);
+  const wsServer = await createWsPureBroker(wss);
   const webSocket = new WebSocket('ws://localhost:' + WS_PORT);
 
   const transport = createWsClientTransport(webSocket);

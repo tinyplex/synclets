@@ -1,11 +1,11 @@
 import {createSynclet, createTransport, RESERVED} from '@synclets';
 import {TransportOptions} from '@synclets/@types';
 import type {
-  createWsBroker as createWsBrokerDecl,
   createWsBrokerTransport as createWsBrokerTransportDecl,
-  WsBroker,
+  createWsPureBroker as createWsPureBrokerDecl,
   WsBrokerTransport,
   WsBrokerTransportOptions,
+  WsPureBroker,
 } from '@synclets/@types/ws';
 import {IncomingMessage} from 'http';
 import {WebSocket, WebSocketServer} from 'ws';
@@ -37,7 +37,7 @@ const addWebSocketConnection = (
       .on('close', close);
   });
 
-export const createWsBroker = (async (
+export const createWsPureBroker = (async (
   webSocketServer: WebSocketServer,
   brokerPaths?: RegExp,
 ) => {
@@ -52,8 +52,8 @@ export const createWsBroker = (async (
 
   const destroy = synclet.destroy;
 
-  return objFreeze({getWebSocketServer, destroy} as WsBroker);
-}) as typeof createWsBrokerDecl;
+  return objFreeze({getWebSocketServer, destroy} as WsPureBroker);
+}) as typeof createWsPureBrokerDecl;
 
 export const createWsBrokerTransport = ((
   webSocketServer: WebSocketServer,
