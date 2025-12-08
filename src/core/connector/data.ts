@@ -9,7 +9,7 @@ import type {
 } from '@synclets/@types';
 import {objFreeze} from '../../common/object.ts';
 import {errorNew} from '../../common/other.ts';
-import {ProtectedDataConnector, ProtectedSynclet} from '../types.js';
+import {ProtectedDataConnector, ProtectedSynclet} from '../types.ts';
 
 const SYNC_CHANGED_ATOMS = 0;
 

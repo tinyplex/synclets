@@ -11,7 +11,7 @@ import {mapEnsure, mapNew} from '../common/map.ts';
 import {objFreeze} from '../common/object.ts';
 import {errorNew, promiseAll, size} from '../common/other.ts';
 import {ASTERISK, SPACE} from '../common/string.ts';
-import {ProtectedSynclet, ProtectedTransport} from './types.js';
+import {ProtectedSynclet, ProtectedTransport} from './types.ts';
 
 type Pending = [fragments: string[], due: number];
 

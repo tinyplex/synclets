@@ -8,7 +8,7 @@ import type {
   SyncletOptions,
   Transport,
   TransportOptions,
-} from '../index.js';
+} from '../index.d.ts';
 
 /// BroadcastChannelTransport
 export interface BroadcastChannelTransport extends Transport {

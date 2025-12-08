@@ -1,7 +1,7 @@
 /// ws
 import type {WebSocketServer, WebSocket as WsWebSocket} from 'ws';
 
-import type {Transport, TransportOptions} from '../index.js';
+import type {Transport, TransportOptions} from '../index.d.ts';
 
 /// WebSocketTypes
 export type WebSocketTypes = WebSocket | WsWebSocket;
