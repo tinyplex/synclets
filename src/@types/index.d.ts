@@ -146,7 +146,7 @@ export interface Synclet<
   getTransport(): Transport[];
 
   /// Synclet.sync
-  sync(address: Address): Promise<void>;
+  sync(address?: Address): Promise<void>;
 
   /// Synclet.setAtom
   setAtom(

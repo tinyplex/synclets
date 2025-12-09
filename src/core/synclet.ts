@@ -616,7 +616,7 @@ export const createSynclet = (async <
       started = true;
       await onStart?.();
       if (hasConnectors) {
-        await sync([] as AnyAddress<Depth>);
+        await sync();
       }
     }
   };
@@ -648,7 +648,8 @@ export const createSynclet = (async <
   const getTransport = () => [...transports];
 
   const sync = hasConnectors
-    ? async (address: AnyAddress<Depth>) => syncExceptTransport(true, address)
+    ? async (address: AnyAddress<Depth> = [] as AnyAddress<Depth>) =>
+        syncExceptTransport(true, address)
     : getVoid;
 
   const setAtom = hasConnectors
