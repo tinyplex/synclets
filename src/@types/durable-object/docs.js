@@ -8,24 +8,172 @@
 /// durable-object
 
 /**
- * The SyncletDurableObject class is a base class for creating Synclet-powered
- * Durable Objects.
+ * The SyncletDurableObject class is an abstract base class for creating
+ * Synclet-powered Durable Objects.
  *
- * Extend this class and implement `createDataConnector` and
- * `createMetaConnector` to create a fully functional sync server.
+ * Extend this class and optionally implement the `createDataConnector` and
+ * `createMetaConnector` methods to define how your Durable Object stores data
+ * and metadata. The class automatically manages the Synclet lifecycle
+ * internally - you don't need to initialize or access the synclet directly.
+ *
+ * Optionally implement `getSyncletImplementations` or `getSyncletOptions` to
+ * configure custom implementations or other options.
+ * @example
+ * ```typescript
+ * class MySyncletDurableObject extends SyncletDurableObject {
+ *   createDataConnector() {
+ *     return createMemoryDataConnector({depth: 3});
+ *   }
+ *   createMetaConnector() {
+ *     return createMemoryMetaConnector({depth: 3});
+ *   }
+ *   getSyncletOptions() {
+ *     return {logLevel: 'debug'};
+ *   }
+ * }
+ * ```
  * @category Class
  * @since v0.0.0
  */
 /// SyncletDurableObject
 {
   /**
-   * The constructor initializes the Durable Object and sets up the synclet.
+   * The constructor initializes the Durable Object.
    * @param ctx - The DurableObjectState from Cloudflare.
    * @param env - The environment bindings.
    * @category Constructor
    * @since v0.0.0
    */
   /// SyncletDurableObject.constructor
+  /**
+   * The getCreateComponents method can optionally be implemented to provide
+   * components for creating the Synclet, including data and meta connectors.
+   * @returns A SyncletComponents object.
+   * @category Creation
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getCreateComponents
+  /**
+   * The getCreateImplementations method can optionally be implemented to
+   * provide custom implementations for Synclet lifecycle hooks, conflict
+   * resolution, and other behaviors.
+   * @returns A SyncletImplementations object with custom implementations.
+   * @category Creation
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getCreateImplementations
+  /**
+   * The getCreateOptions method can optionally be implemented to provide
+   * additional options for the Synclet, such as logging configuration.
+   * @returns A SyncletOptions object with additional configuration.
+   * @category Creation
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getCreateOptions
+  /**
+   * The fetch method handles incoming requests to the Durable Object. The
+   * Synclet is automatically initialized on first request if not already
+   * initialized. Override this method to implement custom request handling.
+   * @param request The incoming HTTP request.
+   * @returns A Promise resolving to an HTTP response.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.fetch
+  /**
+   * The log method logs a message at the specified level.
+   * @param message The message to log.
+   * @param level The log level (default: 'info').
+   * @category Logging
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.log
+  /**
+   * The start method starts the Synclet and begins synchronization.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.start
+  /**
+   * The stop method stops the Synclet and pauses synchronization.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.stop
+  /**
+   * The isStarted method returns whether the Synclet is currently started.
+   * @returns True if started, false otherwise.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.isStarted
+  /**
+   * The destroy method destroys the Synclet and cleans up resources.
+   * @category Lifecycle
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.destroy
+  /**
+   * The getDataConnector method returns the data connector.
+   * @returns The DataConnector instance or undefined.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getDataConnector
+  /**
+   * The getMetaConnector method returns the meta connector.
+   * @returns The MetaConnector instance or undefined.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getMetaConnector
+  /**
+   * The getTransport method returns the transport instances.
+   * @returns An array of Transport instances.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getTransport
+  /**
+   * The sync method triggers synchronization at the specified address.
+   * @param address The address to synchronize.
+   * @category Sync
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.sync
+  /**
+   * The setAtom method sets an atom value at the specified address.
+   * @param address The address of the atom.
+   * @param atom The atom value to set.
+   * @param context Optional context for the operation.
+   * @param sync Whether to trigger synchronization (default: true).
+   * @category Data
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.setAtom
+  /**
+   * The delAtom method deletes an atom at the specified address.
+   * @param address The address of the atom to delete.
+   * @param context Optional context for the operation.
+   * @param sync Whether to trigger synchronization (default: true).
+   * @category Data
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.delAtom
+  /**
+   * The getData method returns a readonly view of all data.
+   * @returns A Promise resolving to the data tree.
+   * @category Data
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getData
+  /**
+   * The getMeta method returns a readonly view of all metadata.
+   * @returns A Promise resolving to the metadata tree.
+   * @category Data
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getMeta
 }
 
 /**
