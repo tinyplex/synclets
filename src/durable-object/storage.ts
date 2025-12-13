@@ -119,7 +119,9 @@ const createStorageConnector = <
         arrayMap(addressPartColumns, (_, c) =>
           query(
             sql`
-              CREATE INDEX $"${config.table + c} ON $"${config.table} ($,${arrayMap(
+              CREATE INDEX $"${
+                config.table + c
+              } ON $"${config.table} ($,${arrayMap(
                 arraySlice(addressPartColumns, 0, c + 1),
                 (addressPartColumn) => sql`$"${addressPartColumn}`,
               )})`,
@@ -164,7 +166,9 @@ const createStorageConnector = <
   const removeAtom = async (address: AtomAddress<Depth>) => {
     await query(
       sql`
-        DELETE FROM $"${config.table} $&${{[config.addressColumn]: jsonString(address)}}
+        DELETE FROM $"${config.table} $&${{
+          [config.addressColumn]: jsonString(address),
+        }}
       `,
     );
   };

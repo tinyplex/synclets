@@ -59,7 +59,7 @@ export default tsLint.config(
         {
           code: 80,
           ignorePattern:
-            '^(\\s+\\* )?(imports?|exports?|\\} from|(.+ as .+))\\W.*',
+            '^(\\s+\\* )?(imports?|exports?|\\s*\\}:|\\} from|(.+ as .+))\\W.*',
           ignoreUrls: true,
         },
       ],
