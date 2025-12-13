@@ -4,7 +4,7 @@ import type {
   createTinyBaseDataConnector as createTinyBaseDataConnectorDecl,
   TinyBaseDataConnector,
 } from '@synclets/@types/tinybase';
-import type {Cell, Id, Store, Value} from 'tinybase';
+import type {Cell, Id, Value} from 'tinybase';
 import {arrayConcat} from '../common/array.ts';
 import {size} from '../common/other.ts';
 import {createDataConnector} from '../core/index.ts';
@@ -15,7 +15,7 @@ const isValueAddress = (address: Address) =>
   address[0] == VALUE_STEM && address[1] == VALUE_STEM;
 
 export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl =
-  (store: Store) => {
+  ({store}) => {
     let cellListenerId: Id;
     let valueListenerId: Id;
 

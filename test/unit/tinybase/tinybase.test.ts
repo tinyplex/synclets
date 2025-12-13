@@ -13,7 +13,7 @@ const [reset, getNow, pause] = getTimeFunctions();
 describeCommonConnectorTests(
   async () => {},
   async () => {},
-  () => createTinyBaseDataConnector(createStore()),
+  () => createTinyBaseDataConnector({store: createStore()}),
   (depth: number) => createMemoryMetaConnector({depth}),
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),
   0,
@@ -22,7 +22,7 @@ describeCommonConnectorTests(
 
 test('getStore, tables', async () => {
   const store = createStore();
-  const dataConnector = createTinyBaseDataConnector(store);
+  const dataConnector = createTinyBaseDataConnector({store});
   const metaConnector = createMemoryMetaConnector({depth: 3});
   const synclet = await createSynclet({dataConnector, metaConnector});
   expect(dataConnector.getStore()).toEqual(store);
@@ -46,7 +46,7 @@ describe('reactive', async () => {
     const poolId = getUniqueId();
 
     store1 = createStore();
-    const dataConnector1 = createTinyBaseDataConnector(store1);
+    const dataConnector1 = createTinyBaseDataConnector({store: store1});
     const metaConnector1 = createMemoryMetaConnector({depth: 3});
     synclet1 = await createSynclet(
       {
@@ -68,7 +68,7 @@ describe('reactive', async () => {
     await synclet1.start();
 
     store2 = createStore();
-    const dataConnector2 = createTinyBaseDataConnector(store2);
+    const dataConnector2 = createTinyBaseDataConnector({store: store2});
     const metaConnector2 = createMemoryMetaConnector({depth: 3});
     synclet2 = await createSynclet(
       {

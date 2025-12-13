@@ -9,7 +9,13 @@ export interface TinyBaseDataConnector extends DataConnector<3> {
   getStore(): Store;
 }
 
+/// TinyBaseDataConnectorOptions
+export type TinyBaseDataConnectorOptions = {
+  /// TinyBaseDataConnectorOptions.store
+  store: Store;
+};
+
 /// createTinyBaseDataConnector
 export function createTinyBaseDataConnector(
-  store: Store,
+  options: TinyBaseDataConnectorOptions,
 ): TinyBaseDataConnector;

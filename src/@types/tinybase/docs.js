@@ -24,6 +24,22 @@
 }
 
 /**
+ * The TinyBaseDataConnectorOptions type describes the configuration options for
+ * creating a TinyBase-backed DataConnector.
+ * @category Type
+ * @since v0.0.0
+ */
+/// TinyBaseDataConnectorOptions
+{
+  /**
+   * The store property specifies the TinyBase Store to wrap.
+   * @category Option
+   * @since v0.0.0
+   */
+  /// TinyBaseDataConnectorOptions.store
+}
+
+/**
  * The createTinyBaseDataConnector function creates a TinyBaseDataConnector from
  * an existing Store.
  *
@@ -39,7 +55,7 @@
  * Note that this creates only a DataConnector. You will need a separate
  * MetaConnector (typically using a different storage backend) to store
  * timestamp metadata.
- * @param store The TinyBase Store to wrap.
+ * @param options Configuration options for the TinyBase data connector.
  * @returns A TinyBaseDataConnector that uses the Store for storage.
  * @category Connector
  * @since v0.0.0
