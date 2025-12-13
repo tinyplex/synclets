@@ -18,7 +18,6 @@ import type {
   DurableObjectStorageMetaConnectorOptions,
 } from '@synclets/@types/durable-object';
 import {jsonString} from '@synclets/utils';
-import type {DurableObjectStorage} from 'cloudflare:workers';
 import {arrayMap, arrayNew, arraySlice} from '../common/array.ts';
 import {objFromEntries, objIsEqual, objNotEmpty} from '../common/object.ts';
 import {errorNew, promiseAll, size} from '../common/other.ts';

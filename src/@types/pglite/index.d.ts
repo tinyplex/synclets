@@ -2,6 +2,10 @@
 
 import type {PGlite} from '@electric-sql/pglite';
 import type {
+  DatabaseDataConnectorOptions,
+  DatabaseMetaConnectorOptions,
+} from '../database/index.d.ts';
+import type {
   DataConnector,
   MetaConnector,
   Synclet,
@@ -9,10 +13,6 @@ import type {
   SyncletOptions,
   Transport,
 } from '../index.d.ts';
-import type {
-  DatabaseDataConnectorOptions,
-  DatabaseMetaConnectorOptions,
-} from '../database/index.d.ts';
 
 /// PgliteDataConnector
 export interface PgliteDataConnector<

@@ -1,9 +1,6 @@
 /// database
 
-import type {
-  DataConnectorOptions,
-  MetaConnectorOptions,
-} from '../index.d.ts';
+import type {DataConnectorOptions, MetaConnectorOptions} from '../index.d.ts';
 
 /// Sql
 export type Sql = {__brand: 'Sql'; strings: string[]; args: any[]};

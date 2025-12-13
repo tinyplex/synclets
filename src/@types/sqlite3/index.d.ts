@@ -2,6 +2,10 @@
 
 import type {Database} from 'sqlite3';
 import type {
+  DatabaseDataConnectorOptions,
+  DatabaseMetaConnectorOptions,
+} from '../database/index.d.ts';
+import type {
   DataConnector,
   MetaConnector,
   Synclet,
@@ -9,10 +13,6 @@ import type {
   SyncletOptions,
   Transport,
 } from '../index.d.ts';
-import type {
-  DatabaseDataConnectorOptions,
-  DatabaseMetaConnectorOptions,
-} from '../database/index.d.ts';
 
 /// Sqlite3DataConnector
 export interface Sqlite3DataConnector<
