@@ -32,35 +32,11 @@
 /// Sqlite3DataConnectorOptions
 {
   /**
-   * The depth property specifies the tree depth.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// Sqlite3DataConnectorOptions.depth
-  /**
    * The database property specifies the SQLite3 Database instance.
    * @category Option
    * @since v0.0.0
    */
   /// Sqlite3DataConnectorOptions.database
-  /**
-   * The dataTable property specifies the table name for data storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// Sqlite3DataConnectorOptions.dataTable
-  /**
-   * The addressColumn property specifies the column name for addresses.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// Sqlite3DataConnectorOptions.addressColumn
-  /**
-   * The atomColumn property specifies the column name for atom values.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// Sqlite3DataConnectorOptions.atomColumn
 }
 
 /**
@@ -104,35 +80,11 @@
 /// Sqlite3MetaConnectorOptions
 {
   /**
-   * The depth property specifies the tree depth.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// Sqlite3MetaConnectorOptions.depth
-  /**
    * The database property specifies the SQLite3 Database instance.
    * @category Option
    * @since v0.0.0
    */
   /// Sqlite3MetaConnectorOptions.database
-  /**
-   * The metaTable property specifies the table name for metadata storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// Sqlite3MetaConnectorOptions.metaTable
-  /**
-   * The addressColumn property specifies the column name for addresses.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// Sqlite3MetaConnectorOptions.addressColumn
-  /**
-   * The timestampColumn property specifies the column name for timestamps.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// Sqlite3MetaConnectorOptions.timestampColumn
 }
 
 /**

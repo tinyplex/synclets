@@ -9,6 +9,10 @@ import type {
   SyncletOptions,
   Transport,
 } from '../index.d.ts';
+import type {
+  DatabaseDataConnectorOptions,
+  DatabaseMetaConnectorOptions,
+} from '../database/index.d.ts';
 
 /// Sqlite3DataConnector
 export interface Sqlite3DataConnector<
@@ -20,21 +24,9 @@ export interface Sqlite3DataConnector<
 
 /// Sqlite3DataConnectorOptions
 export type Sqlite3DataConnectorOptions<Depth extends number> = {
-  /// Sqlite3DataConnectorOptions.depth
-  depth: Depth;
-
   /// Sqlite3DataConnectorOptions.database
   database: Database;
-
-  /// Sqlite3DataConnectorOptions.dataTable
-  dataTable?: string;
-
-  /// Sqlite3DataConnectorOptions.addressColumn
-  addressColumn?: string;
-
-  /// Sqlite3DataConnectorOptions.atomColumn
-  atomColumn?: string;
-};
+} & DatabaseDataConnectorOptions<Depth>;
 
 /// createSqlite3DataConnector
 export function createSqlite3DataConnector<Depth extends number>(
@@ -51,21 +43,9 @@ export interface Sqlite3MetaConnector<
 
 /// Sqlite3MetaConnectorOptions
 export type Sqlite3MetaConnectorOptions<Depth extends number> = {
-  /// Sqlite3MetaConnectorOptions.depth
-  depth: Depth;
-
   /// Sqlite3MetaConnectorOptions.database
   database: Database;
-
-  /// Sqlite3MetaConnectorOptions.metaTable
-  metaTable?: string;
-
-  /// Sqlite3MetaConnectorOptions.addressColumn
-  addressColumn?: string;
-
-  /// Sqlite3MetaConnectorOptions.timestampColumn
-  timestampColumn?: string;
-};
+} & DatabaseMetaConnectorOptions<Depth>;
 
 /// createSqlite3MetaConnector
 export function createSqlite3MetaConnector<Depth extends number>(
