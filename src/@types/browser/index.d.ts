@@ -2,7 +2,9 @@
 
 import type {
   DataConnector,
+  DataConnectorOptions,
   MetaConnector,
+  MetaConnectorOptions,
   Synclet,
   SyncletImplementations,
   SyncletOptions,
@@ -32,12 +34,9 @@ export interface LocalStorageDataConnector<
 
 /// LocalStorageDataConnectorOptions
 export type LocalStorageDataConnectorOptions<Depth extends number> = {
-  /// LocalStorageDataConnectorOptions.depth
-  depth: Depth;
-
   /// LocalStorageDataConnectorOptions.dataStorageName
   dataStorageName: string;
-};
+} & DataConnectorOptions<Depth>;
 
 /// createLocalStorageDataConnector
 export function createLocalStorageDataConnector<Depth extends number>(
@@ -54,12 +53,9 @@ export interface LocalStorageMetaConnector<
 
 /// LocalStorageMetaConnectorOptions
 export type LocalStorageMetaConnectorOptions<Depth extends number> = {
-  /// LocalStorageMetaConnectorOptions.depth
-  depth: Depth;
-
   /// LocalStorageMetaConnectorOptions.metaStorageName
   metaStorageName: string;
-};
+} & MetaConnectorOptions<Depth>;
 
 /// createLocalStorageMetaConnector
 export function createLocalStorageMetaConnector<Depth extends number>(
@@ -98,12 +94,9 @@ export interface SessionStorageDataConnector<
 
 /// SessionStorageDataConnectorOptions
 export type SessionStorageDataConnectorOptions<Depth extends number> = {
-  /// SessionStorageDataConnectorOptions.depth
-  depth: Depth;
-
   /// SessionStorageDataConnectorOptions.dataStorageName
   dataStorageName: string;
-};
+} & DataConnectorOptions<Depth>;
 
 /// createSessionStorageDataConnector
 export function createSessionStorageDataConnector<Depth extends number>(
@@ -120,12 +113,9 @@ export interface SessionStorageMetaConnector<
 
 /// SessionStorageMetaConnectorOptions
 export type SessionStorageMetaConnectorOptions<Depth extends number> = {
-  /// SessionStorageMetaConnectorOptions.depth
-  depth: Depth;
-
   /// SessionStorageMetaConnectorOptions.metaStorageName
   metaStorageName: string;
-};
+} & MetaConnectorOptions<Depth>;
 
 /// createSessionStorageMetaConnector
 export function createSessionStorageMetaConnector<Depth extends number>(

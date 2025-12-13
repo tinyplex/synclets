@@ -274,6 +274,12 @@ export interface DataConnector<Depth extends number> {
   log(message: string, level?: LogLevel): void;
 }
 
+/// DataConnectorOptions
+export type DataConnectorOptions<Depth extends number> = {
+  /// DataConnectorOptions.depth
+  readonly depth: Depth;
+};
+
 /// DataConnectorImplementations
 export type DataConnectorImplementations<Depth extends number> = {
   /// DataConnectorImplementations.connect
@@ -327,6 +333,12 @@ export interface MetaConnector<Depth extends number> {
   /// MetaConnector.log
   log(message: string, level?: LogLevel): void;
 }
+
+/// MetaConnectorOptions
+export type MetaConnectorOptions<Depth extends number> = {
+  /// MetaConnectorOptions.depth
+  readonly depth: Depth;
+};
 
 /// MetaConnectorImplementations
 export type MetaConnectorImplementations<Depth extends number> = {

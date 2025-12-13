@@ -628,6 +628,22 @@
 }
 
 /**
+ * The DataConnectorOptions type describes the base options for creating a data
+ * connector.
+ * @category DataConnector
+ * @since v0.0.6
+ */
+/// DataConnectorOptions
+{
+  /**
+   * The depth of the address tree.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DataConnectorOptions.depth
+}
+
+/**
  * The DataConnectorImplementations type lists the async functions required to
  * read and write Atoms.
  * @category DataConnector
@@ -768,6 +784,22 @@
    * @since v0.0.0
    */
   /// MetaConnector.log
+}
+
+/**
+ * The MetaConnectorOptions type describes the base options for creating a meta
+ * connector.
+ * @category MetaConnector
+ * @since v0.0.6
+ */
+/// MetaConnectorOptions
+{
+  /**
+   * The depth of the address tree.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// MetaConnectorOptions.depth
 }
 
 /**

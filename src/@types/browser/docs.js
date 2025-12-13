@@ -91,12 +91,6 @@
 /// LocalStorageDataConnectorOptions
 {
   /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// LocalStorageDataConnectorOptions.depth
-  /**
    * The dataStorageName property specifies the localStorage key for data
    * storage.
    * @category Option
@@ -143,12 +137,6 @@
  */
 /// LocalStorageMetaConnectorOptions
 {
-  /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// LocalStorageMetaConnectorOptions.depth
   /**
    * The metaStorageName property specifies the localStorage key for metadata
    * storage.
@@ -243,12 +231,6 @@
 /// SessionStorageDataConnectorOptions
 {
   /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// SessionStorageDataConnectorOptions.depth
-  /**
    * The dataStorageName property specifies the sessionStorage key for data
    * storage.
    * @category Option
@@ -296,12 +278,6 @@
  */
 /// SessionStorageMetaConnectorOptions
 {
-  /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// SessionStorageMetaConnectorOptions.depth
   /**
    * The metaStorageName property specifies the sessionStorage key for metadata
    * storage.
