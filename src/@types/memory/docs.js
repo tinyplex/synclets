@@ -8,22 +8,6 @@
 /// memory
 
 /**
- * The MemoryDataConnectorOptions type specifies configuration for creating an
- * in-memory DataConnector.
- * @category Connector
- * @since v0.0.0
- */
-/// MemoryDataConnectorOptions
-{
-  /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// MemoryDataConnectorOptions.depth
-}
-
-/**
  * The createMemoryDataConnector function creates an in-memory DataConnector
  * that stores Atom data in a JavaScript Map.
  *
@@ -38,22 +22,6 @@
  * @since v0.0.0
  */
 /// createMemoryDataConnector
-
-/**
- * The MemoryMetaConnectorOptions type specifies configuration for creating an
- * in-memory MetaConnector.
- * @category Connector
- * @since v0.0.0
- */
-/// MemoryMetaConnectorOptions
-{
-  /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// MemoryMetaConnectorOptions.depth
-}
 
 /**
  * The createMemoryMetaConnector function creates an in-memory MetaConnector

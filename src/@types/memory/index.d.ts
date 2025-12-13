@@ -2,7 +2,9 @@
 
 import type {
   DataConnector,
+  DataConnectorOptions,
   MetaConnector,
+  MetaConnectorOptions,
   Synclet,
   SyncletImplementations,
   SyncletOptions,
@@ -10,32 +12,20 @@ import type {
   TransportOptions,
 } from '../index.d.ts';
 
-/// MemoryDataConnectorOptions
-export type MemoryDataConnectorOptions<Depth extends number> = {
-  /// MemoryDataConnectorOptions.depth
-  depth: Depth;
-};
-
 /// createMemoryDataConnector
 export function createMemoryDataConnector<Depth extends number>(
-  options: MemoryDataConnectorOptions<Depth>,
+  options: DataConnectorOptions<Depth>,
 ): DataConnector<Depth>;
-
-/// MemoryMetaConnectorOptions
-export type MemoryMetaConnectorOptions<Depth extends number> = {
-  /// MemoryMetaConnectorOptions.depth
-  depth: Depth;
-};
 
 /// createMemoryMetaConnector
 export function createMemoryMetaConnector<Depth extends number>(
-  options: MemoryMetaConnectorOptions<Depth>,
+  options: MetaConnectorOptions<Depth>,
 ): MetaConnector<Depth>;
 
 /// MemorySyncletOptions
 export type MemorySyncletOptions<Depth extends number> =
-  MemoryDataConnectorOptions<Depth> &
-    MemoryMetaConnectorOptions<Depth> & {
+  DataConnectorOptions<Depth> &
+    MetaConnectorOptions<Depth> & {
       /// MemorySyncletOptions.transport
       transport?: Transport | Transport[];
 
