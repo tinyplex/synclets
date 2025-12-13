@@ -32,35 +32,11 @@
 /// PgliteDataConnectorOptions
 {
   /**
-   * The depth property specifies the tree depth.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteDataConnectorOptions.depth
-  /**
    * The pglite property specifies the PGlite database instance.
    * @category Option
    * @since v0.0.0
    */
   /// PgliteDataConnectorOptions.pglite
-  /**
-   * The dataTable property specifies the table name for data storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteDataConnectorOptions.dataTable
-  /**
-   * The addressColumn property specifies the column name for addresses.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteDataConnectorOptions.addressColumn
-  /**
-   * The atomColumn property specifies the column name for atom values.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteDataConnectorOptions.atomColumn
 }
 
 /**
@@ -105,35 +81,11 @@
 /// PgliteMetaConnectorOptions
 {
   /**
-   * The depth property specifies the tree depth.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteMetaConnectorOptions.depth
-  /**
    * The pglite property specifies the PGlite database instance.
    * @category Option
    * @since v0.0.0
    */
   /// PgliteMetaConnectorOptions.pglite
-  /**
-   * The metaTable property specifies the table name for metadata storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteMetaConnectorOptions.metaTable
-  /**
-   * The addressColumn property specifies the column name for addresses.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteMetaConnectorOptions.addressColumn
-  /**
-   * The timestampColumn property specifies the column name for timestamps.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteMetaConnectorOptions.timestampColumn
 }
 
 /**

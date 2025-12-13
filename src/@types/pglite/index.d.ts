@@ -9,6 +9,10 @@ import type {
   SyncletOptions,
   Transport,
 } from '../index.d.ts';
+import type {
+  DatabaseDataConnectorOptions,
+  DatabaseMetaConnectorOptions,
+} from '../database/index.d.ts';
 
 /// PgliteDataConnector
 export interface PgliteDataConnector<
@@ -20,21 +24,9 @@ export interface PgliteDataConnector<
 
 /// PgliteDataConnectorOptions
 export type PgliteDataConnectorOptions<Depth extends number> = {
-  /// PgliteDataConnectorOptions.depth
-  depth: Depth;
-
   /// PgliteDataConnectorOptions.pglite
   pglite: PGlite;
-
-  /// PgliteDataConnectorOptions.dataTable
-  dataTable?: string;
-
-  /// PgliteDataConnectorOptions.addressColumn
-  addressColumn?: string;
-
-  /// PgliteDataConnectorOptions.atomColumn
-  atomColumn?: string;
-};
+} & DatabaseDataConnectorOptions<Depth>;
 
 /// createPgliteDataConnector
 export function createPgliteDataConnector<Depth extends number>(
@@ -51,21 +43,9 @@ export interface PgliteMetaConnector<
 
 /// PgliteMetaConnectorOptions
 export type PgliteMetaConnectorOptions<Depth extends number> = {
-  /// PgliteMetaConnectorOptions.depth
-  depth: Depth;
-
   /// PgliteMetaConnectorOptions.pglite
   pglite: PGlite;
-
-  /// PgliteMetaConnectorOptions.metaTable
-  metaTable?: string;
-
-  /// PgliteMetaConnectorOptions.addressColumn
-  addressColumn?: string;
-
-  /// PgliteMetaConnectorOptions.timestampColumn
-  timestampColumn?: string;
-};
+} & DatabaseMetaConnectorOptions<Depth>;
 
 /// createPgliteMetaConnector
 export function createPgliteMetaConnector<Depth extends number>(
