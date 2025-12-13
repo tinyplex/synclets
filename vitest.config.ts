@@ -1,16 +1,14 @@
+import {tmpdir} from 'os';
+import {resolve} from 'path';
 import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 
 export default defineConfig({
-  // resolve: {
-  //   alias: {
-  //     'cloudflare:workers': resolve(
-  //       __dirname,
-  //       'test/vitest/mocks/cloudflare-workers.ts',
-  //     ),
-  //   },
-  // },
   test: {
     environment: 'happy-dom',
+    execArgv: [
+      '--localstorage-file',
+      resolve(tmpdir(), `vitest-${process.pid}.localstorage`),
+    ],
     setupFiles: ['test/vitest/setup.ts'],
     reporters: [['test/vitest/reporter.ts', {hideSkipped: true}]],
     slowTestThreshold: 3000,
