@@ -32,12 +32,6 @@
 /// FileDataConnectorOptions
 {
   /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// FileDataConnectorOptions.depth
-  /**
    * The dataFile property specifies the file path for data storage.
    * @category Option
    * @since v0.0.0
@@ -85,12 +79,6 @@
  */
 /// FileMetaConnectorOptions
 {
-  /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// FileMetaConnectorOptions.depth
   /**
    * The metaFile property specifies the file path for metadata storage.
    * @category Option
@@ -193,12 +181,6 @@
 /// DirectoryDataConnectorOptions
 {
   /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// DirectoryDataConnectorOptions.depth
-  /**
    * The dataDirectory property specifies the directory path for data storage.
    * @category Option
    * @since v0.0.0
@@ -246,12 +228,6 @@
  */
 /// DirectoryMetaConnectorOptions
 {
-  /**
-   * The depth property specifies the tree depth the connector will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// DirectoryMetaConnectorOptions.depth
   /**
    * The metaDirectory property specifies the directory path for metadata
    * storage.

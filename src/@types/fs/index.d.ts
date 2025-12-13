@@ -2,7 +2,9 @@
 
 import type {
   DataConnector,
+  DataConnectorOptions,
   MetaConnector,
+  MetaConnectorOptions,
   Synclet,
   SyncletImplementations,
   SyncletOptions,
@@ -19,12 +21,9 @@ export interface FileDataConnector<
 
 /// FileDataConnectorOptions
 export type FileDataConnectorOptions<Depth extends number> = {
-  /// FileDataConnectorOptions.depth
-  depth: Depth;
-
   /// FileDataConnectorOptions.dataFile
   dataFile: string;
-};
+} & DataConnectorOptions<Depth>;
 
 /// createFileDataConnector
 export function createFileDataConnector<Depth extends number>(
@@ -41,12 +40,9 @@ export interface FileMetaConnector<
 
 /// FileMetaConnectorOptions
 export type FileMetaConnectorOptions<Depth extends number> = {
-  /// FileMetaConnectorOptions.depth
-  depth: Depth;
-
   /// FileMetaConnectorOptions.metaFile
   metaFile: string;
-};
+} & MetaConnectorOptions<Depth>;
 
 /// createFileMetaConnector
 export function createFileMetaConnector<Depth extends number>(
@@ -79,12 +75,9 @@ export interface DirectoryDataConnector<
 
 /// DirectoryDataConnectorOptions
 export type DirectoryDataConnectorOptions<Depth extends number> = {
-  /// DirectoryDataConnectorOptions.depth
-  depth: Depth;
-
   /// DirectoryDataConnectorOptions.dataDirectory
   dataDirectory: string;
-};
+} & DataConnectorOptions<Depth>;
 
 /// createDirectoryDataConnector
 export function createDirectoryDataConnector<Depth extends number>(
@@ -101,12 +94,9 @@ export interface DirectoryMetaConnector<
 
 /// DirectoryMetaConnectorOptions
 export type DirectoryMetaConnectorOptions<Depth extends number> = {
-  /// DirectoryMetaConnectorOptions.depth
-  depth: Depth;
-
   /// DirectoryMetaConnectorOptions.metaDirectory
   metaDirectory: string;
-};
+} & MetaConnectorOptions<Depth>;
 
 /// createDirectoryMetaConnector
 export function createDirectoryMetaConnector<Depth extends number>(
