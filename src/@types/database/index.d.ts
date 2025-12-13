@@ -1,5 +1,10 @@
 /// database
 
+import type {
+  DataConnectorOptions,
+  MetaConnectorOptions,
+} from '../index.d.ts';
+
 /// Sql
 export type Sql = {__brand: 'Sql'; strings: string[]; args: any[]};
 
@@ -12,16 +17,16 @@ export function sql(
 /// getQuery
 export function getQuery(sql: Sql): [string: string, args: any[]];
 
-/// DatabaseDataOptions
-export type DatabaseDataOptions = {
+/// DatabaseDataConnectorOptions
+export type DatabaseDataConnectorOptions<Depth extends number> = {
   dataTable?: string;
   addressColumn?: string;
   atomColumn?: string;
-};
+} & DataConnectorOptions<Depth>;
 
-/// DatabaseMetaOptions
-export type DatabaseMetaOptions = {
+/// DatabaseMetaConnectorOptions
+export type DatabaseMetaConnectorOptions<Depth extends number> = {
   metaTable?: string;
   addressColumn?: string;
   timestampColumn?: string;
-};
+} & MetaConnectorOptions<Depth>;

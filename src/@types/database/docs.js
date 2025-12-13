@@ -1,6 +1,5 @@
 /**
- * The database module defines shared option types for SQL-style
- * connectors.
+ * The database module defines shared option types for SQL-style connectors.
  * @packageDocumentation
  * @module database
  * @since v0.0.0
@@ -22,8 +21,8 @@
 /**
  * The getQuery function constructs a string and args pair for retrieving data.
  *
- * This utility function extracts the SQL query string and parameter values
- * from a Sql object, formatting them for execution by the underlying database
+ * This utility function extracts the SQL query string and parameter values from
+ * a Sql object, formatting them for execution by the underlying database
  * driver. It is used internally by database connectors to execute parameterized
  * queries.
  * @param sql The Sql object to extract from.
@@ -42,16 +41,15 @@
  *
  * Example: sql`SELECT * FROM ${table} WHERE id = ${id}`.
  *
- * This is used internally by database connectors for safe query
- * construction.
+ * This is used internally by database connectors for safe query construction.
  * @category Function
  * @since v0.0.0
  */
 /// sql
 
 /**
- * The DatabaseDataOptions type configures the table and column names used for
- * data storage in a database.
+ * The DatabaseDataConnectorOptions type configures the table and column names
+ * used for data storage in a database.
  *
  * These options allow you to customize the database schema used by database
  * connectors (PGlite, SQLite3) for storing Atom data. You can specify custom
@@ -62,11 +60,11 @@
  * @category Option
  * @since v0.0.0
  */
-/// DatabaseDataOptions
+/// DatabaseDataConnectorOptions
 
 /**
- * The DatabaseMetaOptions type configures the table and column names used for
- * metadata storage in a database.
+ * The DatabaseMetaConnectorConnectorOptions type configures the table and
+ * column names used for metadata storage in a database.
  *
  * These options allow you to customize the database schema used by database
  * connectors (PGlite, SQLite3) for storing Timestamp metadata. You can specify
@@ -78,4 +76,4 @@
  * @category Option
  * @since v0.0.0
  */
-/// DatabaseMetaOptions
+/// DatabaseMetaConnectorOptions
