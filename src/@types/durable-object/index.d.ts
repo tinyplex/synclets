@@ -1,6 +1,6 @@
 /// durable-object
 
-import {DurableObject} from 'cloudflare:workers';
+import {DurableObject, DurableObjectStorage} from 'cloudflare:workers';
 import type {
   Address,
   Atom,
@@ -15,6 +15,58 @@ import type {
   SyncletOptions,
   Transport,
 } from '../index.d.ts';
+
+/// DurableObjectStorageDataConnectorOptions
+export type DurableObjectStorageDataConnectorOptions<Depth extends number> = {
+  /// DurableObjectStorageDataConnectorOptions.depth
+  readonly depth: Depth;
+  /// DurableObjectStorageDataConnectorOptions.storage
+  readonly storage: DurableObjectStorage;
+  /// DurableObjectStorageDataConnectorOptions.dataTable
+  readonly dataTable?: string;
+  /// DurableObjectStorageDataConnectorOptions.addressColumn
+  readonly addressColumn?: string;
+  /// DurableObjectStorageDataConnectorOptions.atomColumn
+  readonly atomColumn?: string;
+};
+
+/// DurableObjectStorageMetaConnectorOptions
+export type DurableObjectStorageMetaConnectorOptions<Depth extends number> = {
+  /// DurableObjectStorageMetaConnectorOptions.depth
+  readonly depth: Depth;
+  /// DurableObjectStorageMetaConnectorOptions.storage
+  readonly storage: DurableObjectStorage;
+  /// DurableObjectStorageMetaConnectorOptions.metaTable
+  readonly metaTable?: string;
+  /// DurableObjectStorageMetaConnectorOptions.addressColumn
+  readonly addressColumn?: string;
+  /// DurableObjectStorageMetaConnectorOptions.timestampColumn
+  readonly timestampColumn?: string;
+};
+
+/// DurableObjectStorageDataConnector
+export type DurableObjectStorageDataConnector<Depth extends number> =
+  DataConnector<Depth> & {
+    /// DurableObjectStorageDataConnector.getStorage
+    getStorage(): DurableObjectStorage;
+  };
+
+/// DurableObjectStorageMetaConnector
+export type DurableObjectStorageMetaConnector<Depth extends number> =
+  MetaConnector<Depth> & {
+    /// DurableObjectStorageMetaConnector.getStorage
+    getStorage(): DurableObjectStorage;
+  };
+
+/// createDurableObjectStorageDataConnector
+export function createDurableObjectStorageDataConnector<Depth extends number>(
+  options: DurableObjectStorageDataConnectorOptions<Depth>,
+): DurableObjectStorageDataConnector<Depth>;
+
+/// createDurableObjectStorageMetaConnector
+export function createDurableObjectStorageMetaConnector<Depth extends number>(
+  options: DurableObjectStorageMetaConnectorOptions<Depth>,
+): DurableObjectStorageMetaConnector<Depth>;
 
 /// SyncletDurableObject
 export abstract class SyncletDurableObject<

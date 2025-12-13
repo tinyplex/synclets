@@ -8,6 +8,192 @@
 /// durable-object
 
 /**
+ * The DurableObjectStorageDataConnectorOptions type describes the options for
+ * creating a data connector that uses Cloudflare Durable Object's built-in
+ * SQLite storage.
+ * @example
+ * ```typescript
+ * const dataConnector = createDurableObjectStorageDataConnector({
+ *   depth: 3,
+ *   storage: this.ctx.storage,
+ *   dataTable: 'data',
+ *   addressColumn: 'address',
+ *   atomColumn: 'atom',
+ * });
+ * ```
+ * @category Type
+ * @since v0.0.6
+ */
+/// DurableObjectStorageDataConnectorOptions
+{
+  /**
+   * The depth of the address tree.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageDataConnectorOptions.depth
+  /**
+   * The DurableObjectStorage instance from the Durable Object context.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageDataConnectorOptions.storage
+  /**
+   * The name of the table to store data in. Defaults to 'data'.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageDataConnectorOptions.dataTable
+  /**
+   * The name of the address column. Defaults to 'address'.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageDataConnectorOptions.addressColumn
+  /**
+   * The name of the atom column. Defaults to 'atom'.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageDataConnectorOptions.atomColumn
+}
+
+/**
+ * The DurableObjectStorageMetaConnectorOptions type describes the options for
+ * creating a meta connector that uses Cloudflare Durable Object's built-in
+ * SQLite storage.
+ * @example
+ * ```typescript
+ * const metaConnector = createDurableObjectStorageMetaConnector({
+ *   depth: 3,
+ *   storage: this.ctx.storage,
+ *   metaTable: 'meta',
+ *   addressColumn: 'address',
+ *   timestampColumn: 'timestamp',
+ * });
+ * ```
+ * @category Type
+ * @since v0.0.6
+ */
+/// DurableObjectStorageMetaConnectorOptions
+{
+  /**
+   * The depth of the address tree.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageMetaConnectorOptions.depth
+  /**
+   * The DurableObjectStorage instance from the Durable Object context.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageMetaConnectorOptions.storage
+  /**
+   * The name of the table to store metadata in. Defaults to 'meta'.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageMetaConnectorOptions.metaTable
+  /**
+   * The name of the address column. Defaults to 'address'.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageMetaConnectorOptions.addressColumn
+  /**
+   * The name of the timestamp column. Defaults to 'timestamp'.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageMetaConnectorOptions.timestampColumn
+}
+
+/**
+ * The DurableObjectStorageDataConnector type represents a data connector that
+ * uses Cloudflare Durable Object's built-in SQLite storage.
+ * @category Type
+ * @since v0.0.6
+ */
+/// DurableObjectStorageDataConnector
+{
+  /**
+   * Gets the DurableObjectStorage instance.
+   * @category Method
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageDataConnector.getStorage
+}
+
+/**
+ * The DurableObjectStorageMetaConnector type represents a meta connector that
+ * uses Cloudflare Durable Object's built-in SQLite storage.
+ * @category Type
+ * @since v0.0.6
+ */
+/// DurableObjectStorageMetaConnector
+{
+  /**
+   * Gets the DurableObjectStorage instance.
+   * @category Method
+   * @since v0.0.6
+   */
+  /// DurableObjectStorageMetaConnector.getStorage
+}
+
+/**
+ * The createDurableObjectStorageDataConnector function creates a data connector
+ * that uses Cloudflare Durable Object's built-in SQLite storage.
+ *
+ * The connector automatically creates tables and indexes as needed. Data is
+ * persisted automatically across the Durable Object's lifecycle.
+ * @param options - The connector options.
+ * @returns A data connector.
+ * @example
+ * ```typescript
+ * class MySyncletDO extends SyncletDurableObject {
+ *   getCreateComponents() {
+ *     return {
+ *       dataConnector: createDurableObjectStorageDataConnector({
+ *         depth: 3,
+ *         storage: this.ctx.storage,
+ *       }),
+ *     };
+ *   }
+ * }
+ * ```
+ * @category Function
+ * @since v0.0.6
+ */
+/// createDurableObjectStorageDataConnector
+
+/**
+ * The createDurableObjectStorageMetaConnector function creates a meta connector
+ * that uses Cloudflare Durable Object's built-in SQLite storage.
+ *
+ * The connector automatically creates tables and indexes as needed. Metadata is
+ * persisted automatically across the Durable Object's lifecycle.
+ * @param options - The connector options.
+ * @returns A meta connector.
+ * @example
+ * ```typescript
+ * class MySyncletDO extends SyncletDurableObject {
+ *   getCreateComponents() {
+ *     return {
+ *       metaConnector: createDurableObjectStorageMetaConnector({
+ *         depth: 3,
+ *         storage: this.ctx.storage,
+ *       }),
+ *     };
+ *   }
+ * }
+ * ```
+ * @category Function
+ * @since v0.0.6
+ */
+/// createDurableObjectStorageMetaConnector
+
+/**
  * The SyncletDurableObject class is an abstract base class for creating
  * Synclet-powered Durable Objects.
  *
