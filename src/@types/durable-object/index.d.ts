@@ -2,6 +2,10 @@
 
 import {DurableObject} from 'cloudflare:workers';
 import type {
+  DatabaseDataConnectorOptions,
+  DatabaseMetaConnectorOptions,
+} from '../database/index.d.ts';
+import type {
   Address,
   Atom,
   Context,
@@ -18,31 +22,15 @@ import type {
 
 /// DurableObjectStorageDataConnectorOptions
 export type DurableObjectStorageDataConnectorOptions<Depth extends number> = {
-  /// DurableObjectStorageDataConnectorOptions.depth
-  readonly depth: Depth;
   /// DurableObjectStorageDataConnectorOptions.storage
   readonly storage: DurableObjectStorage;
-  /// DurableObjectStorageDataConnectorOptions.dataTable
-  readonly dataTable?: string;
-  /// DurableObjectStorageDataConnectorOptions.addressColumn
-  readonly addressColumn?: string;
-  /// DurableObjectStorageDataConnectorOptions.atomColumn
-  readonly atomColumn?: string;
-};
+} & DatabaseDataConnectorOptions<Depth>;
 
 /// DurableObjectStorageMetaConnectorOptions
 export type DurableObjectStorageMetaConnectorOptions<Depth extends number> = {
-  /// DurableObjectStorageMetaConnectorOptions.depth
-  readonly depth: Depth;
   /// DurableObjectStorageMetaConnectorOptions.storage
   readonly storage: DurableObjectStorage;
-  /// DurableObjectStorageMetaConnectorOptions.metaTable
-  readonly metaTable?: string;
-  /// DurableObjectStorageMetaConnectorOptions.addressColumn
-  readonly addressColumn?: string;
-  /// DurableObjectStorageMetaConnectorOptions.timestampColumn
-  readonly timestampColumn?: string;
-};
+} & DatabaseMetaConnectorOptions<Depth>;
 
 /// DurableObjectStorageDataConnector
 export type DurableObjectStorageDataConnector<Depth extends number> =

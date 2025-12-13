@@ -27,35 +27,11 @@
 /// DurableObjectStorageDataConnectorOptions
 {
   /**
-   * The depth of the address tree.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectStorageDataConnectorOptions.depth
-  /**
    * The DurableObjectStorage instance from the Durable Object context.
    * @category Property
    * @since v0.0.6
    */
   /// DurableObjectStorageDataConnectorOptions.storage
-  /**
-   * The name of the table to store data in. Defaults to 'data'.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectStorageDataConnectorOptions.dataTable
-  /**
-   * The name of the address column. Defaults to 'address'.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectStorageDataConnectorOptions.addressColumn
-  /**
-   * The name of the atom column. Defaults to 'atom'.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectStorageDataConnectorOptions.atomColumn
 }
 
 /**
@@ -78,35 +54,11 @@
 /// DurableObjectStorageMetaConnectorOptions
 {
   /**
-   * The depth of the address tree.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectStorageMetaConnectorOptions.depth
-  /**
    * The DurableObjectStorage instance from the Durable Object context.
    * @category Property
    * @since v0.0.6
    */
   /// DurableObjectStorageMetaConnectorOptions.storage
-  /**
-   * The name of the table to store metadata in. Defaults to 'meta'.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectStorageMetaConnectorOptions.metaTable
-  /**
-   * The name of the address column. Defaults to 'address'.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectStorageMetaConnectorOptions.addressColumn
-  /**
-   * The name of the timestamp column. Defaults to 'timestamp'.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectStorageMetaConnectorOptions.timestampColumn
 }
 
 /**
