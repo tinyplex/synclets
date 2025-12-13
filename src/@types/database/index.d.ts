@@ -14,14 +14,14 @@ export function getQuery(sql: Sql): [string: string, args: any[]];
 
 /// DatabaseDataOptions
 export type DatabaseDataOptions = {
-  table?: string;
+  dataTable?: string;
   addressColumn?: string;
   atomColumn?: string;
 };
 
 /// DatabaseMetaOptions
 export type DatabaseMetaOptions = {
-  table?: string;
+  metaTable?: string;
   addressColumn?: string;
   timestampColumn?: string;
 };
