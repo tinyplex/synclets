@@ -20,41 +20,41 @@ import type {
   Transport,
 } from '../index.d.ts';
 
-/// DurableObjectStorageDataConnectorOptions
-export type DurableObjectStorageDataConnectorOptions<Depth extends number> = {
-  /// DurableObjectStorageDataConnectorOptions.storage
+/// DurableObjectSqliteDataConnectorOptions
+export type DurableObjectSqliteDataConnectorOptions<Depth extends number> = {
+  /// DurableObjectSqliteDataConnectorOptions.storage
   readonly storage: DurableObjectStorage;
 } & DatabaseDataConnectorOptions<Depth>;
 
-/// DurableObjectStorageMetaConnectorOptions
-export type DurableObjectStorageMetaConnectorOptions<Depth extends number> = {
-  /// DurableObjectStorageMetaConnectorOptions.storage
+/// DurableObjectSqliteDataConnector
+export type DurableObjectSqliteDataConnector<Depth extends number> =
+  DataConnector<Depth> & {
+    /// DurableObjectSqliteDataConnector.getStorage
+    getStorage(): DurableObjectStorage;
+  };
+
+/// createDurableObjectSqliteDataConnector
+export function createDurableObjectSqliteDataConnector<Depth extends number>(
+  options: DurableObjectSqliteDataConnectorOptions<Depth>,
+): DurableObjectSqliteDataConnector<Depth>;
+
+/// DurableObjectSqliteMetaConnectorOptions
+export type DurableObjectSqliteMetaConnectorOptions<Depth extends number> = {
+  /// DurableObjectSqliteMetaConnectorOptions.storage
   readonly storage: DurableObjectStorage;
 } & DatabaseMetaConnectorOptions<Depth>;
 
-/// DurableObjectStorageDataConnector
-export type DurableObjectStorageDataConnector<Depth extends number> =
-  DataConnector<Depth> & {
-    /// DurableObjectStorageDataConnector.getStorage
-    getStorage(): DurableObjectStorage;
-  };
-
-/// DurableObjectStorageMetaConnector
-export type DurableObjectStorageMetaConnector<Depth extends number> =
+/// DurableObjectSqliteMetaConnector
+export type DurableObjectSqliteMetaConnector<Depth extends number> =
   MetaConnector<Depth> & {
-    /// DurableObjectStorageMetaConnector.getStorage
+    /// DurableObjectSqliteMetaConnector.getStorage
     getStorage(): DurableObjectStorage;
   };
 
-/// createDurableObjectStorageDataConnector
-export function createDurableObjectStorageDataConnector<Depth extends number>(
-  options: DurableObjectStorageDataConnectorOptions<Depth>,
-): DurableObjectStorageDataConnector<Depth>;
-
-/// createDurableObjectStorageMetaConnector
-export function createDurableObjectStorageMetaConnector<Depth extends number>(
-  options: DurableObjectStorageMetaConnectorOptions<Depth>,
-): DurableObjectStorageMetaConnector<Depth>;
+/// createDurableObjectSqliteMetaConnector
+export function createDurableObjectSqliteMetaConnector<Depth extends number>(
+  options: DurableObjectSqliteMetaConnectorOptions<Depth>,
+): DurableObjectSqliteMetaConnector<Depth>;
 
 /// SyncletDurableObject
 export abstract class SyncletDurableObject<

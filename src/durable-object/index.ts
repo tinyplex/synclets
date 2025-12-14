@@ -1,6 +1,6 @@
 export {PureBrokerDurableObject} from './broker.ts';
 export {
-  createDurableObjectStorageDataConnector,
-  createDurableObjectStorageMetaConnector,
-} from './storage.ts';
+  createDurableObjectSqliteDataConnector,
+  createDurableObjectSqliteMetaConnector,
+} from './sqlite.ts';
 export {SyncletDurableObject, getSyncletDurableObjectFetch} from './synclet.ts';
