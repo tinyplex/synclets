@@ -11,10 +11,9 @@ import type {
   Sqlite3SyncletOptions,
 } from '@synclets/@types/sqlite3';
 import type {Database} from 'sqlite3';
-import {createDatabaseConnector} from '../common/database.ts';
-import {objFromEntries} from '../common/object.ts';
+import {createSqliteDatabaseConnector} from '../common/database/sqlite.ts';
 import {promiseNew} from '../common/other.ts';
-import {getQuery, sql} from '../database/index.ts';
+import {getQuery} from '../database/index.ts';
 
 export const createSqlite3DataConnector: typeof createSqlite3DataConnectorDecl =
   <Depth extends number>({
@@ -93,35 +92,18 @@ const createSqlite3Connector = <
     addressColumn: string;
     leafColumn: string;
   },
-) => {
-  const query = <Row>(sql: Sql): Promise<Row[]> =>
-    promiseNew((resolve, reject) => {
-      database.all(...getQuery(sql), (error, rows: Row[]) =>
-        error ? reject(error) : resolve(rows),
-      );
-    });
-
-  const getSchema = async () =>
-    objFromEntries(
-      (
-        await query<{name: string; type: string}>(
-          sql`
-          SELECT name 
-          FROM pragma_table_info(${config.table})
-          ORDER BY name
-        `,
-        )
-      ).map(({name}) => [name, 'text']),
-    );
-
-  return createDatabaseConnector(
+) =>
+  createSqliteDatabaseConnector<CreateMeta, Depth, any>(
     createMeta,
     depth,
-    query,
-    getSchema,
+    <Row>(sql: Sql) =>
+      promiseNew<Row[]>((resolve, reject) => {
+        database.all(...getQuery(sql), (error: Error | null, rows: Row[]) =>
+          error ? reject(error) : resolve(rows),
+        );
+      }),
     {getDatabase: () => database},
     config,
   ) as CreateMeta extends true
     ? Sqlite3MetaConnector<Depth>
     : Sqlite3DataConnector<Depth>;
-};

@@ -11,7 +11,7 @@ import type {
   PgliteMetaConnectorOptions,
   PgliteSyncletOptions,
 } from '@synclets/@types/pglite';
-import {createDatabaseConnector} from '../common/database.ts';
+import {createDatabaseConnector} from '../common/database/index.ts';
 import {objFromEntries} from '../common/object.ts';
 import {getQuery, sql} from '../database/index.ts';
 

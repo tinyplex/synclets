@@ -10,10 +10,10 @@ import {
 } from '@synclets/@types';
 import {Sql} from '@synclets/@types/database';
 import {jsonString} from '@synclets/utils';
-import {sql} from '../database/index.ts';
-import {arrayMap, arrayNew, arraySlice} from './array.ts';
-import {objFromEntries, objIsEqual, objNotEmpty} from './object.ts';
-import {errorNew, promiseAll, size} from './other.ts';
+import {sql} from '../../database/index.ts';
+import {arrayMap, arrayNew, arraySlice} from '../array.ts';
+import {objFromEntries, objIsEqual, objNotEmpty} from '../object.ts';
+import {errorNew, promiseAll, size} from '../other.ts';
 
 export const createDatabaseConnector = <
   CreateMeta extends boolean,

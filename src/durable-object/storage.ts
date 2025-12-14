@@ -7,9 +7,8 @@ import type {
   DurableObjectStorageMetaConnector,
   DurableObjectStorageMetaConnectorOptions,
 } from '@synclets/@types/durable-object';
-import {createDatabaseConnector} from '../common/database.ts';
-import {objFromEntries} from '../common/object.ts';
-import {getQuery, sql} from '../database/index.ts';
+import {createSqliteDatabaseConnector} from '../common/database/sqlite.ts';
+import {getQuery} from '../database/index.ts';
 
 export const createDurableObjectStorageDataConnector: typeof createDurableObjectStorageDataConnectorDecl =
   <Depth extends number>({
@@ -19,7 +18,11 @@ export const createDurableObjectStorageDataConnector: typeof createDurableObject
     addressColumn = 'address',
     atomColumn = 'atom',
   }: DurableObjectStorageDataConnectorOptions<Depth>): DurableObjectStorageDataConnector<Depth> =>
-    createDatabaseConnector(
+    createSqliteDatabaseConnector<
+      false,
+      Depth,
+      DurableObjectStorageDataConnector<Depth>
+    >(
       false,
       depth,
       async <Row>(sql: Sql) => {
@@ -27,23 +30,13 @@ export const createDurableObjectStorageDataConnector: typeof createDurableObject
         const cursor = storage.sql.exec(queryString, ...args);
         return cursor.toArray() as Row[];
       },
-      async () => {
-        const columns = await (async () => {
-          const [queryString, args] = getQuery(
-            sql`SELECT name, type FROM pragma_table_info(${dataTable}) ORDER BY name`,
-          );
-          const cursor = storage.sql.exec(queryString, ...args);
-          return cursor.toArray() as {name: string; type: string}[];
-        })();
-        return objFromEntries(columns.map(({name, type}) => [name, type]));
-      },
       {getStorage: () => storage},
       {
         table: dataTable,
         addressColumn,
         leafColumn: atomColumn,
       },
-    ) as DurableObjectStorageDataConnector<Depth>;
+    );
 
 export const createDurableObjectStorageMetaConnector: typeof createDurableObjectStorageMetaConnectorDecl =
   <Depth extends number>({
@@ -53,7 +46,11 @@ export const createDurableObjectStorageMetaConnector: typeof createDurableObject
     addressColumn = 'address',
     timestampColumn = 'timestamp',
   }: DurableObjectStorageMetaConnectorOptions<Depth>): DurableObjectStorageMetaConnector<Depth> =>
-    createDatabaseConnector(
+    createSqliteDatabaseConnector<
+      true,
+      Depth,
+      DurableObjectStorageMetaConnector<Depth>
+    >(
       true,
       depth,
       async <Row>(sql: Sql) => {
@@ -61,20 +58,10 @@ export const createDurableObjectStorageMetaConnector: typeof createDurableObject
         const cursor = storage.sql.exec(queryString, ...args);
         return cursor.toArray() as Row[];
       },
-      async () => {
-        const columns = await (async () => {
-          const [queryString, args] = getQuery(
-            sql`SELECT name, type FROM pragma_table_info(${metaTable}) ORDER BY name`,
-          );
-          const cursor = storage.sql.exec(queryString, ...args);
-          return cursor.toArray() as {name: string; type: string}[];
-        })();
-        return objFromEntries(columns.map(({name, type}) => [name, type]));
-      },
       {getStorage: () => storage},
       {
         table: metaTable,
         addressColumn,
         leafColumn: timestampColumn,
       },
-    ) as DurableObjectStorageMetaConnector<Depth>;
+    );
