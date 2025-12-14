@@ -146,7 +146,9 @@ export const createChainedTestSynclets = async <
 };
 
 export const createMockDataConnector = <Depth extends number>(depth: Depth) =>
-  createDataConnector(depth, {
+  createDataConnector(
+    {depth},
+    {
     readAtom: async () => 0,
     writeAtom: async () => {},
     removeAtom: async () => {},
@@ -154,7 +156,7 @@ export const createMockDataConnector = <Depth extends number>(depth: Depth) =>
   }) as DataConnector<Depth>;
 
 export const createMockMetaConnector = <Depth extends number>(depth: Depth) =>
-  createMetaConnector(depth, {
+  createMetaConnector({depth}, {
     readTimestamp: async () => '',
     writeTimestamp: async () => {},
     readChildIds: async () => [],

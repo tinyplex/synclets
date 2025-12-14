@@ -88,7 +88,7 @@ export const createMemoryConnector = <
 
   const connector = createMeta
     ? createMetaConnector(
-        depth,
+        {depth},
         {
           connect,
           readTimestamp:
@@ -104,7 +104,7 @@ export const createMemoryConnector = <
         extraFunctions,
       )
     : createDataConnector(
-        depth,
+        {depth},
         {
           connect,
           readAtom: readLeaf as DataConnectorImplementations<Depth>['readAtom'],

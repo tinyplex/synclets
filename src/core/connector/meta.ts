@@ -4,6 +4,7 @@ import type {
   LogLevel,
   MetaConnectorImplementations,
   MetaConnectorOptimizations,
+  MetaConnectorOptions,
 } from '@synclets/@types';
 import {objFreeze} from '../../common/object.ts';
 import {errorNew} from '../../common/other.ts';
@@ -12,7 +13,7 @@ import {ProtectedMetaConnector, ProtectedSynclet} from '../types.ts';
 export const createMetaConnector: typeof createMetaConnectorDecl = <
   Depth extends number,
 >(
-  depth: Depth,
+  {depth}: MetaConnectorOptions<Depth>,
   {
     connect,
     disconnect,

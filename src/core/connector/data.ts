@@ -4,6 +4,7 @@ import type {
   createDataConnector as createDataConnectorDecl,
   DataConnectorImplementations,
   DataConnectorOptimizations,
+  DataConnectorOptions,
   ExtraFunctions,
   LogLevel,
 } from '@synclets/@types';
@@ -16,7 +17,7 @@ const SYNC_CHANGED_ATOMS = 0;
 export const createDataConnector: typeof createDataConnectorDecl = <
   Depth extends number,
 >(
-  depth: Depth,
+  {depth}: DataConnectorOptions<Depth>,
   {
     connect,
     disconnect,

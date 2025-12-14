@@ -1,4 +1,3 @@
-import type {PGlite} from '@electric-sql/pglite';
 import {createSynclet} from '@synclets';
 import {Sql} from '@synclets/@types/database';
 import type {
@@ -11,81 +10,20 @@ import type {
   PgliteMetaConnectorOptions,
   PgliteSyncletOptions,
 } from '@synclets/@types/pglite';
-import {createDatabaseConnector} from '../common/database/index.ts';
-import {objFromEntries} from '../common/object.ts';
-import {getQuery, sql} from '../database/index.ts';
+import {createPostgresDatabaseConnector} from '../common/database/postgres.ts';
+import {getQuery} from '../database/index.ts';
 
 export const createPgliteDataConnector: typeof createPgliteDataConnectorDecl = <
   Depth extends number,
->({
-  depth,
-  pglite,
-  dataTable = 'data',
-  addressColumn = 'address',
-  atomColumn = 'atom',
-}: PgliteDataConnectorOptions<Depth>): PgliteDataConnector<Depth> =>
-  createPgliteConnector(false, depth, pglite, {
-    table: dataTable,
-    addressColumn,
-    leafColumn: atomColumn,
-  });
+>(
+  options: PgliteDataConnectorOptions<Depth>,
+): PgliteDataConnector<Depth> => createPgliteConnector(false, options);
 
 export const createPgliteMetaConnector: typeof createPgliteMetaConnectorDecl = <
   Depth extends number,
->({
-  depth,
-  pglite,
-  metaTable = 'meta',
-  addressColumn = 'address',
-  timestampColumn = 'timestamp',
-}: PgliteMetaConnectorOptions<Depth>): PgliteMetaConnector<Depth> =>
-  createPgliteConnector(true, depth, pglite, {
-    table: metaTable,
-    addressColumn,
-    leafColumn: timestampColumn,
-  });
-
-const createPgliteConnector = <
-  CreateMeta extends boolean,
-  Depth extends number,
 >(
-  createMeta: CreateMeta,
-  depth: Depth,
-  pglite: PGlite,
-  config: {
-    table: string;
-    addressColumn: string;
-    leafColumn: string;
-  },
-) => {
-  const query = async <Row>(sql: Sql): Promise<Row[]> =>
-    (await pglite.query<Row>(...getQuery(sql))).rows;
-
-  const getSchema = async () =>
-    objFromEntries(
-      (
-        await query<{name: string; type: string}>(
-          sql`
-            SELECT column_name AS name, data_type AS type 
-            FROM information_schema.columns 
-            WHERE table_name=${config.table} 
-            ORDER BY column_name
-          `,
-        )
-      ).map(({name, type}) => [name, type]),
-    );
-
-  return createDatabaseConnector(
-    createMeta,
-    depth,
-    query,
-    getSchema,
-    {getPglite: () => pglite},
-    config,
-  ) as CreateMeta extends true
-    ? PgliteMetaConnector<Depth>
-    : PgliteDataConnector<Depth>;
-};
+  options: PgliteDataConnectorOptions<Depth>,
+): PgliteMetaConnector<Depth> => createPgliteConnector(true, options);
 
 export const createPgliteSynclet: typeof createPgliteSyncletDecl = <
   Depth extends number,
@@ -123,3 +61,25 @@ export const createPgliteSynclet: typeof createPgliteSyncletDecl = <
     implementations,
     {id, logger},
   );
+
+const createPgliteConnector = <
+  CreateMeta extends boolean,
+  Depth extends number,
+>(
+  createMeta: CreateMeta,
+  {
+    pglite,
+    ...options
+  }: CreateMeta extends true
+    ? PgliteMetaConnectorOptions<Depth>
+    : PgliteDataConnectorOptions<Depth>,
+) =>
+  createPostgresDatabaseConnector<CreateMeta, Depth, any>(
+    createMeta,
+    options,
+    async <Row>(sql: Sql): Promise<Row[]> =>
+      (await pglite.query<Row>(...getQuery(sql))).rows,
+    {getPglite: () => pglite},
+  ) as CreateMeta extends true
+    ? PgliteMetaConnector<Depth>
+    : PgliteDataConnector<Depth>;

@@ -8,7 +8,11 @@ import {
   TimestampAddress,
   TimestampsAddress,
 } from '@synclets/@types';
-import {Sql} from '@synclets/@types/database';
+import {
+  DatabaseDataConnectorOptions,
+  DatabaseMetaConnectorOptions,
+  Sql,
+} from '@synclets/@types/database';
 import {jsonString} from '@synclets/utils';
 import {sql} from '../../database/index.ts';
 import {arrayMap, arrayNew, arraySlice} from '../array.ts';
@@ -20,28 +24,29 @@ export const createDatabaseConnector = <
   Depth extends number,
 >(
   createMeta: CreateMeta,
-  depth: Depth,
-  query: <Row>(sql: Sql) => Promise<Row[]>,
-  getSchema: () => Promise<{[column: string]: string}>,
-  extraFunctions: {[name: string]: any},
   {
-    table,
-    addressColumn,
-    leafColumn,
-  }: {
-    table: string;
-    addressColumn: string;
-    leafColumn: string;
-  },
+    depth,
+    addressColumn = 'address',
+    dataTable = 'data',
+    atomColumn = 'atom',
+    metaTable = 'meta',
+    timestampColumn = 'timestamp',
+  }: DatabaseMetaConnectorOptions<Depth> & DatabaseDataConnectorOptions<Depth>,
+  query: <Row>(sql: Sql) => Promise<Row[]>,
+  getSchema: (table: string) => Promise<{[column: string]: string}>,
+  extraFunctions: {[name: string]: any},
 ) => {
+  const [table, leafColumn] = createMeta
+    ? [metaTable, timestampColumn]
+    : [dataTable, atomColumn];
+
   const addressPartColumns = arrayMap(
     arrayNew(depth),
     (_, i) => `${addressColumn}${i + 1}`,
   );
 
   const connect = async () => {
-    const schema = await getSchema();
-
+    const schema = await getSchema(table);
     const targetSchema = {
       [addressColumn]: 'text',
       [leafColumn]: 'text',
@@ -49,7 +54,6 @@ export const createDatabaseConnector = <
         arrayMap(addressPartColumns, (column) => [column, 'text']),
       ),
     };
-
     if (objNotEmpty(schema)) {
       if (!objIsEqual(schema, targetSchema)) {
         errorNew(`Table "${table}" needs correct schema`);
@@ -164,7 +168,7 @@ export const createDatabaseConnector = <
 
   const connector = createMeta
     ? createMetaConnector(
-        depth,
+        {depth},
         {
           connect,
           readTimestamp: readLeaf,
@@ -175,7 +179,7 @@ export const createDatabaseConnector = <
         extraFunctions,
       )
     : createDataConnector(
-        depth,
+        {depth},
         {
           connect,
           readAtom: readLeaf,

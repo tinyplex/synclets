@@ -121,7 +121,7 @@ export const createDirectoryConnector = <
 
   const connector = createMeta
     ? createMetaConnector(
-        depth,
+        {depth},
         {
           connect,
           readTimestamp:
@@ -133,7 +133,7 @@ export const createDirectoryConnector = <
         extraFunctions,
       )
     : createDataConnector(
-        depth,
+        {depth},
         {
           connect,
           readAtom: readLeaf,

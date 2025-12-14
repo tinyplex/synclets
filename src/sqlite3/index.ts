@@ -10,38 +10,19 @@ import type {
   Sqlite3MetaConnectorOptions,
   Sqlite3SyncletOptions,
 } from '@synclets/@types/sqlite3';
-import type {Database} from 'sqlite3';
 import {createSqliteDatabaseConnector} from '../common/database/sqlite.ts';
 import {promiseNew} from '../common/other.ts';
 import {getQuery} from '../database/index.ts';
 
 export const createSqlite3DataConnector: typeof createSqlite3DataConnectorDecl =
-  <Depth extends number>({
-    depth,
-    database,
-    dataTable = 'data',
-    addressColumn = 'address',
-    atomColumn = 'atom',
-  }: Sqlite3DataConnectorOptions<Depth>): Sqlite3DataConnector<Depth> =>
-    createSqlite3Connector(false, depth, database, {
-      table: dataTable,
-      addressColumn,
-      leafColumn: atomColumn,
-    });
+  <Depth extends number>(
+    options: Sqlite3DataConnectorOptions<Depth>,
+  ): Sqlite3DataConnector<Depth> => createSqlite3Connector(false, options);
 
 export const createSqlite3MetaConnector: typeof createSqlite3MetaConnectorDecl =
-  <Depth extends number>({
-    depth,
-    database,
-    metaTable = 'meta',
-    addressColumn = 'address',
-    timestampColumn = 'timestamp',
-  }: Sqlite3MetaConnectorOptions<Depth>): Sqlite3MetaConnector<Depth> =>
-    createSqlite3Connector(true, depth, database, {
-      table: metaTable,
-      addressColumn,
-      leafColumn: timestampColumn,
-    });
+  <Depth extends number>(
+    options: Sqlite3MetaConnectorOptions<Depth>,
+  ): Sqlite3MetaConnector<Depth> => createSqlite3Connector(true, options);
 
 export const createSqlite3Synclet: typeof createSqlite3SyncletDecl = <
   Depth extends number,
@@ -85,17 +66,16 @@ const createSqlite3Connector = <
   Depth extends number,
 >(
   createMeta: CreateMeta,
-  depth: Depth,
-  database: Database,
-  config: {
-    table: string;
-    addressColumn: string;
-    leafColumn: string;
-  },
+  {
+    database,
+    ...options
+  }: CreateMeta extends true
+    ? Sqlite3MetaConnectorOptions<Depth>
+    : Sqlite3DataConnectorOptions<Depth>,
 ) =>
   createSqliteDatabaseConnector<CreateMeta, Depth, any>(
     createMeta,
-    depth,
+    options,
     <Row>(sql: Sql) =>
       promiseNew<Row[]>((resolve, reject) => {
         database.all(...getQuery(sql), (error: Error | null, rows: Row[]) =>
@@ -103,7 +83,6 @@ const createSqlite3Connector = <
         );
       }),
     {getDatabase: () => database},
-    config,
   ) as CreateMeta extends true
     ? Sqlite3MetaConnector<Depth>
     : Sqlite3DataConnector<Depth>;

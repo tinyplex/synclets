@@ -314,7 +314,7 @@ export type DataConnectorOptimizations<Depth extends number> = {
 
 /// createDataConnector
 export function createDataConnector<Depth extends number>(
-  depth: Depth,
+  options: DataConnectorOptions<Depth>,
   implementations: DataConnectorImplementations<Depth>,
   optimizations?: DataConnectorOptimizations<Depth>,
   extraFunctions?: ExtraFunctions,
@@ -374,7 +374,7 @@ export type MetaConnectorOptimizations<Depth extends number> = {
 
 /// createMetaConnector
 export function createMetaConnector<Depth extends number>(
-  depth: Depth,
+  options: MetaConnectorOptions<Depth>,
   implementations: MetaConnectorImplementations<Depth>,
   optimizations?: MetaConnectorOptimizations<Depth>,
   extraFunctions?: ExtraFunctions,

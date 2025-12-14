@@ -82,7 +82,7 @@ export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl
     };
 
     return createDataConnector(
-      3,
+      {depth: 3},
       {connect, disconnect, readAtom, writeAtom, removeAtom, readChildIds},
       {},
       extraFunctions,
