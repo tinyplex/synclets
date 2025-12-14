@@ -1,10 +1,11 @@
 import {DurableObjectStub} from '@cloudflare/workers-types';
-import {build} from 'esbuild';
-import {Miniflare} from 'miniflare';
+import type {Miniflare} from 'miniflare';
 import {getPartsFromPacket} from 'synclets/utils';
-import {fileURLToPath} from 'url';
 import {afterAll, beforeAll, expect, test} from 'vitest';
 import {pause} from '../unit/common.ts';
+import {createMiniflare} from './common.ts';
+
+const HOST = 'http://localhost';
 
 let miniflare: Miniflare;
 let stub: DurableObjectStub;
@@ -13,7 +14,7 @@ const createClients = async (number: number) => {
   const received: [string, string][][] = Array.from({length: number}, () => []);
   const webSockets: any[] = [];
   for (let i = 0; i < number; i++) {
-    const {webSocket} = await stub.fetch('http://localhost/test', {
+    const {webSocket} = await stub.fetch(HOST, {
       headers: {upgrade: 'websocket'},
     });
     if (!webSocket) throw new Error('failed to obtain WebSocket from stub');
@@ -27,29 +28,11 @@ const createClients = async (number: number) => {
 };
 
 beforeAll(async () => {
-  const entry = fileURLToPath(new URL('./server.ts', import.meta.url));
-
-  const {
-    outputFiles: [{text: script}],
-  } = await build({
-    entryPoints: [entry],
-    write: false,
-    bundle: true,
-    format: 'esm',
-    target: ['es2020'],
-    external: ['cloudflare:workers'],
+  miniflare = await createMiniflare({
+    pureBroker: 'TestPureBrokerDurableObject',
   });
-
-  miniflare = new Miniflare({
-    script,
-    modules: true,
-    durableObjects: {test: 'TestPureBrokerDurableObject'},
-    compatibilityDate: '2025-12-02',
-  });
-  await miniflare.ready;
-
-  const namespace = await miniflare.getDurableObjectNamespace('test');
-  stub = namespace.get(namespace.idFromName('test')) as any;
+  const namespace = await miniflare.getDurableObjectNamespace('pureBroker');
+  stub = namespace.get(namespace.idFromName('pureBroker')) as any;
 });
 
 afterAll(async () => {
@@ -61,20 +44,20 @@ test('instantiated and accessed', async () => {
 });
 
 test('return 426 for non-WebSocket requests', async () => {
-  const response = await stub.fetch('http://localhost/test');
+  const response = await stub.fetch(HOST);
   expect(response.status).toBe(426);
   expect(await response.text()).toBe('Upgrade required');
 });
 
 test('accept WebSocket upgrade requests', async () => {
-  const response = await stub.fetch('http://localhost/test', {
+  const response = await stub.fetch(HOST, {
     headers: {upgrade: 'websocket'},
   });
   expect(response.status).toBe(101);
   expect(response.webSocket).toBeDefined();
 });
 
-test.only('2 clients communicate', async () => {
+test('2 clients communicate', async () => {
   const [[webSocket1, webSocket2], [received1, received2]] =
     await createClients(2);
 
@@ -107,7 +90,7 @@ test.only('2 clients communicate', async () => {
   ]);
 });
 
-test.only('3 clients communicate', async () => {
+test('3 clients communicate', async () => {
   const [
     [webSocket1, webSocket2, webSocket3],
     [received1, received2, received3],
