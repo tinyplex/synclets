@@ -18,3 +18,6 @@ export const createResponse = (
 
 export const createUpgradeRequiredResponse = (): Response =>
   createResponse(426, null, 'Upgrade required');
+
+export const createNotImplementedResponse = (): Response =>
+  createResponse(501, null, 'Not Implemented');

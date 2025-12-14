@@ -1,3 +1,4 @@
+import {DurableObjectStub} from '@cloudflare/workers-types';
 import {build} from 'esbuild';
 import {Miniflare} from 'miniflare';
 import {fileURLToPath} from 'url';
@@ -14,14 +15,18 @@ const {
 });
 
 export const createMiniflare = async (
-  durableObjects: Record<string, string>,
-): Promise<Miniflare> => {
+  durableObjectClass: string,
+): Promise<[Miniflare, DurableObjectStub]> => {
   const miniflare = new Miniflare({
     script: servers,
     modules: true,
-    durableObjects,
+    durableObjects: {testNamespace: durableObjectClass},
     compatibilityDate: '2025-12-02',
   });
   await miniflare.ready;
-  return miniflare;
+
+  const namespace = await miniflare.getDurableObjectNamespace('testNamespace');
+  const stub: any = namespace.get(namespace.idFromName('testNamespace'));
+
+  return [miniflare, stub];
 };

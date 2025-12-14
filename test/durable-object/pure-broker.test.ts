@@ -28,11 +28,7 @@ const createClients = async (number: number) => {
 };
 
 beforeAll(async () => {
-  miniflare = await createMiniflare({
-    pureBroker: 'TestPureBrokerDurableObject',
-  });
-  const namespace = await miniflare.getDurableObjectNamespace('pureBroker');
-  stub = namespace.get(namespace.idFromName('pureBroker')) as any;
+  [miniflare, stub] = await createMiniflare('TestPureBrokerDurableObject');
 });
 
 afterAll(async () => {

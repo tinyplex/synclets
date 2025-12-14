@@ -16,6 +16,7 @@ import type {
 import {DurableObject} from 'cloudflare:workers';
 import {createSynclet} from '../core/synclet.ts';
 import {
+  createNotImplementedResponse,
   createUpgradeRequiredResponse,
   getClientId,
   getPathId,
@@ -45,6 +46,10 @@ export abstract class SyncletDurableObject<
         this.getCreateOptions?.(),
       );
     });
+  }
+
+  fetch(_request: Request): Response {
+    return createNotImplementedResponse();
   }
 
   getCreateComponents?(): SyncletComponents<
