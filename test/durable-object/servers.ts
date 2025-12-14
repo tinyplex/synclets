@@ -5,25 +5,44 @@ import {
   SyncletDurableObject,
 } from 'synclets/durable-object';
 
+const api = async (
+  ths: SyncletDurableObject,
+  method: string,
+  ...args: any[]
+) => {
+  if (method in ths) {
+    return await (ths as any)[method](...args);
+  }
+  return undefined;
+};
+
 export class TestSyncletDurableObject extends SyncletDurableObject {
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    const method = url.pathname.slice(1);
-    const args = JSON.parse(decodeURI(url.search.slice(1)) || '[]');
-    if (method in this) {
-      return new Response(JSON.stringify(await (this as any)[method](...args)));
-    }
-    return super.fetch(request);
+  async api(method: string, ...args: any[]): Promise<any> {
+    return await api(this, method, ...args);
   }
 }
 
-export class TestPureBrokerDurableObject extends PureBrokerDurableObject {}
+export class TestPureBrokerDurableObject extends PureBrokerDurableObject {
+  async api(method: string, ...args: any[]): Promise<any> {
+    return await api(this, method, ...args);
+  }
+
+  getClientCount() {
+    return this.ctx.getWebSockets().length;
+  }
+}
 
 export class TestConnectorsOnlyDurableObject extends TestSyncletDurableObject {
   getCreateComponents() {
     return {
-      dataConnector: createDurableObjectSqliteDataConnector(this.ctx.storage),
-      metaConnector: createDurableObjectSqliteMetaConnector(this.ctx.storage),
+      dataConnector: createDurableObjectSqliteDataConnector({
+        depth: 1,
+        storage: this.ctx.storage,
+      }),
+      metaConnector: createDurableObjectSqliteMetaConnector({
+        depth: 1,
+        storage: this.ctx.storage,
+      }),
     };
   }
 }

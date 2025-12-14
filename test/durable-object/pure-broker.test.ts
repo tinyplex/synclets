@@ -1,4 +1,3 @@
-import {DurableObjectStub} from '@cloudflare/workers-types';
 import type {Miniflare} from 'miniflare';
 import {getPartsFromPacket} from 'synclets/utils';
 import {afterAll, beforeAll, expect, test} from 'vitest';
@@ -8,14 +7,14 @@ import {createMiniflare} from './common.ts';
 const PORT = 8781;
 
 let miniflare: Miniflare;
-let stub: DurableObjectStub;
-let host: string;
+let api: (path: string) => Promise<string>;
+let fetch: (path: string, init?: RequestInit) => Promise<Response>;
 
 const createClients = async (number: number) => {
   const received: [string, string][][] = Array.from({length: number}, () => []);
   const webSockets: any[] = [];
   for (let i = 0; i < number; i++) {
-    const {webSocket} = await stub.fetch(host, {
+    const {webSocket} = await fetch('/path' + i, {
       headers: {upgrade: 'websocket'},
     });
     if (!webSocket) throw new Error('failed to obtain WebSocket from stub');
@@ -29,7 +28,7 @@ const createClients = async (number: number) => {
 };
 
 beforeAll(async () => {
-  [miniflare, stub, host] = await createMiniflare(
+  [miniflare, api, fetch] = await createMiniflare(
     'TestPureBrokerDurableObject',
     PORT,
   );
@@ -40,26 +39,34 @@ afterAll(async () => {
 });
 
 test('instantiated and accessed', async () => {
-  expect(stub).toBeDefined();
+  expect(miniflare).toBeDefined();
 });
 
 test('return 426 for non-WebSocket requests', async () => {
-  const response = await stub.fetch(host);
+  const response = await fetch('/');
   expect(response.status).toBe(426);
   expect(await response.text()).toBe('Upgrade required');
 });
 
 test('accept WebSocket upgrade requests', async () => {
-  const response = await stub.fetch(host, {
+  const {status, webSocket} = await fetch('/', {
     headers: {upgrade: 'websocket'},
   });
-  expect(response.status).toBe(101);
-  expect(response.webSocket).toBeDefined();
+  expect(status).toBe(101);
+  expect(webSocket).toBeDefined();
+
+  webSocket!.accept();
+  expect(await api('getClientCount')).toEqual(1);
+
+  webSocket!.close();
+  expect(await api('getClientCount')).toEqual(0);
 });
 
 test('2 clients communicate', async () => {
-  const [[webSocket1, webSocket2], [received1, received2]] =
-    await createClients(2);
+  const a = await createClients(2);
+  const [[webSocket1, webSocket2], [received1, received2]] = a;
+
+  expect(await api('getClientCount')).toEqual(2);
 
   webSocket1.send('* from1To*');
   webSocket2.send('* from2To*');

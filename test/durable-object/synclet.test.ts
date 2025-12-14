@@ -1,4 +1,3 @@
-import {DurableObjectStub} from '@cloudflare/workers-types';
 import type {Miniflare} from 'miniflare';
 import {afterAll, beforeAll, expect, test} from 'vitest';
 import {createMiniflare} from './common.ts';
@@ -6,11 +5,11 @@ import {createMiniflare} from './common.ts';
 const PORT = 8780;
 
 let miniflare: Miniflare;
-let stub: DurableObjectStub;
-let host: string;
+let api: (path: string) => Promise<string>;
+let fetch: (path: string, init?: RequestInit) => Promise<Response>;
 
 beforeAll(async () => {
-  [miniflare, stub, host] = await createMiniflare(
+  [miniflare, api, fetch] = await createMiniflare(
     'TestSyncletDurableObject',
     PORT,
   );
@@ -21,27 +20,23 @@ afterAll(async () => {
 });
 
 test('return 501 for arbitrary requests', async () => {
-  const response = await stub.fetch(host);
+  const response = await fetch('/');
   expect(response.status).toBe(501);
   expect(await response.text()).toBe('Not Implemented');
 });
 
 test('getData', async () => {
-  const response = await stub.fetch(`${host}/getData`);
-  expect(response.status).toBe(200);
-  expect(await response.text()).toBe('{}');
+  expect(await api('getData')).toEqual({});
 });
 
 test('getMeta', async () => {
-  const response = await stub.fetch(`${host}/getMeta`);
-  expect(response.status).toBe(200);
-  expect(await response.text()).toBe('{}');
+  expect(await api('getMeta')).toEqual({});
 });
 
 test('start/stop', async () => {
-  expect(await (await stub.fetch(`${host}/isStarted`)).text()).toBe('false');
-  expect(await (await stub.fetch(`${host}/start`)).text()).toBe('');
-  expect(await (await stub.fetch(`${host}/isStarted`)).text()).toBe('true');
-  expect(await (await stub.fetch(`${host}/stop`)).text()).toBe('');
-  expect(await (await stub.fetch(`${host}/isStarted`)).text()).toBe('false');
+  expect(await api('isStarted')).toEqual(false);
+  await api('start');
+  expect(await api('isStarted')).toEqual(true);
+  await api('stop');
+  expect(await api('isStarted')).toEqual(false);
 });
