@@ -3,21 +3,25 @@ import type {Miniflare} from 'miniflare';
 import {afterAll, beforeAll, expect, test} from 'vitest';
 import {createMiniflare} from './common.ts';
 
-const HOST = 'http://localhost';
+const PORT = 8782;
 
 let miniflare: Miniflare;
 let stub: DurableObjectStub;
+let host: string;
 
 beforeAll(async () => {
-  [miniflare, stub] = await createMiniflare('TestConnectorsDurableObject');
+  [miniflare, stub, host] = await createMiniflare(
+    'TestConnectorsOnlyDurableObject',
+    PORT,
+  );
 });
 
 afterAll(async () => {
   await miniflare.dispose();
 });
 
-test('return 426 for non-WebSocket requests', async () => {
-  const response = await stub.fetch(HOST);
-  expect(response.status).toBe(501);
-  expect(await response.text()).toBe('Not Implemented');
+test('setAtom', async () => {
+  expect(await (await stub.fetch(`${host}/getData`)).text()).toBe('{}');
+  expect(await (await stub.fetch(`${host}/setAtom?[["a"],1]`)).text()).toBe('');
+  expect(await (await stub.fetch(`${host}/getData`)).text()).toBe('{"a":1}');
 });

@@ -84,7 +84,7 @@ export abstract class SyncletDurableObject<
   getCreateOptions?(): SyncletOptions;
 
   /// SyncletDurableObject.fetch
-  fetch(request: Request): Promise<Response>;
+  fetch(request: Request): Response | Promise<Response>;
 
   /// SyncletDurableObject.log
   log(message: string, level?: LogLevel): void;

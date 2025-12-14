@@ -14,10 +14,14 @@ const {
   external: ['cloudflare:workers'],
 });
 
+const HOST = 'http://localhost';
+
 export const createMiniflare = async (
   durableObjectClass: string,
-): Promise<[Miniflare, DurableObjectStub]> => {
+  port: number,
+): Promise<[Miniflare, DurableObjectStub, string]> => {
   const miniflare = new Miniflare({
+    port,
     script: servers,
     modules: true,
     durableObjects: {testNamespace: durableObjectClass},
@@ -28,5 +32,5 @@ export const createMiniflare = async (
   const namespace = await miniflare.getDurableObjectNamespace('testNamespace');
   const stub: any = namespace.get(namespace.idFromName('testNamespace'));
 
-  return [miniflare, stub];
+  return [miniflare, stub, HOST + `:${port}`];
 };

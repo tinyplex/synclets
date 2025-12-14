@@ -5,16 +5,17 @@ import {afterAll, beforeAll, expect, test} from 'vitest';
 import {pause} from '../unit/common.ts';
 import {createMiniflare} from './common.ts';
 
-const HOST = 'http://localhost';
+const PORT = 8781;
 
 let miniflare: Miniflare;
 let stub: DurableObjectStub;
+let host: string;
 
 const createClients = async (number: number) => {
   const received: [string, string][][] = Array.from({length: number}, () => []);
   const webSockets: any[] = [];
   for (let i = 0; i < number; i++) {
-    const {webSocket} = await stub.fetch(HOST, {
+    const {webSocket} = await stub.fetch(host, {
       headers: {upgrade: 'websocket'},
     });
     if (!webSocket) throw new Error('failed to obtain WebSocket from stub');
@@ -28,7 +29,10 @@ const createClients = async (number: number) => {
 };
 
 beforeAll(async () => {
-  [miniflare, stub] = await createMiniflare('TestPureBrokerDurableObject');
+  [miniflare, stub, host] = await createMiniflare(
+    'TestPureBrokerDurableObject',
+    PORT,
+  );
 });
 
 afterAll(async () => {
@@ -40,13 +44,13 @@ test('instantiated and accessed', async () => {
 });
 
 test('return 426 for non-WebSocket requests', async () => {
-  const response = await stub.fetch(HOST);
+  const response = await stub.fetch(host);
   expect(response.status).toBe(426);
   expect(await response.text()).toBe('Upgrade required');
 });
 
 test('accept WebSocket upgrade requests', async () => {
-  const response = await stub.fetch(HOST, {
+  const response = await stub.fetch(host, {
     headers: {upgrade: 'websocket'},
   });
   expect(response.status).toBe(101);
