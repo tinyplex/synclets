@@ -31,10 +31,7 @@ export abstract class SyncletDurableObject<
   > = MetaConnector<
     DataConnectorType extends DataConnector<infer Depth> ? Depth : never
   >,
->
-  extends DurableObject<Env>
-  implements DurableObject<Env>
-{
+> extends DurableObject<Env> {
   #synclet!: Synclet<Depth, DataConnectorType, MetaConnectorType>;
 
   constructor(ctx: DurableObjectState, env: Env) {
