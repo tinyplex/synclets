@@ -93,7 +93,5 @@ const createPgliteConnector = <
     ? PgliteMetaConnector<Depth>
     : PgliteDataConnector<Depth>;
 
-export const getTableSchema: typeof getTableSchemaDecl = (
-  pglite,
-  table,
-) => getPostgresTableSchema(table, createQuery(pglite));
+export const getTableSchema: typeof getTableSchemaDecl = (pglite, table) =>
+  getPostgresTableSchema(table, createQuery(pglite));

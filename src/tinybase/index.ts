@@ -2,12 +2,15 @@ import {RESERVED} from '@synclets';
 import {Address, AnyParentAddress, Atom, AtomAddress} from '@synclets/@types';
 import type {
   createTinyBaseDataConnector as createTinyBaseDataConnectorDecl,
+  createTinyBaseSynclet as createTinyBaseSyncletDecl,
   TinyBaseDataConnector,
+  TinyBaseSyncletOptions,
 } from '@synclets/@types/tinybase';
 import type {Cell, Id, Value} from 'tinybase';
 import {arrayConcat} from '../common/array.ts';
 import {size} from '../common/other.ts';
-import {createDataConnector} from '../core/index.ts';
+import {createDataConnector, createSynclet} from '../core/index.ts';
+import {createMemoryMetaConnector} from '../memory/connector.ts';
 
 const VALUE_STEM = RESERVED + 'v';
 
@@ -88,3 +91,20 @@ export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl
       extraFunctions,
     ) as TinyBaseDataConnector;
   };
+
+export const createTinyBaseSynclet: typeof createTinyBaseSyncletDecl = ({
+  store,
+  transport,
+  implementations,
+  id,
+  logger,
+}: TinyBaseSyncletOptions) =>
+  createSynclet(
+    {
+      dataConnector: createTinyBaseDataConnector({store}),
+      metaConnector: createMemoryMetaConnector({depth: 3}),
+      transport,
+    },
+    implementations,
+    {id, logger},
+  );

@@ -61,3 +61,54 @@
  * @since v0.0.0
  */
 /// createTinyBaseDataConnector
+
+/**
+ * The TinyBaseSyncletOptions type specifies configuration for creating a
+ * TinyBase Synclet.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// TinyBaseSyncletOptions
+{
+  /**
+   * The transport property specifies the Transport or Transports to use.
+   * @category Option
+   * @since v0.0.0
+   */
+  /// TinyBaseSyncletOptions.transport
+  /**
+   * The implementations property specifies custom Synclet implementations.
+   * @category Option
+   * @since v0.0.0
+   */
+  /// TinyBaseSyncletOptions.implementations
+}
+
+/**
+ * The TinyBaseSynclet type represents a Synclet with a TinyBase Store-backed
+ * data connector and an in-memory metadata connector.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// TinyBaseSynclet
+
+/**
+ * The createTinyBaseSynclet function creates a Synclet with a TinyBase Store
+ * for data storage and in-memory metadata storage.
+ *
+ * This is the recommended approach for creating a TinyBase-based Synclet,
+ * providing a simplified API that creates both the TinyBaseDataConnector and
+ * an in-memory MetaConnector internally. The TinyBase Store handles the data
+ * tree while timestamps are kept in memory.
+ *
+ * This combination is ideal when you want to use TinyBase's features (reactive
+ * queries, indexes, persistence options) for data while keeping metadata
+ * lightweight. For fully persistent metadata, consider creating connectors
+ * manually and using a persistent MetaConnector.
+ * @param options Configuration including the TinyBase Store, transport, and
+ * other Synclet options.
+ * @returns A Promise that resolves to the configured Synclet instance.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// createTinyBaseSynclet

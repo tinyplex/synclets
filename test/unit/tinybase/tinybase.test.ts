@@ -3,7 +3,10 @@ import {
   createMemoryMetaConnector,
   createMemoryTransport,
 } from 'synclets/memory';
-import {createTinyBaseDataConnector} from 'synclets/tinybase';
+import {
+  createTinyBaseDataConnector,
+  createTinyBaseSynclet,
+} from 'synclets/tinybase';
 import {createStore, getUniqueId, type Store} from 'tinybase';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {describeCommonConnectorTests, getTimeFunctions} from '../common.ts';
@@ -26,6 +29,15 @@ test('getStore, tables', async () => {
   const metaConnector = createMemoryMetaConnector({depth: 3});
   const synclet = await createSynclet({dataConnector, metaConnector});
   expect(dataConnector.getStore()).toEqual(store);
+  expect(synclet.getDataConnector()!.getStore()).toEqual(store);
+
+  await synclet.destroy();
+});
+
+test('getStore, synclet', async () => {
+  const store = createStore();
+  const synclet = await createTinyBaseSynclet({store});
+
   expect(synclet.getDataConnector()!.getStore()).toEqual(store);
 
   await synclet.destroy();
