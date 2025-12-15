@@ -13,7 +13,7 @@ import {
   DatabaseMetaConnectorOptions,
   Sql,
 } from '@synclets/@types/database';
-import {jsonString} from '@synclets/utils';
+import {jsonParse, jsonString} from '@synclets/utils';
 import {sql} from '../../database/index.ts';
 import {arrayMap, arrayNew, arraySlice} from '../array.ts';
 import {objFromEntries, objIsEqual, objNotEmpty} from '../object.ts';
@@ -89,14 +89,16 @@ export const createDatabaseConnector = <
   const readLeaf = async (
     address: AtomAddress<Depth> | TimestampAddress<Depth>,
   ) =>
-    (
-      await query<{leaf: string}>(
-        sql`
+    jsonParse(
+      (
+        await query<{leaf: string}>(
+          sql`
         SELECT $"${leafColumn} AS leaf FROM $"${table} 
         $&${{[addressColumn]: jsonString(address)}}
       `,
-      )
-    )[0]?.leaf;
+        )
+      )[0]?.leaf,
+    );
 
   const writeLeaf = async (
     address: AtomAddress<Depth> | TimestampAddress<Depth>,
@@ -109,7 +111,7 @@ export const createDatabaseConnector = <
           $"${addressColumn}, $"${leafColumn}, 
           $,${arrayMap(address, (_, a) => sql`$"${addressPartColumns[a]}`)}
         ) VALUES (
-          ${jsonString(address)}, ${leaf},
+          ${jsonString(address)}, ${jsonString(leaf)},
           $,${arrayMap(address, (addressPart) => sql`${addressPart}`)}
         ) 
         ON CONFLICT($"${addressColumn}) 
@@ -162,7 +164,7 @@ export const createDatabaseConnector = <
               )}
             `,
         ),
-        ({id, leaf}) => [id, leaf],
+        ({id, leaf}) => [id, jsonParse(leaf)],
       ),
     );
 
