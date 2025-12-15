@@ -127,7 +127,7 @@
     "sqlite3": "^5.1.7",
     "synclets": "file:./dist",
     "tinybase": "^7.3.0",
-    "tinydocs": "^0.1.59",
+    "tinydocs": "^0.1.60",
     "ts-unused-exports": "^11.0.1",
     "typescript": "5.9.3",
     "typescript-eslint": "^8.50.0",
