@@ -7,7 +7,15 @@ import {
   createSqlite3MetaConnector,
   createSqlite3Synclet,
 } from 'synclets/sqlite3';
-import {afterAll, afterEach, beforeAll, describe, expect, test} from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  test,
+  vi,
+} from 'vitest';
 import {
   createMockDataConnector,
   createMockMetaConnector,
@@ -90,41 +98,64 @@ describe('data schema checks', async () => {
     database.close();
   });
 
-  // test('create if table missing', async () => {
-  //   const logger = {info: vi.fn()};
-  //   const dataConnector = createSqlite3DataConnector({depth: 3, database});
-  //   const metaConnector = createMockMetaConnector({depth: 3});
-  //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect(
-  //     (await query(database, `SELECT * FROM data;`).fields).toEqual([
-  //       {name: 'address', dataTypeID: TEXT},
-  //       {name: 'atom', dataTypeID: TEXT},
-  //       {name: 'address1', dataTypeID: TEXT},
-  //       {name: 'address2', dataTypeID: TEXT},
-  //       {name: 'address3', dataTypeID: TEXT},
-  //     ]),
-  //   );
-  //   expect(logger.info).toHaveBeenCalledWith('[] Creating table "data"');
-  // });
+  test('create if table missing', async () => {
+    const logger = {info: vi.fn()};
+    const dataConnector = createSqlite3DataConnector({depth: 3, database});
+    const metaConnector = createMockMetaConnector({depth: 3});
+    const synclet = await createSynclet(
+      {dataConnector, metaConnector},
+      {},
+      {logger, id: ''},
+    );
+    const columns = await query<{name: string; type: string}>(
+      database,
+      `PRAGMA table_info(data);`,
+    );
+    expect(columns.map((col) => col.name)).toEqual([
+      'address',
+      'atom',
+      'address1',
+      'address2',
+      'address3',
+    ]);
+    expect(columns.every((col) => col.type === 'TEXT')).toBe(true);
+    expect(logger.info).toHaveBeenCalledWith('[] Creating table "data"');
+    await synclet.destroy();
+  });
 
-  // test('create if table missing, custom options', async () => {
-  //   const logger = {info: vi.fn()};
-  //   const dataConnector = createSqlite3DataConnector(3, database, {
-  //     table: 'd',
-  //     addressColumn: 'a',
-  //     atomColumn: 'x',
-  //   });
-  //   const metaConnector = createMockMetaConnector({depth:3});
-  //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM d;`)).fields).toEqual([
-  //     {name: 'a', dataTypeID: TEXT},
-  //     {name: 'x', dataTypeID: TEXT},
-  //     {name: 'a1', dataTypeID: TEXT},
-  //     {name: 'a2', dataTypeID: TEXT},
-  //     {name: 'a3', dataTypeID: TEXT},
-  //   ]);
-  //   expect(logger.info).toHaveBeenCalledWith('[] Creating table "d"');
-  // });
+  test('create if table missing, custom options', async () => {
+    const logger = {info: vi.fn()};
+    const dataConnector = createSqlite3DataConnector({
+      depth: 3,
+      database,
+      dataTable: 'd',
+      addressColumn: 'a',
+      atomColumn: 'x',
+    });
+    const metaConnector = createMockMetaConnector({depth: 3});
+    const synclet = await createSynclet(
+      {dataConnector, metaConnector},
+      {},
+      {logger, id: ''},
+    );
+
+    // Verify the table was created with custom column names
+    const columns = await query<{name: string; type: string}>(
+      database,
+      `PRAGMA table_info(d);`,
+    );
+    expect(columns.map((col) => col.name)).toEqual([
+      'a',
+      'x',
+      'a1',
+      'a2',
+      'a3',
+    ]);
+    expect(columns.every((col) => col.type === 'TEXT')).toBe(true);
+    expect(logger.info).toHaveBeenCalledWith('[] Creating table "d"');
+
+    await synclet.destroy();
+  });
 
   test('no error if table is correct', async () => {
     await query(
@@ -211,39 +242,61 @@ describe('meta schema checks', async () => {
     database.close();
   });
 
-  // test('create if table missing', async () => {
-  //   const logger = {info: vi.fn()};
-  //   const dataConnector = createMockDataConnector({depth:3});
-  //   const metaConnector = createSqlite3MetaConnector(3, database);
-  //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect(await query(database, `SELECT * FROM meta;`).fields).toEqual([
-  //     {name: 'address', dataTypeID: TEXT},
-  //     {name: 'timestamp', dataTypeID: TEXT},
-  //     {name: 'address1', dataTypeID: TEXT},
-  //     {name: 'address2', dataTypeID: TEXT},
-  //     {name: 'address3', dataTypeID: TEXT},
-  //   ]);
-  //   expect(logger.info).toHaveBeenCalledWith('[] Creating table "meta"');
-  // });
+  test('create if table missing', async () => {
+    const logger = {info: vi.fn()};
+    const dataConnector = createMockDataConnector({depth: 3});
+    const metaConnector = createSqlite3MetaConnector({depth: 3, database});
+    const synclet = await createSynclet(
+      {dataConnector, metaConnector},
+      {},
+      {logger, id: ''},
+    );
+    const columns = await query<{name: string; type: string}>(
+      database,
+      `PRAGMA table_info(meta);`,
+    );
+    expect(columns.map((col) => col.name)).toEqual([
+      'address',
+      'timestamp',
+      'address1',
+      'address2',
+      'address3',
+    ]);
+    expect(columns.every((col) => col.type === 'TEXT')).toBe(true);
+    expect(logger.info).toHaveBeenCalledWith('[] Creating table "meta"');
+    await synclet.destroy();
+  });
 
-  // test('create if table missing, custom options', async () => {
-  //   const logger = {info: vi.fn()};
-  //   const dataConnector = createMockDataConnector({depth:3});
-  //   const metaConnector = createSqlite3MetaConnector(3, database, {
-  //     table: 'm',
-  //     addressColumn: 'a',
-  //     timestampColumn: 't',
-  //   });
-  //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM m;`)).fields).toEqual([
-  //     {name: 'a', dataTypeID: TEXT},
-  //     {name: 't', dataTypeID: TEXT},
-  //     {name: 'a1', dataTypeID: TEXT},
-  //     {name: 'a2', dataTypeID: TEXT},
-  //     {name: 'a3', dataTypeID: TEXT},
-  //   ]);
-  //   expect(logger.info).toHaveBeenCalledWith('[] Creating table "m"');
-  // });
+  test('create if table missing, custom options', async () => {
+    const logger = {info: vi.fn()};
+    const dataConnector = createMockDataConnector({depth: 3});
+    const metaConnector = createSqlite3MetaConnector({
+      depth: 3,
+      database,
+      metaTable: 'm',
+      addressColumn: 'a',
+      timestampColumn: 't',
+    });
+    const synclet = await createSynclet(
+      {dataConnector, metaConnector},
+      {},
+      {logger, id: ''},
+    );
+    const columns = await query<{name: string; type: string}>(
+      database,
+      `PRAGMA table_info(m);`,
+    );
+    expect(columns.map((col) => col.name)).toEqual([
+      'a',
+      't',
+      'a1',
+      'a2',
+      'a3',
+    ]);
+    expect(columns.every((col) => col.type === 'TEXT')).toBe(true);
+    expect(logger.info).toHaveBeenCalledWith('[] Creating table "m"');
+    await synclet.destroy();
+  });
 
   test('no error if table is correct', async () => {
     await query(
