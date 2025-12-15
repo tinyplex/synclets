@@ -6,6 +6,7 @@ import {
   createPgliteDataConnector,
   createPgliteMetaConnector,
   createPgliteSynclet,
+  getTableSchema,
 } from 'synclets/pglite';
 import {getUniqueId} from 'synclets/utils';
 import {
@@ -85,6 +86,21 @@ test('getPglite, synclet', async () => {
   await synclet.destroy();
 });
 
+test('getTableSchema', async () => {
+  const pglite = await PGlite.create();
+  await pglite.sql`CREATE TABLE test_table (id INTEGER, name TEXT, value REAL);`;
+
+  const schema = await getTableSchema(pglite, 'test_table');
+
+  expect(schema).toEqual({
+    id: 'integer',
+    name: 'text',
+    value: 'real',
+  });
+
+  await pglite.close();
+});
+
 describe('data schema checks', async () => {
   let pglite: PGlite;
 
@@ -107,13 +123,14 @@ describe('data schema checks', async () => {
       {},
       {logger, id: ''},
     );
-    expect((await pglite.sql`SELECT * FROM data;`).fields).toEqual([
-      {name: 'address', dataTypeID: TEXT},
-      {name: 'atom', dataTypeID: TEXT},
-      {name: 'address1', dataTypeID: TEXT},
-      {name: 'address2', dataTypeID: TEXT},
-      {name: 'address3', dataTypeID: TEXT},
-    ]);
+    const schema = await getTableSchema(pglite, 'data');
+    expect(schema).toEqual({
+      address: 'text',
+      atom: 'text',
+      address1: 'text',
+      address2: 'text',
+      address3: 'text',
+    });
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "data"');
     await synclet.destroy();
   });
@@ -133,13 +150,14 @@ describe('data schema checks', async () => {
       {},
       {logger, id: ''},
     );
-    expect((await pglite.sql`SELECT * FROM d;`).fields).toEqual([
-      {name: 'a', dataTypeID: TEXT},
-      {name: 'x', dataTypeID: TEXT},
-      {name: 'a1', dataTypeID: TEXT},
-      {name: 'a2', dataTypeID: TEXT},
-      {name: 'a3', dataTypeID: TEXT},
-    ]);
+    const schema = await getTableSchema(pglite, 'd');
+    expect(schema).toEqual({
+      a: 'text',
+      x: 'text',
+      a1: 'text',
+      a2: 'text',
+      a3: 'text',
+    });
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "d"');
     await synclet.destroy();
   });
@@ -220,13 +238,14 @@ describe('meta schema checks', async () => {
       {},
       {logger, id: ''},
     );
-    expect((await pglite.sql`SELECT * FROM meta;`).fields).toEqual([
-      {name: 'address', dataTypeID: TEXT},
-      {name: 'timestamp', dataTypeID: TEXT},
-      {name: 'address1', dataTypeID: TEXT},
-      {name: 'address2', dataTypeID: TEXT},
-      {name: 'address3', dataTypeID: TEXT},
-    ]);
+    const schema = await getTableSchema(pglite, 'meta');
+    expect(schema).toEqual({
+      address: 'text',
+      timestamp: 'text',
+      address1: 'text',
+      address2: 'text',
+      address3: 'text',
+    });
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "meta"');
     await synclet.destroy();
   });
@@ -246,13 +265,14 @@ describe('meta schema checks', async () => {
       {},
       {logger, id: ''},
     );
-    expect((await pglite.sql`SELECT * FROM m;`).fields).toEqual([
-      {name: 'a', dataTypeID: TEXT},
-      {name: 't', dataTypeID: TEXT},
-      {name: 'a1', dataTypeID: TEXT},
-      {name: 'a2', dataTypeID: TEXT},
-      {name: 'a3', dataTypeID: TEXT},
-    ]);
+    const schema = await getTableSchema(pglite, 'm');
+    expect(schema).toEqual({
+      a: 'text',
+      t: 'text',
+      a1: 'text',
+      a2: 'text',
+      a3: 'text',
+    });
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "m"');
     await synclet.destroy();
   });

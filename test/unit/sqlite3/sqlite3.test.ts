@@ -126,19 +126,17 @@ describe('data schema checks', async () => {
       {},
       {logger, id: ''},
     );
-    const columns = await query<{name: string; type: string}>(
-      database,
-      `PRAGMA table_info(data);`,
-    );
-    expect(columns.map((col) => col.name)).toEqual([
-      'address',
-      'atom',
-      'address1',
-      'address2',
-      'address3',
-    ]);
-    expect(columns.every((col) => col.type === 'TEXT')).toBe(true);
+
+    const schema = await getTableSchema(database, 'data');
+    expect(schema).toEqual({
+      address: 'text',
+      address1: 'text',
+      address2: 'text',
+      address3: 'text',
+      atom: 'text',
+    });
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "data"');
+
     await synclet.destroy();
   });
 
@@ -158,19 +156,14 @@ describe('data schema checks', async () => {
       {logger, id: ''},
     );
 
-    // Verify the table was created with custom column names
-    const columns = await query<{name: string; type: string}>(
-      database,
-      `PRAGMA table_info(d);`,
-    );
-    expect(columns.map((col) => col.name)).toEqual([
-      'a',
-      'x',
-      'a1',
-      'a2',
-      'a3',
-    ]);
-    expect(columns.every((col) => col.type === 'TEXT')).toBe(true);
+    const schema = await getTableSchema(database, 'd');
+    expect(schema).toEqual({
+      a: 'text',
+      a1: 'text',
+      a2: 'text',
+      a3: 'text',
+      x: 'text',
+    });
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "d"');
 
     await synclet.destroy();
@@ -270,19 +263,17 @@ describe('meta schema checks', async () => {
       {},
       {logger, id: ''},
     );
-    const columns = await query<{name: string; type: string}>(
-      database,
-      `PRAGMA table_info(meta);`,
-    );
-    expect(columns.map((col) => col.name)).toEqual([
-      'address',
-      'timestamp',
-      'address1',
-      'address2',
-      'address3',
-    ]);
-    expect(columns.every((col) => col.type === 'TEXT')).toBe(true);
+
+    const schema = await getTableSchema(database, 'meta');
+    expect(schema).toEqual({
+      address: 'text',
+      address1: 'text',
+      address2: 'text',
+      address3: 'text',
+      timestamp: 'text',
+    });
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "meta"');
+
     await synclet.destroy();
   });
 
@@ -301,19 +292,17 @@ describe('meta schema checks', async () => {
       {},
       {logger, id: ''},
     );
-    const columns = await query<{name: string; type: string}>(
-      database,
-      `PRAGMA table_info(m);`,
-    );
-    expect(columns.map((col) => col.name)).toEqual([
-      'a',
-      't',
-      'a1',
-      'a2',
-      'a3',
-    ]);
-    expect(columns.every((col) => col.type === 'TEXT')).toBe(true);
+
+    const schema = await getTableSchema(database, 'm');
+    expect(schema).toEqual({
+      a: 'text',
+      a1: 'text',
+      a2: 'text',
+      a3: 'text',
+      t: 'text',
+    });
     expect(logger.info).toHaveBeenCalledWith('[] Creating table "m"');
+
     await synclet.destroy();
   });
 
