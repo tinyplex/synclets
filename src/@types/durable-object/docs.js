@@ -366,3 +366,20 @@
  * @since v0.0.0
  */
 /// getSyncletDurableObjectFetch
+
+/**
+ * The getTableSchema function retrieves the schema of a table
+ * from a Cloudflare Durable Object SQL Storage, returning an object mapping
+ * column names to their data types.
+ *
+ * This utility function provides a standardized way to inspect table
+ * structure across different database connectors, with consistent output
+ * format regardless of the underlying database engine.
+ * @param sqlStorage The Durable Object SQL Storage instance.
+ * @param table The name of the table to inspect.
+ * @returns A Promise that resolves to an object mapping column names to
+ * types.
+ * @category Utility
+ * @since v0.0.7
+ */
+/// getTableSchema

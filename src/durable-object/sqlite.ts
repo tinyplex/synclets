@@ -6,9 +6,20 @@ import type {
   DurableObjectSqliteDataConnectorOptions,
   DurableObjectSqliteMetaConnector,
   DurableObjectSqliteMetaConnectorOptions,
+  getTableSchema as getTableSchemaDecl,
 } from '@synclets/@types/durable-object';
-import {createSqliteDatabaseConnector} from '../common/database/sqlite.ts';
+import {
+  createSqliteDatabaseConnector,
+  getSqliteTableSchema,
+} from '../common/database/sqlite.ts';
 import {getQuery} from '../database/index.ts';
+
+const createQuery =
+  (sqlStorage: SqlStorage) =>
+  async <Row>(sql: Sql) => {
+    const [queryString, args] = getQuery(sql);
+    return sqlStorage.exec(queryString, ...args).toArray() as Row[];
+  };
 
 export const createDurableObjectSqliteDataConnector: typeof createDurableObjectSqliteDataConnectorDecl =
   <Depth extends number>(
@@ -37,11 +48,11 @@ const createDurableObjectSqliteConnector = <
   createSqliteDatabaseConnector<CreateMeta, Depth, any>(
     createMeta,
     options,
-    async <Row>(sql: Sql) => {
-      const [queryString, args] = getQuery(sql);
-      return sqlStorage.exec(queryString, ...args).toArray() as Row[];
-    },
+    createQuery(sqlStorage),
     {getStorage: () => sqlStorage},
   ) as CreateMeta extends true
     ? DurableObjectSqliteMetaConnector<Depth>
     : DurableObjectSqliteDataConnector<Depth>;
+
+export const getTableSchema: typeof getTableSchemaDecl = (sqlStorage, table) =>
+  getSqliteTableSchema(table, createQuery(sqlStorage));

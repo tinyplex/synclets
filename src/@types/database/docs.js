@@ -33,6 +33,19 @@
 /// getQuery
 
 /**
+ * The TableSchema type represents the schema of a database table as an object
+ * mapping column names to their data types.
+ *
+ * This type is returned by table schema inspection functions across different
+ * database connectors (SQLite3, PGlite, Durable Object), providing a
+ * consistent interface for examining table structure. All type names are
+ * normalized to lowercase for consistency across database engines.
+ * @category Type
+ * @since v0.0.7
+ */
+/// TableSchema
+
+/**
  * The sql template tag constructs a Sql object from a template string.
  *
  * This template literal tag function provides a convenient syntax for building

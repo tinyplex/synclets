@@ -4,6 +4,7 @@ import type {Database} from 'sqlite3';
 import type {
   DatabaseDataConnectorOptions,
   DatabaseMetaConnectorOptions,
+  TableSchema,
 } from '../database/index.d.ts';
 import type {
   DataConnector,
@@ -69,3 +70,9 @@ export function createSqlite3Synclet<Depth extends number>(
 ): Promise<
   Synclet<Depth, Sqlite3DataConnector<Depth>, Sqlite3MetaConnector<Depth>>
 >;
+
+/// getTableSchema
+export function getTableSchema(
+  database: Database,
+  table: string,
+): Promise<TableSchema>;

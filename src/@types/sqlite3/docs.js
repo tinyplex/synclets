@@ -143,3 +143,20 @@
  * @since v0.0.0
  */
 /// createSqlite3Synclet
+
+/**
+ * The getTableSchema function retrieves the schema of a table from a
+ * SQLite3 database, returning an object mapping column names to their data
+ * types.
+ *
+ * This utility function provides a standardized way to inspect table
+ * structure across different database connectors, with consistent output
+ * format regardless of the underlying database engine.
+ * @param database The SQLite3 database instance.
+ * @param table The name of the table to inspect.
+ * @returns A Promise that resolves to an object mapping column names to
+ * types.
+ * @category Utility
+ * @since v0.0.7
+ */
+/// getTableSchema

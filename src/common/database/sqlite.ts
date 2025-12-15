@@ -2,10 +2,27 @@ import {
   DatabaseDataConnectorOptions,
   DatabaseMetaConnectorOptions,
   Sql,
+  TableSchema,
 } from '@synclets/@types/database';
 import {sql} from '../../database/index.ts';
 import {objFromEntries} from '../object.ts';
 import {createDatabaseConnector} from './index.ts';
+
+export const getSqliteTableSchema = async (
+  table: string,
+  query: <Row>(sql: Sql) => Promise<Row[]>,
+): Promise<TableSchema> =>
+  objFromEntries(
+    (
+      await query<{name: string; type: string}>(
+        sql`
+          SELECT name, type 
+          FROM pragma_table_info(${table}) 
+          ORDER BY name;
+        `,
+      )
+    ).map(({name, type}) => [name, type.toLowerCase()]),
+  );
 
 export const createSqliteDatabaseConnector = <
   CreateMeta extends boolean,
@@ -19,18 +36,7 @@ export const createSqliteDatabaseConnector = <
   query: <Row>(sql: Sql) => Promise<Row[]>,
   extraFunctions: {[name: string]: any},
 ): Connector => {
-  const getSchema = async (table: string) =>
-    objFromEntries(
-      (
-        await query<{name: string; type: string}>(
-          sql`
-            SELECT name, type 
-            FROM pragma_table_info(${table}) 
-            ORDER BY name;
-          `,
-        )
-      ).map(({name, type}) => [name, type.toLowerCase()]),
-    );
+  const getSchema = (table: string) => getSqliteTableSchema(table, query);
 
   return createDatabaseConnector(
     createMeta,

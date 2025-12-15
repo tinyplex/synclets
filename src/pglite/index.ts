@@ -1,17 +1,27 @@
+import {PGlite} from '@electric-sql/pglite';
 import {createSynclet} from '@synclets';
 import {Sql} from '@synclets/@types/database';
 import type {
   createPgliteDataConnector as createPgliteDataConnectorDecl,
   createPgliteMetaConnector as createPgliteMetaConnectorDecl,
   createPgliteSynclet as createPgliteSyncletDecl,
+  getTableSchema as getTableSchemaDecl,
   PgliteDataConnector,
   PgliteDataConnectorOptions,
   PgliteMetaConnector,
   PgliteMetaConnectorOptions,
   PgliteSyncletOptions,
 } from '@synclets/@types/pglite';
-import {createPostgresDatabaseConnector} from '../common/database/postgres.ts';
+import {
+  createPostgresDatabaseConnector,
+  getPostgresTableSchema,
+} from '../common/database/postgres.ts';
 import {getQuery} from '../database/index.ts';
+
+const createQuery =
+  (pglite: PGlite) =>
+  async <Row>(sql: Sql): Promise<Row[]> =>
+    (await pglite.query<Row>(...getQuery(sql))).rows;
 
 export const createPgliteDataConnector: typeof createPgliteDataConnectorDecl = <
   Depth extends number,
@@ -77,9 +87,13 @@ const createPgliteConnector = <
   createPostgresDatabaseConnector<CreateMeta, Depth, any>(
     createMeta,
     options,
-    async <Row>(sql: Sql): Promise<Row[]> =>
-      (await pglite.query<Row>(...getQuery(sql))).rows,
+    createQuery(pglite),
     {getPglite: () => pglite},
   ) as CreateMeta extends true
     ? PgliteMetaConnector<Depth>
     : PgliteDataConnector<Depth>;
+
+export const getTableSchema: typeof getTableSchemaDecl = (
+  pglite,
+  table,
+) => getPostgresTableSchema(table, createQuery(pglite));

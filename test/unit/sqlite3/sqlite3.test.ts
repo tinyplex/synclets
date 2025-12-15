@@ -6,6 +6,7 @@ import {
   createSqlite3DataConnector,
   createSqlite3MetaConnector,
   createSqlite3Synclet,
+  getTableSchema,
 } from 'synclets/sqlite3';
 import {
   afterAll,
@@ -83,6 +84,24 @@ test('getDatabase, synclet', async () => {
   database.close();
 
   await synclet.destroy();
+});
+
+test('getTableSchema', async () => {
+  const database = new Database(':memory:');
+  await query(
+    database,
+    `CREATE TABLE test_table (id INTEGER, name TEXT, value REAL);`,
+  );
+
+  const schema = await getTableSchema(database, 'test_table');
+
+  expect(schema).toEqual({
+    id: 'integer',
+    name: 'text',
+    value: 'real',
+  });
+
+  database.close();
 });
 
 describe('data schema checks', async () => {

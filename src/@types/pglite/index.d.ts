@@ -4,6 +4,7 @@ import type {PGlite} from '@electric-sql/pglite';
 import type {
   DatabaseDataConnectorOptions,
   DatabaseMetaConnectorOptions,
+  TableSchema,
 } from '../database/index.d.ts';
 import type {
   DataConnector,
@@ -69,3 +70,9 @@ export function createPgliteSynclet<Depth extends number>(
 ): Promise<
   Synclet<Depth, PgliteDataConnector<Depth>, PgliteMetaConnector<Depth>>
 >;
+
+/// getTableSchema
+export function getTableSchema(
+  pglite: PGlite,
+  table: string,
+): Promise<TableSchema>;

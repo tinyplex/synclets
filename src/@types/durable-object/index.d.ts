@@ -4,6 +4,7 @@ import {DurableObject} from 'cloudflare:workers';
 import type {
   DatabaseDataConnectorOptions,
   DatabaseMetaConnectorOptions,
+  TableSchema,
 } from '../database/index.d.ts';
 import type {
   Address,
@@ -149,3 +150,9 @@ export function getSyncletDurableObjectFetch<Namespace extends string>(
     [namespace in Namespace]: DurableObjectNamespace<SyncletDurableObject>;
   },
 ) => Response;
+
+/// getTableSchema
+export function getTableSchema(
+  sqlStorage: SqlStorage,
+  table: string,
+): Promise<TableSchema>;

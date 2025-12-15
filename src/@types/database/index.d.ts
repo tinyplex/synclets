@@ -14,6 +14,9 @@ export function sql(
 /// getQuery
 export function getQuery(sql: Sql): [string: string, args: any[]];
 
+/// TableSchema
+export type TableSchema = {[column: string]: string};
+
 /// DatabaseDataConnectorOptions
 export type DatabaseDataConnectorOptions<Depth extends number> = {
   readonly dataTable?: string;
