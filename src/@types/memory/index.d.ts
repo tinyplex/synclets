@@ -38,7 +38,13 @@ export function createMemorySynclet<Depth extends number>(
   options: MemorySyncletOptions<Depth>,
 ): Promise<Synclet<Depth, DataConnector<Depth>, MetaConnector<Depth>>>;
 
+/// MemoryTransportOptions
+export type MemoryTransportOptions = {
+  /// MemoryTransportOptions.poolId
+  readonly poolId?: string;
+} & TransportOptions;
+
 /// createMemoryTransport
 export function createMemoryTransport(
-  options?: TransportOptions & {readonly poolId?: string},
+  options?: MemoryTransportOptions,
 ): Transport;

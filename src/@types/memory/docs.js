@@ -87,6 +87,27 @@
 /// createMemorySynclet
 
 /**
+ * The MemoryTransportOptions type specifies configuration for creating an
+ * in-memory Transport.
+ * @category Transport
+ * @since v0.0.0
+ */
+/// MemoryTransportOptions
+{
+  /**
+   * The poolId property optionally specifies a pool identifier for isolating
+   * groups of Synclets.
+   *
+   * When specified, only Synclets using the same poolId can communicate with
+   * each other. This is useful for running independent tests in parallel or
+   * creating isolated synchronization groups within the same process.
+   * @category Option
+   * @since v0.0.0
+   */
+  /// MemoryTransportOptions.poolId
+}
+
+/**
  * The createMemoryTransport function creates an in-process Transport that
  * delivers packets synchronously within the same JavaScript runtime.
  *
