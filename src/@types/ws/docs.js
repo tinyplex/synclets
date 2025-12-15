@@ -60,6 +60,21 @@
  * @since v0.0.0
  */
 /// WsBrokerTransportOptions
+{
+  /**
+   * The path property specifies the WebSocket path to listen on.
+   * @category Option
+   * @since v0.0.0
+   */
+  /// WsBrokerTransportOptions.path
+  /**
+   * The brokerPaths property specifies a regex pattern for broker path
+   * matching.
+   * @category Option
+   * @since v0.0.0
+   */
+  /// WsBrokerTransportOptions.brokerPaths
+}
 
 /**
  * The WsBrokerTransport interface describes a Transport that creates a

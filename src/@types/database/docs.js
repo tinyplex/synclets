@@ -74,6 +74,26 @@
  * @since v0.0.0
  */
 /// DatabaseDataConnectorOptions
+{
+  /**
+   * The dataTable property specifies the table name for data storage.
+   * @category Property
+   * @since v0.0.0
+   */
+  /// DatabaseDataConnectorOptions.dataTable
+  /**
+   * The addressColumn property specifies the column name for address storage.
+   * @category Property
+   * @since v0.0.0
+   */
+  /// DatabaseDataConnectorOptions.addressColumn
+  /**
+   * The atomColumn property specifies the column name for atom value storage.
+   * @category Property
+   * @since v0.0.0
+   */
+  /// DatabaseDataConnectorOptions.atomColumn
+}
 
 /**
  * The DatabaseMetaConnectorConnectorOptions type configures the table and
@@ -90,3 +110,24 @@
  * @since v0.0.0
  */
 /// DatabaseMetaConnectorOptions
+{
+  /**
+   * The metaTable property specifies the table name for metadata storage.
+   * @category Property
+   * @since v0.0.0
+   */
+  /// DatabaseMetaConnectorOptions.metaTable
+  /**
+   * The addressColumn property specifies the column name for address storage.
+   * @category Property
+   * @since v0.0.0
+   */
+  /// DatabaseMetaConnectorOptions.addressColumn
+  /**
+   * The timestampColumn property specifies the column name for timestamp
+   * storage.
+   * @category Property
+   * @since v0.0.0
+   */
+  /// DatabaseMetaConnectorOptions.timestampColumn
+}

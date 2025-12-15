@@ -123,36 +123,6 @@
    */
   /// PgliteSyncletOptions.pglite
   /**
-   * The dataTable property specifies the table name for data storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteSyncletOptions.dataTable
-  /**
-   * The metaTable property specifies the table name for metadata storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteSyncletOptions.metaTable
-  /**
-   * The addressColumn property specifies the column name for addresses.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteSyncletOptions.addressColumn
-  /**
-   * The atomColumn property specifies the column name for atom values.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteSyncletOptions.atomColumn
-  /**
-   * The timestampColumn property specifies the column name for timestamps.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteSyncletOptions.timestampColumn
-  /**
    * The transport property specifies the Transport or Transports to use.
    * @category Option
    * @since v0.0.0
