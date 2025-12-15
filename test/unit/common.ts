@@ -10,13 +10,19 @@ import {
   type SyncletOptions,
   type Transport,
 } from 'synclets';
+import {
+  type DatabaseDataConnectorOptions,
+  type DatabaseMetaConnectorOptions,
+} from 'synclets/database';
 import {getUniqueId} from 'synclets/utils';
 import {
   afterAll,
+  afterEach,
   beforeAll,
   describe,
   expect,
   test,
+  vi,
   type TestContext,
 } from 'vitest';
 
@@ -696,3 +702,394 @@ export const describeCommonConnectorTests = <
       },
     );
   });
+
+export const describeSchemaTests = <DB, Depth extends number>(
+  dbName: string,
+  createDb: () => Promise<DB> | DB,
+  closeDb: (db: DB) => Promise<void> | void,
+  query: (db: DB, sql: string) => Promise<any>,
+  getTableSchema: (
+    db: DB,
+    table: string,
+  ) => Promise<{[column: string]: string}>,
+  createDataConnector: (
+    db: DB,
+    options: DatabaseDataConnectorOptions<Depth>,
+  ) => DataConnector<Depth>,
+  createMetaConnector: (
+    db: DB,
+    options: DatabaseMetaConnectorOptions<Depth>,
+  ) => MetaConnector<Depth>,
+) => {
+  describe('data schema checks', async () => {
+    let db: DB;
+
+    beforeAll(async () => {
+      db = await createDb();
+    });
+
+    afterEach(async () => await query(db, 'DROP TABLE IF EXISTS data;'));
+
+    afterAll(async () => {
+      await closeDb(db);
+    });
+
+    test('create if table missing', async () => {
+      const logger = {info: vi.fn()};
+      const dataConnector = createDataConnector(db, {
+        depth: 3 as Depth,
+      });
+      const metaConnector = createMockMetaConnector({depth: 3 as Depth});
+      const synclet = await createSynclet(
+        {dataConnector, metaConnector},
+        {},
+        {logger, id: ''},
+      );
+
+      const schema = await getTableSchema(db, 'data');
+      expect(schema).toEqual({
+        address: 'text',
+        atom: 'text',
+        address1: 'text',
+        address2: 'text',
+        address3: 'text',
+      });
+      expect(logger.info).toHaveBeenCalledWith('[] Creating table "data"');
+
+      await synclet.destroy();
+    });
+
+    test('create if table missing, custom options', async () => {
+      const logger = {info: vi.fn()};
+      const dataConnector = createDataConnector(db, {
+        depth: 3 as Depth,
+        dataTable: 'd',
+        addressColumn: 'a',
+        atomColumn: 'x',
+      });
+      const metaConnector = createMockMetaConnector({depth: 3 as Depth});
+      const synclet = await createSynclet(
+        {dataConnector, metaConnector},
+        {},
+        {logger, id: ''},
+      );
+
+      const schema = await getTableSchema(db, 'd');
+      expect(schema).toEqual({
+        a: 'text',
+        x: 'text',
+        a1: 'text',
+        a2: 'text',
+        a3: 'text',
+      });
+      expect(logger.info).toHaveBeenCalledWith('[] Creating table "d"');
+
+      await synclet.destroy();
+    });
+
+    test('no error if table is correct', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE data (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          address3 TEXT, 
+          atom TEXT
+        );
+        `,
+      );
+      const dataConnector = createDataConnector(db, {
+        depth: 3 as Depth,
+      });
+      const metaConnector = createMockMetaConnector({depth: 3 as Depth});
+      const synclet = await createSynclet({dataConnector, metaConnector});
+      await synclet.destroy();
+    });
+
+    test('error if table has wrong number of columns', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE data (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          atom TEXT
+        );
+        `,
+      );
+      const dataConnector = createDataConnector(db, {
+        depth: 3 as Depth,
+      });
+      const metaConnector = createMockMetaConnector({depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "data" needs correct schema');
+    });
+
+    test('error if table has wrong type of columns', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE data (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          address3 INTEGER, 
+          atom TEXT
+        );
+        `,
+      );
+      const dataConnector = createDataConnector(db, {depth: 3 as Depth});
+      const metaConnector = createMockMetaConnector({depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "data" needs correct schema');
+    });
+
+    test('error if table needs address', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE data (
+          whoops TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          address3 TEXT, 
+          atom TEXT
+        );
+        `,
+      );
+      const dataConnector = createDataConnector(db, {depth: 3 as Depth});
+      const metaConnector = createMockMetaConnector({depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "data" needs correct schema');
+    });
+
+    test('error if table needs atom', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE data (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          address3 TEXT, 
+          whoops TEXT
+        );
+        `,
+      );
+      const dataConnector = createDataConnector(db, {depth: 3 as Depth});
+      const metaConnector = createMockMetaConnector({depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "data" needs correct schema');
+    });
+
+    test('error if table needs addressN', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE data (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          whoops TEXT, 
+          atom TEXT
+        );
+        `,
+      );
+      const dataConnector = createDataConnector(db, {depth: 3 as Depth});
+      const metaConnector = createMockMetaConnector({depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "data" needs correct schema');
+    });
+  });
+
+  describe('meta schema checks', async () => {
+    let db: DB;
+
+    beforeAll(async () => {
+      db = await createDb();
+    });
+
+    afterEach(async () => await query(db, 'DROP TABLE IF EXISTS meta;'));
+
+    afterAll(async () => {
+      await closeDb(db);
+    });
+
+    test('create if table missing', async () => {
+      const logger = {info: vi.fn()};
+      const dataConnector = createMockDataConnector({depth: 3 as Depth});
+      const metaConnector = createMetaConnector(db, {depth: 3 as Depth});
+      const synclet = await createSynclet(
+        {dataConnector, metaConnector},
+        {},
+        {logger, id: ''},
+      );
+
+      const schema = await getTableSchema(db, 'meta');
+      expect(schema).toEqual({
+        address: 'text',
+        timestamp: 'text',
+        address1: 'text',
+        address2: 'text',
+        address3: 'text',
+      });
+      expect(logger.info).toHaveBeenCalledWith('[] Creating table "meta"');
+
+      await synclet.destroy();
+    });
+
+    test('create if table missing, custom options', async () => {
+      const logger = {info: vi.fn()};
+      const dataConnector = createMockDataConnector({depth: 3 as Depth});
+      const metaConnector = createMetaConnector(db, {
+        depth: 3 as Depth,
+        metaTable: 'm',
+        addressColumn: 'a',
+        timestampColumn: 't',
+      });
+      const synclet = await createSynclet(
+        {dataConnector, metaConnector},
+        {},
+        {logger, id: ''},
+      );
+
+      const schema = await getTableSchema(db, 'm');
+      expect(schema).toEqual({
+        a: 'text',
+        t: 'text',
+        a1: 'text',
+        a2: 'text',
+        a3: 'text',
+      });
+      expect(logger.info).toHaveBeenCalledWith('[] Creating table "m"');
+
+      await synclet.destroy();
+    });
+
+    test('no error if table is correct', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE meta (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          address3 TEXT, 
+          timestamp TEXT
+        );
+        `,
+      );
+      const dataConnector = createMockDataConnector({depth: 3 as Depth});
+      const metaConnector = createMetaConnector(db, {depth: 3 as Depth});
+      const synclet = await createSynclet({dataConnector, metaConnector});
+      await synclet.destroy();
+    });
+
+    test('error if table has wrong number of columns', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE meta (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          timestamp TEXT
+        );
+        `,
+      );
+      const dataConnector = createMockDataConnector({depth: 3 as Depth});
+      const metaConnector = createMetaConnector(db, {depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "meta" needs correct schema');
+    });
+
+    test('error if table has wrong type of columns', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE meta (
+          address TEXT, 
+          address1 TEXT, 
+          address2 INTEGER, 
+          address3 TEXT, 
+          timestamp TEXT
+        );
+        `,
+      );
+      const dataConnector = createMockDataConnector({depth: 3 as Depth});
+      const metaConnector = createMetaConnector(db, {depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "meta" needs correct schema');
+    });
+
+    test('error if table needs address', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE meta (
+          whoops TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          address3 TEXT, 
+          timestamp TEXT
+        );
+        `,
+      );
+      const dataConnector = createMockDataConnector({depth: 3 as Depth});
+      const metaConnector = createMetaConnector(db, {depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "meta" needs correct schema');
+    });
+
+    test('error if table needs timestamp', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE meta (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          address3 TEXT, 
+          whoops TEXT
+        );
+        `,
+      );
+      const dataConnector = createMockDataConnector({depth: 3 as Depth});
+      const metaConnector = createMetaConnector(db, {depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "meta" needs correct schema');
+    });
+
+    test('error if table needs addressN', async () => {
+      await query(
+        db,
+        `
+        CREATE TABLE meta (
+          address TEXT, 
+          address1 TEXT, 
+          address2 TEXT, 
+          whoops TEXT, 
+          timestamp TEXT
+        );
+        `,
+      );
+      const dataConnector = createMockDataConnector({depth: 3 as Depth});
+      const metaConnector = createMetaConnector(db, {depth: 3 as Depth});
+      await expect(() =>
+        createSynclet({dataConnector, metaConnector}),
+      ).rejects.toThrow('Table "meta" needs correct schema');
+    });
+  });
+};
