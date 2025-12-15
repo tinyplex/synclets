@@ -20,6 +20,10 @@ afterAll(async () => {
 
 test('setAtom', async () => {
   expect(await api('getData')).toEqual({});
-  await api('setAtom', ['a'], '1');
-  expect(await api('getData')).toEqual({a: '1'});
+  await api('setAtom', ['a'], 'a');
+  expect(await api('getData')).toEqual({a: 'a'});
+  await api('setAtom', ['b'], true);
+  expect(await api('getData')).toEqual({a: 'a', b: true});
+  await api('setAtom', ['c'], 1);
+  expect(await api('getData')).toEqual({a: 'a', b: true, c: 1});
 });

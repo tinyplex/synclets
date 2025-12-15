@@ -28,7 +28,7 @@ const createDurableObjectSqliteConnector = <
 >(
   createMeta: CreateMeta,
   {
-    storage,
+    sqlStorage,
     ...options
   }: CreateMeta extends true
     ? DurableObjectSqliteMetaConnectorOptions<Depth>
@@ -39,9 +39,9 @@ const createDurableObjectSqliteConnector = <
     options,
     async <Row>(sql: Sql) => {
       const [queryString, args] = getQuery(sql);
-      return storage.sql.exec(queryString, ...args).toArray() as Row[];
+      return sqlStorage.exec(queryString, ...args).toArray() as Row[];
     },
-    {getStorage: () => storage},
+    {getStorage: () => sqlStorage},
   ) as CreateMeta extends true
     ? DurableObjectSqliteMetaConnector<Depth>
     : DurableObjectSqliteDataConnector<Depth>;

@@ -37,11 +37,11 @@ export class TestConnectorsOnlyDurableObject extends TestSyncletDurableObject {
     return {
       dataConnector: createDurableObjectSqliteDataConnector({
         depth: 1,
-        storage: this.ctx.storage,
+        sqlStorage: this.ctx.storage.sql,
       }),
       metaConnector: createDurableObjectSqliteMetaConnector({
         depth: 1,
-        storage: this.ctx.storage,
+        sqlStorage: this.ctx.storage.sql,
       }),
     };
   }

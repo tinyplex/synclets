@@ -22,15 +22,15 @@ import type {
 
 /// DurableObjectSqliteDataConnectorOptions
 export type DurableObjectSqliteDataConnectorOptions<Depth extends number> = {
-  /// DurableObjectSqliteDataConnectorOptions.storage
-  readonly storage: DurableObjectStorage;
+  /// DurableObjectSqliteDataConnectorOptions.sqlStorage
+  readonly sqlStorage: SqlStorage;
 } & DatabaseDataConnectorOptions<Depth>;
 
 /// DurableObjectSqliteDataConnector
 export type DurableObjectSqliteDataConnector<Depth extends number> =
   DataConnector<Depth> & {
-    /// DurableObjectSqliteDataConnector.getStorage
-    getStorage(): DurableObjectStorage;
+    /// DurableObjectSqliteDataConnector.getSqlStorage
+    getSqlStorage(): SqlStorage;
   };
 
 /// createDurableObjectSqliteDataConnector
@@ -40,15 +40,15 @@ export function createDurableObjectSqliteDataConnector<Depth extends number>(
 
 /// DurableObjectSqliteMetaConnectorOptions
 export type DurableObjectSqliteMetaConnectorOptions<Depth extends number> = {
-  /// DurableObjectSqliteMetaConnectorOptions.storage
-  readonly storage: DurableObjectStorage;
+  /// DurableObjectSqliteMetaConnectorOptions.sqlStorage
+  readonly sqlStorage: SqlStorage;
 } & DatabaseMetaConnectorOptions<Depth>;
 
 /// DurableObjectSqliteMetaConnector
 export type DurableObjectSqliteMetaConnector<Depth extends number> =
   MetaConnector<Depth> & {
-    /// DurableObjectSqliteMetaConnector.getStorage
-    getStorage(): DurableObjectStorage;
+    /// DurableObjectSqliteMetaConnector.getSqlStorage
+    getSqlStorage(): SqlStorage;
   };
 
 /// createDurableObjectSqliteMetaConnector

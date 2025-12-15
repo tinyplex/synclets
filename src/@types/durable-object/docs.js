@@ -15,7 +15,7 @@
  * ```typescript
  * const dataConnector = createDurableObjectSqliteDataConnector({
  *   depth: 3,
- *   storage: this.ctx.storage,
+ *   sqlStorage: this.ctx.storage.sql,
  *   dataTable: 'data',
  *   addressColumn: 'address',
  *   atomColumn: 'atom',
@@ -27,11 +27,11 @@
 /// DurableObjectSqliteDataConnectorOptions
 {
   /**
-   * The DurableObjectStorage instance from the Durable Object context.
+   * The SqlStorage instance from the Durable Object storage context.
    * @category Property
    * @since v0.0.6
    */
-  /// DurableObjectSqliteDataConnectorOptions.storage
+  /// DurableObjectSqliteDataConnectorOptions.sqlStorage
 }
 
 /**
@@ -43,54 +43,11 @@
 /// DurableObjectSqliteDataConnector
 {
   /**
-   * Gets the DurableObjectStorage instance.
+   * Gets the SqlStorage instance.
    * @category Method
    * @since v0.0.6
    */
-  /// DurableObjectSqliteDataConnector.getStorage
-}
-
-/**
- * The DurableObjectSqliteMetaConnectorOptions type describes the options for
- * creating a meta connector that uses Cloudflare Durable Object's built-in
- * SQLite storage.
- * @example
- * ```typescript
- * const metaConnector = createDurableObjectSqliteMetaConnector({
- *   depth: 3,
- *   storage: this.ctx.storage,
- *   metaTable: 'meta',
- *   addressColumn: 'address',
- *   timestampColumn: 'timestamp',
- * });
- * ```
- * @category Type
- * @since v0.0.6
- */
-/// DurableObjectSqliteMetaConnectorOptions
-{
-  /**
-   * The DurableObjectStorage instance from the Durable Object context.
-   * @category Property
-   * @since v0.0.6
-   */
-  /// DurableObjectSqliteMetaConnectorOptions.storage
-}
-
-/**
- * The DurableObjectSqliteMetaConnector type represents a meta connector that
- * uses Cloudflare Durable Object's built-in SQLite storage.
- * @category Type
- * @since v0.0.6
- */
-/// DurableObjectSqliteMetaConnector
-{
-  /**
-   * Gets the DurableObjectStorage instance.
-   * @category Method
-   * @since v0.0.6
-   */
-  /// DurableObjectSqliteMetaConnector.getStorage
+  /// DurableObjectSqliteDataConnector.getSqlStorage
 }
 
 /**
@@ -103,12 +60,12 @@
  * @returns A data connector.
  * @example
  * ```typescript
- * class MySyncletDO extends SyncletDurableObject {
+ * class MySyncletDurableObject extends SyncletDurableObject {
  *   getCreateComponents() {
  *     return {
  *       dataConnector: createDurableObjectSqliteDataConnector({
  *         depth: 3,
- *         storage: this.ctx.storage,
+ *         sqlStorage: this.ctx.storage.sql,
  *       }),
  *     };
  *   }
@@ -120,6 +77,49 @@
 /// createDurableObjectSqliteDataConnector
 
 /**
+ * The DurableObjectSqliteMetaConnectorOptions type describes the options for
+ * creating a meta connector that uses Cloudflare Durable Object's built-in
+ * SQLite storage.
+ * @example
+ * ```typescript
+ * const metaConnector = createDurableObjectSqliteMetaConnector({
+ *   depth: 3,
+ *   sqlStorage: this.ctx.storage.sql,
+ *   metaTable: 'meta',
+ *   addressColumn: 'address',
+ *   timestampColumn: 'timestamp',
+ * });
+ * ```
+ * @category Type
+ * @since v0.0.6
+ */
+/// DurableObjectSqliteMetaConnectorOptions
+{
+  /**
+   * The SqlStorage instance from the Durable Object storage context.
+   * @category Property
+   * @since v0.0.6
+   */
+  /// DurableObjectSqliteMetaConnectorOptions.sqlStorage
+}
+
+/**
+ * The DurableObjectSqliteMetaConnector type represents a meta connector that
+ * uses Cloudflare Durable Object's built-in SQLite storage.
+ * @category Type
+ * @since v0.0.6
+ */
+/// DurableObjectSqliteMetaConnector
+{
+  /**
+   * Gets the SqlStorage instance.
+   * @category Method
+   * @since v0.0.6
+   */
+  /// DurableObjectSqliteMetaConnector.getSqlStorage
+}
+
+/**
  * The createDurableObjectSqliteMetaConnector function creates a meta connector
  * that uses Cloudflare Durable Object's built-in SQLite storage.
  *
@@ -129,12 +129,12 @@
  * @returns A meta connector.
  * @example
  * ```typescript
- * class MySyncletDO extends SyncletDurableObject {
+ * class MySyncletDurableObject extends SyncletDurableObject {
  *   getCreateComponents() {
  *     return {
  *       metaConnector: createDurableObjectSqliteMetaConnector({
  *         depth: 3,
- *         storage: this.ctx.storage,
+ *         sqlStorage: this.ctx.storage.sql,
  *       }),
  *     };
  *   }
