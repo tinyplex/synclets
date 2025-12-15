@@ -111,18 +111,6 @@
 /// PgliteSyncletOptions
 {
   /**
-   * The depth property specifies the tree depth.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteSyncletOptions.depth
-  /**
-   * The pglite property specifies the PGlite database instance.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// PgliteSyncletOptions.pglite
-  /**
    * The transport property specifies the Transport or Transports to use.
    * @category Option
    * @since v0.0.0

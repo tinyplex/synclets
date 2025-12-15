@@ -48,12 +48,6 @@
 /// MemorySyncletOptions
 {
   /**
-   * The depth property specifies the tree depth the Synclet will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// MemorySyncletOptions.depth
-  /**
    * The transport property specifies the Transport instance for
    * synchronization.
    * @category Option

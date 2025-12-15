@@ -108,24 +108,6 @@
 /// FileSyncletOptions
 {
   /**
-   * The depth property specifies the tree depth the Synclet will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// FileSyncletOptions.depth
-  /**
-   * The dataFile property specifies the file path for data storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// FileSyncletOptions.dataFile
-  /**
-   * The metaFile property specifies the file path for metadata storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// FileSyncletOptions.metaFile
-  /**
    * The transport property specifies the Transport instance for
    * synchronization.
    * @category Option
@@ -261,25 +243,6 @@
  */
 /// DirectorySyncletOptions
 {
-  /**
-   * The depth property specifies the tree depth the Synclet will operate at.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// DirectorySyncletOptions.depth
-  /**
-   * The dataDirectory property specifies the directory path for data storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// DirectorySyncletOptions.dataDirectory
-  /**
-   * The metaDirectory property specifies the directory path for metadata
-   * storage.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// DirectorySyncletOptions.metaDirectory
   /**
    * The transport property specifies the Transport instance for
    * synchronization.

@@ -147,29 +147,29 @@ const copyPackageFiles = async (forProd = false) => {
   await promises.copyFile('agents.md', join(DIST_DIR, 'agents.md'));
 };
 
-let labelBlocks;
-const getLabelBlocks = async () => {
-  if (labelBlocks == null) {
-    labelBlocks = new Map();
-    await promiseAllModules(async (module) => {
-      [
-        ...(
-          await promises.readFile(`src/@types/${module}/docs.js`, UTF8)
-        ).matchAll(TYPES_DOC_BLOCKS),
-      ].forEach(([_, block, label]) => {
-        if (labelBlocks.has(label)) {
-          throw new Error(`Duplicate label '${label}' in ${module}`);
-        }
-        labelBlocks.set(label, block);
-      });
+const getLabelBlocksByModule = async () => {
+  const labelBlocksByModule = new Map();
+  const labels = new Set();
+  await promiseAllModules(async (module) => {
+    const labelBlocksForModule = new Map();
+    [
+      ...(
+        await promises.readFile(`src/@types/${module}/docs.js`, UTF8)
+      ).matchAll(TYPES_DOC_BLOCKS),
+    ].forEach(([_, block, label]) => {
+      if (labels.has(label)) {
+        throw new Error(`Duplicate label '${label}' in ${module}`);
+      }
+      labels.add(label);
+      labelBlocksForModule.set(label, block);
     });
-  }
-  return labelBlocks;
+    labelBlocksByModule.set(module, labelBlocksForModule);
+  });
+  return labelBlocksByModule;
 };
 
-const copyDefinition = async (dir, module) => {
-  const labelBlocks = await getLabelBlocks();
-  // Add easier-to-read with-schemas blocks
+const copyDefinition = async (dir, module, labelBlocksByModule) => {
+  const labelBlocksForModule = new Map(labelBlocksByModule.get(module));
   const codeBlocks = new Map();
   [
     ...(
@@ -189,13 +189,13 @@ const copyDefinition = async (dir, module) => {
   });
   const fileRewrite = (block) =>
     block.replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
-      if (labelBlocks.has(label)) {
-        let block = labelBlocks.get(label);
+      if (labelBlocksForModule.has(label)) {
+        let block = labelBlocksForModule.get(label);
+        labelBlocksForModule.delete(label);
         return block + code;
       }
       throw `Missing docs label ${label} in ${module}`;
     });
-
   const definitionFile = await ensureDir(`${dir}/@types/${module}/index.d.ts`);
   await promises.writeFile(
     definitionFile,
@@ -204,10 +204,18 @@ const copyDefinition = async (dir, module) => {
     ),
     UTF8,
   );
+  if (labelBlocksForModule.size > 0) {
+    throw `Unreferenced docs labels in ${module}: ${[
+      ...labelBlocksForModule.keys(),
+    ].join(', ')}`;
+  }
 };
 
 const copyDefinitions = async (dir) => {
-  await promiseAllModules((module) => copyDefinition(dir, module));
+  const labelBlocksByModule = await getLabelBlocksByModule();
+  await promiseAllModules((module) =>
+    copyDefinition(dir, module, labelBlocksByModule),
+  );
 };
 
 const execute = async (cmd) => {
