@@ -64,6 +64,14 @@
 }
 
 /**
+ * The MemorySynclet type represents a Synclet with in-memory data and
+ * metadata connectors.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// MemorySynclet
+
+/**
  * The createMemorySynclet function creates an in-memory Synclet with both data
  * and metadata storage in a single call.
  *

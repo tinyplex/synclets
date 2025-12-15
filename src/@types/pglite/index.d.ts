@@ -64,12 +64,17 @@ export type PgliteSyncletOptions<Depth extends number> =
       readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
+/// PgliteSynclet
+export type PgliteSynclet<Depth extends number> = Synclet<
+  Depth,
+  PgliteDataConnector<Depth>,
+  PgliteMetaConnector<Depth>
+>;
+
 /// createPgliteSynclet
 export function createPgliteSynclet<Depth extends number>(
   options: PgliteSyncletOptions<Depth>,
-): Promise<
-  Synclet<Depth, PgliteDataConnector<Depth>, PgliteMetaConnector<Depth>>
->;
+): Promise<PgliteSynclet<Depth>>;
 
 /// pglite.getTableSchema
 export function getTableSchema(

@@ -33,10 +33,17 @@ export type MemorySyncletOptions<Depth extends number> =
       readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
+/// MemorySynclet
+export type MemorySynclet<Depth extends number> = Synclet<
+  Depth,
+  DataConnector<Depth>,
+  MetaConnector<Depth>
+>;
+
 /// createMemorySynclet
 export function createMemorySynclet<Depth extends number>(
   options: MemorySyncletOptions<Depth>,
-): Promise<Synclet<Depth, DataConnector<Depth>, MetaConnector<Depth>>>;
+): Promise<MemorySynclet<Depth>>;
 
 /// MemoryTransportOptions
 export type MemoryTransportOptions = {

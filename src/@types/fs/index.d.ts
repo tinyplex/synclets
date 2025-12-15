@@ -60,10 +60,17 @@ export type FileSyncletOptions<Depth extends number> =
       readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
+/// FileSynclet
+export type FileSynclet<Depth extends number> = Synclet<
+  Depth,
+  FileDataConnector<Depth>,
+  FileMetaConnector<Depth>
+>;
+
 /// createFileSynclet
 export function createFileSynclet<Depth extends number>(
   options: FileSyncletOptions<Depth>,
-): Promise<Synclet<Depth, FileDataConnector<Depth>, FileMetaConnector<Depth>>>;
+): Promise<FileSynclet<Depth>>;
 
 /// DirectoryDataConnector
 export interface DirectoryDataConnector<
@@ -114,9 +121,14 @@ export type DirectorySyncletOptions<Depth extends number> =
       readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
+/// DirectorySynclet
+export type DirectorySynclet<Depth extends number> = Synclet<
+  Depth,
+  DirectoryDataConnector<Depth>,
+  DirectoryMetaConnector<Depth>
+>;
+
 /// createDirectorySynclet
 export function createDirectorySynclet<Depth extends number>(
   options: DirectorySyncletOptions<Depth>,
-): Promise<
-  Synclet<Depth, DirectoryDataConnector<Depth>, DirectoryMetaConnector<Depth>>
->;
+): Promise<DirectorySynclet<Depth>>;

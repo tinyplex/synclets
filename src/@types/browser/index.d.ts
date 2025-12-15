@@ -73,16 +73,17 @@ export type LocalStorageSyncletOptions<Depth extends number> =
       readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
+/// LocalStorageSynclet
+export type LocalStorageSynclet<Depth extends number> = Synclet<
+  Depth,
+  LocalStorageDataConnector<Depth>,
+  LocalStorageMetaConnector<Depth>
+>;
+
 /// createLocalStorageSynclet
 export function createLocalStorageSynclet<Depth extends number>(
   options: LocalStorageSyncletOptions<Depth>,
-): Promise<
-  Synclet<
-    Depth,
-    LocalStorageDataConnector<Depth>,
-    LocalStorageMetaConnector<Depth>
-  >
->;
+): Promise<LocalStorageSynclet<Depth>>;
 
 /// SessionStorageDataConnector
 export interface SessionStorageDataConnector<
@@ -133,13 +134,14 @@ export type SessionStorageSyncletOptions<Depth extends number> =
       readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
+/// SessionStorageSynclet
+export type SessionStorageSynclet<Depth extends number> = Synclet<
+  Depth,
+  SessionStorageDataConnector<Depth>,
+  SessionStorageMetaConnector<Depth>
+>;
+
 /// createSessionStorageSynclet
 export function createSessionStorageSynclet<Depth extends number>(
   options: SessionStorageSyncletOptions<Depth>,
-): Promise<
-  Synclet<
-    Depth,
-    SessionStorageDataConnector<Depth>,
-    SessionStorageMetaConnector<Depth>
-  >
->;
+): Promise<SessionStorageSynclet<Depth>>;

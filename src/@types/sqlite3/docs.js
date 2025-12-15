@@ -124,6 +124,14 @@
 }
 
 /**
+ * The Sqlite3Synclet interface represents a Synclet with SQLite3-backed data
+ * and metadata connectors.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// Sqlite3Synclet
+
+/**
  * The createSqlite3Synclet function creates a Synclet with SQLite3-backed
  * connectors.
  *

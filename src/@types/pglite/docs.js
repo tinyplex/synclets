@@ -125,6 +125,14 @@
 }
 
 /**
+ * The PgliteSynclet type represents a Synclet with PGlite-backed data and
+ * metadata connectors.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// PgliteSynclet
+
+/**
  * The createPgliteSynclet function creates a Synclet with PGlite-backed
  * connectors.
  *

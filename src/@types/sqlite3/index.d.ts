@@ -64,12 +64,17 @@ export type Sqlite3SyncletOptions<Depth extends number> =
       readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
+/// Sqlite3Synclet
+export type Sqlite3Synclet<Depth extends number> = Synclet<
+  Depth,
+  Sqlite3DataConnector<Depth>,
+  Sqlite3MetaConnector<Depth>
+>;
+
 /// createSqlite3Synclet
 export function createSqlite3Synclet<Depth extends number>(
   options: Sqlite3SyncletOptions<Depth>,
-): Promise<
-  Synclet<Depth, Sqlite3DataConnector<Depth>, Sqlite3MetaConnector<Depth>>
->;
+): Promise<Sqlite3Synclet<Depth>>;
 
 /// sqlite3.getTableSchema
 export function getTableSchema(

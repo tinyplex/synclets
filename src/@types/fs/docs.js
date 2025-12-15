@@ -124,6 +124,14 @@
 }
 
 /**
+ * The FileSynclet type represents a Synclet with file-backed data and
+ * metadata connectors.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// FileSynclet
+
+/**
  * The createFileSynclet function creates a file-backed Synclet with both data
  * and metadata persistence in a single call.
  *
@@ -258,6 +266,14 @@
    */
   /// DirectorySyncletOptions.implementations
 }
+
+/**
+ * The DirectorySynclet type represents a Synclet with directory-backed data
+ * and metadata connectors.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// DirectorySynclet
 
 /**
  * The createDirectorySynclet function creates a directory-backed Synclet with

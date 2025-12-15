@@ -174,6 +174,14 @@
 }
 
 /**
+ * The LocalStorageSynclet type represents a Synclet with localStorage-backed
+ * data and metadata connectors.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// LocalStorageSynclet
+
+/**
  * The createLocalStorageSynclet function creates a complete Synclet with
  * localStorage-backed data and meta connectors in a single call.
  *
@@ -313,6 +321,14 @@
    */
   /// SessionStorageSyncletOptions.implementations
 }
+
+/**
+ * The SessionStorageSynclet type represents a Synclet with
+ * sessionStorage-backed data and metadata connectors.
+ * @category Connector
+ * @since v0.0.0
+ */
+/// SessionStorageSynclet
 
 /**
  * The createSessionStorageSynclet function creates a complete Synclet with
