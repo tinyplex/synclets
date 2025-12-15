@@ -27,10 +27,10 @@ export type MemorySyncletOptions<Depth extends number> =
   DataConnectorOptions<Depth> &
     MetaConnectorOptions<Depth> & {
       /// MemorySyncletOptions.transport
-      transport?: Transport | Transport[];
+      readonly transport?: Transport | Transport[];
 
       /// MemorySyncletOptions.implementations
-      implementations?: SyncletImplementations<Depth>;
+      readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
 /// createMemorySynclet
@@ -40,5 +40,5 @@ export function createMemorySynclet<Depth extends number>(
 
 /// createMemoryTransport
 export function createMemoryTransport(
-  options?: TransportOptions & {poolId?: string},
+  options?: TransportOptions & {readonly poolId?: string},
 ): Transport;

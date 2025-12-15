@@ -22,7 +22,7 @@ export interface FileDataConnector<
 /// FileDataConnectorOptions
 export type FileDataConnectorOptions<Depth extends number> = {
   /// FileDataConnectorOptions.dataFile
-  dataFile: string;
+  readonly dataFile: string;
 } & DataConnectorOptions<Depth>;
 
 /// createFileDataConnector
@@ -41,7 +41,7 @@ export interface FileMetaConnector<
 /// FileMetaConnectorOptions
 export type FileMetaConnectorOptions<Depth extends number> = {
   /// FileMetaConnectorOptions.metaFile
-  metaFile: string;
+  readonly metaFile: string;
 } & MetaConnectorOptions<Depth>;
 
 /// createFileMetaConnector
@@ -54,10 +54,10 @@ export type FileSyncletOptions<Depth extends number> =
   FileDataConnectorOptions<Depth> &
     FileMetaConnectorOptions<Depth> & {
       /// FileSyncletOptions.transport
-      transport: Transport;
+      readonly transport: Transport;
 
       /// FileSyncletOptions.implementations
-      implementations?: SyncletImplementations<Depth>;
+      readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
 /// createFileSynclet
@@ -76,7 +76,7 @@ export interface DirectoryDataConnector<
 /// DirectoryDataConnectorOptions
 export type DirectoryDataConnectorOptions<Depth extends number> = {
   /// DirectoryDataConnectorOptions.dataDirectory
-  dataDirectory: string;
+  readonly dataDirectory: string;
 } & DataConnectorOptions<Depth>;
 
 /// createDirectoryDataConnector
@@ -95,7 +95,7 @@ export interface DirectoryMetaConnector<
 /// DirectoryMetaConnectorOptions
 export type DirectoryMetaConnectorOptions<Depth extends number> = {
   /// DirectoryMetaConnectorOptions.metaDirectory
-  metaDirectory: string;
+  readonly metaDirectory: string;
 } & MetaConnectorOptions<Depth>;
 
 /// createDirectoryMetaConnector
@@ -108,10 +108,10 @@ export type DirectorySyncletOptions<Depth extends number> =
   DirectoryDataConnectorOptions<Depth> &
     DirectoryMetaConnectorOptions<Depth> & {
       /// DirectorySyncletOptions.transport
-      transport: Transport;
+      readonly transport: Transport;
 
       /// DirectorySyncletOptions.implementations
-      implementations?: SyncletImplementations<Depth>;
+      readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
 /// createDirectorySynclet

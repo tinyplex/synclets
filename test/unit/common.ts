@@ -145,18 +145,20 @@ export const createChainedTestSynclets = async <
   );
 };
 
-export const createMockDataConnector = <Depth extends number>(depth: Depth) =>
-  createDataConnector(
-    {depth},
-    {
+export const createMockDataConnector = <Depth extends number>(options: {
+  readonly depth: Depth;
+}) =>
+  createDataConnector(options, {
     readAtom: async () => 0,
     writeAtom: async () => {},
     removeAtom: async () => {},
     readChildIds: async () => [],
   }) as DataConnector<Depth>;
 
-export const createMockMetaConnector = <Depth extends number>(depth: Depth) =>
-  createMetaConnector({depth}, {
+export const createMockMetaConnector = <Depth extends number>(options: {
+  readonly depth: Depth;
+}) =>
+  createMetaConnector(options, {
     readTimestamp: async () => '',
     writeTimestamp: async () => {},
     readChildIds: async () => [],

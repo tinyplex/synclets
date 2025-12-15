@@ -28,8 +28,8 @@ export interface WsBrokerTransport extends Transport {
 
 /// WsBrokerTransportOptions
 export type WsBrokerTransportOptions = {
-  path?: string | null;
-  brokerPaths?: RegExp;
+  readonly path?: string | null;
+  readonly brokerPaths?: RegExp;
 };
 
 /// createWsBrokerTransport

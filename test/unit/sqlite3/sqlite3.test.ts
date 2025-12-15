@@ -92,16 +92,18 @@ describe('data schema checks', async () => {
 
   // test('create if table missing', async () => {
   //   const logger = {info: vi.fn()};
-  //   const dataConnector = createSqlite3DataConnector(3, database);
-  //   const metaConnector = createMockMetaConnector(3);
+  //   const dataConnector = createSqlite3DataConnector({depth: 3, database});
+  //   const metaConnector = createMockMetaConnector({depth: 3});
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
-  //   expect((await query(database, `SELECT * FROM data;`).fields).toEqual([
-  //     {name: 'address', dataTypeID: TEXT},
-  //     {name: 'atom', dataTypeID: TEXT},
-  //     {name: 'address1', dataTypeID: TEXT},
-  //     {name: 'address2', dataTypeID: TEXT},
-  //     {name: 'address3', dataTypeID: TEXT},
-  //   ]));
+  //   expect(
+  //     (await query(database, `SELECT * FROM data;`).fields).toEqual([
+  //       {name: 'address', dataTypeID: TEXT},
+  //       {name: 'atom', dataTypeID: TEXT},
+  //       {name: 'address1', dataTypeID: TEXT},
+  //       {name: 'address2', dataTypeID: TEXT},
+  //       {name: 'address3', dataTypeID: TEXT},
+  //     ]),
+  //   );
   //   expect(logger.info).toHaveBeenCalledWith('[] Creating table "data"');
   // });
 
@@ -112,7 +114,7 @@ describe('data schema checks', async () => {
   //     addressColumn: 'a',
   //     atomColumn: 'x',
   //   });
-  //   const metaConnector = createMockMetaConnector(3);
+  //   const metaConnector = createMockMetaConnector({depth:3});
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
   //   expect((await query(database, `SELECT * FROM d;`)).fields).toEqual([
   //     {name: 'a', dataTypeID: TEXT},
@@ -130,7 +132,7 @@ describe('data schema checks', async () => {
       `CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, atom TEXT);`,
     );
     const dataConnector = createSqlite3DataConnector({depth: 3, database});
-    const metaConnector = createMockMetaConnector(3);
+    const metaConnector = createMockMetaConnector({depth: 3});
     const synclet = await createSynclet({dataConnector, metaConnector});
     await synclet.destroy();
   });
@@ -141,23 +143,23 @@ describe('data schema checks', async () => {
       `CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, atom TEXT);`,
     );
     const dataConnector = createSqlite3DataConnector({depth: 3, database});
-    const metaConnector = createMockMetaConnector(3);
+    const metaConnector = createMockMetaConnector({depth: 3});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "data" needs correct schema');
   });
 
-  // test('error if table has wrong type of columns', async () => {
-  //   await query(
-  //     database,
-  //     `CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, address3 INTEGER, atom TEXT);`,
-  //   );
-  //   const dataConnector = createSqlite3DataConnector(3, database);
-  //   const metaConnector = createMockMetaConnector(3);
-  //   await expect(() =>
-  //     createSynclet({dataConnector, metaConnector}),
-  //   ).rejects.toThrow('Table "data" needs correct schema');
-  // });
+  test('error if table has wrong type of columns', async () => {
+    await query(
+      database,
+      `CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, address3 INTEGER, atom TEXT);`,
+    );
+    const dataConnector = createSqlite3DataConnector({depth: 3, database});
+    const metaConnector = createMockMetaConnector({depth: 3});
+    await expect(() =>
+      createSynclet({dataConnector, metaConnector}),
+    ).rejects.toThrow('Table "data" needs correct schema');
+  });
 
   test('error if table needs address', async () => {
     await query(
@@ -165,7 +167,7 @@ describe('data schema checks', async () => {
       `CREATE TABLE data (whoops TEXT, address1 TEXT, address2 TEXT, address3 TEXT, atom TEXT);`,
     );
     const dataConnector = createSqlite3DataConnector({depth: 3, database});
-    const metaConnector = createMockMetaConnector(3);
+    const metaConnector = createMockMetaConnector({depth: 3});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "data" needs correct schema');
@@ -177,7 +179,7 @@ describe('data schema checks', async () => {
       `CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, whoops TEXT);`,
     );
     const dataConnector = createSqlite3DataConnector({depth: 3, database});
-    const metaConnector = createMockMetaConnector(3);
+    const metaConnector = createMockMetaConnector({depth: 3});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "data" needs correct schema');
@@ -189,7 +191,7 @@ describe('data schema checks', async () => {
       `CREATE TABLE data (address TEXT, address1 TEXT, address2 TEXT, whoops TEXT, atom TEXT);`,
     );
     const dataConnector = createSqlite3DataConnector({depth: 3, database});
-    const metaConnector = createMockMetaConnector(3);
+    const metaConnector = createMockMetaConnector({depth: 3});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "data" needs correct schema');
@@ -211,7 +213,7 @@ describe('meta schema checks', async () => {
 
   // test('create if table missing', async () => {
   //   const logger = {info: vi.fn()};
-  //   const dataConnector = createMockDataConnector(3);
+  //   const dataConnector = createMockDataConnector({depth:3});
   //   const metaConnector = createSqlite3MetaConnector(3, database);
   //   await createSynclet({dataConnector, metaConnector}, {}, {logger, id: ''});
   //   expect(await query(database, `SELECT * FROM meta;`).fields).toEqual([
@@ -226,7 +228,7 @@ describe('meta schema checks', async () => {
 
   // test('create if table missing, custom options', async () => {
   //   const logger = {info: vi.fn()};
-  //   const dataConnector = createMockDataConnector(3);
+  //   const dataConnector = createMockDataConnector({depth:3});
   //   const metaConnector = createSqlite3MetaConnector(3, database, {
   //     table: 'm',
   //     addressColumn: 'a',
@@ -248,7 +250,7 @@ describe('meta schema checks', async () => {
       database,
       `CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, timestamp TEXT);`,
     );
-    const dataConnector = createMockDataConnector(3);
+    const dataConnector = createMockDataConnector({depth: 3});
     const metaConnector = createSqlite3MetaConnector({depth: 3, database});
     const synclet = await createSynclet({dataConnector, metaConnector});
     await synclet.destroy();
@@ -259,31 +261,31 @@ describe('meta schema checks', async () => {
       database,
       `CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, timestamp TEXT);`,
     );
-    const dataConnector = createMockDataConnector(3);
+    const dataConnector = createMockDataConnector({depth: 3});
     const metaConnector = createSqlite3MetaConnector({depth: 3, database});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
     ).rejects.toThrow('Table "meta" needs correct schema');
   });
 
-  // test('error if table has wrong type of columns', async () => {
-  //   await query(
-  //     database,
-  //     `CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 INTEGER, timestamp TEXT);`,
-  //   );
-  //   const dataConnector = createMockDataConnector(3);
-  //   const metaConnector = createSqlite3MetaConnector(3, database);
-  //   await expect(() =>
-  //     createSynclet({dataConnector, metaConnector}),
-  //   ).rejects.toThrow('Table "meta" needs correct schema');
-  // });
+  test('error if table has wrong type of columns', async () => {
+    await query(
+      database,
+      `CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 INTEGER, timestamp TEXT);`,
+    );
+    const dataConnector = createMockDataConnector({depth: 3});
+    const metaConnector = createSqlite3MetaConnector({depth: 3, database});
+    await expect(() =>
+      createSynclet({dataConnector, metaConnector}),
+    ).rejects.toThrow('Table "meta" needs correct schema');
+  });
 
   test('error if table needs address', async () => {
     await query(
       database,
       `CREATE TABLE meta (whoops TEXT, address1 TEXT, address2 TEXT, address3 TEXT, timestamp TEXT);`,
     );
-    const dataConnector = createMockDataConnector(3);
+    const dataConnector = createMockDataConnector({depth: 3});
     const metaConnector = createSqlite3MetaConnector({depth: 3, database});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
@@ -295,7 +297,7 @@ describe('meta schema checks', async () => {
       database,
       `CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, address3 TEXT, whoops TEXT);`,
     );
-    const dataConnector = createMockDataConnector(3);
+    const dataConnector = createMockDataConnector({depth: 3});
     const metaConnector = createSqlite3MetaConnector({depth: 3, database});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),
@@ -307,7 +309,7 @@ describe('meta schema checks', async () => {
       database,
       `CREATE TABLE meta (address TEXT, address1 TEXT, address2 TEXT, whoops TEXT, timestamp TEXT);`,
     );
-    const dataConnector = createMockDataConnector(3);
+    const dataConnector = createMockDataConnector({depth: 3});
     const metaConnector = createSqlite3MetaConnector({depth: 3, database});
     await expect(() =>
       createSynclet({dataConnector, metaConnector}),

@@ -25,7 +25,7 @@ export interface PgliteDataConnector<
 /// PgliteDataConnectorOptions
 export type PgliteDataConnectorOptions<Depth extends number> = {
   /// PgliteDataConnectorOptions.pglite
-  pglite: PGlite;
+  readonly pglite: PGlite;
 } & DatabaseDataConnectorOptions<Depth>;
 
 /// createPgliteDataConnector
@@ -44,7 +44,7 @@ export interface PgliteMetaConnector<
 /// PgliteMetaConnectorOptions
 export type PgliteMetaConnectorOptions<Depth extends number> = {
   /// PgliteMetaConnectorOptions.pglite
-  pglite: PGlite;
+  readonly pglite: PGlite;
 } & DatabaseMetaConnectorOptions<Depth>;
 
 /// createPgliteMetaConnector
@@ -57,10 +57,10 @@ export type PgliteSyncletOptions<Depth extends number> =
   PgliteDataConnectorOptions<Depth> &
     PgliteMetaConnectorOptions<Depth> & {
       /// PgliteSyncletOptions.transport
-      transport?: Transport | Transport[];
+      readonly transport?: Transport | Transport[];
 
       /// PgliteSyncletOptions.implementations
-      implementations?: SyncletImplementations<Depth>;
+      readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
 /// createPgliteSynclet

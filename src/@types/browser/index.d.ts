@@ -35,7 +35,7 @@ export interface LocalStorageDataConnector<
 /// LocalStorageDataConnectorOptions
 export type LocalStorageDataConnectorOptions<Depth extends number> = {
   /// LocalStorageDataConnectorOptions.dataStorageName
-  dataStorageName: string;
+  readonly dataStorageName: string;
 } & DataConnectorOptions<Depth>;
 
 /// createLocalStorageDataConnector
@@ -54,7 +54,7 @@ export interface LocalStorageMetaConnector<
 /// LocalStorageMetaConnectorOptions
 export type LocalStorageMetaConnectorOptions<Depth extends number> = {
   /// LocalStorageMetaConnectorOptions.metaStorageName
-  metaStorageName: string;
+  readonly metaStorageName: string;
 } & MetaConnectorOptions<Depth>;
 
 /// createLocalStorageMetaConnector
@@ -67,10 +67,10 @@ export type LocalStorageSyncletOptions<Depth extends number> =
   LocalStorageDataConnectorOptions<Depth> &
     LocalStorageMetaConnectorOptions<Depth> & {
       /// LocalStorageSyncletOptions.transport
-      transport?: Transport | Transport[];
+      readonly transport?: Transport | Transport[];
 
       /// LocalStorageSyncletOptions.implementations
-      implementations?: SyncletImplementations<Depth>;
+      readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
 /// createLocalStorageSynclet
@@ -95,7 +95,7 @@ export interface SessionStorageDataConnector<
 /// SessionStorageDataConnectorOptions
 export type SessionStorageDataConnectorOptions<Depth extends number> = {
   /// SessionStorageDataConnectorOptions.dataStorageName
-  dataStorageName: string;
+  readonly dataStorageName: string;
 } & DataConnectorOptions<Depth>;
 
 /// createSessionStorageDataConnector
@@ -114,7 +114,7 @@ export interface SessionStorageMetaConnector<
 /// SessionStorageMetaConnectorOptions
 export type SessionStorageMetaConnectorOptions<Depth extends number> = {
   /// SessionStorageMetaConnectorOptions.metaStorageName
-  metaStorageName: string;
+  readonly metaStorageName: string;
 } & MetaConnectorOptions<Depth>;
 
 /// createSessionStorageMetaConnector
@@ -127,10 +127,10 @@ export type SessionStorageSyncletOptions<Depth extends number> =
   SessionStorageDataConnectorOptions<Depth> &
     SessionStorageMetaConnectorOptions<Depth> & {
       /// SessionStorageSyncletOptions.transport
-      transport?: Transport | Transport[];
+      readonly transport?: Transport | Transport[];
 
       /// SessionStorageSyncletOptions.implementations
-      implementations?: SyncletImplementations<Depth>;
+      readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
 /// createSessionStorageSynclet

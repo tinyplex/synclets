@@ -25,7 +25,7 @@ export interface Sqlite3DataConnector<
 /// Sqlite3DataConnectorOptions
 export type Sqlite3DataConnectorOptions<Depth extends number> = {
   /// Sqlite3DataConnectorOptions.database
-  database: Database;
+  readonly database: Database;
 } & DatabaseDataConnectorOptions<Depth>;
 
 /// createSqlite3DataConnector
@@ -44,7 +44,7 @@ export interface Sqlite3MetaConnector<
 /// Sqlite3MetaConnectorOptions
 export type Sqlite3MetaConnectorOptions<Depth extends number> = {
   /// Sqlite3MetaConnectorOptions.database
-  database: Database;
+  readonly database: Database;
 } & DatabaseMetaConnectorOptions<Depth>;
 
 /// createSqlite3MetaConnector
@@ -57,10 +57,10 @@ export type Sqlite3SyncletOptions<Depth extends number> =
   Sqlite3DataConnectorOptions<Depth> &
     Sqlite3MetaConnectorOptions<Depth> & {
       /// Sqlite3SyncletOptions.transport
-      transport?: Transport | Transport[];
+      readonly transport?: Transport | Transport[];
 
       /// Sqlite3SyncletOptions.implementations
-      implementations?: SyncletImplementations<Depth>;
+      readonly implementations?: SyncletImplementations<Depth>;
     } & SyncletOptions;
 
 /// createSqlite3Synclet

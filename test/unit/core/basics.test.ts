@@ -17,8 +17,8 @@ let metaConnector: MetaConnector<1>;
 let transport: Transport;
 
 beforeEach(async () => {
-  dataConnector = createMockDataConnector(1);
-  metaConnector = createMockMetaConnector(1);
+  dataConnector = createMockDataConnector({depth: 1});
+  metaConnector = createMockMetaConnector({depth: 1});
   transport = createMockTransport();
 });
 
@@ -37,7 +37,7 @@ describe('createSynclet', () => {
   test('error when only dataConnector provided', async () => {
     await expect(
       createSynclet({
-        dataConnector: createMockDataConnector(1),
+        dataConnector: createMockDataConnector({depth: 1}),
       }),
     ).rejects.toThrow('both connectors must be provided, or both omitted');
   });
@@ -45,7 +45,7 @@ describe('createSynclet', () => {
   test('error when only metaConnector provided', async () => {
     await expect(
       createSynclet({
-        metaConnector: createMockMetaConnector(1),
+        metaConnector: createMockMetaConnector({depth: 1}),
       }),
     ).rejects.toThrow('both connectors must be provided, or both omitted');
   });
@@ -87,8 +87,8 @@ describe('createSynclet', () => {
   });
 
   test('full synclet: both connectors provided', async () => {
-    const dataConnector = createMockDataConnector(1);
-    const metaConnector = createMockMetaConnector(1);
+    const dataConnector = createMockDataConnector({depth: 1});
+    const metaConnector = createMockMetaConnector({depth: 1});
     const transport = createMockTransport();
 
     const synclet = await createSynclet({
@@ -108,8 +108,8 @@ describe('createSynclet', () => {
   });
 
   test('local-only synclet: both connectors, no transport', async () => {
-    const dataConnector = createMockDataConnector(1);
-    const metaConnector = createMockMetaConnector(1);
+    const dataConnector = createMockDataConnector({depth: 1});
+    const metaConnector = createMockMetaConnector({depth: 1});
 
     const synclet = await createSynclet({
       dataConnector,
@@ -171,8 +171,8 @@ test('error on reassigning transport', async () => {
   });
   await expect(async () => {
     await createSynclet({
-      dataConnector: createMockDataConnector(1),
-      metaConnector: createMockMetaConnector(1),
+      dataConnector: createMockDataConnector({depth: 1}),
+      metaConnector: createMockMetaConnector({depth: 1}),
       transport,
     });
   }).rejects.toThrow('Transport is already attached to Synclet');
@@ -189,7 +189,7 @@ test('error on reassigning data connector', async () => {
   await expect(async () => {
     await createSynclet({
       dataConnector,
-      metaConnector: createMockMetaConnector(1),
+      metaConnector: createMockMetaConnector({depth: 1 as const}),
       transport: createMockTransport(),
     });
   }).rejects.toThrow('Data connector is already attached to Synclet');
@@ -205,7 +205,7 @@ test('error on reassigning meta connector', async () => {
   });
   await expect(() =>
     createSynclet({
-      dataConnector: createMockDataConnector(1),
+      dataConnector: createMockDataConnector({depth: 1}),
       metaConnector,
       transport: createMockTransport(),
     }),
@@ -236,14 +236,14 @@ describe('context', () => {
     const canReceiveMessage = vi.fn();
 
     const synclet1 = await createSynclet({
-      dataConnector: createMockDataConnector(1),
-      metaConnector: createMockMetaConnector(1),
+      dataConnector: createMockDataConnector({depth: 1}),
+      metaConnector: createMockMetaConnector({depth: 1}),
       transport: createMemoryTransport({poolId: 'pool1'}),
     });
     const synclet2 = await createSynclet(
       {
-        dataConnector: createMockDataConnector(1),
-        metaConnector: createMockMetaConnector(1),
+        dataConnector: createMockDataConnector({depth: 1}),
+        metaConnector: createMockMetaConnector({depth: 1}),
         transport: createMemoryTransport({poolId: 'pool1'}),
       },
       {canReceiveMessage},
@@ -263,16 +263,16 @@ describe('context', () => {
 
     const synclet1 = await createSynclet(
       {
-        dataConnector: createMockDataConnector(1),
-        metaConnector: createMockMetaConnector(1),
+        dataConnector: createMockDataConnector({depth: 1}),
+        metaConnector: createMockMetaConnector({depth: 1}),
         transport: createMemoryTransport({poolId: 'pool1'}),
       },
       {getSendContext},
     );
     const synclet2 = await createSynclet(
       {
-        dataConnector: createMockDataConnector(1),
-        metaConnector: createMockMetaConnector(1),
+        dataConnector: createMockDataConnector({depth: 1}),
+        metaConnector: createMockMetaConnector({depth: 1}),
         transport: createMemoryTransport({poolId: 'pool1'}),
       },
       {canReceiveMessage},

@@ -16,14 +16,14 @@ export function getQuery(sql: Sql): [string: string, args: any[]];
 
 /// DatabaseDataConnectorOptions
 export type DatabaseDataConnectorOptions<Depth extends number> = {
-  dataTable?: string;
-  addressColumn?: string;
-  atomColumn?: string;
+  readonly dataTable?: string;
+  readonly addressColumn?: string;
+  readonly atomColumn?: string;
 } & DataConnectorOptions<Depth>;
 
 /// DatabaseMetaConnectorOptions
 export type DatabaseMetaConnectorOptions<Depth extends number> = {
-  metaTable?: string;
-  addressColumn?: string;
-  timestampColumn?: string;
+  readonly metaTable?: string;
+  readonly addressColumn?: string;
+  readonly timestampColumn?: string;
 } & MetaConnectorOptions<Depth>;

@@ -12,7 +12,7 @@ export interface TinyBaseDataConnector extends DataConnector<3> {
 /// TinyBaseDataConnectorOptions
 export type TinyBaseDataConnectorOptions = {
   /// TinyBaseDataConnectorOptions.store
-  store: Store;
+  readonly store: Store;
 };
 
 /// createTinyBaseDataConnector

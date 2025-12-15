@@ -100,16 +100,16 @@ export type ExtraFunctions = {[name: string]: (...args: any[]) => any};
 /// Logger
 export type Logger = {
   /// Logger.error
-  error?: (string: string) => void;
+  readonly error?: (string: string) => void;
 
   /// Logger.warn
-  warn?: (string: string) => void;
+  readonly warn?: (string: string) => void;
 
   /// Logger.info
-  info?: (string: string) => void;
+  readonly info?: (string: string) => void;
 
   /// Logger.debug
-  debug?: (string: string) => void;
+  readonly debug?: (string: string) => void;
 };
 
 /// LogLevel
@@ -173,78 +173,78 @@ export type SyncletComponents<
   MetaConnectorType extends MetaConnector<Depth>,
 > = {
   /// SyncletComponents.dataConnector
-  dataConnector?: DataConnectorType;
+  readonly dataConnector?: DataConnectorType;
 
   /// SyncletComponents.metaConnector
-  metaConnector?: MetaConnectorType;
+  readonly metaConnector?: MetaConnectorType;
 
   /// SyncletComponents.transport
-  transport?: Transport | Transport[];
+  readonly transport?: Transport | Transport[];
 };
 
 /// SyncletImplementations
 export type SyncletImplementations<Depth extends number> = {
   /// SyncletImplementations.onStart
-  onStart?: () => Promise<void>;
+  readonly onStart?: () => Promise<void>;
 
   /// SyncletImplementations.onStop
-  onStop?: () => Promise<void>;
+  readonly onStop?: () => Promise<void>;
 
   /// SyncletImplementations.onSync
-  onSync?: (address: AnyAddress<Depth>) => Promise<void>;
+  readonly onSync?: (address: AnyAddress<Depth>) => Promise<void>;
 
   /// SyncletImplementations.onSendMessage
-  onSendMessage?: (message: Message, to?: string) => Promise<void>;
+  readonly onSendMessage?: (message: Message, to?: string) => Promise<void>;
 
   /// SyncletImplementations.onReceiveMessage
-  onReceiveMessage?: (message: Message, from: string) => Promise<void>;
+  readonly onReceiveMessage?: (message: Message, from: string) => Promise<void>;
 
   /// SyncletImplementations.onSetAtom
-  onSetAtom?: (address: AtomAddress<Depth>) => Promise<void>;
+  readonly onSetAtom?: (address: AtomAddress<Depth>) => Promise<void>;
 
   /// SyncletImplementations.getSendContext
-  getSendContext?: (receivedContext?: Context) => Promise<Context>;
+  readonly getSendContext?: (receivedContext?: Context) => Promise<Context>;
 
   /// SyncletImplementations.canReceiveMessage
-  canReceiveMessage?: (context: Context) => Promise<boolean>;
+  readonly canReceiveMessage?: (context: Context) => Promise<boolean>;
 
   /// SyncletImplementations.canReadAtom
-  canReadAtom?: (
+  readonly canReadAtom?: (
     address: AtomAddress<Depth>,
     context: Context,
   ) => Promise<boolean>;
 
   /// SyncletImplementations.canWriteAtom
-  canWriteAtom?: (
+  readonly canWriteAtom?: (
     address: AtomAddress<Depth>,
     atom: Atom,
     context: Context,
   ) => Promise<boolean>;
 
   /// SyncletImplementations.canRemoveAtom
-  canRemoveAtom?: (
+  readonly canRemoveAtom?: (
     address: AtomAddress<Depth>,
     context: Context,
   ) => Promise<boolean>;
 
   /// SyncletImplementations.filterChildIds
-  filterChildIds?: (
+  readonly filterChildIds?: (
     address: AnyParentAddress<Depth>,
     childIds: string[],
     context: Context,
   ) => Promise<string[]>;
 
   /// SyncletImplementations.getNow
-  getNow?: () => number;
+  readonly getNow?: () => number;
 };
 
 /// SyncletOptions
 export type SyncletOptions = {
   /// SyncletOptions.id
-  id?: string;
+  readonly id?: string;
 
   /// SyncletOptions.logger
-  logger?: Logger;
+  readonly logger?: Logger;
 };
 
 /// createSynclet
@@ -283,33 +283,38 @@ export type DataConnectorOptions<Depth extends number> = {
 /// DataConnectorImplementations
 export type DataConnectorImplementations<Depth extends number> = {
   /// DataConnectorImplementations.connect
-  connect?: (
+  readonly connect?: (
     syncChangedAtoms: (...address: AtomAddress<Depth>[]) => Promise<void>,
   ) => Promise<void>;
 
   /// DataConnectorImplementations.disconnect
-  disconnect?: () => Promise<void>;
+  readonly disconnect?: () => Promise<void>;
 
   /// DataConnectorImplementations.readAtom
-  readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>;
+  readonly readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>;
 
   /// DataConnectorImplementations.writeAtom
-  writeAtom: (address: AtomAddress<Depth>, atom: Atom) => Promise<void>;
+  readonly writeAtom: (
+    address: AtomAddress<Depth>,
+    atom: Atom,
+  ) => Promise<void>;
 
   /// DataConnectorImplementations.removeAtom
-  removeAtom: (address: AtomAddress<Depth>) => Promise<void>;
+  readonly removeAtom: (address: AtomAddress<Depth>) => Promise<void>;
 
   /// DataConnectorImplementations.readChildIds
-  readChildIds: (address: AnyParentAddress<Depth>) => Promise<string[]>;
+  readonly readChildIds: (
+    address: AnyParentAddress<Depth>,
+  ) => Promise<string[]>;
 };
 
 /// DataConnectorOptimizations
 export type DataConnectorOptimizations<Depth extends number> = {
   /// DataConnectorOptimizations.readAtoms
-  readAtoms?: (address: AtomsAddress<Depth>) => Promise<Atoms>;
+  readonly readAtoms?: (address: AtomsAddress<Depth>) => Promise<Atoms>;
 
   /// DataConnectorOptimizations.getData
-  getData?: () => Promise<Data>;
+  readonly getData?: () => Promise<Data>;
 };
 
 /// createDataConnector
@@ -343,33 +348,37 @@ export type MetaConnectorOptions<Depth extends number> = {
 /// MetaConnectorImplementations
 export type MetaConnectorImplementations<Depth extends number> = {
   /// MetaConnectorImplementations.connect
-  connect?: () => Promise<void>;
+  readonly connect?: () => Promise<void>;
 
   /// MetaConnectorImplementations.disconnect
-  disconnect?: () => Promise<void>;
+  readonly disconnect?: () => Promise<void>;
 
   /// MetaConnectorImplementations.readTimestamp
-  readTimestamp: (
+  readonly readTimestamp: (
     address: TimestampAddress<Depth>,
   ) => Promise<Timestamp | undefined>;
 
   /// MetaConnectorImplementations.writeTimestamp
-  writeTimestamp: (
+  readonly writeTimestamp: (
     address: TimestampAddress<Depth>,
     timestamp: Timestamp,
   ) => Promise<void>;
 
   /// MetaConnectorImplementations.readChildIds
-  readChildIds: (address: AnyParentAddress<Depth>) => Promise<string[]>;
+  readonly readChildIds: (
+    address: AnyParentAddress<Depth>,
+  ) => Promise<string[]>;
 };
 
 /// MetaConnectorOptimizations
 export type MetaConnectorOptimizations<Depth extends number> = {
   /// MetaConnectorOptimizations.readTimestamps
-  readTimestamps?: (address: TimestampsAddress<Depth>) => Promise<Timestamps>;
+  readonly readTimestamps?: (
+    address: TimestampsAddress<Depth>,
+  ) => Promise<Timestamps>;
 
   /// MetaConnectorOptimizations.getMeta
-  getMeta?: () => Promise<Meta>;
+  readonly getMeta?: () => Promise<Meta>;
 };
 
 /// createMetaConnector
@@ -394,19 +403,21 @@ export interface Transport {
 /// TransportImplementations
 export type TransportImplementations = {
   /// TransportImplementations.connect
-  connect?: (receivePacket: (string: string) => Promise<void>) => Promise<void>;
+  readonly connect?: (
+    receivePacket: (string: string) => Promise<void>,
+  ) => Promise<void>;
 
   /// TransportImplementations.disconnect
-  disconnect?: () => Promise<void>;
+  readonly disconnect?: () => Promise<void>;
 
   /// TransportImplementations.sendPacket
-  sendPacket: (string: string) => Promise<void>;
+  readonly sendPacket: (string: string) => Promise<void>;
 };
 
 /// TransportOptions
 export type TransportOptions = {
   /// TransportOptions.fragmentSize
-  fragmentSize?: number;
+  readonly fragmentSize?: number;
 };
 
 /// createTransport
