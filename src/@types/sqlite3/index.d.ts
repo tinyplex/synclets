@@ -71,7 +71,7 @@ export function createSqlite3Synclet<Depth extends number>(
   Synclet<Depth, Sqlite3DataConnector<Depth>, Sqlite3MetaConnector<Depth>>
 >;
 
-/// getTableSchema
+/// sqlite3.getTableSchema
 export function getTableSchema(
   database: Database,
   table: string,

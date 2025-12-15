@@ -71,7 +71,7 @@ export function createPgliteSynclet<Depth extends number>(
   Synclet<Depth, PgliteDataConnector<Depth>, PgliteMetaConnector<Depth>>
 >;
 
-/// getTableSchema
+/// pglite.getTableSchema
 export function getTableSchema(
   pglite: PGlite,
   table: string,

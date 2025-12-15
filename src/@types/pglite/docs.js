@@ -202,4 +202,4 @@
  * @category Utility
  * @since v0.0.7
  */
-/// getTableSchema
+/// pglite.getTableSchema

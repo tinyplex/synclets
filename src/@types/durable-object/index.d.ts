@@ -151,7 +151,7 @@ export function getSyncletDurableObjectFetch<Namespace extends string>(
   },
 ) => Response;
 
-/// getTableSchema
+/// durable-object.getTableSchema
 export function getTableSchema(
   sqlStorage: SqlStorage,
   table: string,
