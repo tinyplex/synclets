@@ -34,7 +34,9 @@ export type DurableObjectSqliteDataConnector<Depth extends number> =
   };
 
 /// createDurableObjectSqliteDataConnector
-export function createDurableObjectSqliteDataConnector<Depth extends number>(
+export function createDurableObjectSqliteDataConnector<
+  const Depth extends number,
+>(
   options: DurableObjectSqliteDataConnectorOptions<Depth>,
 ): DurableObjectSqliteDataConnector<Depth>;
 
@@ -52,7 +54,9 @@ export type DurableObjectSqliteMetaConnector<Depth extends number> =
   };
 
 /// createDurableObjectSqliteMetaConnector
-export function createDurableObjectSqliteMetaConnector<Depth extends number>(
+export function createDurableObjectSqliteMetaConnector<
+  const Depth extends number,
+>(
   options: DurableObjectSqliteMetaConnectorOptions<Depth>,
 ): DurableObjectSqliteMetaConnector<Depth>;
 

@@ -39,7 +39,7 @@ export type LocalStorageDataConnectorOptions<Depth extends number> = {
 } & DataConnectorOptions<Depth>;
 
 /// createLocalStorageDataConnector
-export function createLocalStorageDataConnector<Depth extends number>(
+export function createLocalStorageDataConnector<const Depth extends number>(
   options: LocalStorageDataConnectorOptions<Depth>,
 ): LocalStorageDataConnector<Depth>;
 
@@ -58,7 +58,7 @@ export type LocalStorageMetaConnectorOptions<Depth extends number> = {
 } & MetaConnectorOptions<Depth>;
 
 /// createLocalStorageMetaConnector
-export function createLocalStorageMetaConnector<Depth extends number>(
+export function createLocalStorageMetaConnector<const Depth extends number>(
   options: LocalStorageMetaConnectorOptions<Depth>,
 ): LocalStorageMetaConnector<Depth>;
 
@@ -99,7 +99,7 @@ export type SessionStorageDataConnectorOptions<Depth extends number> = {
 } & DataConnectorOptions<Depth>;
 
 /// createSessionStorageDataConnector
-export function createSessionStorageDataConnector<Depth extends number>(
+export function createSessionStorageDataConnector<const Depth extends number>(
   options: SessionStorageDataConnectorOptions<Depth>,
 ): SessionStorageDataConnector<Depth>;
 
@@ -118,7 +118,7 @@ export type SessionStorageMetaConnectorOptions<Depth extends number> = {
 } & MetaConnectorOptions<Depth>;
 
 /// createSessionStorageMetaConnector
-export function createSessionStorageMetaConnector<Depth extends number>(
+export function createSessionStorageMetaConnector<const Depth extends number>(
   options: SessionStorageMetaConnectorOptions<Depth>,
 ): SessionStorageMetaConnector<Depth>;
 

@@ -13,12 +13,12 @@ import type {
 } from '../index.d.ts';
 
 /// createMemoryDataConnector
-export function createMemoryDataConnector<Depth extends number>(
+export function createMemoryDataConnector<const Depth extends number>(
   options: DataConnectorOptions<Depth>,
 ): DataConnector<Depth>;
 
 /// createMemoryMetaConnector
-export function createMemoryMetaConnector<Depth extends number>(
+export function createMemoryMetaConnector<const Depth extends number>(
   options: MetaConnectorOptions<Depth>,
 ): MetaConnector<Depth>;
 

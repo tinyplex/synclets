@@ -26,7 +26,7 @@ export type FileDataConnectorOptions<Depth extends number> = {
 } & DataConnectorOptions<Depth>;
 
 /// createFileDataConnector
-export function createFileDataConnector<Depth extends number>(
+export function createFileDataConnector<const Depth extends number>(
   options: FileDataConnectorOptions<Depth>,
 ): FileDataConnector<Depth>;
 
@@ -45,7 +45,7 @@ export type FileMetaConnectorOptions<Depth extends number> = {
 } & MetaConnectorOptions<Depth>;
 
 /// createFileMetaConnector
-export function createFileMetaConnector<Depth extends number>(
+export function createFileMetaConnector<const Depth extends number>(
   options: FileMetaConnectorOptions<Depth>,
 ): FileMetaConnector<Depth>;
 
@@ -80,7 +80,7 @@ export type DirectoryDataConnectorOptions<Depth extends number> = {
 } & DataConnectorOptions<Depth>;
 
 /// createDirectoryDataConnector
-export function createDirectoryDataConnector<Depth extends number>(
+export function createDirectoryDataConnector<const Depth extends number>(
   options: DirectoryDataConnectorOptions<Depth>,
 ): DirectoryDataConnector<Depth>;
 
@@ -99,7 +99,7 @@ export type DirectoryMetaConnectorOptions<Depth extends number> = {
 } & MetaConnectorOptions<Depth>;
 
 /// createDirectoryMetaConnector
-export function createDirectoryMetaConnector<Depth extends number>(
+export function createDirectoryMetaConnector<const Depth extends number>(
   options: DirectoryMetaConnectorOptions<Depth>,
 ): DirectoryMetaConnector<Depth>;
 

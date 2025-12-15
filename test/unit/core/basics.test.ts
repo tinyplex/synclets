@@ -50,6 +50,15 @@ describe('createSynclet', () => {
     ).rejects.toThrow('both connectors must be provided, or both omitted');
   });
 
+  test('error when connectors have different depths', async () => {
+    await expect(
+      createSynclet({
+        dataConnector: createMockDataConnector({depth: 2}),
+        metaConnector: createMockMetaConnector({depth: 3}),
+      }),
+    ).rejects.toThrow('depths must be positive and equal; 2 vs 3');
+  });
+
   test('no connectors, only transport', async () => {
     const transport = createMockTransport();
     const synclet = await createSynclet({

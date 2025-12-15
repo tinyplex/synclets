@@ -29,7 +29,7 @@ export type Sqlite3DataConnectorOptions<Depth extends number> = {
 } & DatabaseDataConnectorOptions<Depth>;
 
 /// createSqlite3DataConnector
-export function createSqlite3DataConnector<Depth extends number>(
+export function createSqlite3DataConnector<const Depth extends number>(
   options: Sqlite3DataConnectorOptions<Depth>,
 ): Sqlite3DataConnector<Depth>;
 
@@ -48,7 +48,7 @@ export type Sqlite3MetaConnectorOptions<Depth extends number> = {
 } & DatabaseMetaConnectorOptions<Depth>;
 
 /// createSqlite3MetaConnector
-export function createSqlite3MetaConnector<Depth extends number>(
+export function createSqlite3MetaConnector<const Depth extends number>(
   options: Sqlite3MetaConnectorOptions<Depth>,
 ): Sqlite3MetaConnector<Depth>;
 

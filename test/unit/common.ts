@@ -145,7 +145,7 @@ export const createChainedTestSynclets = async <
   );
 };
 
-export const createMockDataConnector = <Depth extends number>(options: {
+export const createMockDataConnector = <const Depth extends number>(options: {
   readonly depth: Depth;
 }) =>
   createDataConnector(options, {
@@ -155,7 +155,7 @@ export const createMockDataConnector = <Depth extends number>(options: {
     readChildIds: async () => [],
   }) as DataConnector<Depth>;
 
-export const createMockMetaConnector = <Depth extends number>(options: {
+export const createMockMetaConnector = <const Depth extends number>(options: {
   readonly depth: Depth;
 }) =>
   createMetaConnector(options, {

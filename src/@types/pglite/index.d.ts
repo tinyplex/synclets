@@ -29,7 +29,7 @@ export type PgliteDataConnectorOptions<Depth extends number> = {
 } & DatabaseDataConnectorOptions<Depth>;
 
 /// createPgliteDataConnector
-export function createPgliteDataConnector<Depth extends number>(
+export function createPgliteDataConnector<const Depth extends number>(
   options: PgliteDataConnectorOptions<Depth>,
 ): PgliteDataConnector<Depth>;
 
@@ -48,7 +48,7 @@ export type PgliteMetaConnectorOptions<Depth extends number> = {
 } & DatabaseMetaConnectorOptions<Depth>;
 
 /// createPgliteMetaConnector
-export function createPgliteMetaConnector<Depth extends number>(
+export function createPgliteMetaConnector<const Depth extends number>(
   options: PgliteMetaConnectorOptions<Depth>,
 ): PgliteMetaConnector<Depth>;
 
