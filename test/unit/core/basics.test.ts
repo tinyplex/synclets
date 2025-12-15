@@ -54,6 +54,7 @@ describe('createSynclet', () => {
     await expect(
       createSynclet({
         dataConnector: createMockDataConnector({depth: 2}),
+        // @ts-expect-error Testing invalid input
         metaConnector: createMockMetaConnector({depth: 3}),
       }),
     ).rejects.toThrow('depths must be positive and equal; 2 vs 3');
