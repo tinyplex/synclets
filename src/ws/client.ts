@@ -5,7 +5,6 @@ import type {
   WebSocketTypes,
   WsClientTransport,
 } from '@synclets/@types/ws';
-import {objFreeze} from '../common/object.ts';
 import {promiseNew} from '../common/other.ts';
 import {UTF8} from '../common/string.ts';
 
@@ -55,12 +54,9 @@ export const createWsClientTransport: typeof createWsClientTransportDecl = <
   const sendPacket = async (packet: string): Promise<void> =>
     webSocket.send(packet);
 
-  const transport = createTransport({connect, disconnect, sendPacket}, options);
-
-  const getWebSocket = () => webSocket;
-
-  return objFreeze({
-    ...transport,
-    getWebSocket,
-  }) as WsClientTransport<WebSocketType>;
+  return createTransport(
+    {connect, disconnect, sendPacket},
+    options,
+    {getWebSocket: () => webSocket},
+  ) as WsClientTransport<WebSocketType>;
 };

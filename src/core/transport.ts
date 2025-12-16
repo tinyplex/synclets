@@ -21,6 +21,7 @@ const PACKET = /^(.+) (.+) (\d+) (\d+) (.+)$/;
 export const createTransport: typeof createTransportDecl = (
   {connect, disconnect, sendPacket}: TransportImplementations,
   options: TransportOptions = {},
+  extraFunctions = {},
 ): ProtectedTransport => {
   let attachedSynclet: ProtectedSynclet<number> | undefined;
 
@@ -111,6 +112,7 @@ export const createTransport: typeof createTransportDecl = (
     _brand: 'Transport',
     log,
     _: [attach, detach, sendMessage],
+    ...extraFunctions,
   }) as ProtectedTransport;
   return transport;
 };

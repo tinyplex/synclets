@@ -34,6 +34,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     return createTransport(
       {connect, disconnect, sendPacket},
       options,
+      {getDurableObject: () => durableObject},
     ) as DurableObjectBrokerTransport;
   };
 

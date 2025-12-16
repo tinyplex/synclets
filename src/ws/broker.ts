@@ -7,7 +7,6 @@ import type {
 import {IncomingMessage} from 'http';
 import {WebSocket} from 'ws';
 import {getBrokerFunctions} from '../common/broker.ts';
-import {objFreeze} from '../common/object.ts';
 import {ifNotUndefined, isNull} from '../common/other.ts';
 import {EMPTY_STRING, strMatch, strTest, UTF8} from '../common/string.ts';
 
@@ -85,9 +84,9 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
     handleSendPacket?.(packet);
   };
 
-  const transport = createTransport({connect, disconnect, sendPacket}, options);
-
-  const getWebSocketServer = () => webSocketServer;
-
-  return objFreeze({...transport, getWebSocketServer}) as WsBrokerTransport;
+  return createTransport(
+    {connect, disconnect, sendPacket},
+    options,
+    {getWebSocketServer: () => webSocketServer},
+  ) as WsBrokerTransport;
 };

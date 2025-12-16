@@ -9,7 +9,6 @@ import {
   getPartsFromPacket,
   getUniqueId,
 } from '@synclets/utils';
-import {objFreeze} from '../common/object.ts';
 import {ASTERISK} from '../common/string.ts';
 
 const addEventListener = (
@@ -54,13 +53,9 @@ export const createBroadcastChannelTransport: typeof createBroadcastChannelTrans
     const sendPacket = async (packet: string): Promise<void> =>
       channel.postMessage({from: id, packet});
 
-    const transport = createTransport(
+    return createTransport(
       {connect, disconnect, sendPacket},
       options,
-    );
-
-    return objFreeze({
-      ...transport,
-      getChannelName: () => channelName,
-    }) as BroadcastChannelTransport;
+      {getChannelName: () => channelName},
+    ) as BroadcastChannelTransport;
   };

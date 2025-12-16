@@ -424,4 +424,5 @@ export type TransportOptions = {
 export function createTransport(
   implementations: TransportImplementations,
   options?: TransportOptions,
+  extraFunctions?: ExtraFunctions,
 ): Transport;
