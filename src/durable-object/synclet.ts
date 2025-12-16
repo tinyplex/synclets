@@ -44,7 +44,11 @@ export abstract class SyncletDurableObject<
     super(ctx, env);
     this.ctx.blockConcurrencyWhile(async () => {
       this.#synclet = await createSynclet(
-        this.getCreateComponents?.(),
+        {
+          dataConnector: this.getCreateDataConnector?.(),
+          metaConnector: this.getCreateMetaConnector?.(),
+          transport: this.getCreateTransport?.(),
+        } as SyncletComponents<Depth, DataConnectorType, MetaConnectorType>,
         this.getCreateImplementations?.(),
         this.getCreateOptions?.(),
       );
@@ -66,18 +70,6 @@ export abstract class SyncletDurableObject<
       }
     }
     return createNotImplementedResponse();
-  }
-
-  getCreateComponents?(): SyncletComponents<
-    Depth,
-    DataConnectorType,
-    MetaConnectorType
-  > {
-    return {
-      dataConnector: this.getCreateDataConnector?.(),
-      metaConnector: this.getCreateMetaConnector?.(),
-      transport: this.getCreateTransport?.(),
-    } as SyncletComponents<Depth, DataConnectorType, MetaConnectorType>;
   }
 
   getCreateDataConnector?(): DataConnectorType;

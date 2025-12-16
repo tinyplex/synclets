@@ -15,7 +15,6 @@ import type {
   LogLevel,
   Meta,
   MetaConnector,
-  SyncletComponents,
   SyncletImplementations,
   SyncletOptions,
   Transport,
@@ -108,12 +107,14 @@ export abstract class SyncletDurableObject<
   /// SyncletDurableObject.constructor
   constructor(ctx: DurableObjectState, env: Env);
 
-  /// SyncletDurableObject.getCreateComponents
-  getCreateComponents?(): SyncletComponents<
-    Depth,
-    DataConnectorType,
-    MetaConnectorType
-  >;
+  /// SyncletDurableObject.getCreateDataConnector
+  getCreateDataConnector?(): DataConnectorType;
+
+  /// SyncletDurableObject.getCreateMetaConnector
+  getCreateMetaConnector?(): MetaConnectorType;
+
+  /// SyncletDurableObject.getCreateTransport
+  getCreateTransport?(): Transport | Transport[];
 
   /// SyncletDurableObject.getCreateImplementations
   getCreateImplementations?(): SyncletImplementations<Depth>;

@@ -61,13 +61,11 @@
  * @example
  * ```typescript
  * class MySyncletDurableObject extends SyncletDurableObject {
- *   getCreateComponents() {
- *     return {
- *       dataConnector: createDurableObjectSqliteDataConnector({
- *         depth: 3,
- *         sqlStorage: this.ctx.storage.sql,
- *       }),
- *     };
+ *   getCreateDataConnector() {
+ *     return createDurableObjectSqliteDataConnector({
+ *       depth: 3,
+ *       sqlStorage: this.ctx.storage.sql,
+ *     });
  *   }
  * }
  * ```
@@ -130,13 +128,11 @@
  * @example
  * ```typescript
  * class MySyncletDurableObject extends SyncletDurableObject {
- *   getCreateComponents() {
- *     return {
- *       metaConnector: createDurableObjectSqliteMetaConnector({
- *         depth: 3,
- *         sqlStorage: this.ctx.storage.sql,
- *       }),
- *     };
+ *   getCreateMetaConnector() {
+ *     return createDurableObjectSqliteMetaConnector({
+ *       depth: 3,
+ *       sqlStorage: this.ctx.storage.sql,
+ *     });
  *   }
  * }
  * ```
@@ -254,14 +250,12 @@
  * @example
  * ```typescript
  * class MyBrokerDurableObject extends SyncletDurableObject {
- *   getCreateComponents() {
- *     return {
- *       transport: createDurableObjectBrokerTransport({
- *         durableObject: this,
- *         path: null, // Broker-only mode
- *         brokerPaths: /^room-[a-z0-9]+$/, // Only accept specific room paths
- *       }),
- *     };
+ *   getCreateTransport() {
+ *     return createDurableObjectBrokerTransport({
+ *       durableObject: this,
+ *       path: null, // Broker-only mode
+ *       brokerPaths: /^room-[a-z0-9]+$/, // Only accept specific room paths
+ *     });
  *   }
  * }
  * ```
@@ -274,23 +268,24 @@
  * The SyncletDurableObject class is an abstract base class for creating
  * Synclet-powered Durable Objects.
  *
- * Extend this class and optionally implement the `createDataConnector` and
- * `createMetaConnector` methods to define how your Durable Object stores data
- * and metadata. The class automatically manages the Synclet lifecycle
- * internally - you don't need to initialize or access the synclet directly.
+ * Extend this class and optionally implement the `getCreateDataConnector`,
+ * `getCreateMetaConnector`, and `getCreateTransport` methods to define how
+ * your Durable Object stores data and metadata, and how it communicates. The
+ * class automatically manages the Synclet lifecycle internally - you don't
+ * need to initialize or access the synclet directly.
  *
- * Optionally implement `getSyncletImplementations` or `getSyncletOptions` to
+ * Optionally implement `getCreateImplementations` or `getCreateOptions` to
  * configure custom implementations or other options.
  * @example
  * ```typescript
  * class MySyncletDurableObject extends SyncletDurableObject {
- *   createDataConnector() {
+ *   getCreateDataConnector() {
  *     return createMemoryDataConnector({depth: 3});
  *   }
- *   createMetaConnector() {
+ *   getCreateMetaConnector() {
  *     return createMemoryMetaConnector({depth: 3});
  *   }
- *   getSyncletOptions() {
+ *   getCreateOptions() {
  *     return {logLevel: 'debug'};
  *   }
  * }
@@ -309,13 +304,29 @@
    */
   /// SyncletDurableObject.constructor
   /**
-   * The getCreateComponents method can optionally be implemented to provide
-   * components for creating the Synclet, including data and meta connectors.
-   * @returns A SyncletComponents object.
+   * The getCreateDataConnector method can optionally be implemented to provide
+   * a data connector for the Synclet.
+   * @returns A DataConnector instance.
    * @category Creation
    * @since v0.0.0
    */
-  /// SyncletDurableObject.getCreateComponents
+  /// SyncletDurableObject.getCreateDataConnector
+  /**
+   * The getCreateMetaConnector method can optionally be implemented to provide
+   * a meta connector for the Synclet.
+   * @returns A MetaConnector instance.
+   * @category Creation
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getCreateMetaConnector
+  /**
+   * The getCreateTransport method can optionally be implemented to provide
+   * a transport or array of transports for the Synclet.
+   * @returns A Transport instance or array of Transport instances.
+   * @category Creation
+   * @since v0.0.0
+   */
+  /// SyncletDurableObject.getCreateTransport
   /**
    * The getCreateImplementations method can optionally be implemented to
    * provide custom implementations for Synclet lifecycle hooks, conflict
