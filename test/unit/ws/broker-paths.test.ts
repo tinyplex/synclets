@@ -18,7 +18,7 @@ test('default path means synclet participates on /', async () => {
   const synclet = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
-    transport: createWsBrokerTransport(wss),
+    transport: createWsBrokerTransport({webSocketServer: wss}),
   });
   await synclet.start();
 
@@ -59,7 +59,7 @@ test('specific path means synclet participates there', async () => {
   const synclet = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
-    transport: createWsBrokerTransport(wss, {path: 'p1'}),
+    transport: createWsBrokerTransport({webSocketServer: wss, path: 'p1'}),
   });
   await synclet.start();
 
@@ -98,7 +98,10 @@ test('path: null with brokerPaths regex (broker-only setup)', async () => {
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const serverSynclet = await createSynclet({
-    transport: createWsBrokerTransport(wss, {brokerPaths: /r[123]/}),
+    transport: createWsBrokerTransport({
+      webSocketServer: wss,
+      brokerPaths: /r[123]/,
+    }),
   });
 
   const client1 = await createSynclet({
@@ -135,7 +138,10 @@ test('brokerPaths isolates different rooms', async () => {
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const serverSynclet = await createSynclet({
-    transport: createWsBrokerTransport(wss, {brokerPaths: /r[123]/}),
+    transport: createWsBrokerTransport({
+      webSocketServer: wss,
+      brokerPaths: /r[123]/,
+    }),
   });
 
   const room1client1 = await createSynclet({
@@ -189,7 +195,8 @@ test('path participates, brokerPaths only brokers', async () => {
   const synclet = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
-    transport: createWsBrokerTransport(wss, {
+    transport: createWsBrokerTransport({
+      webSocketServer: wss,
       path: 'p1',
       brokerPaths: /r[123]/,
     }),
@@ -246,7 +253,10 @@ test('brokerPaths with complex regex pattern', async () => {
   wss.setMaxListeners(0);
 
   const serverSynclet = await createSynclet({
-    transport: createWsBrokerTransport(wss, {brokerPaths: /(p1|p2)\/[\w-]+/}),
+    transport: createWsBrokerTransport({
+      webSocketServer: wss,
+      brokerPaths: /(p1|p2)\/[\w-]+/,
+    }),
   });
 
   const gameLobbyClient = await createSynclet({
@@ -287,7 +297,7 @@ test('path without leading slash works correctly', async () => {
   const synclet = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
-    transport: createWsBrokerTransport(wss, {path: 'p1'}),
+    transport: createWsBrokerTransport({webSocketServer: wss, path: 'p1'}),
   });
   await synclet.start();
 
@@ -315,7 +325,10 @@ test('connection rejected when does not match brokerPaths regex', async () => {
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const serverSynclet = await createSynclet({
-    transport: createWsBrokerTransport(wss, {brokerPaths: /r[123]/}),
+    transport: createWsBrokerTransport({
+      webSocketServer: wss,
+      brokerPaths: /r[123]/,
+    }),
   });
 
   const ws = new WebSocket('ws://localhost:' + port + '/invalid');
@@ -336,7 +349,7 @@ test('default brokerPaths accepts any path', async () => {
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const serverSynclet = await createSynclet({
-    transport: createWsBrokerTransport(wss),
+    transport: createWsBrokerTransport({webSocketServer: wss}),
   });
 
   const room1client = await createSynclet({

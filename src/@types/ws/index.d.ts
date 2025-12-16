@@ -28,15 +28,17 @@ export interface WsBrokerTransport extends Transport {
 
 /// WsBrokerTransportOptions
 export type WsBrokerTransportOptions = {
+  /// WsBrokerTransportOptions.webSocketServer
+  readonly webSocketServer: WebSocketServer;
+
   /// WsBrokerTransportOptions.path
   readonly path?: string | null;
 
   /// WsBrokerTransportOptions.brokerPaths
   readonly brokerPaths?: RegExp;
-};
+} & TransportOptions;
 
 /// createWsBrokerTransport
 export function createWsBrokerTransport(
-  webSocketServer: WebSocketServer,
-  options?: WsBrokerTransportOptions & TransportOptions,
+  options: WsBrokerTransportOptions,
 ): WsBrokerTransport;

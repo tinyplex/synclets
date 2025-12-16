@@ -62,6 +62,13 @@
 /// WsBrokerTransportOptions
 {
   /**
+   * The webSocketServer property specifies the WebSocketServer instance to
+   * wrap.
+   * @category Option
+   * @since v0.0.0
+   */
+  /// WsBrokerTransportOptions.webSocketServer
+  /**
    * The path property specifies the WebSocket path to listen on.
    * @category Option
    * @since v0.0.0
@@ -103,8 +110,7 @@
  *
  * This transport is only available in Node.js environments. It automatically
  * broadcasts packets to all connected clients.
- * @param webSocketServer The WebSocketServer instance to wrap.
- * @param options Optional TransportOptions for configuring the transport.
+ * @param options WsBrokerTransportOptions for configuring the transport.
  * @returns A WsBrokerTransport instance for server-side WebSocket
  * communication.
  * @category Transport

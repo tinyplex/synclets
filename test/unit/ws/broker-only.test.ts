@@ -13,7 +13,7 @@ const WS_PORT = 9000;
 test('Two synclets on single server', async () => {
   const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
   const serverSynclet = await createSynclet({
-    transport: createWsBrokerTransport(wss),
+    transport: createWsBrokerTransport({webSocketServer: wss}),
   });
 
   const synclet1 = await createSynclet({

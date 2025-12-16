@@ -1,12 +1,11 @@
 import {createTransport, RESERVED} from '@synclets';
-import {TransportOptions} from '@synclets/@types';
 import type {
   createWsBrokerTransport as createWsBrokerTransportDecl,
   WsBrokerTransport,
   WsBrokerTransportOptions,
 } from '@synclets/@types/ws';
 import {IncomingMessage} from 'http';
-import {WebSocket, WebSocketServer} from 'ws';
+import {WebSocket} from 'ws';
 import {getBrokerFunctions} from '../common/broker.ts';
 import {objFreeze} from '../common/object.ts';
 import {ifNotUndefined, isNull} from '../common/other.ts';
@@ -35,14 +34,12 @@ const addWebSocketConnection = (
       .on('close', close);
   });
 
-export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = (
-  webSocketServer: WebSocketServer,
-  {
-    path = EMPTY_STRING,
-    brokerPaths = /.*/,
-    ...options
-  }: WsBrokerTransportOptions & TransportOptions = {},
-) => {
+export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
+  webSocketServer,
+  path = EMPTY_STRING,
+  brokerPaths = /.*/,
+  ...options
+}: WsBrokerTransportOptions): WsBrokerTransport => {
   let handleSendPacket: ((packet: string) => void) | undefined;
   let handleClose: (() => void) | undefined;
 

@@ -15,7 +15,7 @@ describeCommonConnectorTests(
     const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
     return [
       await createSynclet({
-        transport: createWsBrokerTransport(wss),
+        transport: createWsBrokerTransport({webSocketServer: wss}),
       }),
       wss,
     ] as const;
@@ -38,7 +38,7 @@ describeCommonConnectorTests(
 test('getWebSocket', async () => {
   const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
   const serverSynclet = await createSynclet({
-    transport: createWsBrokerTransport(wss),
+    transport: createWsBrokerTransport({webSocketServer: wss}),
   });
   const webSocket = new WebSocket('ws://localhost:' + WS_PORT).setMaxListeners(
     0,
