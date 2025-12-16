@@ -32,6 +32,22 @@ export class TestBrokerOnlyDurableObject extends BrokerOnlyDurableObject {
   }
 }
 
+export class TestBrokerOnlyDurableObject2 extends SyncletDurableObject {
+  getCreateComponents() {
+    return {
+      transport: createDurableObjectBrokerTransport(),
+    };
+  }
+
+  async api(method: string, ...args: any[]): Promise<any> {
+    return await api(this, method, ...args);
+  }
+
+  getClientCount() {
+    return this.ctx.getWebSockets().length;
+  }
+}
+
 export class TestConnectorsOnlyDurableObject extends TestSyncletDurableObject {
   getCreateComponents() {
     return {

@@ -3,7 +3,7 @@ import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/memory';
-import {createWsBrokerOnly, createWsClientTransport} from 'synclets/ws';
+import {createWsBrokerTransport, createWsClientTransport} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {describeCommonConnectorTests} from '../common.ts';
@@ -11,11 +11,18 @@ import {describeCommonConnectorTests} from '../common.ts';
 const WS_PORT = 9001;
 
 describeCommonConnectorTests(
-  async () =>
-    createWsBrokerOnly(new WebSocketServer({port: WS_PORT}).setMaxListeners(0)),
-  async (wsServer) => {
-    wsServer.destroy();
-    wsServer.getWebSocketServer().close();
+  async () => {
+    const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
+    return [
+      await createSynclet({
+        transport: createWsBrokerTransport(wss),
+      }),
+      wss,
+    ] as const;
+  },
+  async ([serverSynclet, wss]) => {
+    serverSynclet.destroy();
+    wss.close();
   },
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
@@ -29,9 +36,10 @@ describeCommonConnectorTests(
 );
 
 test('getWebSocket', async () => {
-  const wsServer = await createWsBrokerOnly(
-    new WebSocketServer({port: WS_PORT}).setMaxListeners(0),
-  );
+  const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
+  const serverSynclet = await createSynclet({
+    transport: createWsBrokerTransport(wss),
+  });
   const webSocket = new WebSocket('ws://localhost:' + WS_PORT).setMaxListeners(
     0,
   );
@@ -46,6 +54,6 @@ test('getWebSocket', async () => {
   await synclet.destroy();
 
   webSocket.close();
-  wsServer.destroy();
-  wsServer.getWebSocketServer().close();
+  serverSynclet.destroy();
+  wss.close();
 });

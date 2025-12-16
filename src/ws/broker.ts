@@ -1,9 +1,7 @@
-import {createSynclet, createTransport, RESERVED} from '@synclets';
+import {createTransport, RESERVED} from '@synclets';
 import {TransportOptions} from '@synclets/@types';
 import type {
-  createWsBrokerOnly as createWsBrokerOnlyDecl,
   createWsBrokerTransport as createWsBrokerTransportDecl,
-  WsBrokerOnly,
   WsBrokerTransport,
   WsBrokerTransportOptions,
 } from '@synclets/@types/ws';
@@ -36,24 +34,6 @@ const addWebSocketConnection = (
       .on('message', (data) => receivePacket(data.toString(UTF8)))
       .on('close', close);
   });
-
-export const createWsBrokerOnly = (async (
-  webSocketServer: WebSocketServer,
-  brokerPaths?: RegExp,
-) => {
-  const synclet = await createSynclet({
-    transport: createWsBrokerTransport(webSocketServer, {
-      path: null,
-      brokerPaths,
-    }),
-  });
-
-  const getWebSocketServer = () => webSocketServer;
-
-  const destroy = synclet.destroy;
-
-  return objFreeze({getWebSocketServer, destroy} as WsBrokerOnly);
-}) as typeof createWsBrokerOnlyDecl;
 
 export const createWsBrokerTransport = ((
   webSocketServer: WebSocketServer,

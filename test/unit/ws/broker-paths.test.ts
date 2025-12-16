@@ -3,11 +3,7 @@ import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/memory';
-import {
-  createWsBrokerOnly,
-  createWsBrokerTransport,
-  createWsClientTransport,
-} from 'synclets/ws';
+import {createWsBrokerTransport, createWsClientTransport} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../common.ts';
@@ -101,7 +97,9 @@ test('path: null with brokerPaths regex (broker-only setup)', async () => {
   const port = getPort();
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
-  const broker = await createWsBrokerOnly(wss, /r[123]/);
+  const serverSynclet = await createSynclet({
+    transport: createWsBrokerTransport(wss, {brokerPaths: /r[123]/}),
+  });
 
   const client1 = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -126,7 +124,7 @@ test('path: null with brokerPaths regex (broker-only setup)', async () => {
 
   expect(await client2.getData()).toEqual({a: 'A'});
 
-  await broker.destroy();
+  await serverSynclet.destroy();
   await client1.destroy();
   await client2.destroy();
   wss.close();
@@ -136,7 +134,9 @@ test('brokerPaths isolates different rooms', async () => {
   const port = getPort();
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
-  const broker = await createWsBrokerOnly(wss, /r[123]/);
+  const serverSynclet = await createSynclet({
+    transport: createWsBrokerTransport(wss, {brokerPaths: /r[123]/}),
+  });
 
   const room1client1 = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -174,7 +174,7 @@ test('brokerPaths isolates different rooms', async () => {
   expect(await room1client2.getData()).toEqual({a: 'r1'});
   expect(await room2client.getData()).toEqual({a: 'r2'});
 
-  await broker.destroy();
+  await serverSynclet.destroy();
   await room1client1.destroy();
   await room1client2.destroy();
   await room2client.destroy();
@@ -245,7 +245,9 @@ test('brokerPaths with complex regex pattern', async () => {
   const wss = new WebSocketServer({port}).setMaxListeners(0);
   wss.setMaxListeners(0);
 
-  const broker = await createWsBrokerOnly(wss, /(p1|p2)\/[\w-]+/);
+  const serverSynclet = await createSynclet({
+    transport: createWsBrokerTransport(wss, {brokerPaths: /(p1|p2)\/[\w-]+/}),
+  });
 
   const gameLobbyClient = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -272,7 +274,7 @@ test('brokerPaths with complex regex pattern', async () => {
   expect(await gameLobbyClient.getData()).toEqual({a: 'p1a'});
   expect(await chatGeneralClient.getData()).toEqual({a: 'p2b'});
 
-  await broker.destroy();
+  await serverSynclet.destroy();
   await gameLobbyClient.destroy();
   await chatGeneralClient.destroy();
   wss.close();
@@ -312,7 +314,9 @@ test('connection rejected when does not match brokerPaths regex', async () => {
   const port = getPort();
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
-  const broker = await createWsBrokerOnly(wss, /r[123]/);
+  const serverSynclet = await createSynclet({
+    transport: createWsBrokerTransport(wss, {brokerPaths: /r[123]/}),
+  });
 
   const ws = new WebSocket('ws://localhost:' + port + '/invalid');
 
@@ -323,7 +327,7 @@ test('connection rejected when does not match brokerPaths regex', async () => {
 
   expect(ws.readyState).toBe(WebSocket.CLOSED);
 
-  await broker.destroy();
+  await serverSynclet.destroy();
   wss.close();
 });
 
@@ -331,7 +335,9 @@ test('default brokerPaths accepts any path', async () => {
   const port = getPort();
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
-  const broker = await createWsBrokerOnly(wss);
+  const serverSynclet = await createSynclet({
+    transport: createWsBrokerTransport(wss),
+  });
 
   const room1client = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -369,7 +375,7 @@ test('default brokerPaths accepts any path', async () => {
   expect(await room2client.getData()).toEqual({b: 'r2'});
   expect(await room3client.getData()).toEqual({c: 'r3'});
 
-  await broker.destroy();
+  await serverSynclet.destroy();
   await room1client.destroy();
   await room2client.destroy();
   await room3client.destroy();

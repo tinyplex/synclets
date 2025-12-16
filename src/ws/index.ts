@@ -1,2 +1,2 @@
-export {createWsBrokerOnly, createWsBrokerTransport} from './broker.ts';
+export {createWsBrokerTransport} from './broker.ts';
 export {createWsClientTransport} from './client.ts';

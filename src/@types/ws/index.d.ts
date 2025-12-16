@@ -40,18 +40,3 @@ export function createWsBrokerTransport(
   webSocketServer: WebSocketServer,
   options?: WsBrokerTransportOptions & TransportOptions,
 ): WsBrokerTransport;
-
-/// WsBrokerOnly
-export interface WsBrokerOnly {
-  /// WsBrokerOnly.getWebSocketServer
-  getWebSocketServer(): WebSocketServer;
-
-  /// WsBrokerOnly.destroy
-  destroy(): Promise<void>;
-}
-
-/// createWsBrokerOnly
-export function createWsBrokerOnly(
-  webSocketServer: WebSocketServer,
-  brokerPaths?: RegExp,
-): Promise<WsBrokerOnly>;
