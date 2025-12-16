@@ -18,10 +18,15 @@ export interface BroadcastChannelTransport extends Transport {
   getChannelName(): string;
 }
 
+/// BroadcastChannelTransportOptions
+export type BroadcastChannelTransportOptions = {
+  /// BroadcastChannelTransportOptions.channelName
+  readonly channelName: string;
+} & TransportOptions;
+
 /// createBroadcastChannelTransport
 export function createBroadcastChannelTransport(
-  channelName: string,
-  options?: TransportOptions,
+  options: BroadcastChannelTransportOptions,
 ): BroadcastChannelTransport;
 
 /// LocalStorageDataConnector

@@ -12,12 +12,15 @@ describeCommonConnectorTests(
   async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
-  (uniqueId: string) => createBroadcastChannelTransport(uniqueId),
+  (uniqueId: string) =>
+    createBroadcastChannelTransport({channelName: uniqueId}),
   2,
 );
 
 test('getChannelName', async () => {
-  const transport = createBroadcastChannelTransport('test-channel');
+  const transport = createBroadcastChannelTransport({
+    channelName: 'test-channel',
+  });
   const synclet = await createSynclet({transport});
   await synclet.start();
 

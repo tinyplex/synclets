@@ -24,6 +24,28 @@
 }
 
 /**
+ * The BroadcastChannelTransportOptions type describes the options for creating
+ * a BroadcastChannelTransport.
+ *
+ * This type extends TransportOptions with the channelName property, which
+ * specifies the name of the BroadcastChannel to use for communication.
+ * @category Transport
+ * @since v0.0.0
+ */
+/// BroadcastChannelTransportOptions
+{
+  /**
+   * The channelName property specifies the name of the BroadcastChannel to use.
+   *
+   * All Synclets using the same channel name within the same origin can
+   * communicate with each other across different browser contexts.
+   * @category Configuration
+   * @since v0.0.0
+   */
+  /// BroadcastChannelTransportOptions.channelName
+}
+
+/**
  * The createBroadcastChannelTransport function wraps a BroadcastChannel in a
  * BroadcastChannelTransport implementation.
  *
@@ -39,8 +61,7 @@
  *
  * This is ideal for synchronizing state across multiple tabs or windows of the
  * same web application without server involvement.
- * @param channelName The name of the BroadcastChannel to use.
- * @param options Optional TransportOptions for configuring the transport.
+ * @param options Options including the channel name and transport settings.
  * @returns A BroadcastChannelTransport instance for cross-tab
  *   communication.
  * @category Transport

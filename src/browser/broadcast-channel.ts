@@ -1,7 +1,7 @@
 import {createTransport} from '@synclets';
-import type {TransportOptions} from '@synclets/@types';
 import type {
   BroadcastChannelTransport,
+  BroadcastChannelTransportOptions,
   createBroadcastChannelTransport as createBroadcastChannelTransportDecl,
 } from '@synclets/@types/browser';
 import {
@@ -22,10 +22,10 @@ const addEventListener = (
 };
 
 export const createBroadcastChannelTransport: typeof createBroadcastChannelTransportDecl =
-  (
-    channelName: string,
-    options?: TransportOptions,
-  ): BroadcastChannelTransport => {
+  ({
+    channelName,
+    ...options
+  }: BroadcastChannelTransportOptions): BroadcastChannelTransport => {
     const id = getUniqueId();
     let channel: BroadcastChannel;
     let removeMessageListener: (() => void) | undefined;
