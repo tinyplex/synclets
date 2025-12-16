@@ -32,6 +32,16 @@ export const arrayPop = <Value>(array: Value[]): Value | undefined =>
 export const arrayShift = <Value>(array: Value[]): Value | undefined =>
   array.shift();
 
+export const arrayFilter = <Value>(
+  array: Value[],
+  test: (value: Value, index: number, array: Value[]) => boolean,
+): Value[] => array.filter(test);
+
+export const arrayFind = <Value>(
+  array: Value[],
+  test: (value: Value, index: number, array: Value[]) => boolean,
+): Value | undefined => array.find(test);
+
 export const arrayEvery = <Value>(
   array: Value[],
   test: (value: Value, index: number, array: Value[]) => boolean,

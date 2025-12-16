@@ -29,7 +29,7 @@ export const createStorageConnector = <
     } catch {}
   };
 
-  const extraMethods = {
+  const extraMembers = {
     getStorageName: () => storageName,
   };
 
@@ -39,7 +39,7 @@ export const createStorageConnector = <
     undefined,
     onChange,
     getInitialAfterConnect,
-    extraMethods,
+    extraMembers,
   ) as CreateLocal extends true
     ? CreateMeta extends true
       ? LocalStorageMetaConnector<Depth>

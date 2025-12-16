@@ -65,7 +65,7 @@ export const createFileConnector = <
       (CreateMeta extends true ? Meta : Data) | undefined
     >;
 
-  const extraMethods = {
+  const extraMembers = {
     getFile: () => file,
   };
 
@@ -75,7 +75,7 @@ export const createFileConnector = <
     connect,
     onChange,
     getInitialAfterConnect,
-    extraMethods,
+    extraMembers,
   ) as CreateMeta extends true
     ? FileMetaConnector<Depth>
     : FileDataConnector<Depth>;
@@ -115,7 +115,7 @@ export const createDirectoryConnector = <
       await getDirectoryContents(validatedDirectory, encodePaths(address)),
     );
 
-  const extraMethods = {
+  const extraMembers = {
     getDirectory: () => directory,
   };
 
@@ -130,7 +130,7 @@ export const createDirectoryConnector = <
           readChildIds,
         },
         {},
-        extraMethods,
+        extraMembers,
       )
     : createDataConnector(
         {depth},
@@ -142,7 +142,7 @@ export const createDirectoryConnector = <
           readChildIds,
         },
         {},
-        extraMethods,
+        extraMembers,
       );
 
   return connector as CreateMeta extends true

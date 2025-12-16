@@ -1,6 +1,26 @@
+import {createTransport} from '@synclets';
+import {TransportImplementations} from '@synclets/@types';
+import {
+  DurableObjectTransport,
+  DurableObjectTransportOptions,
+} from '@synclets/@types/durable-object';
 import {EMPTY_STRING, strMatch} from '../common/string.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
+
+export const createDurableObjectTransport = (
+  {connect, disconnect, sendPacket}: TransportImplementations,
+  {fetch}: {fetch: (request: Request) => Promise<Response | undefined>},
+  {durableObject, ...options}: DurableObjectTransportOptions,
+) => {
+  const getDurableObject = () => durableObject;
+
+  return createTransport({connect, disconnect, sendPacket}, options, {
+    _brand2: 'DurableObjectTransport',
+    __: [fetch],
+    getDurableObject,
+  }) as DurableObjectTransport;
+};
 
 export const getPathId = (request: Request): string =>
   strMatch(new URL(request.url).pathname, PATH_REGEX)?.[1] ?? EMPTY_STRING;

@@ -8,7 +8,7 @@ import type {
   DataConnector,
   DataConnectorImplementations,
   DataConnectorOptimizations,
-  ExtraMethods,
+  ExtraMembers,
   Meta,
   MetaConnector,
   MetaConnectorImplementations,
@@ -32,7 +32,7 @@ export const createMemoryConnector = <
   getInitialAfterConnect?: () => Promise<
     (CreateMeta extends true ? Meta : Data) | undefined
   >,
-  extraMethods: ExtraMethods = {},
+  extraMembers: ExtraMembers = {},
 ) => {
   let tree: Data | Meta = {};
 
@@ -101,7 +101,7 @@ export const createMemoryConnector = <
             readLeaves as MetaConnectorOptimizations<Depth>['readTimestamps'],
           getMeta: getTree,
         },
-        extraMethods,
+        extraMembers,
       )
     : createDataConnector(
         {depth},
@@ -117,7 +117,7 @@ export const createMemoryConnector = <
             readLeaves as DataConnectorOptimizations<Depth>['readAtoms'],
           getData: getTree,
         },
-        extraMethods,
+        extraMembers,
       );
 
   return connector as CreateMeta extends true

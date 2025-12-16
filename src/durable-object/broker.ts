@@ -1,13 +1,10 @@
-import {createTransport} from '@synclets';
-import {
-  createDurableObjectBrokerTransport as createDurableObjectBrokerTransportDecl,
-  DurableObjectBrokerTransport,
-} from '@synclets/@types/durable-object';
+import {createDurableObjectBrokerTransport as createDurableObjectBrokerTransportDecl} from '@synclets/@types/durable-object';
 import {arrayForEach} from '../common/array.ts';
 import {objValues} from '../common/object.ts';
 import {ifNotNull, ifNotUndefined, slice} from '../common/other.ts';
 import {ASTERISK, SPACE} from '../common/string.ts';
 import {
+  createDurableObjectTransport,
   createResponse,
   createUpgradeRequiredResponse,
   getClientId,
@@ -16,9 +13,8 @@ import {
 import {SyncletDurableObject} from './synclet.ts';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
-  ({durableObject, path, brokerPaths, ...options}) => {
+  ({path, brokerPaths, ...options}) => {
     const _ = {
-      durableObject,
       path,
       brokerPaths,
     };
@@ -31,11 +27,15 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
 
     const sendPacket = async (_packet: string): Promise<void> => {};
 
-    return createTransport(
+    const fetch = async (_request: Request): Promise<Response | undefined> => {
+      return undefined;
+    };
+
+    return createDurableObjectTransport(
       {connect, disconnect, sendPacket},
+      {fetch},
       options,
-      {getDurableObject: () => durableObject},
-    ) as DurableObjectBrokerTransport;
+    );
   };
 
 export class BrokerOnlyDurableObject<
@@ -45,7 +45,7 @@ export class BrokerOnlyDurableObject<
     super(ctx, env);
   }
 
-  fetch(request: Request): Response {
+  async fetch(request: Request): Promise<Response> {
     const pathId = getPathId(request);
     return ifNotNull(
       getClientId(request),

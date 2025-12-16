@@ -34,7 +34,7 @@ export const createDatabaseConnector = <
   }: DatabaseMetaConnectorOptions<Depth> & DatabaseDataConnectorOptions<Depth>,
   query: <Row>(sql: Sql) => Promise<Row[]>,
   getSchema: (table: string) => Promise<{[column: string]: string}>,
-  extraMethods: {[name: string]: any},
+  extraMembers: {[name: string]: any},
 ) => {
   const [table, leafColumn] = createMeta
     ? [metaTable, timestampColumn]
@@ -178,7 +178,7 @@ export const createDatabaseConnector = <
           readChildIds,
         },
         {readTimestamps: readLeaves},
-        extraMethods,
+        extraMembers,
       )
     : createDataConnector(
         {depth},
@@ -190,7 +190,7 @@ export const createDatabaseConnector = <
           readChildIds,
         },
         {readAtoms: readLeaves},
-        extraMethods,
+        extraMembers,
       );
 
   return connector;

@@ -14,6 +14,8 @@ import type {
   Transport,
 } from '@synclets/@types';
 import {DurableObject} from 'cloudflare:workers';
+import {arrayFilter} from '../common/array.ts';
+import {isUndefined} from '../common/other.ts';
 import {createSynclet} from '../core/synclet.ts';
 import {
   createNotImplementedResponse,
@@ -21,6 +23,9 @@ import {
   getClientId,
   getPathId,
 } from './common.ts';
+import {ProtectedDurableObjectTransport} from './types.ts';
+
+const FETCH = 0;
 
 export abstract class SyncletDurableObject<
   Env = unknown,
@@ -33,6 +38,7 @@ export abstract class SyncletDurableObject<
   >,
 > extends DurableObject<Env> {
   #synclet!: Synclet<Depth, DataConnectorType, MetaConnectorType>;
+  #durableObjectTransports!: ProtectedDurableObjectTransport[];
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -42,10 +48,23 @@ export abstract class SyncletDurableObject<
         this.getCreateImplementations?.(),
         this.getCreateOptions?.(),
       );
+      this.#durableObjectTransports = arrayFilter(
+        this.#synclet.getTransport() as ProtectedDurableObjectTransport[],
+        (transport) =>
+          '_brand2' in transport &&
+          transport._brand2 === 'DurableObjectTransport' &&
+          transport.getDurableObject() === this,
+      );
     });
   }
 
-  fetch(_request: Request): Response {
+  async fetch(request: Request): Promise<Response> {
+    for (const durableObjectTransport of this.#durableObjectTransports) {
+      const response = await durableObjectTransport.__[FETCH](request);
+      if (!isUndefined(response)) {
+        return response;
+      }
+    }
     return createNotImplementedResponse();
   }
 
@@ -53,7 +72,19 @@ export abstract class SyncletDurableObject<
     Depth,
     DataConnectorType,
     MetaConnectorType
-  >;
+  > {
+    return {
+      dataConnector: this.getCreateDataConnector?.(),
+      metaConnector: this.getCreateMetaConnector?.(),
+      transport: this.getCreateTransport?.(),
+    } as SyncletComponents<Depth, DataConnectorType, MetaConnectorType>;
+  }
+
+  getCreateDataConnector?(): DataConnectorType;
+
+  getCreateMetaConnector?(): MetaConnectorType;
+
+  getCreateTransport?(): Transport | Transport[];
 
   getCreateImplementations?(): SyncletImplementations<Depth>;
 

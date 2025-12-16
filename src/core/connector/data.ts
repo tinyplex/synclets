@@ -5,7 +5,7 @@ import type {
   DataConnectorImplementations,
   DataConnectorOptimizations,
   DataConnectorOptions,
-  ExtraMethods,
+  ExtraMembers,
   LogLevel,
 } from '@synclets/@types';
 import {objFreeze} from '../../common/object.ts';
@@ -27,7 +27,7 @@ export const createDataConnector: typeof createDataConnectorDecl = <
     readChildIds,
   }: DataConnectorImplementations<Depth>,
   {readAtoms, getData}: DataConnectorOptimizations<Depth> = {},
-  extraMethods: ExtraMethods = {},
+  extraMembers: ExtraMembers = {},
 ): ProtectedDataConnector<Depth> => {
   let attachedSynclet: ProtectedSynclet<Depth> | undefined;
   let syncletWriting = 0;
@@ -67,7 +67,7 @@ export const createDataConnector: typeof createDataConnectorDecl = <
   };
 
   return objFreeze({
-    ...extraMethods,
+    ...extraMembers,
     _brand: 'DataConnector',
     depth,
     log,

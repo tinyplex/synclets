@@ -34,7 +34,7 @@ export const createSqliteDatabaseConnector = <
     ? DatabaseMetaConnectorOptions<Depth>
     : DatabaseDataConnectorOptions<Depth>,
   query: <Row>(sql: Sql) => Promise<Row[]>,
-  extraMethods: {[name: string]: any},
+  extraMembers: {[name: string]: any},
 ): Connector => {
   const getSchema = (table: string) => getSqliteTableSchema(table, query);
 
@@ -43,6 +43,6 @@ export const createSqliteDatabaseConnector = <
     options,
     query,
     getSchema,
-    extraMethods,
+    extraMembers,
   ) as Connector;
 };

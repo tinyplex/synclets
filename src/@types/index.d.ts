@@ -94,8 +94,8 @@ export type Message = [
 /// Context
 export type Context = {[key: string]: Atom};
 
-/// ExtraMethods
-export type ExtraMethods = {[name: string]: (...args: any[]) => any};
+/// ExtraMembers
+export type ExtraMembers = {[name: string]: unknown};
 
 /// Logger
 export type Logger = {
@@ -322,7 +322,7 @@ export function createDataConnector<Depth extends number>(
   options: DataConnectorOptions<Depth>,
   implementations: DataConnectorImplementations<Depth>,
   optimizations?: DataConnectorOptimizations<Depth>,
-  extraMethods?: ExtraMethods,
+  extraMembers?: ExtraMembers,
 ): DataConnector<Depth>;
 
 // --
@@ -386,7 +386,7 @@ export function createMetaConnector<Depth extends number>(
   options: MetaConnectorOptions<Depth>,
   implementations: MetaConnectorImplementations<Depth>,
   optimizations?: MetaConnectorOptimizations<Depth>,
-  extraMethods?: ExtraMethods,
+  extraMembers?: ExtraMembers,
 ): MetaConnector<Depth>;
 
 // --
@@ -424,5 +424,5 @@ export type TransportOptions = {
 export function createTransport(
   implementations: TransportImplementations,
   options?: TransportOptions,
-  extraMethods?: ExtraMethods,
+  extraMembers?: ExtraMembers,
 ): Transport;
