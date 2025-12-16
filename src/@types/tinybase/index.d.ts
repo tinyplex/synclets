@@ -4,7 +4,6 @@ import type {Store} from 'tinybase';
 import type {
   DataConnector,
   MetaConnector,
-  MetaConnectorOptions,
   Synclet,
   SyncletImplementations,
   SyncletOptions,
@@ -29,14 +28,13 @@ export function createTinyBaseDataConnector(
 ): TinyBaseDataConnector;
 
 /// TinyBaseSyncletOptions
-export type TinyBaseSyncletOptions = TinyBaseDataConnectorOptions &
-  Omit<MetaConnectorOptions<3>, 'depth'> & {
-    /// TinyBaseSyncletOptions.transport
-    readonly transport?: Transport | Transport[];
+export type TinyBaseSyncletOptions = TinyBaseDataConnectorOptions & {
+  /// TinyBaseSyncletOptions.transport
+  readonly transport?: Transport | Transport[];
 
-    /// TinyBaseSyncletOptions.implementations
-    readonly implementations?: SyncletImplementations<3>;
-  } & SyncletOptions;
+  /// TinyBaseSyncletOptions.implementations
+  readonly implementations?: SyncletImplementations<3>;
+} & SyncletOptions;
 
 /// TinyBaseSynclet
 export type TinyBaseSynclet = Synclet<

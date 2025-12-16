@@ -11,24 +11,21 @@ import {describeCommonConnectorTests} from '../common.ts';
 const WS_PORT = 9002;
 
 describeCommonConnectorTests(
-  async () => {
-    const wss = new WebSocketServer({port: WS_PORT});
-    wss.setMaxListeners(0);
-    return wss;
-  },
+  async () => new WebSocketServer({port: WS_PORT}).setMaxListeners(0),
   async (wss: WebSocketServer) => wss.close(),
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
   (_: string, wss: WebSocketServer, syncletNumber: number) =>
     syncletNumber === 0
       ? createWsBrokerTransport(wss)
-      : createWsClientTransport(new WebSocket('ws://localhost:' + WS_PORT)),
+      : createWsClientTransport(
+          new WebSocket('ws://localhost:' + WS_PORT).setMaxListeners(0),
+        ),
   5,
 );
 
 test('getWebSocketServer', async () => {
-  const wss = new WebSocketServer({port: WS_PORT});
-  wss.setMaxListeners(0);
+  const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
 
   const transport = createWsBrokerTransport(wss);
   const synclet = await createSynclet({transport});

@@ -17,8 +17,7 @@ const getPort = () => portCounter++;
 
 test('default path means synclet participates on /', async () => {
   const port = getPort();
-  const wss = new WebSocketServer({port});
-  wss.setMaxListeners(0);
+  const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const synclet = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -31,7 +30,7 @@ test('default path means synclet participates on /', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/'),
+      new WebSocket('ws://localhost:' + port + '/').setMaxListeners(0),
     ),
   });
   await serverRoomClient.start();
@@ -40,7 +39,7 @@ test('default path means synclet participates on /', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/otherRoom'),
+      new WebSocket('ws://localhost:' + port + '/otherRoom').setMaxListeners(0),
     ),
   });
   await otherRoomClient.start();
@@ -59,8 +58,7 @@ test('default path means synclet participates on /', async () => {
 
 test('specific path means synclet participates there', async () => {
   const port = getPort();
-  const wss = new WebSocketServer({port});
-  wss.setMaxListeners(0);
+  const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const synclet = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -73,7 +71,9 @@ test('specific path means synclet participates there', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/serverRoom'),
+      new WebSocket('ws://localhost:' + port + '/serverRoom').setMaxListeners(
+        0,
+      ),
     ),
   });
   await serverRoomClient.start();
@@ -82,7 +82,7 @@ test('specific path means synclet participates there', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/otherRoom'),
+      new WebSocket('ws://localhost:' + port + '/otherRoom').setMaxListeners(0),
     ),
   });
   await otherRoomClient.start();
@@ -101,8 +101,7 @@ test('specific path means synclet participates there', async () => {
 
 test('path: null with brokerPaths regex (broker-only setup)', async () => {
   const port = getPort();
-  const wss = new WebSocketServer({port});
-  wss.setMaxListeners(0);
+  const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const broker = await createWsPureBroker(wss, /room[123]/);
 
@@ -110,7 +109,7 @@ test('path: null with brokerPaths regex (broker-only setup)', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room1'),
+      new WebSocket('ws://localhost:' + port + '/room1').setMaxListeners(0),
     ),
   });
   await client1.start();
@@ -119,7 +118,7 @@ test('path: null with brokerPaths regex (broker-only setup)', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room1'),
+      new WebSocket('ws://localhost:' + port + '/room1').setMaxListeners(0),
     ),
   });
   await client2.start();
@@ -137,8 +136,7 @@ test('path: null with brokerPaths regex (broker-only setup)', async () => {
 
 test('brokerPaths isolates different rooms', async () => {
   const port = getPort();
-  const wss = new WebSocketServer({port});
-  wss.setMaxListeners(0);
+  const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const broker = await createWsPureBroker(wss, /room[123]/);
 
@@ -146,7 +144,7 @@ test('brokerPaths isolates different rooms', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room1'),
+      new WebSocket('ws://localhost:' + port + '/room1').setMaxListeners(0),
     ),
   });
   await room1client1.start();
@@ -155,7 +153,7 @@ test('brokerPaths isolates different rooms', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room1'),
+      new WebSocket('ws://localhost:' + port + '/room1').setMaxListeners(0),
     ),
   });
   await room1client2.start();
@@ -164,7 +162,7 @@ test('brokerPaths isolates different rooms', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room2'),
+      new WebSocket('ws://localhost:' + port + '/room2').setMaxListeners(0),
     ),
   });
   await room2client.start();
@@ -187,7 +185,7 @@ test('brokerPaths isolates different rooms', async () => {
 
 test('path participates, brokerPaths only brokers', async () => {
   const port = getPort();
-  const wss = new WebSocketServer({port});
+  const wss = new WebSocketServer({port}).setMaxListeners(0);
   wss.setMaxListeners(0);
 
   const synclet = await createSynclet({
@@ -204,7 +202,9 @@ test('path participates, brokerPaths only brokers', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/serverRoom'),
+      new WebSocket('ws://localhost:' + port + '/serverRoom').setMaxListeners(
+        0,
+      ),
     ),
   });
   await serverRoomClient.start();
@@ -213,7 +213,7 @@ test('path participates, brokerPaths only brokers', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room1'),
+      new WebSocket('ws://localhost:' + port + '/room1').setMaxListeners(0),
     ),
   });
   await room1client1.start();
@@ -222,7 +222,7 @@ test('path participates, brokerPaths only brokers', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room1'),
+      new WebSocket('ws://localhost:' + port + '/room1').setMaxListeners(0),
     ),
   });
   await room1client2.start();
@@ -246,7 +246,7 @@ test('path participates, brokerPaths only brokers', async () => {
 
 test('brokerPaths with complex regex pattern', async () => {
   const port = getPort();
-  const wss = new WebSocketServer({port});
+  const wss = new WebSocketServer({port}).setMaxListeners(0);
   wss.setMaxListeners(0);
 
   const broker = await createWsPureBroker(wss, /(game|chat)\/[\w-]+/);
@@ -255,7 +255,9 @@ test('brokerPaths with complex regex pattern', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/game/lobby'),
+      new WebSocket('ws://localhost:' + port + '/game/lobby').setMaxListeners(
+        0,
+      ),
     ),
   });
   await gameLobbyClient.start();
@@ -264,7 +266,9 @@ test('brokerPaths with complex regex pattern', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/chat/general'),
+      new WebSocket('ws://localhost:' + port + '/chat/general').setMaxListeners(
+        0,
+      ),
     ),
   });
   await chatGeneralClient.start();
@@ -284,8 +288,7 @@ test('brokerPaths with complex regex pattern', async () => {
 
 test('path without leading slash works correctly', async () => {
   const port = getPort();
-  const wss = new WebSocketServer({port});
-  wss.setMaxListeners(0);
+  const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const synclet = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -298,7 +301,9 @@ test('path without leading slash works correctly', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/serverRoom'),
+      new WebSocket('ws://localhost:' + port + '/serverRoom').setMaxListeners(
+        0,
+      ),
     ),
   });
   await serverRoomClient.start();
@@ -315,8 +320,7 @@ test('path without leading slash works correctly', async () => {
 
 test('default brokerPaths accepts any path', async () => {
   const port = getPort();
-  const wss = new WebSocketServer({port});
-  wss.setMaxListeners(0);
+  const wss = new WebSocketServer({port}).setMaxListeners(0);
 
   const broker = await createWsPureBroker(wss);
 
@@ -324,7 +328,7 @@ test('default brokerPaths accepts any path', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room1'),
+      new WebSocket('ws://localhost:' + port + '/room1').setMaxListeners(0),
     ),
   });
   await room1client.start();
@@ -333,7 +337,7 @@ test('default brokerPaths accepts any path', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room2'),
+      new WebSocket('ws://localhost:' + port + '/room2').setMaxListeners(0),
     ),
   });
   await room2client.start();
@@ -342,7 +346,7 @@ test('default brokerPaths accepts any path', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + port + '/room3'),
+      new WebSocket('ws://localhost:' + port + '/room3').setMaxListeners(0),
     ),
   });
   await room3client.start();

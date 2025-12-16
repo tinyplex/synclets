@@ -11,11 +11,8 @@ import {describeCommonConnectorTests} from '../common.ts';
 const WS_PORT = 9001;
 
 describeCommonConnectorTests(
-  async () => {
-    const wss = new WebSocketServer({port: WS_PORT});
-    wss.setMaxListeners(0);
-    return createWsPureBroker(wss);
-  },
+  async () =>
+    createWsPureBroker(new WebSocketServer({port: WS_PORT}).setMaxListeners(0)),
   async (wsServer) => {
     wsServer.destroy();
     wsServer.getWebSocketServer().close();
@@ -24,16 +21,20 @@ describeCommonConnectorTests(
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
   (uniqueId: string) =>
     createWsClientTransport(
-      new WebSocket('ws://localhost:' + WS_PORT + '/' + uniqueId),
+      new WebSocket(
+        'ws://localhost:' + WS_PORT + '/' + uniqueId,
+      ).setMaxListeners(0),
     ),
   5,
 );
 
 test('getWebSocket', async () => {
-  const wss = new WebSocketServer({port: WS_PORT});
-  wss.setMaxListeners(0);
-  const wsServer = await createWsPureBroker(wss);
-  const webSocket = new WebSocket('ws://localhost:' + WS_PORT);
+  const wsServer = await createWsPureBroker(
+    new WebSocketServer({port: WS_PORT}).setMaxListeners(0),
+  );
+  const webSocket = new WebSocket('ws://localhost:' + WS_PORT).setMaxListeners(
+    0,
+  );
 
   const transport = createWsClientTransport(webSocket);
   const synclet = await createSynclet({transport});
