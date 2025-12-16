@@ -1,3 +1,8 @@
+import {createTransport} from '@synclets';
+import {
+  createDurableObjectBrokerTransport as createDurableObjectBrokerTransportDecl,
+  DurableObjectBrokerTransport,
+} from '@synclets/@types/durable-object';
 import {arrayForEach} from '../common/array.ts';
 import {objValues} from '../common/object.ts';
 import {ifNotNull, ifNotUndefined, slice} from '../common/other.ts';
@@ -9,6 +14,28 @@ import {
   getPathId,
 } from './common.ts';
 import {SyncletDurableObject} from './synclet.ts';
+
+export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
+  ({durableObject, path, brokerPaths, ...options}) => {
+    const _ = {
+      durableObject,
+      path,
+      brokerPaths,
+    };
+
+    const connect = async (
+      _receivePacket: (packet: string) => Promise<void>,
+    ): Promise<void> => {};
+
+    const disconnect = async () => {};
+
+    const sendPacket = async (_packet: string): Promise<void> => {};
+
+    return createTransport(
+      {connect, disconnect, sendPacket},
+      options,
+    ) as DurableObjectBrokerTransport;
+  };
 
 export class BrokerOnlyDurableObject<
   Env = unknown,

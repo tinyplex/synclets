@@ -19,6 +19,7 @@ import type {
   SyncletImplementations,
   SyncletOptions,
   Transport,
+  TransportOptions,
 } from '../index.d.ts';
 
 /// DurableObjectSqliteDataConnectorOptions
@@ -60,6 +61,29 @@ export function createDurableObjectSqliteMetaConnector<
 >(
   options: DurableObjectSqliteMetaConnectorOptions<Depth>,
 ): DurableObjectSqliteMetaConnector<Depth>;
+
+/// DurableObjectBrokerTransport
+export interface DurableObjectBrokerTransport extends Transport {
+  /// DurableObjectBrokerTransport.getDurableObject
+  getDurableObject(): SyncletDurableObject;
+}
+
+/// DurableObjectBrokerTransportOptions
+export type DurableObjectBrokerTransportOptions = {
+  /// DurableObjectBrokerTransportOptions.durableObject
+  readonly durableObject: SyncletDurableObject;
+
+  /// DurableObjectBrokerTransportOptions.path
+  readonly path?: string | null;
+
+  /// DurableObjectBrokerTransportOptions.brokerPaths
+  readonly brokerPaths?: RegExp;
+};
+
+/// createDurableObjectBrokerTransport
+export function createDurableObjectBrokerTransport(
+  options: DurableObjectBrokerTransportOptions & TransportOptions,
+): DurableObjectBrokerTransport;
 
 /// SyncletDurableObject
 export abstract class SyncletDurableObject<

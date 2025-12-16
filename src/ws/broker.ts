@@ -35,7 +35,7 @@ const addWebSocketConnection = (
       .on('close', close);
   });
 
-export const createWsBrokerTransport = ((
+export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = (
   webSocketServer: WebSocketServer,
   {
     path = EMPTY_STRING,
@@ -93,4 +93,4 @@ export const createWsBrokerTransport = ((
   const getWebSocketServer = () => webSocketServer;
 
   return objFreeze({...transport, getWebSocketServer}) as WsBrokerTransport;
-}) as typeof createWsBrokerTransportDecl;
+};

@@ -71,7 +71,7 @@ const ATTACH = 0;
 const DETACH = 1;
 const SEND_MESSAGE = 2;
 
-export const createSynclet = (async <
+export const createSynclet: typeof createSyncletDecl = (async <
   Depth extends number,
   ProtectedDataConnectorType extends ProtectedDataConnector<Depth>,
   ProtectedMetaConnectorType extends ProtectedMetaConnector<Depth>,

@@ -1,5 +1,6 @@
 import {
   BrokerOnlyDurableObject,
+  createDurableObjectBrokerTransport,
   createDurableObjectSqliteDataConnector,
   createDurableObjectSqliteMetaConnector,
   SyncletDurableObject,
@@ -35,7 +36,7 @@ export class TestBrokerOnlyDurableObject extends BrokerOnlyDurableObject {
 export class TestBrokerOnlyDurableObject2 extends SyncletDurableObject {
   getCreateComponents() {
     return {
-      transport: createDurableObjectBrokerTransport(),
+      transport: createDurableObjectBrokerTransport({durableObject: this}),
     };
   }
 
