@@ -35,7 +35,7 @@ export const createPostgresDatabaseConnector = <
     ? DatabaseMetaConnectorOptions<Depth>
     : DatabaseDataConnectorOptions<Depth>,
   query: <Row>(sql: Sql) => Promise<Row[]>,
-  extraFunctions: {[name: string]: any},
+  extraMethods: {[name: string]: any},
 ): Connector => {
   const getSchema = (table: string) => getPostgresTableSchema(table, query);
 
@@ -44,6 +44,6 @@ export const createPostgresDatabaseConnector = <
     options,
     query,
     getSchema,
-    extraFunctions,
+    extraMethods,
   ) as Connector;
 };

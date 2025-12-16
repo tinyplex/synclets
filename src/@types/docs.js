@@ -246,12 +246,12 @@
 /// Context
 
 /**
- * The ExtraFunctions type stores host-provided helper functions keyed by name
+ * The ExtraMethods type stores host-provided helper functions keyed by name
  * for connector implementations.
  * @category Core
  * @since v0.0.0
  */
-/// ExtraFunctions
+/// ExtraMethods
 
 /**
  * The Logger type describes the optional logging functions a Synclet or its

@@ -1,6 +1,6 @@
 import type {
   createMetaConnector as createMetaConnectorDecl,
-  ExtraFunctions,
+  ExtraMethods,
   LogLevel,
   MetaConnectorImplementations,
   MetaConnectorOptimizations,
@@ -22,7 +22,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = <
     readChildIds,
   }: MetaConnectorImplementations<Depth>,
   {readTimestamps, getMeta}: MetaConnectorOptimizations<Depth> = {},
-  extraFunctions: ExtraFunctions = {},
+  extraMethods: ExtraMethods = {},
 ): ProtectedMetaConnector<Depth> => {
   let attachedSynclet: ProtectedSynclet<Depth> | undefined;
 
@@ -43,7 +43,7 @@ export const createMetaConnector: typeof createMetaConnectorDecl = <
   };
 
   return objFreeze({
-    ...extraFunctions,
+    ...extraMethods,
     _brand: 'MetaConnector',
     depth,
     log,

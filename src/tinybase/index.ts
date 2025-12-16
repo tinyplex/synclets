@@ -80,7 +80,7 @@ export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl
             ? store.getValueIds()
             : store.getCellIds(address[0] as string, address[1] as string);
 
-    const extraFunctions = {
+    const extraMethods = {
       getStore: () => store,
     };
 
@@ -88,7 +88,7 @@ export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl
       {depth: 3},
       {connect, disconnect, readAtom, writeAtom, removeAtom, readChildIds},
       {},
-      extraFunctions,
+      extraMethods,
     ) as TinyBaseDataConnector;
   };
 
