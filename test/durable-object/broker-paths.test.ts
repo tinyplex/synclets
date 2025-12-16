@@ -218,3 +218,22 @@ test('client leaves room, others continue', async () => {
   webSocket1.close();
   webSocket3.close();
 });
+
+test('connection rejected when does not match brokerPaths regex', async () => {
+  const {webSocket} = await fetch('/invalid', {
+    headers: {upgrade: 'websocket'},
+  });
+  if (!webSocket) throw new Error('failed to obtain WebSocket from stub');
+
+  webSocket.accept();
+
+  await new Promise((resolve) => {
+    const timeout = setTimeout(() => resolve('timeout'), 1000);
+    webSocket.addEventListener('close', () => {
+      clearTimeout(timeout);
+      resolve('close');
+    });
+  });
+
+  expect(webSocket.readyState).toBe(WebSocket.CLOSED);
+});

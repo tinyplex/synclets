@@ -78,8 +78,11 @@ export const createWsBrokerTransport = ((
     );
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
-    ifNotUndefined(getValidPath(request), (requestPath) =>
-      addWebSocketConnection(webSocket, request, requestPath, addConnection),
+    ifNotUndefined(
+      getValidPath(request),
+      (requestPath) =>
+        addWebSocketConnection(webSocket, request, requestPath, addConnection),
+      () => webSocket.close(),
     );
 
   const connect = async (
