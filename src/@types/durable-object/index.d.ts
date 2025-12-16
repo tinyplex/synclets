@@ -62,27 +62,36 @@ export function createDurableObjectSqliteMetaConnector<
   options: DurableObjectSqliteMetaConnectorOptions<Depth>,
 ): DurableObjectSqliteMetaConnector<Depth>;
 
-/// DurableObjectBrokerTransport
-export interface DurableObjectBrokerTransport extends Transport {
-  /// DurableObjectBrokerTransport.getDurableObject
+/// DurableObjectTransport
+export interface DurableObjectTransport extends Transport {
+  /// DurableObjectTransport._brand2
+  _brand2: 'DurableObjectTransport';
+
+  /// DurableObjectTransport.getDurableObject
   getDurableObject(): SyncletDurableObject;
 }
 
+/// DurableObjectTransportOptions
+export type DurableObjectTransportOptions = {
+  /// DurableObjectTransportOptions.durableObject
+  readonly durableObject: SyncletDurableObject;
+} & TransportOptions;
+
+/// DurableObjectBrokerTransport
+export type DurableObjectBrokerTransport = DurableObjectTransport;
+
 /// DurableObjectBrokerTransportOptions
 export type DurableObjectBrokerTransportOptions = {
-  /// DurableObjectBrokerTransportOptions.durableObject
-  readonly durableObject: SyncletDurableObject;
-
   /// DurableObjectBrokerTransportOptions.path
   readonly path?: string | null;
 
   /// DurableObjectBrokerTransportOptions.brokerPaths
   readonly brokerPaths?: RegExp;
-};
+} & DurableObjectTransportOptions;
 
 /// createDurableObjectBrokerTransport
 export function createDurableObjectBrokerTransport(
-  options: DurableObjectBrokerTransportOptions & TransportOptions,
+  options: DurableObjectBrokerTransportOptions,
 ): DurableObjectBrokerTransport;
 
 /// SyncletDurableObject

@@ -146,26 +146,64 @@
 /// createDurableObjectSqliteMetaConnector
 
 /**
- * The DurableObjectBrokerTransport type represents a transport that enables
- * WebSocket-based message brokering within a Cloudflare Durable Object.
- *
- * This transport handles WebSocket connections, routes messages between clients
- * based on path isolation, and integrates with the Durable Object lifecycle.
- * It is designed to work with BrokerOnlyDurableObject to create stateless
- * broker instances.
+ * The DurableObjectTransport type represents a transport that is specialized
+ * for use with a Cloudflare Durable Object.
  * @category Type
  * @since v0.0.7
  */
-/// DurableObjectBrokerTransport
+/// DurableObjectTransport
 {
+  /**
+   * A branding property to uniquely identify this as a DurableObjectTransport.
+   * @category Property
+   * @since v0.0.7
+   */
+  /// DurableObjectTransport._brand2
   /**
    * Gets the Durable Object instance associated with this transport.
    * @returns The SyncletDurableObject instance.
    * @category Method
    * @since v0.0.7
    */
-  /// DurableObjectBrokerTransport.getDurableObject
+  /// DurableObjectTransport.getDurableObject
 }
+
+/**
+ * The DurableObjectTransportOptions type describes the options for
+ * creating a broker transport for Cloudflare Durable Objects.
+ * @example
+ * ```typescript
+ * const transport = createDurableObjectTransport({
+ *   durableObject: this,
+ *   path: null, // -only mode
+ *   brokerPaths: /room[0-9]+/, // Only broker paths matching this pattern
+ * });
+ * ```
+ * @category Type
+ * @since v0.0.7
+ */
+/// DurableObjectTransportOptions
+{
+  /**
+   * The SyncletDurableObject instance that this transport will be associated
+   * with. This is required so the transport can access the Durable Object's
+   * context for WebSocket handling.
+   * @category Property
+   * @since v0.0.7
+   */
+  /// DurableObjectTransportOptions.durableObject
+}
+
+/**
+ * The DurableObjectBrokerTransport type represents a transport that enables
+ * WebSocket-based message brokering within a Cloudflare Durable Object.
+ *
+ * This transport handles WebSocket connections, routes messages between clients
+ * based on path isolation, and integrates with the Durable Object lifecycle.
+ * @category Type
+ * @since v0.0.7
+ */
+/// DurableObjectBrokerTransport
 
 /**
  * The DurableObjectBrokerTransportOptions type describes the options for
@@ -183,14 +221,6 @@
  */
 /// DurableObjectBrokerTransportOptions
 {
-  /**
-   * The SyncletDurableObject instance that this transport will be associated
-   * with. This is required so the transport can access the Durable Object's
-   * context for WebSocket handling.
-   * @category Property
-   * @since v0.0.7
-   */
-  /// DurableObjectBrokerTransportOptions.durableObject
   /**
    * The path that this Durable Object will participate in as a synclet. Set to
    * `null` for broker-only mode where the Durable Object only routes messages
