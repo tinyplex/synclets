@@ -41,7 +41,7 @@
  * large payloads, and bidirectional communication.
  *
  * The client transport can only connect to servers created with the
- * createWsPureBroker function (or another Synclet running WsBrokerTransport).
+ * createWsBrokerOnly function (or another Synclet running WsBrokerTransport).
  * It is suitable for browser environments (using the Web API WebSocket) and
  * Node.js (using the 'ws' package).
  * @param webSocket The WebSocket instance to wrap (browser WebSocket or ws
@@ -113,7 +113,7 @@
 /// createWsBrokerTransport
 
 /**
- * The WsPureBroker interface describes the minimal API for a stateless
+ * The WsBrokerOnly interface describes the minimal API for a stateless
  * WebSocket server wrapper.
  *
  * It is a convenience interface representing a Synclet with no connectors of
@@ -122,25 +122,25 @@
  * @category Broker
  * @since v0.0.0
  */
-/// WsPureBroker
+/// WsBrokerOnly
 {
   /**
    * The getWebSocketServer method returns the wrapped WebSocketServer instance.
    * @category Accessor
    * @since v0.0.0
    */
-  /// WsPureBroker.getWebSocketServer
+  /// WsBrokerOnly.getWebSocketServer
   /**
    * The destroy method shuts down the WebSocketServer and releases resources.
    * @category Lifecycle
    * @since v0.0.0
    */
-  /// WsPureBroker.destroy
+  /// WsBrokerOnly.destroy
 }
 
 /**
- * The createWsPureBroker function wraps a WebSocketServer to expose the
- * WsPureBroker interface.
+ * The createWsBrokerOnly function wraps a WebSocketServer to expose the
+ * WsBrokerOnly interface.
  *
  * This server acts as the central connection point for multiple client Synclets
  * to communicate with a server-side Synclet. It manages WebSocket connections,
@@ -155,8 +155,8 @@
  * The server requires the 'ws' package and is only available in Node.js
  * environments.
  * @param webSocketServer The WebSocketServer instance to wrap.
- * @returns A WsPureBroker instance.
+ * @returns A WsBrokerOnly instance.
  * @category Broker
  * @since v0.0.0
  */
-/// createWsPureBroker
+/// createWsBrokerOnly

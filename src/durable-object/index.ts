@@ -1,4 +1,4 @@
-export {PureBrokerDurableObject} from './broker.ts';
+export {BrokerOnlyDurableObject} from './broker.ts';
 export {
   createDurableObjectSqliteDataConnector,
   createDurableObjectSqliteMetaConnector,

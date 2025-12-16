@@ -3,7 +3,7 @@ import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/memory';
-import {createWsClientTransport, createWsPureBroker} from 'synclets/ws';
+import {createWsBrokerOnly, createWsClientTransport} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../common.ts';
@@ -12,7 +12,7 @@ const WS_PORT = 9000;
 
 test('getWebSocketServer', async () => {
   const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
-  const wsServer = await createWsPureBroker(wss);
+  const wsServer = await createWsBrokerOnly(wss);
   expect(wsServer.getWebSocketServer()).toEqual(wss);
   wsServer.destroy();
   wss.close();
@@ -20,7 +20,7 @@ test('getWebSocketServer', async () => {
 
 test('Two synclets on single server', async () => {
   const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
-  const wsServer = await createWsPureBroker(wss);
+  const wsServer = await createWsBrokerOnly(wss);
 
   const synclet1 = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),

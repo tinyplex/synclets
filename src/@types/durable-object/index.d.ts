@@ -136,8 +136,8 @@ export abstract class SyncletDurableObject<
   getMeta(): Promise<Readonly<Meta>>;
 }
 
-/// PureBrokerDurableObject
-export class PureBrokerDurableObject<
+/// BrokerOnlyDurableObject
+export class BrokerOnlyDurableObject<
   Env = unknown,
 > extends SyncletDurableObject<Env> {}
 

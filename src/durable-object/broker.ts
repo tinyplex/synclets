@@ -10,7 +10,7 @@ import {
 } from './common.ts';
 import {SyncletDurableObject} from './synclet.ts';
 
-export class PureBrokerDurableObject<
+export class BrokerOnlyDurableObject<
   Env = unknown,
 > extends SyncletDurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {

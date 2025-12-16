@@ -41,17 +41,17 @@ export function createWsBrokerTransport(
   options?: WsBrokerTransportOptions & TransportOptions,
 ): WsBrokerTransport;
 
-/// WsPureBroker
-export interface WsPureBroker {
-  /// WsPureBroker.getWebSocketServer
+/// WsBrokerOnly
+export interface WsBrokerOnly {
+  /// WsBrokerOnly.getWebSocketServer
   getWebSocketServer(): WebSocketServer;
 
-  /// WsPureBroker.destroy
+  /// WsBrokerOnly.destroy
   destroy(): Promise<void>;
 }
 
-/// createWsPureBroker
-export function createWsPureBroker(
+/// createWsBrokerOnly
+export function createWsBrokerOnly(
   webSocketServer: WebSocketServer,
   brokerPaths?: RegExp,
-): Promise<WsPureBroker>;
+): Promise<WsBrokerOnly>;

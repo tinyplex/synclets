@@ -1,7 +1,7 @@
 import {
+  BrokerOnlyDurableObject,
   createDurableObjectSqliteDataConnector,
   createDurableObjectSqliteMetaConnector,
-  PureBrokerDurableObject,
   SyncletDurableObject,
 } from 'synclets/durable-object';
 
@@ -22,7 +22,7 @@ export class TestSyncletDurableObject extends SyncletDurableObject {
   }
 }
 
-export class TestPureBrokerDurableObject extends PureBrokerDurableObject {
+export class TestBrokerOnlyDurableObject extends BrokerOnlyDurableObject {
   async api(method: string, ...args: any[]): Promise<any> {
     return await api(this, method, ...args);
   }

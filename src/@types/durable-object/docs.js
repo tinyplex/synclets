@@ -315,13 +315,13 @@
 }
 
 /**
- * The PureBrokerDurableObject class is a convenience class for creating
+ * The BrokerOnlyDurableObject class is a convenience class for creating
  * stateless Synclet-powered Durable Objects that act as brokers for multiple
  * WebSocket clients.
  * @category Class
  * @since v0.0.0
  */
-/// PureBrokerDurableObject
+/// BrokerOnlyDurableObject
 
 /**
  * The getSyncletDurableObjectFetch function returns a convenient handler for a

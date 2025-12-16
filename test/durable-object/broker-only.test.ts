@@ -29,7 +29,7 @@ const createClients = async (number: number) => {
 
 beforeAll(async () => {
   [miniflare, api, fetch] = await createMiniflare(
-    'TestPureBrokerDurableObject',
+    'TestBrokerOnlyDurableObject',
     PORT,
   );
 });

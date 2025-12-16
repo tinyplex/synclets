@@ -4,9 +4,9 @@ import {
   createMemoryMetaConnector,
 } from 'synclets/memory';
 import {
+  createWsBrokerOnly,
   createWsBrokerTransport,
   createWsClientTransport,
-  createWsPureBroker,
 } from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
@@ -103,7 +103,7 @@ test('path: null with brokerPaths regex (broker-only setup)', async () => {
   const port = getPort();
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
-  const broker = await createWsPureBroker(wss, /room[123]/);
+  const broker = await createWsBrokerOnly(wss, /room[123]/);
 
   const client1 = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -138,7 +138,7 @@ test('brokerPaths isolates different rooms', async () => {
   const port = getPort();
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
-  const broker = await createWsPureBroker(wss, /room[123]/);
+  const broker = await createWsBrokerOnly(wss, /room[123]/);
 
   const room1client1 = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -249,7 +249,7 @@ test('brokerPaths with complex regex pattern', async () => {
   const wss = new WebSocketServer({port}).setMaxListeners(0);
   wss.setMaxListeners(0);
 
-  const broker = await createWsPureBroker(wss, /(game|chat)\/[\w-]+/);
+  const broker = await createWsBrokerOnly(wss, /(game|chat)\/[\w-]+/);
 
   const gameLobbyClient = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
@@ -322,7 +322,7 @@ test('default brokerPaths accepts any path', async () => {
   const port = getPort();
   const wss = new WebSocketServer({port}).setMaxListeners(0);
 
-  const broker = await createWsPureBroker(wss);
+  const broker = await createWsBrokerOnly(wss);
 
   const room1client = await createSynclet({
     dataConnector: createMemoryDataConnector({depth: 1}),
