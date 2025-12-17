@@ -1,7 +1,7 @@
-export {createDurableObjectBrokerTransport} from './broker.ts';
 export {
   createDurableObjectSqliteDataConnector,
   createDurableObjectSqliteMetaConnector,
   getTableSchema,
-} from './sqlite.ts';
+} from './connector.ts';
 export {SyncletDurableObject, getSyncletDurableObjectFetch} from './synclet.ts';
+export {createDurableObjectBrokerTransport} from './transport.ts';
