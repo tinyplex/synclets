@@ -63,8 +63,8 @@ test('accept WebSocket upgrade requests', async () => {
 });
 
 test('2 clients communicate', async () => {
-  const a = await createClients(2);
-  const [[webSocket1, webSocket2], [received1, received2]] = a;
+  const [[webSocket1, webSocket2], [received1, received2]] =
+    await createClients(2);
 
   expect(await api('getClientCount')).toEqual(2);
 
@@ -95,6 +95,9 @@ test('2 clients communicate', async () => {
     [client1Id, 'from1To*'],
     [client1Id, 'from1To2'],
   ]);
+
+  webSocket1.close();
+  webSocket2.close();
 });
 
 test('3 clients communicate', async () => {
@@ -102,6 +105,8 @@ test('3 clients communicate', async () => {
     [webSocket1, webSocket2, webSocket3],
     [received1, received2, received3],
   ] = await createClients(3);
+
+  expect(await api('getClientCount')).toEqual(3);
 
   webSocket1.send('* from1To*');
   await pause(10);
@@ -155,4 +160,8 @@ test('3 clients communicate', async () => {
     [client1Id, 'from1To3'],
     [client2Id, 'from2To3'],
   ]);
+
+  webSocket1.close();
+  webSocket2.close();
+  webSocket3.close();
 });

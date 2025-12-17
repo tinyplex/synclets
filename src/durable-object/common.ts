@@ -10,14 +10,27 @@ const PATH_REGEX = /\/([^?]*)/;
 
 export const createDurableObjectTransport = (
   {connect, disconnect, sendPacket}: TransportImplementations,
-  {fetch}: {fetch: (request: Request) => Promise<Response | undefined>},
+  {
+    fetch,
+    webSocketMessage,
+  }: {
+    fetch: (
+      ctx: DurableObjectState,
+      request: Request,
+    ) => Promise<Response | undefined>;
+    webSocketMessage?: (
+      ctx: DurableObjectState,
+      client: WebSocket,
+      message: ArrayBuffer | string,
+    ) => Promise<boolean | undefined>;
+  },
   {durableObject, ...options}: DurableObjectTransportOptions,
 ) => {
   const getDurableObject = () => durableObject;
 
   return createTransport({connect, disconnect, sendPacket}, options, {
     _brand2: 'DurableObjectTransport',
-    __: [fetch],
+    __: [fetch, webSocketMessage],
     getDurableObject,
   }) as DurableObjectTransport;
 };

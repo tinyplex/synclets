@@ -10,7 +10,6 @@ import {
   getClientId,
   getPathId,
 } from './common.ts';
-import {SyncletDurableObject} from './synclet.ts';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
   ({path, brokerPaths, ...options}) => {
@@ -27,62 +26,48 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
 
     const sendPacket = async (_packet: string): Promise<void> => {};
 
-    const fetch = async (_request: Request): Promise<Response | undefined> => {
-      return undefined;
+    const fetch = async (
+      ctx: DurableObjectState,
+      request: Request,
+    ): Promise<Response | undefined> => {
+      const pathId = getPathId(request);
+      return ifNotNull(
+        getClientId(request),
+        (clientId) => {
+          const [webSocket, client] = objValues(new WebSocketPair());
+          ctx.acceptWebSocket(client, [clientId, pathId]);
+          return createResponse(101, webSocket);
+        },
+        createUpgradeRequiredResponse,
+      ) as Response;
     };
+
+    const webSocketMessage = async (
+      ctx: DurableObjectState,
+      ws: WebSocket,
+      message: ArrayBuffer | string,
+    ): Promise<boolean | undefined> =>
+      ifNotUndefined(ctx.getTags(ws)[0], (clientId) => {
+        const packet = message.toString();
+        const splitAt = packet.indexOf(SPACE);
+        if (splitAt !== -1) {
+          const to = slice(packet, 0, splitAt);
+          const remainder = slice(packet, splitAt + 1);
+          const forwardedPacket = clientId + SPACE + remainder;
+          if (to === ASTERISK) {
+            arrayForEach(ctx.getWebSockets(), (otherClient) =>
+              otherClient !== ws ? otherClient.send(forwardedPacket) : 0,
+            );
+          } else if (to != clientId) {
+            ctx.getWebSockets(to)[0]?.send(forwardedPacket);
+          }
+        }
+        return true;
+      });
 
     return createDurableObjectTransport(
       {connect, disconnect, sendPacket},
-      {fetch},
+      {fetch, webSocketMessage},
       options,
     );
   };
-
-export class BrokerOnlyDurableObject<
-  Env = unknown,
-> extends SyncletDurableObject<Env> {
-  constructor(ctx: DurableObjectState, env: Env) {
-    super(ctx, env);
-  }
-
-  async fetch(request: Request): Promise<Response> {
-    const pathId = getPathId(request);
-    return ifNotNull(
-      getClientId(request),
-      (clientId) => {
-        const [webSocket, client] = objValues(new WebSocketPair());
-        this.ctx.acceptWebSocket(client, [clientId, pathId]);
-        return createResponse(101, webSocket);
-      },
-      createUpgradeRequiredResponse,
-    ) as Response;
-  }
-
-  webSocketMessage(client: WebSocket, message: ArrayBuffer | string) {
-    ifNotUndefined(this.ctx.getTags(client)[0], (clientId) =>
-      this.#handleMessage(clientId, message.toString(), client),
-    );
-  }
-
-  webSocketClose(_client: WebSocket) {}
-
-  #handleMessage(id: string, packet: string, fromClient?: WebSocket) {
-    const splitAt = packet.indexOf(SPACE);
-    if (splitAt !== -1) {
-      const to = slice(packet, 0, splitAt);
-      const remainder = slice(packet, splitAt + 1);
-      const forwardedPacket = id + SPACE + remainder;
-      if (to === ASTERISK) {
-        arrayForEach(this.#getClients(), (otherClient) =>
-          otherClient !== fromClient ? otherClient.send(forwardedPacket) : 0,
-        );
-      } else if (to != id) {
-        this.#getClients(to)[0]?.send(forwardedPacket);
-      }
-    }
-  }
-
-  #getClients(tag?: string) {
-    return this.ctx.getWebSockets(tag);
-  }
-}

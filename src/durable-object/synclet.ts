@@ -25,8 +25,6 @@ import {
 } from './common.ts';
 import {ProtectedDurableObjectTransport} from './types.ts';
 
-const FETCH = 0;
-
 export abstract class SyncletDurableObject<
   Env = unknown,
   Depth extends number = number,
@@ -63,13 +61,28 @@ export abstract class SyncletDurableObject<
   }
 
   async fetch(request: Request): Promise<Response> {
-    for (const durableObjectTransport of this.#durableObjectTransports) {
-      const response = await durableObjectTransport.__[FETCH](request);
+    for (const {
+      __: [fetch],
+    } of this.#durableObjectTransports) {
+      const response = await fetch(this.ctx, request);
       if (!isUndefined(response)) {
         return response;
       }
     }
     return createNotImplementedResponse();
+  }
+
+  async webSocketMessage(
+    ws: WebSocket,
+    message: string | ArrayBuffer,
+  ): Promise<void> {
+    for (const {
+      __: [, webSocketMessage],
+    } of this.#durableObjectTransports) {
+      if (await webSocketMessage(this.ctx, ws, message)) {
+        break;
+      }
+    }
   }
 
   getCreateDataConnector?(): DataConnectorType;
