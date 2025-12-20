@@ -38,10 +38,11 @@ export const createDurableObjectTransport = (
 export const getPathId = (request: Request): string =>
   strMatch(new URL(request.url).pathname, PATH_REGEX)?.[1] ?? EMPTY_STRING;
 
-export const getClientId = (request: Request): string | null =>
-  request.headers.get('upgrade')?.toLowerCase() == 'websocket'
-    ? request.headers.get('sec-websocket-key')
-    : null;
+export const getClientId = (
+  upgrade: string | null | undefined,
+  websocketKey: string | null | undefined,
+): string | null =>
+  upgrade?.toLowerCase() == 'websocket' ? (websocketKey ?? null) : null;
 
 export const createResponse = (
   status: number,
@@ -49,8 +50,8 @@ export const createResponse = (
   body: string | null = null,
 ): Response => new Response(body, {status, webSocket});
 
-export const createUpgradeRequiredResponse = (): Response =>
-  createResponse(426, null, 'Upgrade required');
+export const createUpgradeRequiredResponse = async (): Promise<Response> =>
+  createResponse(426, null, 'Upgrade Required');
 
-export const createNotImplementedResponse = (): Response =>
+export const createNotImplementedResponse = async (): Promise<Response> =>
   createResponse(501, null, 'Not Implemented');

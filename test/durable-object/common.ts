@@ -1,6 +1,9 @@
 import {build} from 'esbuild';
-import {Miniflare} from 'miniflare';
+import {Miniflare, RequestInit, Response} from 'miniflare';
 import {fileURLToPath} from 'url';
+
+export type Fetch = (path: string, init?: RequestInit) => Promise<Response>;
+export type Api = (method: string, ...args: any[]) => Promise<string>;
 
 const {
   outputFiles: [{text: servers}],
@@ -21,8 +24,8 @@ export const createMiniflare = async (
 ): Promise<
   [
     Miniflare,
-    (path: string, ...args: any) => Promise<any>,
     (path: string, init?: RequestInit) => Promise<Response>,
+    (path: string, ...args: any) => Promise<any>,
   ]
 > => {
   const miniflare = new Miniflare({
@@ -34,11 +37,22 @@ export const createMiniflare = async (
   });
   await miniflare.ready;
 
-  const namespace = await miniflare.getDurableObjectNamespace('testNamespace');
-  const stub: any = namespace.get(namespace.idFromName('testNamespace'));
-  const api = stub.api.bind(stub);
-  const fetch = (path: string, requestInfo?: RequestInit) =>
-    stub.fetch(`${HOST}:${port}${path}`, requestInfo);
+  const {fetch} = await miniflare.getWorker();
 
-  return [miniflare, api, fetch];
+  return [
+    miniflare,
+    async (path: string, init?: RequestInit) => {
+      return await fetch(new URL(path, `${HOST}:${port}`), init);
+    },
+    async (method: string, ...args: any) =>
+      await (
+        await fetch(
+          new URL(
+            `/api/${method}?${encodeURIComponent(JSON.stringify(args))}`,
+            `${HOST}:${port}`,
+          ),
+          {headers: {upgrade: 'websocket'}},
+        )
+      ).json(),
+  ];
 };

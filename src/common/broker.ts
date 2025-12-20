@@ -11,30 +11,29 @@ import {
 import {slice} from './other.ts';
 import {ASTERISK, SPACE} from './string.ts';
 
+type Sendable = {send: (packet: string) => void};
+
 export const getBrokerFunctions = (): [
   addConnection: (
     id: string,
-    send: (packet: string) => void,
+    sendable: Sendable,
     path: string,
   ) => [receivePacket: (packet: string) => void, close: () => void],
   clearConnections: () => void,
 ] => {
-  const sendsByPath: Map<
-    string,
-    Map<string, (packet: string) => void>
-  > = mapNew();
+  const sendablesByPath: Map<string, Map<string, Sendable>> = mapNew();
 
   const addConnection = (
     id: string,
-    send: (packet: string) => void,
+    sendable: Sendable,
     path: string,
   ): [(packet: string) => void, () => void] => {
-    const sends = mapEnsure(
-      sendsByPath,
+    const sendables = mapEnsure(
+      sendablesByPath,
       path,
-      mapNew<string, (packet: string) => void>,
+      mapNew<string, Sendable>,
     );
-    mapSet(sends, id, send);
+    mapSet(sendables, id, sendable);
 
     const receivePacket = (packet: string) => {
       const splitAt = packet.indexOf(SPACE);
@@ -43,26 +42,26 @@ export const getBrokerFunctions = (): [
         const remainder = slice(packet, splitAt + 1);
         const forwardedPacket = id + SPACE + remainder;
         if (to === ASTERISK) {
-          mapForEach(sends, (otherId, otherSend) =>
-            otherId !== id ? otherSend(forwardedPacket) : 0,
+          mapForEach(sendables, (otherId, otherSendable) =>
+            otherId !== id ? otherSendable.send(forwardedPacket) : 0,
           );
         } else if (to != id) {
-          mapGet(sends, to)?.(forwardedPacket);
+          mapGet(sendables, to)?.send(forwardedPacket);
         }
       }
     };
 
     const close = () => {
-      mapDel(sends, id);
-      if (mapIsEmpty(sends)) {
-        mapDel(sendsByPath, path);
+      mapDel(sendables, id);
+      if (mapIsEmpty(sendables)) {
+        mapDel(sendablesByPath, path);
       }
     };
 
     return [receivePacket, close];
   };
 
-  const clearConnections = () => mapClear(sendsByPath);
+  const clearConnections = () => mapClear(sendablesByPath);
 
   return [addConnection, clearConnections];
 };

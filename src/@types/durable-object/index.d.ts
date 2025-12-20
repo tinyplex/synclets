@@ -183,7 +183,7 @@ export function getSyncletDurableObjectFetch<Namespace extends string>(
   env: {
     [namespace in Namespace]: DurableObjectNamespace<SyncletDurableObject>;
   },
-) => Response;
+) => Promise<Response>;
 
 /// durable-object.getTableSchema
 export function getTableSchema(

@@ -1,14 +1,14 @@
 import type {Miniflare} from 'miniflare';
 import {afterAll, beforeAll, expect, test} from 'vitest';
-import {createMiniflare} from './common.ts';
+import {Api, createMiniflare} from './common.ts';
 
 const PORT = 8782;
 
 let miniflare: Miniflare;
-let api: (path: string, ...args: any) => Promise<string>;
+let api: Api;
 
 beforeAll(async () => {
-  [miniflare, api] = await createMiniflare(
+  [miniflare, , api] = await createMiniflare(
     'TestConnectorsOnlyDurableObject',
     PORT,
   );

@@ -1,15 +1,15 @@
-import type {Miniflare} from 'miniflare';
+import {type Miniflare} from 'miniflare';
 import {afterAll, beforeAll, expect, test} from 'vitest';
-import {createMiniflare} from './common.ts';
+import {Api, createMiniflare, Fetch} from './common.ts';
 
 const PORT = 8780;
 
 let miniflare: Miniflare;
-let api: (path: string) => Promise<string>;
-let fetch: (path: string, init?: RequestInit) => Promise<Response>;
+let fetch: Fetch;
+let api: Api;
 
 beforeAll(async () => {
-  [miniflare, api, fetch] = await createMiniflare(
+  [miniflare, fetch, api] = await createMiniflare(
     'TestSyncletDurableObject',
     PORT,
   );
@@ -19,10 +19,16 @@ afterAll(async () => {
   await miniflare.dispose();
 });
 
-test('return 501 for arbitrary requests', async () => {
-  const response = await fetch('/');
+test('return 501 for POST', async () => {
+  const response = await fetch('/', {method: 'POST'});
   expect(response.status).toBe(501);
   expect(await response.text()).toBe('Not Implemented');
+});
+
+test('return 426 for GET', async () => {
+  const response = await fetch('/', {method: 'GET'});
+  expect(response.status).toBe(426);
+  expect(await response.text()).toBe('Upgrade Required');
 });
 
 test('getData', async () => {

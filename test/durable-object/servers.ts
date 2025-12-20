@@ -2,23 +2,26 @@ import {
   createDurableObjectBrokerTransport,
   createDurableObjectSqliteDataConnector,
   createDurableObjectSqliteMetaConnector,
+  getSyncletDurableObjectFetch,
   SyncletDurableObject,
 } from 'synclets/durable-object';
 
-const api = async (
-  ths: SyncletDurableObject,
-  method: string,
-  ...args: any[]
-) => {
-  if (method in ths) {
-    return await (ths as any)[method](...args);
-  }
-  return undefined;
-};
-
 export class TestSyncletDurableObject extends SyncletDurableObject {
-  async api(method: string, ...args: any[]): Promise<any> {
-    return await api(this, method, ...args);
+  async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith('/api/')) {
+      const method = url.pathname.slice('/api/'.length);
+      if (method in this) {
+        return new Response(
+          JSON.stringify(
+            (await (this as any)[method](
+              ...JSON.parse(decodeURIComponent(url.search.slice(1))),
+            )) ?? null,
+          ),
+        );
+      }
+    }
+    return await super.fetch(request);
   }
 
   getClientCount() {
@@ -28,7 +31,10 @@ export class TestSyncletDurableObject extends SyncletDurableObject {
 
 export class TestBrokerOnlyDurableObject extends TestSyncletDurableObject {
   getCreateTransport() {
-    return createDurableObjectBrokerTransport({durableObject: this});
+    return createDurableObjectBrokerTransport({
+      durableObject: this,
+      brokerPaths: /^valid.*/,
+    });
   }
 }
 
@@ -47,3 +53,7 @@ export class TestConnectorsOnlyDurableObject extends TestSyncletDurableObject {
     });
   }
 }
+
+export default {
+  fetch: getSyncletDurableObjectFetch('testNamespace'),
+};

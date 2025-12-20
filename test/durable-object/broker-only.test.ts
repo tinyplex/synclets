@@ -2,22 +2,23 @@ import type {Miniflare} from 'miniflare';
 import {getPartsFromPacket} from 'synclets/utils';
 import {afterAll, beforeAll, expect, test} from 'vitest';
 import {pause} from '../unit/common.ts';
-import {createMiniflare} from './common.ts';
+import {Api, createMiniflare, Fetch} from './common.ts';
 
 const PORT = 8781;
+const WEBSOCKET_UPGRADE = {headers: {upgrade: 'websocket'}};
 
 let miniflare: Miniflare;
-let api: (path: string) => Promise<string>;
-let fetch: (path: string, init?: RequestInit) => Promise<Response>;
+let fetch: Fetch;
+let api: Api;
 
 const createClients = async (number: number) => {
   const received: [string, string][][] = Array.from({length: number}, () => []);
   const webSockets: any[] = [];
   for (let i = 0; i < number; i++) {
-    const {webSocket} = await fetch('/path' + i, {
-      headers: {upgrade: 'websocket'},
-    });
-    if (!webSocket) throw new Error('failed to obtain WebSocket from stub');
+    const {webSocket} = await fetch('/valid', WEBSOCKET_UPGRADE);
+    if (!webSocket) {
+      throw new Error('failed to obtain WebSocket from stub');
+    }
     webSocket.accept();
     webSocket.addEventListener('message', (event: any) =>
       received[i].push(getPartsFromPacket(event.data)),
@@ -28,7 +29,7 @@ const createClients = async (number: number) => {
 };
 
 beforeAll(async () => {
-  [miniflare, api, fetch] = await createMiniflare(
+  [miniflare, fetch, api] = await createMiniflare(
     'TestBrokerOnlyDurableObject',
     PORT,
   );
@@ -38,27 +39,24 @@ afterAll(async () => {
   await miniflare.dispose();
 });
 
-test('instantiated and accessed', async () => {
-  expect(miniflare).toBeDefined();
-});
-
-test('return 426 for non-WebSocket requests', async () => {
-  const response = await fetch('/');
-  expect(response.status).toBe(426);
-  expect(await response.text()).toBe('Upgrade required');
-});
-
-test('accept WebSocket upgrade requests', async () => {
-  const {status, webSocket} = await fetch('/', {
-    headers: {upgrade: 'websocket'},
-  });
+test('accept WebSocket upgrade requests, valid path', async () => {
+  const {status, webSocket} = await fetch('/valid', WEBSOCKET_UPGRADE);
   expect(status).toBe(101);
-  expect(webSocket).toBeDefined();
+  expect(webSocket).not.toBeNull();
+  expect(webSocket?.readyState).toBe(WebSocket.OPEN);
 
   webSocket!.accept();
   expect(await api('getClientCount')).toEqual(1);
 
   webSocket!.close();
+  expect(await api('getClientCount')).toEqual(0);
+});
+
+test('accept WebSocket upgrade requests, invalid path', async () => {
+  const {status, webSocket} = await fetch('/invalid', WEBSOCKET_UPGRADE);
+  expect(status).toBe(404);
+  expect(webSocket).toBeNull();
+
   expect(await api('getClientCount')).toEqual(0);
 });
 
