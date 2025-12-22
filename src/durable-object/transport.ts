@@ -2,14 +2,17 @@ import {createDurableObjectBrokerTransport as createDurableObjectBrokerTransport
 import {getUniqueId} from '@synclets/utils';
 import {getBrokerFunctions} from '../common/broker.ts';
 import {objValues} from '../common/object.ts';
-import {ifNotUndefined} from '../common/other.ts';
+import {ifNotUndefined, isNull} from '../common/other.ts';
 import {EMPTY_STRING, strMatch, strTest} from '../common/string.ts';
+import {RESERVED} from '../core/constants.ts';
 import {createDurableObjectTransport, createResponse} from './common.ts';
+
+const SERVER_ID = RESERVED + 's';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
   ({path = EMPTY_STRING, brokerPaths = /.*/, ...options}) => {
-    let handleSendPacket: ((packet: string) => void) | undefined;
-    let handleClose: (() => void) | undefined;
+    let handleSend: ((packet: string) => void) | undefined;
+    let handleDel: (() => void) | undefined;
     let connected = false;
 
     const [addConnection, getReceive, clearConnections] = getBrokerFunctions();
@@ -65,31 +68,30 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       );
 
     const connect = async (
-      _receivePacket: (packet: string) => Promise<void>,
+      receivePacket: (packet: string) => Promise<void>,
     ): Promise<void> => {
       connected = true;
-      // if (!isNull(path)) {
-      //   const [sendPacket, close] = addConnection(
-      //     SERVER_ID,
-      //     receivePacket,
-      //     path,
-      //   );
-      //   handleSendPacket = sendPacket;
-      //   handleClose = close;
-      // }
+      if (!isNull(path)) {
+        const [_, send, del] = addConnection(
+          SERVER_ID,
+          {send: receivePacket},
+          path,
+        );
+        handleSend = send;
+        handleDel = del;
+      }
     };
 
     const disconnect = async () => {
       connected = false;
-      // webSocketServer.off('connection', onConnection);
-      handleClose?.();
+      handleDel?.();
       clearConnections();
-      // handleClose = undefined;
-      // handleSendPacket = undefined;
+      handleDel = undefined;
+      handleSend = undefined;
     };
 
     const sendPacket = async (packet: string): Promise<void> => {
-      handleSendPacket?.(packet);
+      handleSend?.(packet);
     };
 
     return createDurableObjectTransport(
