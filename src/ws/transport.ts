@@ -23,10 +23,10 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   brokerPaths = /.*/,
   ...options
 }: WsBrokerTransportOptions): WsBrokerTransport => {
-  let handleSendPacket: ((packet: string) => void) | undefined;
-  let handleClose: (() => void) | undefined;
+  let handleSend: ((packet: string) => void) | undefined;
+  let handleDel: (() => void) | undefined;
 
-  const [addConnection, clearConnections] = getBrokerFunctions();
+  const [addConnection, , clearConnections] = getBrokerFunctions();
 
   const getValidPath = ({
     url = EMPTY_STRING,
@@ -34,7 +34,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
     url?: string;
   }): string | undefined =>
     ifNotUndefined(
-      strMatch(new URL(url).pathname ?? '/', /\/([^?]*)/),
+      strMatch(new URL(url, 'http://localhost').pathname ?? '/', /\/([^?]*)/),
       ([, requestPath]) =>
         requestPath === path || strTest(requestPath, brokerPaths)
           ? requestPath
@@ -46,10 +46,8 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
       getValidPath(request),
       (path) => {
         const clientId = getUniqueId();
-        const [receivePacket, close] = addConnection(clientId, webSocket, path);
-        webSocket
-          .on('message', (data) => receivePacket(data.toString(UTF8)))
-          .on('close', close);
+        const [, receive, del] = addConnection(clientId, webSocket, path);
+        webSocket.on('message', receive).on('close', del);
         return true;
       },
       () => webSocket.close(),
@@ -60,26 +58,26 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   ): Promise<void> => {
     webSocketServer.on('connection', onConnection);
     if (!isNull(path)) {
-      const [sendPacket, close] = addConnection(
+      const [_, send, del] = addConnection(
         SERVER_ID,
         {send: receivePacket},
         path,
       );
-      handleSendPacket = sendPacket;
-      handleClose = close;
+      handleSend = send;
+      handleDel = del;
     }
   };
 
   const disconnect = async () => {
     webSocketServer.off('connection', onConnection);
-    handleClose?.();
+    handleDel?.();
     clearConnections();
-    handleClose = undefined;
-    handleSendPacket = undefined;
+    handleDel = undefined;
+    handleSend = undefined;
   };
 
   const sendPacket = async (packet: string): Promise<void> => {
-    handleSendPacket?.(packet);
+    handleSend?.(packet);
   };
 
   return createTransport({connect, disconnect, sendPacket}, options, {

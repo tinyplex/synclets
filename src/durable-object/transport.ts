@@ -1,15 +1,9 @@
 import {createDurableObjectBrokerTransport as createDurableObjectBrokerTransportDecl} from '@synclets/@types/durable-object';
 import {getUniqueId} from '@synclets/utils';
-import {arrayForEach} from '../common/array.ts';
+import {getBrokerFunctions} from '../common/broker.ts';
 import {objValues} from '../common/object.ts';
-import {ifNotUndefined, slice} from '../common/other.ts';
-import {
-  ASTERISK,
-  EMPTY_STRING,
-  SPACE,
-  strMatch,
-  strTest,
-} from '../common/string.ts';
+import {ifNotUndefined} from '../common/other.ts';
+import {EMPTY_STRING, strMatch, strTest} from '../common/string.ts';
 import {createDurableObjectTransport, createResponse} from './common.ts';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
@@ -18,7 +12,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     let handleClose: (() => void) | undefined;
     let connected = false;
 
-    // const [addConnection, clearConnections] = getBrokerFunctions();
+    const [addConnection, getReceive, clearConnections] = getBrokerFunctions();
 
     const getValidPath = ({
       url = EMPTY_STRING,
@@ -26,7 +20,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       url?: string;
     }): string | undefined =>
       ifNotUndefined(
-        strMatch(new URL(url).pathname ?? '/', /\/([^?]*)/),
+        strMatch(new URL(url, 'http://localhost').pathname ?? '/', /\/([^?]*)/),
         ([, requestPath]) =>
           requestPath === path || strTest(requestPath, brokerPaths)
             ? requestPath
@@ -52,6 +46,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     ) =>
       ifNotUndefined(getValidPath(request), (path) => {
         const clientId = getUniqueId();
+        addConnection(clientId, webSocket, path);
         ctx.acceptWebSocket(webSocket, [clientId, path]);
         return true;
       });
@@ -61,23 +56,13 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       ws: WebSocket,
       message: ArrayBuffer | string,
     ): Promise<boolean | undefined> =>
-      ifNotUndefined(ctx.getTags(ws), ([clientId, path]) => {
-        const packet = message.toString();
-        const splitAt = packet.indexOf(SPACE);
-        if (splitAt !== -1) {
-          const to = slice(packet, 0, splitAt);
-          const remainder = slice(packet, splitAt + 1);
-          const forwardedPacket = clientId + SPACE + remainder;
-          if (to === ASTERISK) {
-            arrayForEach(ctx.getWebSockets(path), (otherClient) =>
-              otherClient !== ws ? otherClient.send(forwardedPacket) : 0,
-            );
-          } else if (to != clientId) {
-            ctx.getWebSockets(to)[0]?.send(forwardedPacket);
-          }
-        }
-        return true;
-      });
+      ifNotUndefined(
+        getReceive(...(ctx.getTags(ws) as [string, string])),
+        (received) => {
+          received(message);
+          return true;
+        },
+      );
 
     const connect = async (
       _receivePacket: (packet: string) => Promise<void>,
@@ -98,7 +83,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       connected = false;
       // webSocketServer.off('connection', onConnection);
       handleClose?.();
-      // clearConnections();
+      clearConnections();
       // handleClose = undefined;
       // handleSendPacket = undefined;
     };

@@ -11,57 +11,81 @@ import {
 import {slice} from './other.ts';
 import {ASTERISK, SPACE} from './string.ts';
 
-type Sendable = {send: (packet: string) => void};
+type Connection = [
+  send: (packet: string) => void,
+  receive: (message: ArrayBuffer | string) => void,
+  del: () => void,
+];
 
 export const getBrokerFunctions = (): [
   addConnection: (
     id: string,
-    sendable: Sendable,
+    sendable: {send: (packet: string) => void},
     path: string,
-  ) => [receivePacket: (packet: string) => void, close: () => void],
+  ) => Connection,
+  getReceive: (
+    id: string,
+    path: string,
+  ) => ((message: ArrayBuffer | string) => void) | undefined,
   clearConnections: () => void,
 ] => {
-  const sendablesByPath: Map<string, Map<string, Sendable>> = mapNew();
+  const connectionsByPath: Map<
+    string,
+    Map<
+      string,
+      [
+        (packet: string) => void,
+        (message: ArrayBuffer | string) => void,
+        () => void,
+      ]
+    >
+  > = mapNew();
 
-  const addConnection = (
+  const add = (
     id: string,
-    sendable: Sendable,
+    sendable: {send: (packet: string) => void},
     path: string,
-  ): [(packet: string) => void, () => void] => {
+  ): Connection => {
     const sendables = mapEnsure(
-      sendablesByPath,
+      connectionsByPath,
       path,
-      mapNew<string, Sendable>,
+      mapNew<string, Connection>,
     );
-    mapSet(sendables, id, sendable);
 
-    const receivePacket = (packet: string) => {
+    const send = (packet: string) => sendable.send(packet);
+
+    const receive = (message: ArrayBuffer | string) => {
+      const packet = message.toString();
       const splitAt = packet.indexOf(SPACE);
       if (splitAt !== -1) {
         const to = slice(packet, 0, splitAt);
         const remainder = slice(packet, splitAt + 1);
         const forwardedPacket = id + SPACE + remainder;
         if (to === ASTERISK) {
-          mapForEach(sendables, (otherId, otherSendable) =>
-            otherId !== id ? otherSendable.send(forwardedPacket) : 0,
+          mapForEach(sendables, (otherId, [send]) =>
+            otherId !== id ? send(forwardedPacket) : 0,
           );
         } else if (to != id) {
-          mapGet(sendables, to)?.send(forwardedPacket);
+          mapGet(sendables, to)?.[0](forwardedPacket);
         }
       }
     };
 
-    const close = () => {
+    const del = () => {
       mapDel(sendables, id);
       if (mapIsEmpty(sendables)) {
-        mapDel(sendablesByPath, path);
+        mapDel(connectionsByPath, path);
       }
     };
 
-    return [receivePacket, close];
+    mapSet(sendables, id, [send, receive, del]);
+    return [send, receive, del];
   };
 
-  const clearConnections = () => mapClear(sendablesByPath);
+  const getReceive = (id: string, path: string) =>
+    mapGet(mapGet(connectionsByPath, path), id)?.[1];
 
-  return [addConnection, clearConnections];
+  const clearConnections = () => mapClear(connectionsByPath);
+
+  return [add, getReceive, clearConnections];
 };
