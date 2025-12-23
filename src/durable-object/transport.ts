@@ -3,7 +3,7 @@ import {getUniqueId} from '@synclets/utils';
 import {getBrokerFunctions} from '../common/broker.ts';
 import {objValues} from '../common/object.ts';
 import {ifNotUndefined, isNull} from '../common/other.ts';
-import {EMPTY_STRING, strMatch, strTest} from '../common/string.ts';
+import {EMPTY_STRING} from '../common/string.ts';
 import {RESERVED} from '../core/constants.ts';
 import {createDurableObjectTransport, createResponse} from './common.ts';
 
@@ -15,20 +15,8 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     let handleDel: (() => void) | undefined;
     let connected = false;
 
-    const [addConnection, getReceive, clearConnections] = getBrokerFunctions();
-
-    const getValidPath = ({
-      url = EMPTY_STRING,
-    }: {
-      url?: string;
-    }): string | undefined =>
-      ifNotUndefined(
-        strMatch(new URL(url, 'http://localhost').pathname ?? '/', /\/([^?]*)/),
-        ([, requestPath]) =>
-          requestPath === path || strTest(requestPath, brokerPaths)
-            ? requestPath
-            : undefined,
-      );
+    const [addConnection, getReceive, clearConnections, getValidPath] =
+      getBrokerFunctions(path, brokerPaths);
 
     const fetch = async (
       ctx: DurableObjectState,

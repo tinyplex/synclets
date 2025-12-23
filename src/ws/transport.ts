@@ -13,7 +13,7 @@ import {IncomingMessage} from 'http';
 import {WebSocket} from 'ws';
 import {getBrokerFunctions} from '../common/broker.ts';
 import {ifNotUndefined, isNull, promiseNew} from '../common/other.ts';
-import {EMPTY_STRING, strMatch, strTest, UTF8} from '../common/string.ts';
+import {EMPTY_STRING, UTF8} from '../common/string.ts';
 
 const SERVER_ID = RESERVED + 's';
 
@@ -26,20 +26,10 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   let handleSend: ((packet: string) => void) | undefined;
   let handleDel: (() => void) | undefined;
 
-  const [addConnection, , clearConnections] = getBrokerFunctions();
-
-  const getValidPath = ({
-    url = EMPTY_STRING,
-  }: {
-    url?: string;
-  }): string | undefined =>
-    ifNotUndefined(
-      strMatch(new URL(url, 'http://localhost').pathname ?? '/', /\/([^?]*)/),
-      ([, requestPath]) =>
-        requestPath === path || strTest(requestPath, brokerPaths)
-          ? requestPath
-          : undefined,
-    );
+  const [addConnection, , clearConnections, getValidPath] = getBrokerFunctions(
+    path,
+    brokerPaths,
+  );
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
     ifNotUndefined(

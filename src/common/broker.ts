@@ -8,8 +8,8 @@ import {
   mapNew,
   mapSet,
 } from './map.ts';
-import {slice} from './other.ts';
-import {ASTERISK, SPACE} from './string.ts';
+import {ifNotUndefined, slice} from './other.ts';
+import {ASTERISK, EMPTY_STRING, SPACE, strMatch, strTest} from './string.ts';
 
 type Connection = [
   send: (packet: string) => void,
@@ -17,7 +17,10 @@ type Connection = [
   del: () => void,
 ];
 
-export const getBrokerFunctions = (): [
+export const getBrokerFunctions = (
+  path: string | null,
+  brokerPaths: RegExp,
+): [
   addConnection: (
     id: string,
     sendable: {send: (packet: string) => void},
@@ -28,6 +31,7 @@ export const getBrokerFunctions = (): [
     path: string,
   ) => ((message: ArrayBuffer | string) => void) | undefined,
   clearConnections: () => void,
+  getValidPath: (requestUrl: {url?: string}) => string | undefined,
 ] => {
   const connectionsByPath: Map<
     string,
@@ -87,5 +91,18 @@ export const getBrokerFunctions = (): [
 
   const clearConnections = () => mapClear(connectionsByPath);
 
-  return [add, getReceive, clearConnections];
+  const getValidPath = ({
+    url = EMPTY_STRING,
+  }: {
+    url?: string;
+  }): string | undefined =>
+    ifNotUndefined(
+      strMatch(new URL(url, 'http://l').pathname ?? '/', /\/([^?]*)/),
+      ([, requestPath]) =>
+        requestPath === path || strTest(requestPath, brokerPaths)
+          ? requestPath
+          : undefined,
+    );
+
+  return [add, getReceive, clearConnections, getValidPath];
 };
