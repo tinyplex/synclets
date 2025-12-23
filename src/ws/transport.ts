@@ -1,5 +1,4 @@
 import {createTransport, RESERVED} from '@synclets';
-import type {TransportOptions} from '@synclets/@types';
 import type {
   createWsBrokerTransport as createWsBrokerTransportDecl,
   createWsClientTransport as createWsClientTransportDecl,
@@ -7,6 +6,7 @@ import type {
   WsBrokerTransport,
   WsBrokerTransportOptions,
   WsClientTransport,
+  WsClientTransportOptions,
 } from '@synclets/@types/ws';
 import {getUniqueId} from '@synclets/utils';
 import {IncomingMessage} from 'http';
@@ -87,10 +87,10 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
 
 export const createWsClientTransport: typeof createWsClientTransportDecl = <
   WebSocketType extends WebSocketTypes,
->(
-  webSocket: WebSocketType,
-  options?: TransportOptions,
-): WsClientTransport<WebSocketType> => {
+>({
+  webSocket,
+  ...options
+}: WsClientTransportOptions<WebSocketType>): WsClientTransport<WebSocketType> => {
   let removeMessageListener: (() => void) | undefined;
 
   const addEventListener = (

@@ -14,10 +14,15 @@ export interface WsClientTransport<
   getWebSocket(): WebSocketType;
 }
 
+/// WsClientTransportOptions
+export type WsClientTransportOptions<WebSocketType extends WebSocketTypes> = {
+  /// WsClientTransportOptions.webSocket
+  readonly webSocket: WebSocketType;
+} & TransportOptions;
+
 /// createWsClientTransport
 export function createWsClientTransport<WebSocketType extends WebSocketTypes>(
-  webSocket: WebSocketType,
-  options?: TransportOptions,
+  options: WsClientTransportOptions<WebSocketType>,
 ): WsClientTransport<WebSocketType>;
 
 /// WsBrokerTransport

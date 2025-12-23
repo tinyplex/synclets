@@ -32,6 +32,22 @@
 }
 
 /**
+ * The WsClientTransportOptions type describes configuration for a
+ * WsClientTransport.
+ * @category Transport
+ * @since v0.0.0
+ */
+/// WsClientTransportOptions
+{
+  /**
+   * The webSocket property specifies the WebSocket instance to wrap.
+   * @category Option
+   * @since v0.0.0
+   */
+  /// WsClientTransportOptions.webSocket
+}
+
+/**
  * The createWsClientTransport function wraps a WebSocket in a WsClientTransport
  * implementation.
  *
@@ -44,9 +60,7 @@
  * synclet running WsBrokerTransport or similar. It is suitable for browser
  * environments (using the Web API WebSocket) and Node.js (using the 'ws'
  * package).
- * @param webSocket The WebSocket instance to wrap (browser WebSocket or ws
- * WebSocket).
- * @param options Optional TransportOptions for configuring the transport.
+ * @param options WsClientTransportOptions for configuring the transport.
  * @returns A WsClientTransport instance for WebSocket communication.
  * @category Transport
  * @since v0.0.0
