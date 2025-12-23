@@ -1,7 +1,7 @@
 import type {Miniflare} from 'miniflare';
 import {getPartsFromPacket} from 'synclets/utils';
 import {afterAll, beforeAll, expect, test} from 'vitest';
-import {pause} from '../unit/common.ts';
+import {pause} from '../common.ts';
 import {Api, createMiniflare, Fetch} from './common.ts';
 
 const PORT = 8781;
