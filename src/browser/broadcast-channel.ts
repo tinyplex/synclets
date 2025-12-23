@@ -53,9 +53,7 @@ export const createBroadcastChannelTransport: typeof createBroadcastChannelTrans
     const sendPacket = async (packet: string): Promise<void> =>
       channel.postMessage({from: id, packet});
 
-    return createTransport(
-      {connect, disconnect, sendPacket},
-      options,
-      {getChannelName: () => channelName},
-    ) as BroadcastChannelTransport;
+    return createTransport({connect, disconnect, sendPacket}, options, {
+      getChannelName: () => channelName,
+    }) as BroadcastChannelTransport;
   };

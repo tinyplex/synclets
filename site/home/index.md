@@ -123,9 +123,11 @@ const metaConnector = createPgliteMetaConnector({
 import {createWsClientTransport} from 'synclets/ws';
 import {WebSocket} from 'ws';
 
-const transport = createWsClientTransport(
-  new WebSocket('wss://demo.synclets.org/room1'),
-);
+const transport = createWsClientTransport({
+  webSocket: new WebSocket(
+    'wss://demo.synclets.org/room1',
+  ),
+});
 ```
 
 > ## And then put it all together

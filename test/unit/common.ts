@@ -26,20 +26,9 @@ import {
   type TestContext,
 } from 'vitest';
 
-const basePort = 9000 + (process.pid % 100) * 100;
-let portOffset = 0;
-const usedPorts = new Set<number>();
-
-export const allocatePort = (): number => {
-  let port = basePort + portOffset;
-  while (usedPorts.has(port) || port > 65535) {
-    portOffset++;
-    port = basePort + portOffset;
-  }
-  usedPorts.add(port);
-  portOffset++;
-  return port;
-};
+let port = 0;
+export const allocatePort = (): number =>
+  10000 + (process.pid % 100) * 100 + port++;
 
 const retriesPerTest = new Map<string, number>();
 const assertionsPerTest = new Map<string, number>();

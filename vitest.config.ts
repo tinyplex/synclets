@@ -15,7 +15,7 @@ export default defineConfig({
     maxWorkers: 10,
     passWithNoTests: true,
     testTimeout: 20000,
-    retry: 10,
+    retry: 2,
     coverage: {
       enabled: false,
       provider: 'istanbul',
