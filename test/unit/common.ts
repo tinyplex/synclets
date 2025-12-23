@@ -26,13 +26,13 @@ import {
   type TestContext,
 } from 'vitest';
 
-const basePort = 9000 + (process.pid % 1000) * 100;
+const basePort = 9000 + (process.pid % 100) * 100;
 let portOffset = 0;
 const usedPorts = new Set<number>();
 
 export const allocatePort = (): number => {
   let port = basePort + portOffset;
-  while (usedPorts.has(port)) {
+  while (usedPorts.has(port) || port > 65535) {
     portOffset++;
     port = basePort + portOffset;
   }
