@@ -1,6 +1,9 @@
 import {createTransport} from '@synclets';
-import type {Transport, TransportOptions} from '@synclets/@types';
-import type {createMemoryTransport as createMemoryTransportDecl} from '@synclets/@types/memory';
+import type {Transport} from '@synclets/@types';
+import type {
+  createMemoryTransport as createMemoryTransportDecl,
+  MemoryTransportOptions,
+} from '@synclets/@types/memory';
 import {
   getPacketFromParts,
   getPartsFromPacket,
@@ -21,11 +24,12 @@ type Pool = Map<string, (packet: string) => Promise<void>>;
 
 const pools: Map<string, Pool> = mapNew();
 
-export const createMemoryTransport: typeof createMemoryTransportDecl = (
-  options: TransportOptions & {poolId?: string} = {},
-): Transport => {
+export const createMemoryTransport: typeof createMemoryTransportDecl = ({
+  poolId = 'default',
+  ...options
+}: MemoryTransportOptions = {}): Transport => {
   const id = getUniqueId();
-  const pool = mapEnsure(pools, options.poolId ?? 'default', mapNew) as Pool;
+  const pool = mapEnsure(pools, poolId, mapNew) as Pool;
 
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,
