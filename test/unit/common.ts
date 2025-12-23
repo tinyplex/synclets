@@ -26,6 +26,21 @@ import {
   type TestContext,
 } from 'vitest';
 
+const basePort = 9000 + (process.pid % 1000) * 100;
+let portOffset = 0;
+const usedPorts = new Set<number>();
+
+export const allocatePort = (): number => {
+  let port = basePort + portOffset;
+  while (usedPorts.has(port)) {
+    portOffset++;
+    port = basePort + portOffset;
+  }
+  usedPorts.add(port);
+  portOffset++;
+  return port;
+};
+
 const retriesPerTest = new Map<string, number>();
 const assertionsPerTest = new Map<string, number>();
 const getFileSnapshot = (type: string, {task}: TestContext & object) => {

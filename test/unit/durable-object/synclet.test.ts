@@ -1,8 +1,9 @@
 import {type Miniflare} from 'miniflare';
 import {afterAll, beforeAll, expect, test} from 'vitest';
+import {allocatePort} from '../common.ts';
 import {Api, createMiniflare, Fetch} from './common.ts';
 
-const PORT = 8780;
+const PORT = allocatePort();
 
 let miniflare: Miniflare;
 let fetch: Fetch;

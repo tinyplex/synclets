@@ -6,12 +6,12 @@ import {
 import {createWsBrokerTransport, createWsClientTransport} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
-import {pause} from '../common.ts';
+import {allocatePort, pause} from '../common.ts';
 
-const WS_PORT = 9000;
+const PORT = allocatePort();
 
 test('Two synclets on single server', async () => {
-  const wss = new WebSocketServer({port: WS_PORT}).setMaxListeners(0);
+  const wss = new WebSocketServer({port: PORT}).setMaxListeners(0);
   const serverSynclet = await createSynclet({
     transport: createWsBrokerTransport({webSocketServer: wss}),
   });
@@ -20,7 +20,7 @@ test('Two synclets on single server', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + WS_PORT).setMaxListeners(0),
+      new WebSocket('ws://localhost:' + PORT).setMaxListeners(0),
     ),
   });
   await synclet1.start();
@@ -29,7 +29,7 @@ test('Two synclets on single server', async () => {
     dataConnector: createMemoryDataConnector({depth: 1}),
     metaConnector: createMemoryMetaConnector({depth: 1}),
     transport: createWsClientTransport(
-      new WebSocket('ws://localhost:' + WS_PORT).setMaxListeners(0),
+      new WebSocket('ws://localhost:' + PORT).setMaxListeners(0),
     ),
   });
   await synclet2.start();
