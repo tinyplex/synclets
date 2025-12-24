@@ -6,6 +6,8 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     execArgv: [
+      '--trace-warnings',
+      '--stack-trace-limit=30',
       '--localstorage-file',
       resolve(tmpdir(), `vitest-${process.pid}.localstorage`),
     ],
