@@ -1,4 +1,4 @@
-import {createTransport, RESERVED} from '@synclets';
+import {createTransport} from '@synclets';
 import type {
   createWsBrokerTransport as createWsBrokerTransportDecl,
   createWsClientTransport as createWsClientTransportDecl,
@@ -8,14 +8,11 @@ import type {
   WsClientTransport,
   WsClientTransportOptions,
 } from '@synclets/@types/ws';
-import {getUniqueId} from '@synclets/utils';
 import {IncomingMessage} from 'http';
 import {WebSocket} from 'ws';
-import {getBrokerFunctions} from '../common/broker.ts';
+import {getConnectionFunctions} from '../common/connection.ts';
 import {ifNotUndefined, isNull, promiseNew} from '../common/other.ts';
 import {EMPTY_STRING, UTF8} from '../common/string.ts';
-
-const SERVER_ID = RESERVED + 's';
 
 export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   webSocketServer,
@@ -26,18 +23,19 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   let handleSend: ((packet: string) => void) | undefined;
   let handleDel: (() => void) | undefined;
 
-  const [addConnection, , clearConnections, getValidPath] = getBrokerFunctions(
-    path,
-    brokerPaths,
-  );
+  const [addConnection, , clearConnections, getValidPath] =
+    getConnectionFunctions(path, brokerPaths);
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
     ifNotUndefined(
       getValidPath(request),
       (path) => {
-        const clientId = getUniqueId();
-        const [, receive, del] = addConnection(clientId, webSocket, path);
-        webSocket.on('message', receive).on('close', del);
+        const [, , receive, del] = addConnection(webSocket, path);
+        webSocket
+          .off('message', receive)
+          .off('close', del)
+          .on('message', receive)
+          .on('close', del);
         return true;
       },
       () => webSocket.close(),
@@ -48,11 +46,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   ): Promise<void> => {
     webSocketServer.on('connection', onConnection);
     if (!isNull(path)) {
-      const [_, send, del] = addConnection(
-        SERVER_ID,
-        {send: receivePacket},
-        path,
-      );
+      const [, , send, del] = addConnection({send: receivePacket}, path);
       handleSend = send;
       handleDel = del;
     }

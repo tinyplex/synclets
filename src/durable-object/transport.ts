@@ -1,13 +1,9 @@
 import {createDurableObjectBrokerTransport as createDurableObjectBrokerTransportDecl} from '@synclets/@types/durable-object';
-import {getUniqueId} from '@synclets/utils';
-import {getBrokerFunctions} from '../common/broker.ts';
+import {getConnectionFunctions} from '../common/connection.ts';
 import {objValues} from '../common/object.ts';
 import {ifNotUndefined, isNull} from '../common/other.ts';
 import {EMPTY_STRING} from '../common/string.ts';
-import {RESERVED} from '../core/constants.ts';
 import {createDurableObjectTransport, createResponse} from './common.ts';
-
-const SERVER_ID = RESERVED + 's';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
   ({path = EMPTY_STRING, brokerPaths = /.*/, ...options}) => {
@@ -16,7 +12,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     let connected = false;
 
     const [addConnection, getReceive, clearConnections, getValidPath] =
-      getBrokerFunctions(path, brokerPaths);
+      getConnectionFunctions(path, brokerPaths);
 
     const fetch = async (
       ctx: DurableObjectState,
@@ -36,9 +32,8 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       request: Request,
     ) =>
       ifNotUndefined(getValidPath(request), (path) => {
-        const clientId = getUniqueId();
-        addConnection(clientId, webSocket, path);
-        ctx.acceptWebSocket(webSocket, [clientId, path]);
+        const [clientId] = addConnection(webSocket, path);
+        ctx.acceptWebSocket(webSocket, [path, clientId]);
         return true;
       });
 
@@ -60,11 +55,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     ): Promise<void> => {
       connected = true;
       if (!isNull(path)) {
-        const [_, send, del] = addConnection(
-          SERVER_ID,
-          {send: receivePacket},
-          path,
-        );
+        const [, , send, del] = addConnection({send: receivePacket}, path);
         handleSend = send;
         handleDel = del;
       }
