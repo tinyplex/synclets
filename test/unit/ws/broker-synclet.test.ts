@@ -13,9 +13,16 @@ describeCommonConnectorTests(
   async (wss: WebSocketServer) => wss.close(),
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
-  (_: string, wss: WebSocketServer, syncletNumber: number) =>
+  (
+    path: string,
+    wss: WebSocketServer,
+    syncletNumber: number,
+    transportNumber: number,
+  ) =>
     syncletNumber === 0
-      ? createWsBrokerTransport({webSocketServer: wss})
+      ? transportNumber === 0
+        ? createWsBrokerTransport({webSocketServer: wss})
+        : undefined
       : createWsClientTransport({
           webSocket: new WebSocket(
             'ws://localhost:' + wss.options.port,
