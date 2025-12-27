@@ -27,8 +27,11 @@ import {
 } from 'vitest';
 
 let port = 0;
-export const allocatePort = (): number =>
-  10000 + (process.pid % 100) * 100 + port++;
+export const allocatePort = (reserve = 1): number => {
+  const basePort = 10000 + (process.pid % 100) * 100 + port;
+  port += reserve;
+  return basePort;
+};
 
 const retriesPerTest = new Map<string, number>();
 const assertionsPerTest = new Map<string, number>();
