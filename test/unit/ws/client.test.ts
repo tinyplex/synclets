@@ -24,10 +24,10 @@ describeCommonConnectorTests(
   },
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
-  (uniqueId: string, [, wss]) =>
+  (path: string, [, wss]) =>
     createWsClientTransport({
       webSocket: new WebSocket(
-        'ws://localhost:' + wss.options.port + '/' + uniqueId,
+        'ws://localhost:' + wss.options.port + '/' + path,
       ).setMaxListeners(0),
     }),
   5,
