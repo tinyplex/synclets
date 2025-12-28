@@ -2,7 +2,7 @@ import type {Miniflare} from 'miniflare';
 import {getPartsFromPacket} from 'synclets/utils';
 import {afterAll, beforeAll, expect, test} from 'vitest';
 import {allocatePort, pause} from '../common.ts';
-import {Api, createMiniflare, Fetch} from './common.ts';
+import {Api, createMiniflare, Fetch} from './miniflare/index.ts';
 
 const PORT = allocatePort();
 const WEBSOCKET_UPGRADE = {headers: {upgrade: 'websocket'}};
