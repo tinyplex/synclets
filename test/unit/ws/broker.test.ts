@@ -21,11 +21,11 @@ describeCommonConnectorTests(
   ) =>
     syncletNumber === 0
       ? transportNumber === 0
-        ? createWsBrokerTransport({webSocketServer: wss})
+        ? createWsBrokerTransport({webSocketServer: wss, path})
         : undefined
       : createWsClientTransport({
           webSocket: new WebSocket(
-            'ws://localhost:' + wss.options.port,
+            'ws://localhost:' + wss.options.port + '/' + path,
           ).setMaxListeners(0),
         }),
   5,
