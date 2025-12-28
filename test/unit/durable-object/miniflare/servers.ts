@@ -62,6 +62,94 @@ export class TestConnectorsOnlyDurableObject extends TestSyncletDurableObject {
   }
 }
 
+export class TestBroker1DurableObject extends TestSyncletDurableObject {
+  getCreateTransport() {
+    return createDurableObjectBrokerTransport({
+      durableObject: this,
+    });
+  }
+
+  getCreateDataConnector() {
+    return createDurableObjectSqliteDataConnector({
+      depth: 1,
+      sqlStorage: this.ctx.storage.sql,
+    });
+  }
+
+  getCreateMetaConnector() {
+    return createDurableObjectSqliteMetaConnector({
+      depth: 1,
+      sqlStorage: this.ctx.storage.sql,
+    });
+  }
+}
+
+export class TestBroker2DurableObject extends TestSyncletDurableObject {
+  getCreateTransport() {
+    return createDurableObjectBrokerTransport({
+      durableObject: this,
+    });
+  }
+
+  getCreateDataConnector() {
+    return createDurableObjectSqliteDataConnector({
+      depth: 2,
+      sqlStorage: this.ctx.storage.sql,
+    });
+  }
+
+  getCreateMetaConnector() {
+    return createDurableObjectSqliteMetaConnector({
+      depth: 2,
+      sqlStorage: this.ctx.storage.sql,
+    });
+  }
+}
+
+export class TestBroker3DurableObject extends TestSyncletDurableObject {
+  getCreateTransport() {
+    return createDurableObjectBrokerTransport({
+      durableObject: this,
+    });
+  }
+
+  getCreateDataConnector() {
+    return createDurableObjectSqliteDataConnector({
+      depth: 3,
+      sqlStorage: this.ctx.storage.sql,
+    });
+  }
+
+  getCreateMetaConnector() {
+    return createDurableObjectSqliteMetaConnector({
+      depth: 3,
+      sqlStorage: this.ctx.storage.sql,
+    });
+  }
+}
+
+export class TestBroker4DurableObject extends TestSyncletDurableObject {
+  getCreateTransport() {
+    return createDurableObjectBrokerTransport({
+      durableObject: this,
+    });
+  }
+
+  getCreateDataConnector() {
+    return createDurableObjectSqliteDataConnector({
+      depth: 4,
+      sqlStorage: this.ctx.storage.sql,
+    });
+  }
+
+  getCreateMetaConnector() {
+    return createDurableObjectSqliteMetaConnector({
+      depth: 4,
+      sqlStorage: this.ctx.storage.sql,
+    });
+  }
+}
+
 export default {
   fetch: getSyncletDurableObjectFetch('testNamespace'),
 };
