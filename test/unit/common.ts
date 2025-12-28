@@ -257,6 +257,8 @@ export const describeCommonConnectorTests = <
   ) => Transport | undefined,
   transportPause = 1,
   onlyDepths: number[] = [1, 2, 3, 4],
+  onlyNWay: number[] = [3, 10],
+  onlyNWayTypes: string[] = ['pool', 'chain', 'ring'],
 ) =>
   describe(`common connector tests`, () => {
     let environment: Environment;
@@ -283,7 +285,7 @@ export const describeCommonConnectorTests = <
         nearAddress: string[],
         farAddress?: string[],
       ) => {
-        if (onlyDepths.indexOf(depth) === -1) {
+        if (!onlyDepths.includes(depth)) {
           return;
         }
 
@@ -670,65 +672,71 @@ export const describeCommonConnectorTests = <
           });
         });
 
-        describe.each([3, 10])('%d-way', (count: number) => {
+        describe.each(onlyNWay)('%d-way', (count: number) => {
           test('pool', async (test) => {
-            const synclets = await createPooledTestSyncletsAndConnectors(
-              createTestSynclet,
-              createTestDataConnector,
-              createTestMetaConnector,
-              createTestTransport,
-              count,
-            );
+            if (onlyNWayTypes.includes('pool')) {
+              const synclets = await createPooledTestSyncletsAndConnectors(
+                createTestSynclet,
+                createTestDataConnector,
+                createTestMetaConnector,
+                createTestTransport,
+                count,
+              );
 
-            for (const [i, synclet] of synclets.entries()) {
-              await synclet.setAtomForTest('A' + (i + 1));
-              await pause(transportPause * count);
-              await expectEquivalentSynclets(synclets, test);
-            }
+              for (const [i, synclet] of synclets.entries()) {
+                await synclet.setAtomForTest('A' + (i + 1));
+                await pause(transportPause * count);
+                await expectEquivalentSynclets(synclets, test);
+              }
 
-            for (const synclet of synclets.values()) {
-              await synclet.destroy();
+              for (const synclet of synclets.values()) {
+                await synclet.destroy();
+              }
             }
           });
 
           test('chain', async (test) => {
-            const synclets = await createChainedTestSynclets(
-              createTestSynclet,
-              createTestDataConnector,
-              createTestMetaConnector,
-              createTestTransport,
-              count,
-            );
+            if (onlyNWayTypes.includes('chain')) {
+              const synclets = await createChainedTestSynclets(
+                createTestSynclet,
+                createTestDataConnector,
+                createTestMetaConnector,
+                createTestTransport,
+                count,
+              );
 
-            for (const [i, synclet] of synclets.entries()) {
-              await synclet.setAtomForTest('A' + (i + 1));
-              await pause(transportPause * count);
-              await expectEquivalentSynclets(synclets, test);
-            }
+              for (const [i, synclet] of synclets.entries()) {
+                await synclet.setAtomForTest('A' + (i + 1));
+                await pause(transportPause * count);
+                await expectEquivalentSynclets(synclets, test);
+              }
 
-            for (const synclet of synclets.values()) {
-              await synclet.destroy();
+              for (const synclet of synclets.values()) {
+                await synclet.destroy();
+              }
             }
           });
 
           test('ring', async (test) => {
-            const synclets = await createChainedTestSynclets(
-              createTestSynclet,
-              createTestDataConnector,
-              createTestMetaConnector,
-              createTestTransport,
-              count,
-              true,
-            );
+            if (onlyNWayTypes.includes('ring')) {
+              const synclets = await createChainedTestSynclets(
+                createTestSynclet,
+                createTestDataConnector,
+                createTestMetaConnector,
+                createTestTransport,
+                count,
+                true,
+              );
 
-            for (const [i, synclet] of synclets.entries()) {
-              await synclet.setAtomForTest('A' + (i + 1));
-              await pause(transportPause * count);
-              await expectEquivalentSynclets(synclets, test);
-            }
+              for (const [i, synclet] of synclets.entries()) {
+                await synclet.setAtomForTest('A' + (i + 1));
+                await pause(transportPause * count);
+                await expectEquivalentSynclets(synclets, test);
+              }
 
-            for (const synclet of synclets.values()) {
-              await synclet.destroy();
+              for (const synclet of synclets.values()) {
+                await synclet.destroy();
+              }
             }
           });
         });
