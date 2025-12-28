@@ -10,9 +10,9 @@ import {
 } from 'synclets/pglite';
 import {getUniqueId} from 'synclets/utils';
 import {expect, test} from 'vitest';
-import {describeCommonConnectorTests, describeSchemaTests} from '../common.ts';
+import {describeCommonSyncletTests, describeSchemaTests} from '../common.ts';
 
-describeCommonConnectorTests(
+describeCommonSyncletTests(
   async () => await PGlite.create(),
   async () => {},
   <Depth extends number>(depth: Depth, pglite: PGlite) =>

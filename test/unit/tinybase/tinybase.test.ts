@@ -9,11 +9,11 @@ import {
 } from 'synclets/tinybase';
 import {createStore, getUniqueId, type Store} from 'tinybase';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
-import {describeCommonConnectorTests, getTimeFunctions} from '../common.ts';
+import {describeCommonSyncletTests, getTimeFunctions} from '../common.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
 
-describeCommonConnectorTests(
+describeCommonSyncletTests(
   async () => {},
   async () => {},
   () => createTinyBaseDataConnector({store: createStore()}),

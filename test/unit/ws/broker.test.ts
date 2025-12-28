@@ -6,9 +6,9 @@ import {
 import {createWsBrokerTransport, createWsClientTransport} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
-import {allocatePort, describeCommonConnectorTests} from '../common.ts';
+import {allocatePort, describeCommonSyncletTests} from '../common.ts';
 
-describeCommonConnectorTests(
+describeCommonSyncletTests(
   async () => new WebSocketServer({port: allocatePort()}).setMaxListeners(0),
   async (wss: WebSocketServer) => wss.close(),
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),

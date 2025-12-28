@@ -4,12 +4,12 @@ import {
 } from 'synclets/memory';
 import {createWsClientTransport} from 'synclets/ws';
 import {WebSocket} from 'ws';
-import {allocatePort, describeCommonConnectorTests} from '../common.ts';
+import {allocatePort, describeCommonSyncletTests} from '../common.ts';
 import {createMiniflare} from './miniflare/index.ts';
 
 const PORT = allocatePort();
 
-describeCommonConnectorTests(
+describeCommonSyncletTests(
   async () => await createMiniflare('TestBrokerOnlyDurableObject', PORT),
   async ([miniflare]) => {
     await miniflare.dispose();
@@ -22,5 +22,5 @@ describeCommonConnectorTests(
         'ws://localhost:' + PORT + '/' + path,
       ).setMaxListeners(0),
     }),
-  5,
+  10,
 );

@@ -232,7 +232,7 @@ export const expectDifferingSynclets = async <Depth extends number>(
   expect(await synclet1.getMeta()).not.toEqual(await synclet2.getMeta());
 };
 
-export const describeCommonConnectorTests = <
+export const describeCommonSyncletTests = <
   DataConnectorType extends DataConnector<number>,
   MetaConnectorType extends MetaConnector<number>,
   Environment,

@@ -8,7 +8,7 @@ import {
   getTableSchema,
 } from 'synclets/sqlite3';
 import {expect, test} from 'vitest';
-import {describeCommonConnectorTests, describeSchemaTests} from '../common.ts';
+import {describeCommonSyncletTests, describeSchemaTests} from '../common.ts';
 
 const query = <Row>(
   database: Database,
@@ -21,7 +21,7 @@ const query = <Row>(
     );
   });
 
-describeCommonConnectorTests(
+describeCommonSyncletTests(
   async () => {},
   async () => {},
   <Depth extends number>(depth: Depth) =>

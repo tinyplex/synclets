@@ -5,9 +5,9 @@ import {
   createMemoryMetaConnector,
 } from 'synclets/memory';
 import {expect, test} from 'vitest';
-import {describeCommonConnectorTests} from '../common.ts';
+import {describeCommonSyncletTests} from '../common.ts';
 
-describeCommonConnectorTests(
+describeCommonSyncletTests(
   async () => {},
   async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
