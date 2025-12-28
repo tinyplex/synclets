@@ -3,33 +3,48 @@ import {
   createMemoryDataConnector,
   createMemoryMetaConnector,
 } from 'synclets/memory';
-import {createWsBrokerTransport, createWsClientTransport} from 'synclets/ws';
+import {
+  createWsBrokerTransport,
+  createWsClientTransport,
+  type WsBrokerTransport,
+} from 'synclets/ws';
 import {expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {allocatePort, describeCommonSyncletTests} from '../common.ts';
 
 describeCommonSyncletTests(
-  async () => new WebSocketServer({port: allocatePort()}).setMaxListeners(0),
-  async (wss: WebSocketServer) => wss.close(),
-  async (wss: WebSocketServer) => wss,
   async () => {},
+  async () => {},
+  async (depth) => {
+    const webSocketServer = new WebSocketServer({
+      port: allocatePort(),
+    }).setMaxListeners(0);
+    const serverSynclet = await createSynclet({
+      dataConnector: createMemoryDataConnector({depth}),
+      metaConnector: createMemoryMetaConnector({depth}),
+      transport: createWsBrokerTransport({webSocketServer, path: ''}),
+    });
+    await serverSynclet.start();
+    return serverSynclet;
+  },
+  async (serverSynclet, finalData) => {
+    expect(await serverSynclet.getData()).toEqual(finalData);
+    serverSynclet.destroy();
+    (serverSynclet.getTransport()[0] as WsBrokerTransport)
+      .getWebSocketServer()
+      .close();
+  },
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
-  (
-    path: string,
-    wss: WebSocketServer,
-    syncletNumber: number,
-    transportNumber: number,
-  ) =>
-    syncletNumber === 0
-      ? transportNumber === 0
-        ? createWsBrokerTransport({webSocketServer: wss, path})
-        : undefined
-      : createWsClientTransport({
-          webSocket: new WebSocket(
-            'ws://localhost:' + wss.options.port + '/' + path,
-          ).setMaxListeners(0),
-        }),
+  (_, serverSynclet) =>
+    createWsClientTransport({
+      webSocket: new WebSocket(
+        'ws://localhost:' +
+          (
+            serverSynclet.getTransport()[0] as WsBrokerTransport
+          ).getWebSocketServer().options.port,
+      ).setMaxListeners(0),
+    }),
   5,
 );
 

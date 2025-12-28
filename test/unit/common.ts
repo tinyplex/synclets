@@ -4,6 +4,7 @@ import {
   createMetaConnector,
   createSynclet,
   createTransport,
+  Data,
   type DataConnector,
   type MetaConnector,
   type Synclet,
@@ -19,7 +20,6 @@ import {
   afterAll,
   afterEach,
   beforeAll,
-  beforeEach,
   describe,
   expect,
   test,
@@ -204,7 +204,7 @@ export const createMockTransport = () =>
 export const expectEquivalentSynclets = async <Depth extends number>(
   synclets: Synclet<Depth>[],
   test: TestContext & object,
-) => {
+): Promise<Data> => {
   const data = await synclets[0].getData();
   const meta = await synclets[0].getMeta();
 
@@ -215,6 +215,7 @@ export const expectEquivalentSynclets = async <Depth extends number>(
       expect(await synclet.getMeta()).toEqual(meta);
     }),
   );
+  return data;
 };
 
 export const expectDifferingSynclets = async <Depth extends number>(
@@ -242,12 +243,17 @@ export const describeCommonSyncletTests = <
   beforeAllSyncletTests: () => Promise<AllEnvironment>,
   afterAllSyncletTests: (allEnvironment: AllEnvironment) => Promise<void>,
   beforeEachSyncletTest: (
+    depth: number,
     allEnvironment: AllEnvironment,
   ) => Promise<EachEnvironment>,
-  afterEachSyncletTest: (eachEnvironment: EachEnvironment) => Promise<void>,
+  afterEachSyncletTest: (
+    eachEnvironment: EachEnvironment,
+    finalData?: Data,
+  ) => Promise<void>,
   createDataConnector: (
     depth: number,
     eachEnvironment: EachEnvironment,
+    syncletNumber: number,
   ) => DataConnectorType,
   createMetaConnector: (
     depth: number,
@@ -272,13 +278,6 @@ export const describeCommonSyncletTests = <
     beforeAll(async () => (allEnvironment = await beforeAllSyncletTests()));
 
     afterAll(async () => await afterAllSyncletTests(allEnvironment));
-
-    beforeEach(
-      async () =>
-        (eachEnvironment = await beforeEachSyncletTest(allEnvironment)),
-    );
-
-    afterEach(async () => await afterEachSyncletTest(eachEnvironment));
 
     describe.each([
       [1, ['a'], ['b']],
@@ -312,12 +311,12 @@ export const describeCommonSyncletTests = <
         const createTestDataConnector = (
           syncletNumber: number,
         ): DataConnectorType =>
-          createDataConnector(depth, allEnvironment, syncletNumber);
+          createDataConnector(depth, eachEnvironment, syncletNumber);
 
         const createTestMetaConnector = (
           syncletNumber: number,
         ): MetaConnectorType =>
-          createMetaConnector(depth, allEnvironment, syncletNumber);
+          createMetaConnector(depth, eachEnvironment, syncletNumber);
 
         const createTestTransport = (
           uniqueId: string,
@@ -326,7 +325,7 @@ export const describeCommonSyncletTests = <
         ): Transport | undefined =>
           createTransport(
             uniqueId,
-            allEnvironment,
+            eachEnvironment,
             syncletNumber,
             transportNumber,
           );
@@ -362,6 +361,10 @@ export const describeCommonSyncletTests = <
 
         describe('2-way', () => {
           test('connected, initial', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -371,12 +374,20 @@ export const describeCommonSyncletTests = <
                 2,
               );
 
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('connected', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -392,13 +403,21 @@ export const describeCommonSyncletTests = <
 
             await synclet2.setAtomForTest('B');
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('connected, deletion', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -415,14 +434,22 @@ export const describeCommonSyncletTests = <
             const meta = await synclet1.getMeta();
             await synclet1.delAtomForTest();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
             expect(meta).not.toEqual(await synclet1.getMeta());
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('start 1, set 1, start 2', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -441,13 +468,21 @@ export const describeCommonSyncletTests = <
 
             await synclet2.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('start 2, set 1, start 1', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -465,13 +500,21 @@ export const describeCommonSyncletTests = <
 
             await synclet1.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('stop 1, set 1, start 1', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -492,13 +535,21 @@ export const describeCommonSyncletTests = <
 
             await synclet1.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('stop 1, set 2, start 1', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -519,13 +570,21 @@ export const describeCommonSyncletTests = <
 
             await synclet1.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('set 1, set 2, start 2, start 1', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -547,13 +606,21 @@ export const describeCommonSyncletTests = <
             await synclet2.start();
             await synclet1.start();
             await pause(transportPause * 2);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('connected, near atom', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -566,14 +633,22 @@ export const describeCommonSyncletTests = <
             await synclet1.setAtomForTest('A');
             await synclet2.setNearAtomForTest('B');
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('connected, far atom', async (test) => {
             if (farAddress) {
+              eachEnvironment = await beforeEachSyncletTest(
+                depth,
+                allEnvironment,
+              );
               const [synclet1, synclet2] =
                 await createPooledTestSyncletsAndConnectors(
                   createTestSynclet,
@@ -585,14 +660,22 @@ export const describeCommonSyncletTests = <
               await synclet1.setAtomForTest('A');
               await synclet2.setFarAtomForTest('B');
               await pause(transportPause);
-              await expectEquivalentSynclets([synclet1, synclet2], test);
+              const finalData = await expectEquivalentSynclets(
+                [synclet1, synclet2],
+                test,
+              );
 
               await synclet1.destroy();
               await synclet2.destroy();
+              await afterEachSyncletTest(eachEnvironment, finalData);
             }
           });
 
           test('disconnected, near atom', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -607,14 +690,22 @@ export const describeCommonSyncletTests = <
             await synclet1.start();
             await synclet2.start();
             await pause(transportPause);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('disconnected, far atom', async (test) => {
             if (farAddress) {
+              eachEnvironment = await beforeEachSyncletTest(
+                depth,
+                allEnvironment,
+              );
               const [synclet1, synclet2] =
                 await createPooledTestSyncletsAndConnectors(
                   createTestSynclet,
@@ -629,14 +720,22 @@ export const describeCommonSyncletTests = <
               await synclet1.start();
               await synclet2.start();
               await pause(transportPause * 2);
-              await expectEquivalentSynclets([synclet1, synclet2], test);
+              const finalData = await expectEquivalentSynclets(
+                [synclet1, synclet2],
+                test,
+              );
 
               await synclet1.destroy();
               await synclet2.destroy();
+              await afterEachSyncletTest(eachEnvironment, finalData);
             }
           });
 
           test('disconnected, conflicting values', async (test) => {
+            eachEnvironment = await beforeEachSyncletTest(
+              depth,
+              allEnvironment,
+            );
             const [synclet1, synclet2] =
               await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
@@ -652,14 +751,22 @@ export const describeCommonSyncletTests = <
             await synclet1.start();
             await synclet2.start();
             await pause(transportPause * 2);
-            await expectEquivalentSynclets([synclet1, synclet2], test);
+            const finalData = await expectEquivalentSynclets(
+              [synclet1, synclet2],
+              test,
+            );
 
             await synclet1.destroy();
             await synclet2.destroy();
+            await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
           test('disconnected, conflicting values 2', async (test) => {
             if (farAddress) {
+              eachEnvironment = await beforeEachSyncletTest(
+                depth,
+                allEnvironment,
+              );
               const [synclet1, synclet2] =
                 await createPooledTestSyncletsAndConnectors(
                   createTestSynclet,
@@ -677,10 +784,14 @@ export const describeCommonSyncletTests = <
               await synclet1.start();
               await synclet2.start();
               await pause(transportPause * 2);
-              await expectEquivalentSynclets([synclet1, synclet2], test);
+              const finalData = await expectEquivalentSynclets(
+                [synclet1, synclet2],
+                test,
+              );
 
               await synclet1.destroy();
               await synclet2.destroy();
+              await afterEachSyncletTest(eachEnvironment, finalData);
             }
           });
         });
@@ -688,6 +799,10 @@ export const describeCommonSyncletTests = <
         describe.each(onlyNWay)('%d-way', (count: number) => {
           test('pool', async (test) => {
             if (onlyNWayTypes.includes('pool')) {
+              eachEnvironment = await beforeEachSyncletTest(
+                depth,
+                allEnvironment,
+              );
               const synclets = await createPooledTestSyncletsAndConnectors(
                 createTestSynclet,
                 createTestDataConnector,
@@ -696,20 +811,26 @@ export const describeCommonSyncletTests = <
                 count,
               );
 
+              let finalData: Data = {};
               for (const [i, synclet] of synclets.entries()) {
                 await synclet.setAtomForTest('A' + (i + 1));
                 await pause(transportPause * count);
-                await expectEquivalentSynclets(synclets, test);
+                finalData = await expectEquivalentSynclets(synclets, test);
               }
 
               for (const synclet of synclets.values()) {
                 await synclet.destroy();
               }
+              await afterEachSyncletTest(eachEnvironment, finalData);
             }
           });
 
           test('chain', async (test) => {
             if (onlyNWayTypes.includes('chain')) {
+              eachEnvironment = await beforeEachSyncletTest(
+                depth,
+                allEnvironment,
+              );
               const synclets = await createChainedTestSynclets(
                 createTestSynclet,
                 createTestDataConnector,
@@ -718,20 +839,26 @@ export const describeCommonSyncletTests = <
                 count,
               );
 
+              let finalData: Data = {};
               for (const [i, synclet] of synclets.entries()) {
                 await synclet.setAtomForTest('A' + (i + 1));
                 await pause(transportPause * count);
-                await expectEquivalentSynclets(synclets, test);
+                finalData = await expectEquivalentSynclets(synclets, test);
               }
 
               for (const synclet of synclets.values()) {
                 await synclet.destroy();
               }
+              await afterEachSyncletTest(eachEnvironment, finalData);
             }
           });
 
           test('ring', async (test) => {
             if (onlyNWayTypes.includes('ring')) {
+              eachEnvironment = await beforeEachSyncletTest(
+                depth,
+                allEnvironment,
+              );
               const synclets = await createChainedTestSynclets(
                 createTestSynclet,
                 createTestDataConnector,
@@ -741,15 +868,17 @@ export const describeCommonSyncletTests = <
                 true,
               );
 
+              let finalData: Data = {};
               for (const [i, synclet] of synclets.entries()) {
                 await synclet.setAtomForTest('A' + (i + 1));
                 await pause(transportPause * count);
-                await expectEquivalentSynclets(synclets, test);
+                finalData = await expectEquivalentSynclets(synclets, test);
               }
 
               for (const synclet of synclets.values()) {
                 await synclet.destroy();
               }
+              await afterEachSyncletTest(eachEnvironment, finalData);
             }
           });
         });

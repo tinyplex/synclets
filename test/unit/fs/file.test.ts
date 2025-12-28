@@ -15,7 +15,7 @@ import {describeCommonSyncletTests} from '../common.ts';
 describeCommonSyncletTests(
   async () => await mkdtemp(tmpdir() + sep),
   async (tempDir: string) => await rm(tempDir, {recursive: true, force: true}),
-  async (tempDir: string) => tempDir,
+  async (_, tempDir: string) => tempDir,
   async () => {},
   (depth: number, tempDir: string) =>
     createFileDataConnector({
