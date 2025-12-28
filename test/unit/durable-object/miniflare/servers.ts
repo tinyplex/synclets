@@ -33,6 +33,14 @@ export class TestBrokerOnlyDurableObject extends TestSyncletDurableObject {
   getCreateTransport() {
     return createDurableObjectBrokerTransport({
       durableObject: this,
+    });
+  }
+}
+
+export class TestSelectiveBrokerOnlyDurableObject extends TestSyncletDurableObject {
+  getCreateTransport() {
+    return createDurableObjectBrokerTransport({
+      durableObject: this,
       brokerPaths: /^valid.*/,
     });
   }
