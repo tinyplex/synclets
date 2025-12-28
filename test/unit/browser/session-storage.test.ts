@@ -12,6 +12,8 @@ import {describeCommonSyncletTests} from '../common.ts';
 describeCommonSyncletTests(
   async () => {},
   async () => {},
+  async () => {},
+  async () => {},
   (depth: number) =>
     createSessionStorageDataConnector({
       depth,

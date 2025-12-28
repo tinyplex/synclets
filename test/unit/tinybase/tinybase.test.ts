@@ -16,6 +16,8 @@ const [reset, getNow, pause] = getTimeFunctions();
 describeCommonSyncletTests(
   async () => {},
   async () => {},
+  async () => {},
+  async () => {},
   () => createTinyBaseDataConnector({store: createStore()}),
   (depth: number) => createMemoryMetaConnector({depth}),
   (uniqueId: string) => createMemoryTransport({poolId: uniqueId}),

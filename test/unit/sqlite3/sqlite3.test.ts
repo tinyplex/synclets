@@ -24,6 +24,8 @@ const query = <Row>(
 describeCommonSyncletTests(
   async () => {},
   async () => {},
+  async () => {},
+  async () => {},
   <Depth extends number>(depth: Depth) =>
     createSqlite3DataConnector({depth, database: new Database(':memory:')}),
   <Depth extends number>(depth: Depth) =>

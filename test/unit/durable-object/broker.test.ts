@@ -14,6 +14,8 @@ describeCommonSyncletTests(
   async ([miniflare]) => {
     await miniflare.dispose();
   },
+  async () => {},
+  async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
   (path: string) =>

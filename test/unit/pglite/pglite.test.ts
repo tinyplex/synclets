@@ -15,6 +15,8 @@ import {describeCommonSyncletTests, describeSchemaTests} from '../common.ts';
 describeCommonSyncletTests(
   async () => await PGlite.create(),
   async () => {},
+  async (pglite: PGlite) => pglite,
+  async () => {},
   <Depth extends number>(depth: Depth, pglite: PGlite) =>
     createPgliteDataConnector({
       depth,

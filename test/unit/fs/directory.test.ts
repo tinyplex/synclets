@@ -13,15 +13,16 @@ import {expect, test} from 'vitest';
 import {describeCommonSyncletTests} from '../common.ts';
 
 describeCommonSyncletTests(
-  async () => ({tempDir: await mkdtemp(tmpdir() + sep)}),
-  async ({tempDir}: {tempDir: string}) =>
-    await rm(tempDir, {recursive: true, force: true}),
-  (depth: number, {tempDir}: {tempDir: string}) =>
+  async () => await mkdtemp(tmpdir() + sep),
+  async (tempDir: string) => await rm(tempDir, {recursive: true, force: true}),
+  async (tempDir: string) => tempDir,
+  async () => {},
+  (depth: number, tempDir: string) =>
     createDirectoryDataConnector({
       depth,
       dataDirectory: join(tempDir, getUniqueId() + '.data'),
     }),
-  (depth: number, {tempDir}: {tempDir: string}) =>
+  (depth: number, tempDir: string) =>
     createDirectoryMetaConnector({
       depth,
       metaDirectory: join(tempDir, getUniqueId() + '.meta'),

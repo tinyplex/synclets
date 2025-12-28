@@ -11,6 +11,8 @@ import {allocatePort, describeCommonSyncletTests} from '../common.ts';
 describeCommonSyncletTests(
   async () => new WebSocketServer({port: allocatePort()}).setMaxListeners(0),
   async (wss: WebSocketServer) => wss.close(),
+  async (wss: WebSocketServer) => wss,
+  async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
   (

@@ -22,6 +22,8 @@ describeCommonSyncletTests(
     serverSynclet.destroy();
     wss.close();
   },
+  async ([serverSynclet, wss]) => [serverSynclet, wss] as const,
+  async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
   (path: string, [, wss]) =>
