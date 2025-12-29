@@ -3,26 +3,31 @@ import {
   createMemoryMetaConnector,
 } from 'synclets/memory';
 import {createWsClientTransport} from 'synclets/ws';
+import {expect} from 'vitest';
 import {WebSocket} from 'ws';
 import {allocatePort, describeCommonSyncletTests} from '../common.ts';
 import {createMiniflare} from './miniflare/index.ts';
 
-const PORT = allocatePort();
-
 describeCommonSyncletTests(
-  async () => await createMiniflare('TestBrokerOnlyDurableObject', PORT),
-  async ([miniflare]) => {
+  async () => {},
+  async () => {},
+  async (depth: number) => {
+    const [miniflare, fetch, api, port] = await createMiniflare(
+      'TestBrokerDurableObject' + depth,
+      allocatePort(),
+    );
+    await api('start');
+    return [miniflare, fetch, api, port] as const;
+  },
+  async ([miniflare, , api], finalData) => {
+    expect(await api('getData')).toEqual(finalData);
     await miniflare.dispose();
   },
-  async () => {},
-  async () => {},
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),
-  (path: string) =>
+  (_: string, [, , , port]) =>
     createWsClientTransport({
-      webSocket: new WebSocket(
-        'ws://localhost:' + PORT + '/' + path,
-      ).setMaxListeners(0),
+      webSocket: new WebSocket('ws://localhost:' + port).setMaxListeners(0),
     }),
   10,
 );

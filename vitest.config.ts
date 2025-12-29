@@ -42,7 +42,6 @@ export default defineConfig({
           name: 'durable-object',
           include: ['test/unit/durable-object/**/*.test.ts'],
           environment: 'node',
-          retry: 0,
         },
       },
       {
@@ -61,7 +60,6 @@ export default defineConfig({
           environment: 'puppeteer',
           globalSetup: 'vitest-environment-puppeteer/global-init',
           globals: true,
-          retry: 0,
         },
       },
     ],

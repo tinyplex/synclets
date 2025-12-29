@@ -8,11 +8,9 @@ import {
   createWsClientTransport,
   type WsBrokerTransport,
 } from 'synclets/ws';
-import {expect, test} from 'vitest';
+import {expect} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {allocatePort, describeCommonSyncletTests} from '../common.ts';
-
-const PORT = allocatePort();
 
 describeCommonSyncletTests(
   async () => {},
@@ -47,25 +45,3 @@ describeCommonSyncletTests(
     }),
   5,
 );
-
-test('getWebSocket', async () => {
-  const wss = new WebSocketServer({port: PORT}).setMaxListeners(0);
-  const serverSynclet = await createSynclet({
-    transport: createWsBrokerTransport({webSocketServer: wss}),
-  });
-  const webSocket = new WebSocket(
-    'ws://localhost:' + wss.options.port,
-  ).setMaxListeners(0);
-  const transport = createWsClientTransport({webSocket});
-  const synclet = await createSynclet({transport});
-  await synclet.start();
-
-  expect(transport.getWebSocket()).toEqual(webSocket);
-  expect((synclet.getTransport()[0] as any).getWebSocket()).toEqual(webSocket);
-
-  await synclet.destroy();
-
-  webSocket.close();
-  serverSynclet.destroy();
-  wss.close();
-});

@@ -26,6 +26,7 @@ export const createMiniflare = async (
     Miniflare,
     (path: string, init?: RequestInit) => Promise<Response>,
     (path: string, ...args: any) => Promise<any>,
+    port: number,
   ]
 > => {
   const miniflare = new Miniflare({
@@ -54,5 +55,6 @@ export const createMiniflare = async (
           {headers: {upgrade: 'websocket'}},
         )
       ).json(),
+    port,
   ];
 };

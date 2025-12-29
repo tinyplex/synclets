@@ -62,7 +62,7 @@ export class TestConnectorsOnlyDurableObject extends TestSyncletDurableObject {
   }
 }
 
-export class TestBroker1DurableObject extends TestSyncletDurableObject {
+export class TestBrokerDurableObject1 extends TestSyncletDurableObject {
   getCreateTransport() {
     return createDurableObjectBrokerTransport({
       durableObject: this,
@@ -84,7 +84,7 @@ export class TestBroker1DurableObject extends TestSyncletDurableObject {
   }
 }
 
-export class TestBroker2DurableObject extends TestSyncletDurableObject {
+export class TestBrokerDurableObject2 extends TestSyncletDurableObject {
   getCreateTransport() {
     return createDurableObjectBrokerTransport({
       durableObject: this,
@@ -106,7 +106,7 @@ export class TestBroker2DurableObject extends TestSyncletDurableObject {
   }
 }
 
-export class TestBroker3DurableObject extends TestSyncletDurableObject {
+export class TestBrokerDurableObject3 extends TestSyncletDurableObject {
   getCreateTransport() {
     return createDurableObjectBrokerTransport({
       durableObject: this,
@@ -128,7 +128,7 @@ export class TestBroker3DurableObject extends TestSyncletDurableObject {
   }
 }
 
-export class TestBroker4DurableObject extends TestSyncletDurableObject {
+export class TestBrokerDurableObject4 extends TestSyncletDurableObject {
   getCreateTransport() {
     return createDurableObjectBrokerTransport({
       durableObject: this,
