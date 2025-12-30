@@ -37,6 +37,10 @@ describeCommonBrokerTests(
       },
       async () =>
         (serverSynclet.getTransport()[0] as WsBrokerTransport).getPaths(),
+      async (path: string) =>
+        (serverSynclet.getTransport()[0] as WsBrokerTransport).getClientIds(
+          path,
+        ),
     ] as const;
   },
 

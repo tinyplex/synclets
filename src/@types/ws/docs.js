@@ -31,7 +31,10 @@
    */
   /// WsBrokerTransportOptions.webSocketServer
   /**
-   * The path property specifies the WebSocket path to listen on.
+   * The path property specifies the WebSocket path to listen on such that the
+   * synclet can itself participate in the brokered communication. Leave
+   * as the default (`null`) for broker-only mode where the synclet only
+   * routes messages between clients without participating itself.
    * @category Option
    * @since v0.0.0
    */

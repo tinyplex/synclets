@@ -234,10 +234,10 @@
 /// DurableObjectBrokerTransportOptions
 {
   /**
-   * The path that this Durable Object will participate in as a synclet. Set to
-   * `null` for broker-only mode where the Durable Object only routes messages
-   * between clients without participating itself. Set to a string to have the
-   * Durable Object participate in that specific path.
+   * The path property specifies the WebSocket path to listen on such that the
+   * synclet can itself participate in the brokered communication. Leave
+   * as the default (`null`) for broker-only mode where the synclet only
+   * routes messages between clients without participating itself.
    * @category Property
    * @since v0.0.0
    */

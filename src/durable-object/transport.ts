@@ -1,18 +1,26 @@
-import {createDurableObjectBrokerTransport as createDurableObjectBrokerTransportDecl} from '@synclets/@types/durable-object';
+import {
+  createDurableObjectBrokerTransport as createDurableObjectBrokerTransportDecl,
+  DurableObjectBrokerTransport,
+} from '@synclets/@types/durable-object';
 import {getConnectionFunctions} from '../common/connection.ts';
 import {objValues} from '../common/object.ts';
 import {ifNotUndefined, isNull} from '../common/other.ts';
-import {EMPTY_STRING} from '../common/string.ts';
 import {createDurableObjectTransport, createResponse} from './common.ts';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
-  ({path = EMPTY_STRING, brokerPaths = /.*/, ...options}) => {
+  ({path = null, brokerPaths = /.*/, ...options}) => {
     let handleSend: ((packet: string) => void) | undefined;
     let handleDel: (() => void) | undefined;
     let connected = false;
 
-    const [addConnection, getReceive, clearConnections, getValidPath] =
-      getConnectionFunctions(path, brokerPaths);
+    const [
+      addConnection,
+      getReceive,
+      clearConnections,
+      getValidPath,
+      getPaths,
+      getClientIds,
+    ] = getConnectionFunctions(path, brokerPaths);
 
     const fetch = async (
       ctx: DurableObjectState,
@@ -76,6 +84,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     return createDurableObjectTransport(
       {connect, disconnect, sendPacket},
       {fetch, webSocketMessage},
+      {getPaths, getClientIds},
       options,
-    );
+    ) as DurableObjectBrokerTransport;
   };

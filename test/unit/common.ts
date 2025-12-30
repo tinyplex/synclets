@@ -1282,13 +1282,16 @@ export const describeCommonBrokerTests = (
   getFunctions: () => Promise<
     [
       connect: (path: string) => Promise<{status: number; webSocket: any}>,
-      getClientCount: () => Promise<number>,
+      getPaths: () => Promise<string[]>,
+      getClientIds: (path: string) => Promise<string[]>,
     ]
   >,
   cleanup: () => Promise<void>,
+  transportPause: number = 10,
 ) => {
   let connect: (path: string) => Promise<{status: number; webSocket: any}>;
-  let getClientCount: () => Promise<number>;
+  let getPaths: () => Promise<string[]>;
+  let getClientIds: (path: string) => Promise<string[]>;
 
   const createClients = async (number: number) => {
     const webSockets: any[] = [];
@@ -1311,25 +1314,32 @@ export const describeCommonBrokerTests = (
   };
 
   beforeAll(async () => {
-    [connect, getClientCount] = await getFunctions();
+    [connect, getPaths, getClientIds] = await getFunctions();
   });
 
   afterAll(async () => {
     await cleanup();
   });
 
-  describe(`common broker tests`, () => {
-    test('accept WebSocket upgrade requests, valid path', async () => {
+  describe('common broker tests', () => {
+    test.only('accept WebSocket upgrade requests, valid path', async () => {
+      expect(await getPaths()).toEqual([]);
+
       const {status, webSocket} = await connect('valid');
       expect(status).toBe(101);
       expect(webSocket).not.toBeNull();
       expect(webSocket?.readyState).toBe(WebSocket.OPEN);
 
       webSocket!.accept?.();
-      expect(await getClientCount()).toEqual(1);
+      await pause(transportPause);
+      expect(await getPaths()).toEqual(['valid']);
+      expect((await getClientIds('valid')).length).toEqual(1);
 
       webSocket!.close();
-      expect(await getClientCount()).toEqual(0);
+      await pause(transportPause);
+
+      expect(await getPaths()).toEqual([]);
+      expect((await getClientIds('valid')).length).toEqual(0);
     });
 
     test('accept WebSocket upgrade requests, invalid path', async () => {
@@ -1337,20 +1347,20 @@ export const describeCommonBrokerTests = (
       expect(status).toBe(400);
       expect(webSocket).toBeNull();
 
-      expect(await getClientCount()).toEqual(0);
+      expect(await getPaths()).toEqual([]);
     });
 
     test('2 clients communicate', async () => {
       const [[webSocket1, webSocket2], [received1, received2]] =
         await createClients(2);
 
-      expect(await getClientCount()).toEqual(2);
+      expect(await getPaths()).toEqual(['valid']);
+      expect((await getClientIds('valid')).length).toEqual(2);
 
       webSocket1.send('* from1To*');
       webSocket2.send('* from2To*');
 
-      await pause(10);
-
+      await pause(transportPause);
       expect(received1.length).toBe(1);
       expect(received2.length).toBe(1);
       expect(received1[0][1]).toBe('from2To*');
@@ -1363,8 +1373,7 @@ export const describeCommonBrokerTests = (
       webSocket1.send('foo undeliverable');
       webSocket2.send('bar undeliverable');
 
-      await pause(10);
-
+      await pause(transportPause);
       expect(received1).toEqual([
         [client2Id, 'from2To*'],
         [client2Id, 'from2To1'],
@@ -1384,15 +1393,18 @@ export const describeCommonBrokerTests = (
         [received1, received2, received3],
       ] = await createClients(3);
 
-      expect(await getClientCount()).toEqual(3);
+      expect(await getPaths()).toEqual(['valid']);
+      expect((await getClientIds('valid')).length).toEqual(3);
 
       webSocket1.send('* from1To*');
-      await pause(10);
-      webSocket2.send('* from2To*');
-      await pause(10);
-      webSocket3.send('* from3To*');
-      await pause(10);
 
+      await pause(transportPause);
+      webSocket2.send('* from2To*');
+
+      await pause(transportPause);
+      webSocket3.send('* from3To*');
+
+      await pause(transportPause);
       expect(received1.length).toBe(2);
       expect(received2.length).toBe(2);
       expect(received3.length).toBe(2);
@@ -1408,18 +1420,21 @@ export const describeCommonBrokerTests = (
 
       webSocket1.send(client2Id + ' from1To2');
       webSocket1.send(client3Id + ' from1To3');
-      await pause(10);
+
+      await pause(transportPause);
       webSocket2.send(client1Id + ' from2To1');
       webSocket2.send(client3Id + ' from2To3');
-      await pause(10);
+
+      await pause(transportPause);
       webSocket3.send(client1Id + ' from3To1');
       webSocket3.send(client2Id + ' from3To2');
-      await pause(10);
+
+      await pause(transportPause);
       webSocket1.send('foo undeliverable');
       webSocket2.send('bar undeliverable');
       webSocket3.send('baz undeliverable');
-      await pause(10);
 
+      await pause(transportPause);
       expect(received1).toEqual([
         [client2Id, 'from2To*'],
         [client3Id, 'from3To*'],

@@ -16,7 +16,8 @@ describeCommonBrokerTests(
         await miniFlareFetchApi[1]('/' + path, {
           headers: {upgrade: 'websocket'},
         }),
-      async () => parseInt(await miniFlareFetchApi[2]('getClientCount')),
+      async () => await miniFlareFetchApi[2]('getPaths'),
+      async (path: string) => await miniFlareFetchApi[2]('getClientIds', path),
     ] as const;
   },
   async () => {

@@ -1,12 +1,9 @@
 import {createTransport} from '@synclets';
-import {TransportImplementations} from '@synclets/@types';
+import {ExtraMembers, TransportImplementations} from '@synclets/@types';
 import {
   DurableObjectTransport,
   DurableObjectTransportOptions,
 } from '@synclets/@types/durable-object';
-import {EMPTY_STRING, strMatch} from '../common/string.ts';
-
-const PATH_REGEX = /\/([^?]*)/;
 
 export const createDurableObjectTransport = (
   {connect, disconnect, sendPacket}: TransportImplementations,
@@ -24,25 +21,18 @@ export const createDurableObjectTransport = (
       message: ArrayBuffer | string,
     ) => Promise<boolean | undefined>;
   },
+  extraMembers: ExtraMembers,
   {durableObject, ...options}: DurableObjectTransportOptions,
 ) => {
   const getDurableObject = () => durableObject;
 
   return createTransport({connect, disconnect, sendPacket}, options, {
+    ...extraMembers,
     _brand2: 'DurableObjectTransport',
     __: [fetch, webSocketMessage],
     getDurableObject,
   }) as DurableObjectTransport;
 };
-
-export const getPathId = (request: Request): string =>
-  strMatch(new URL(request.url).pathname, PATH_REGEX)?.[1] ?? EMPTY_STRING;
-
-export const getClientId = (
-  upgrade: string | null | undefined,
-  websocketKey: string | null | undefined,
-): string | null =>
-  upgrade?.toLowerCase() == 'websocket' ? (websocketKey ?? null) : null;
 
 export const createResponse = (
   status: number,

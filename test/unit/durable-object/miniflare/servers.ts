@@ -2,6 +2,7 @@ import {
   createDurableObjectBrokerTransport,
   createDurableObjectSqliteDataConnector,
   createDurableObjectSqliteMetaConnector,
+  type DurableObjectBrokerTransport,
   getSyncletDurableObjectFetch,
   SyncletDurableObject,
 } from 'synclets/durable-object';
@@ -43,6 +44,16 @@ export class TestSelectiveBrokerOnlyDurableObject extends TestSyncletDurableObje
       durableObject: this,
       brokerPaths: /^valid.*/,
     });
+  }
+
+  getPaths() {
+    return (this.getTransport()[0] as DurableObjectBrokerTransport).getPaths();
+  }
+
+  getClientIds(path: string) {
+    return (
+      this.getTransport()[0] as DurableObjectBrokerTransport
+    ).getClientIds(path);
   }
 }
 
