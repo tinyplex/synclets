@@ -65,7 +65,7 @@
    * @category Accessor
    * @since v0.0.0
    */
-  /// WsClientTransport.getPaths
+  /// WsBrokerTransport.getPaths
   /**
    * The getClientIds method returns the list of client IDs currently connected
    * on the specified path.
