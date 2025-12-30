@@ -41,7 +41,7 @@
  * consistent interface for examining table structure. All type names are
  * normalized to lowercase for consistency across database engines.
  * @category Type
- * @since v0.0.7
+ * @since v0.0.0
  */
 /// TableSchema
 

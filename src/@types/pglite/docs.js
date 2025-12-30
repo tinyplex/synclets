@@ -166,6 +166,6 @@
  * @returns A Promise that resolves to an object mapping column names to
  * types.
  * @category Utility
- * @since v0.0.7
+ * @since v0.0.0
  */
 /// pglite.getTableSchema

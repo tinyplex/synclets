@@ -22,14 +22,14 @@
  * });
  * ```
  * @category Type
- * @since v0.0.6
+ * @since v0.0.0
  */
 /// DurableObjectSqliteDataConnectorOptions
 {
   /**
    * The SqlStorage instance from the Durable Object storage context.
    * @category Property
-   * @since v0.0.6
+   * @since v0.0.0
    */
   /// DurableObjectSqliteDataConnectorOptions.sqlStorage
 }
@@ -38,14 +38,14 @@
  * The DurableObjectSqliteDataConnector type represents a data connector that
  * uses Cloudflare Durable Object's built-in SQLite storage.
  * @category Type
- * @since v0.0.6
+ * @since v0.0.0
  */
 /// DurableObjectSqliteDataConnector
 {
   /**
    * Gets the SqlStorage instance.
    * @category Method
-   * @since v0.0.6
+   * @since v0.0.0
    */
   /// DurableObjectSqliteDataConnector.getSqlStorage
 }
@@ -70,7 +70,7 @@
  * }
  * ```
  * @category Function
- * @since v0.0.6
+ * @since v0.0.0
  */
 /// createDurableObjectSqliteDataConnector
 
@@ -89,14 +89,14 @@
  * });
  * ```
  * @category Type
- * @since v0.0.6
+ * @since v0.0.0
  */
 /// DurableObjectSqliteMetaConnectorOptions
 {
   /**
    * The SqlStorage instance from the Durable Object storage context.
    * @category Property
-   * @since v0.0.6
+   * @since v0.0.0
    */
   /// DurableObjectSqliteMetaConnectorOptions.sqlStorage
 }
@@ -105,14 +105,14 @@
  * The DurableObjectSqliteMetaConnector type represents a meta connector that
  * uses Cloudflare Durable Object's built-in SQLite storage.
  * @category Type
- * @since v0.0.6
+ * @since v0.0.0
  */
 /// DurableObjectSqliteMetaConnector
 {
   /**
    * Gets the SqlStorage instance.
    * @category Method
-   * @since v0.0.6
+   * @since v0.0.0
    */
   /// DurableObjectSqliteMetaConnector.getSqlStorage
 }
@@ -137,7 +137,7 @@
  * }
  * ```
  * @category Function
- * @since v0.0.6
+ * @since v0.0.0
  */
 /// createDurableObjectSqliteMetaConnector
 
@@ -145,21 +145,21 @@
  * The DurableObjectTransport type represents a transport that is specialized
  * for use with a Cloudflare Durable Object.
  * @category Type
- * @since v0.0.7
+ * @since v0.0.0
  */
 /// DurableObjectTransport
 {
   /**
    * A branding property to uniquely identify this as a DurableObjectTransport.
    * @category Property
-   * @since v0.0.7
+   * @since v0.0.0
    */
   /// DurableObjectTransport._brand2
   /**
    * Gets the Durable Object instance associated with this transport.
    * @returns The SyncletDurableObject instance.
    * @category Method
-   * @since v0.0.7
+   * @since v0.0.0
    */
   /// DurableObjectTransport.getDurableObject
 }
@@ -176,7 +176,7 @@
  * });
  * ```
  * @category Type
- * @since v0.0.7
+ * @since v0.0.0
  */
 /// DurableObjectTransportOptions
 {
@@ -185,7 +185,7 @@
    * with. This is required so the transport can access the Durable Object's
    * context for WebSocket handling.
    * @category Property
-   * @since v0.0.7
+   * @since v0.0.0
    */
   /// DurableObjectTransportOptions.durableObject
 }
@@ -197,9 +197,25 @@
  * This transport handles WebSocket connections, routes messages between clients
  * based on path isolation, and integrates with the Durable Object lifecycle.
  * @category Type
- * @since v0.0.7
+ * @since v0.0.0
  */
 /// DurableObjectBrokerTransport
+{
+  /**
+   * The getPaths method returns the list of paths currently associated with
+   * this transport.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// DurableObjectBrokerTransport.getPaths
+  /**
+   * The getClientIds method returns the list of client IDs currently connected
+   * on the specified path.
+   * @category Accessor
+   * @since v0.0.0
+   */
+  /// DurableObjectBrokerTransport.getClientIds
+}
 
 /**
  * The DurableObjectBrokerTransportOptions type describes the options for
@@ -213,7 +229,7 @@
  * });
  * ```
  * @category Type
- * @since v0.0.7
+ * @since v0.0.0
  */
 /// DurableObjectBrokerTransportOptions
 {
@@ -223,7 +239,7 @@
    * between clients without participating itself. Set to a string to have the
    * Durable Object participate in that specific path.
    * @category Property
-   * @since v0.0.7
+   * @since v0.0.0
    */
   /// DurableObjectBrokerTransportOptions.path
   /**
@@ -231,7 +247,7 @@
    * accept and route. Clients connecting to paths that don't match this
    * pattern will be rejected. Defaults to accept all paths.
    * @category Property
-   * @since v0.0.7
+   * @since v0.0.0
    */
   /// DurableObjectBrokerTransportOptions.brokerPaths
 }
@@ -260,7 +276,7 @@
  * }
  * ```
  * @category Function
- * @since v0.0.7
+ * @since v0.0.0
  */
 /// createDurableObjectBrokerTransport
 
@@ -516,6 +532,6 @@
  * @returns A Promise that resolves to an object mapping column names to
  * types.
  * @category Utility
- * @since v0.0.7
+ * @since v0.0.0
  */
 /// durable-object.getTableSchema

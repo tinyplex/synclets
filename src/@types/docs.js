@@ -631,14 +631,14 @@
  * The DataConnectorOptions type describes the base options for creating a data
  * connector.
  * @category DataConnector
- * @since v0.0.6
+ * @since v0.0.0
  */
 /// DataConnectorOptions
 {
   /**
    * The depth of the address tree.
    * @category Property
-   * @since v0.0.6
+   * @since v0.0.0
    */
   /// DataConnectorOptions.depth
 }
@@ -790,14 +790,14 @@
  * The MetaConnectorOptions type describes the base options for creating a meta
  * connector.
  * @category MetaConnector
- * @since v0.0.6
+ * @since v0.0.0
  */
 /// MetaConnectorOptions
 {
   /**
    * The depth of the address tree.
    * @category Property
-   * @since v0.0.6
+   * @since v0.0.0
    */
   /// MetaConnectorOptions.depth
 }
