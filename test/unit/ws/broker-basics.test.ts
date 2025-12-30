@@ -35,7 +35,8 @@ describeCommonBrokerTests(
           );
         });
       },
-      async () => 0,
+      async () =>
+        (serverSynclet.getTransport()[0] as WsBrokerTransport).getPaths(),
     ] as const;
   },
 

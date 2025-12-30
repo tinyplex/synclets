@@ -6,6 +6,7 @@ import {
   mapForEach,
   mapGet,
   mapIsEmpty,
+  mapKeys,
   mapNew,
   mapSet,
 } from './map.ts';
@@ -31,6 +32,8 @@ export const getConnectionFunctions = (
   ) => ((message: ArrayBuffer | string) => void) | undefined,
   clearConnections: () => void,
   getValidPath: (requestUrl: {url?: string}) => string | undefined,
+  getPaths: () => string[],
+  getClientIds: (path: string) => string[],
 ] => {
   const connectionsBySendable: Map<Sendable, Connection> = mapNew();
   const connectionsByPath: Map<string, Map<string, Connection>> = mapNew();
@@ -104,5 +107,17 @@ export const getConnectionFunctions = (
           : undefined,
     );
 
-  return [addConnection, getReceive, clearConnections, getValidPath];
+  const getPaths = (): string[] => mapKeys(connectionsByPath);
+
+  const getClientIds = (path: string): string[] =>
+    mapKeys(mapGet(connectionsByPath, path)) ?? [];
+
+  return [
+    addConnection,
+    getReceive,
+    clearConnections,
+    getValidPath,
+    getPaths,
+    getClientIds,
+  ];
 };

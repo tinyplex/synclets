@@ -29,7 +29,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   let handleDel: (() => void) | undefined;
   let superShouldHandle: (request: IncomingMessage) => boolean;
 
-  const [addConnection, , clearConnections, getValidPath] =
+  const [addConnection, , clearConnections, getValidPath, getPaths] =
     getConnectionFunctions(path, brokerPaths);
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
@@ -74,8 +74,11 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
     handleSend?.(packet);
   };
 
+  const getWebSocketServer = () => webSocketServer;
+
   return createTransport({connect, disconnect, sendPacket}, options, {
-    getWebSocketServer: () => webSocketServer,
+    getWebSocketServer,
+    getPaths,
   }) as WsBrokerTransport;
 };
 
@@ -125,7 +128,9 @@ export const createWsClientTransport: typeof createWsClientTransportDecl = <
   const sendPacket = async (packet: string): Promise<void> =>
     webSocket.send(packet);
 
+  const getWebSocket = () => webSocket;
+
   return createTransport({connect, disconnect, sendPacket}, options, {
-    getWebSocket: () => webSocket,
+    getWebSocket,
   }) as WsClientTransport<WebSocketType>;
 };

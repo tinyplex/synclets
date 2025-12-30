@@ -77,7 +77,12 @@ export type DurableObjectTransportOptions = {
 } & TransportOptions;
 
 /// DurableObjectBrokerTransport
-export type DurableObjectBrokerTransport = DurableObjectTransport;
+export interface DurableObjectBrokerTransport extends DurableObjectTransport {
+  /// DurableObjectBrokerTransport.getPaths
+  getPaths(): string[];
+  /// DurableObjectBrokerTransport.getClientIds
+  getClientIds(path: string): string[];
+}
 
 /// DurableObjectBrokerTransportOptions
 export type DurableObjectBrokerTransportOptions = {
