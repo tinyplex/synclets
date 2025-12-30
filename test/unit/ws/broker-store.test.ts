@@ -16,13 +16,15 @@ describeCommonSyncletTests(
   async () => {},
   async () => {},
   async (depth) => {
-    const webSocketServer = new WebSocketServer({
-      port: allocatePort(),
-    }).setMaxListeners(0);
     const serverSynclet = await createSynclet({
       dataConnector: createMemoryDataConnector({depth}),
       metaConnector: createMemoryMetaConnector({depth}),
-      transport: createWsBrokerTransport({webSocketServer, path: ''}),
+      transport: createWsBrokerTransport({
+        webSocketServer: new WebSocketServer({
+          port: allocatePort(),
+        }).setMaxListeners(0),
+        path: '',
+      }),
     });
     await serverSynclet.start();
     return serverSynclet;

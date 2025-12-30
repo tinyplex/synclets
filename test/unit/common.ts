@@ -15,7 +15,7 @@ import {
   type DatabaseDataConnectorOptions,
   type DatabaseMetaConnectorOptions,
 } from 'synclets/database';
-import {getUniqueId} from 'synclets/utils';
+import {getPartsFromPacket, getUniqueId} from 'synclets/utils';
 import {
   afterAll,
   afterEach,
@@ -26,6 +26,7 @@ import {
   vi,
   type TestContext,
 } from 'vitest';
+import {WebSocket} from 'ws';
 
 let port = 0;
 export const allocatePort = (reserve = 1): number => {
@@ -1273,6 +1274,174 @@ export const describeSchemaTests = <DB, Depth extends number>(
       await expect(() =>
         createSynclet({dataConnector, metaConnector}),
       ).rejects.toThrow('Table "meta" needs correct schema');
+    });
+  });
+};
+
+export const describeCommonBrokerTests = (
+  getFunctions: () => Promise<
+    [
+      connect: (path: string) => Promise<{status: number; webSocket: any}>,
+      getClientCount: () => Promise<number>,
+    ]
+  >,
+  cleanup: () => Promise<void>,
+) => {
+  let connect: (path: string) => Promise<{status: number; webSocket: any}>;
+  let getClientCount: () => Promise<number>;
+
+  const createClients = async (number: number) => {
+    const webSockets: any[] = [];
+    const received: [string, string][][] = Array.from(
+      {length: number},
+      () => [],
+    );
+    for (let i = 0; i < number; i++) {
+      const {webSocket} = await connect('valid');
+      if (!webSocket) {
+        throw new Error('failed to obtain WebSocket');
+      }
+      webSocket.accept?.();
+      webSocket.addEventListener('message', (event: any) =>
+        received[i].push(getPartsFromPacket(event.data)),
+      );
+      webSockets.push(webSocket);
+    }
+    return [webSockets, received];
+  };
+
+  beforeAll(async () => {
+    [connect, getClientCount] = await getFunctions();
+  });
+
+  afterAll(async () => {
+    await cleanup();
+  });
+
+  describe(`common broker tests`, () => {
+    test('accept WebSocket upgrade requests, valid path', async () => {
+      const {status, webSocket} = await connect('valid');
+      expect(status).toBe(101);
+      expect(webSocket).not.toBeNull();
+      expect(webSocket?.readyState).toBe(WebSocket.OPEN);
+
+      webSocket!.accept?.();
+      expect(await getClientCount()).toEqual(1);
+
+      webSocket!.close();
+      expect(await getClientCount()).toEqual(0);
+    });
+
+    test('accept WebSocket upgrade requests, invalid path', async () => {
+      const {status, webSocket} = await connect('invalid');
+      expect(status).toBe(400);
+      expect(webSocket).toBeNull();
+
+      expect(await getClientCount()).toEqual(0);
+    });
+
+    test('2 clients communicate', async () => {
+      const [[webSocket1, webSocket2], [received1, received2]] =
+        await createClients(2);
+
+      expect(await getClientCount()).toEqual(2);
+
+      webSocket1.send('* from1To*');
+      webSocket2.send('* from2To*');
+
+      await pause(10);
+
+      expect(received1.length).toBe(1);
+      expect(received2.length).toBe(1);
+      expect(received1[0][1]).toBe('from2To*');
+      expect(received2[0][1]).toBe('from1To*');
+      const client1Id = received2[0][0];
+      const client2Id = received1[0][0];
+
+      webSocket1.send(client2Id + ' from1To2');
+      webSocket2.send(client1Id + ' from2To1');
+      webSocket1.send('foo undeliverable');
+      webSocket2.send('bar undeliverable');
+
+      await pause(10);
+
+      expect(received1).toEqual([
+        [client2Id, 'from2To*'],
+        [client2Id, 'from2To1'],
+      ]);
+      expect(received2).toEqual([
+        [client1Id, 'from1To*'],
+        [client1Id, 'from1To2'],
+      ]);
+
+      webSocket1.close();
+      webSocket2.close();
+    });
+
+    test('3 clients communicate', async () => {
+      const [
+        [webSocket1, webSocket2, webSocket3],
+        [received1, received2, received3],
+      ] = await createClients(3);
+
+      expect(await getClientCount()).toEqual(3);
+
+      webSocket1.send('* from1To*');
+      await pause(10);
+      webSocket2.send('* from2To*');
+      await pause(10);
+      webSocket3.send('* from3To*');
+      await pause(10);
+
+      expect(received1.length).toBe(2);
+      expect(received2.length).toBe(2);
+      expect(received3.length).toBe(2);
+      expect(received1[0][1]).toBe('from2To*');
+      expect(received1[1][1]).toBe('from3To*');
+      expect(received2[0][1]).toBe('from1To*');
+      expect(received2[1][1]).toBe('from3To*');
+      expect(received3[0][1]).toBe('from1To*');
+      expect(received3[1][1]).toBe('from2To*');
+      const client1Id = received2[0][0];
+      const client2Id = received1[0][0];
+      const client3Id = received1[1][0];
+
+      webSocket1.send(client2Id + ' from1To2');
+      webSocket1.send(client3Id + ' from1To3');
+      await pause(10);
+      webSocket2.send(client1Id + ' from2To1');
+      webSocket2.send(client3Id + ' from2To3');
+      await pause(10);
+      webSocket3.send(client1Id + ' from3To1');
+      webSocket3.send(client2Id + ' from3To2');
+      await pause(10);
+      webSocket1.send('foo undeliverable');
+      webSocket2.send('bar undeliverable');
+      webSocket3.send('baz undeliverable');
+      await pause(10);
+
+      expect(received1).toEqual([
+        [client2Id, 'from2To*'],
+        [client3Id, 'from3To*'],
+        [client2Id, 'from2To1'],
+        [client3Id, 'from3To1'],
+      ]);
+      expect(received2).toEqual([
+        [client1Id, 'from1To*'],
+        [client3Id, 'from3To*'],
+        [client1Id, 'from1To2'],
+        [client3Id, 'from3To2'],
+      ]);
+      expect(received3).toEqual([
+        [client1Id, 'from1To*'],
+        [client2Id, 'from2To*'],
+        [client1Id, 'from1To3'],
+        [client2Id, 'from2To3'],
+      ]);
+
+      webSocket1.close();
+      webSocket2.close();
+      webSocket3.close();
     });
   });
 };

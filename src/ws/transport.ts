@@ -11,7 +11,12 @@ import type {
 import {IncomingMessage} from 'http';
 import {WebSocket} from 'ws';
 import {getConnectionFunctions} from '../common/connection.ts';
-import {ifNotUndefined, isNull, promiseNew} from '../common/other.ts';
+import {
+  ifNotUndefined,
+  isNull,
+  isUndefined,
+  promiseNew,
+} from '../common/other.ts';
 import {EMPTY_STRING, UTF8} from '../common/string.ts';
 
 export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
@@ -22,6 +27,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
 }: WsBrokerTransportOptions): WsBrokerTransport => {
   let handleSend: ((packet: string) => void) | undefined;
   let handleDel: (() => void) | undefined;
+  let superShouldHandle: (request: IncomingMessage) => boolean;
 
   const [addConnection, , clearConnections, getValidPath] =
     getConnectionFunctions(path, brokerPaths);
@@ -31,19 +37,23 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
       getValidPath(request),
       (path) => {
         const [, , receive, del] = addConnection(webSocket, path);
-        webSocket
-          .off('message', receive)
-          .off('close', del)
-          .on('message', receive)
-          .on('close', del);
+        webSocket.on('message', receive).on('close', del);
         return true;
       },
-      () => webSocket.close(),
+      () => {
+        webSocket.close();
+      },
     );
 
   const connect = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
+    superShouldHandle = webSocketServer.shouldHandle.bind(webSocketServer) as (
+      request: IncomingMessage,
+    ) => boolean;
+    webSocketServer.shouldHandle = (request) =>
+      superShouldHandle(request) && !isUndefined(getValidPath(request));
+
     webSocketServer.on('connection', onConnection);
     if (!isNull(path)) {
       const [, , send, del] = addConnection({send: receivePacket}, path);

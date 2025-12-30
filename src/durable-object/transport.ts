@@ -22,7 +22,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
         const [client, server] = objValues(new WebSocketPair());
         return onConnection(server, ctx, request)
           ? createResponse(101, client)
-          : createResponse(404);
+          : createResponse(400);
       }
     };
 
