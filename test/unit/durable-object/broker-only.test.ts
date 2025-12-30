@@ -11,8 +11,14 @@ import {createMiniflare} from './miniflare/index.ts';
 describeCommonSyncletTests(
   async () => {},
   async () => {},
-  async () =>
-    await createMiniflare('TestBrokerOnlyDurableObject', allocatePort()),
+  async () => {
+    const [miniflare, fetch, api, port] = await createMiniflare(
+      'TestBrokerOnlyDurableObject',
+      allocatePort(),
+    );
+    await api('start');
+    return [miniflare, fetch, api, port] as const;
+  },
   async ([miniflare, , api]) => {
     expect(await api('getData')).toEqual({});
     await miniflare.dispose();

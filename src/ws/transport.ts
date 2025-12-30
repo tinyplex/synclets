@@ -32,6 +32,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   const [
     addConnection,
     ,
+    ,
     clearConnections,
     getValidPath,
     getPaths,

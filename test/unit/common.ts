@@ -1287,7 +1287,7 @@ export const describeCommonBrokerTests = (
     ]
   >,
   cleanup: () => Promise<void>,
-  transportPause: number = 10,
+  transportPause: number = 5,
 ) => {
   let connect: (path: string) => Promise<{status: number; webSocket: any}>;
   let getPaths: () => Promise<string[]>;

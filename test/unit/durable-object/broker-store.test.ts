@@ -13,7 +13,7 @@ describeCommonSyncletTests(
   async () => {},
   async (depth: number) => {
     const [miniflare, fetch, api, port] = await createMiniflare(
-      'TestBrokerDurableObject' + depth,
+      'TestBrokerStoreDurableObject' + depth,
       allocatePort(),
     );
     await api('start');

@@ -30,6 +30,15 @@ export class TestSyncletDurableObject extends SyncletDurableObject {
   }
 }
 
+export class TestBrokerStoreDurableObject extends TestSyncletDurableObject {
+  getCreateTransport() {
+    return createDurableObjectBrokerTransport({
+      durableObject: this,
+      path: '',
+    });
+  }
+}
+
 export class TestBrokerOnlyDurableObject extends TestSyncletDurableObject {
   getCreateTransport() {
     return createDurableObjectBrokerTransport({
@@ -73,13 +82,7 @@ export class TestConnectorsOnlyDurableObject extends TestSyncletDurableObject {
   }
 }
 
-export class TestBrokerDurableObject1 extends TestSyncletDurableObject {
-  getCreateTransport() {
-    return createDurableObjectBrokerTransport({
-      durableObject: this,
-    });
-  }
-
+export class TestBrokerStoreDurableObject1 extends TestBrokerStoreDurableObject {
   getCreateDataConnector() {
     return createDurableObjectSqliteDataConnector({
       depth: 1,
@@ -95,13 +98,7 @@ export class TestBrokerDurableObject1 extends TestSyncletDurableObject {
   }
 }
 
-export class TestBrokerDurableObject2 extends TestSyncletDurableObject {
-  getCreateTransport() {
-    return createDurableObjectBrokerTransport({
-      durableObject: this,
-    });
-  }
-
+export class TestBrokerStoreDurableObject2 extends TestBrokerStoreDurableObject {
   getCreateDataConnector() {
     return createDurableObjectSqliteDataConnector({
       depth: 2,
@@ -117,13 +114,7 @@ export class TestBrokerDurableObject2 extends TestSyncletDurableObject {
   }
 }
 
-export class TestBrokerDurableObject3 extends TestSyncletDurableObject {
-  getCreateTransport() {
-    return createDurableObjectBrokerTransport({
-      durableObject: this,
-    });
-  }
-
+export class TestBrokerStoreDurableObject3 extends TestBrokerStoreDurableObject {
   getCreateDataConnector() {
     return createDurableObjectSqliteDataConnector({
       depth: 3,
@@ -139,13 +130,7 @@ export class TestBrokerDurableObject3 extends TestSyncletDurableObject {
   }
 }
 
-export class TestBrokerDurableObject4 extends TestSyncletDurableObject {
-  getCreateTransport() {
-    return createDurableObjectBrokerTransport({
-      durableObject: this,
-    });
-  }
-
+export class TestBrokerStoreDurableObject4 extends TestBrokerStoreDurableObject {
   getCreateDataConnector() {
     return createDurableObjectSqliteDataConnector({
       depth: 4,
