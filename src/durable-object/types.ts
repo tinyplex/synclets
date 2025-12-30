@@ -11,5 +11,9 @@ export interface ProtectedDurableObjectTransport extends DurableObjectTransport 
       client: WebSocket,
       message: ArrayBuffer | string,
     ) => Promise<boolean | undefined>,
+    webSocketClose: (
+      ctx: DurableObjectState,
+      client: WebSocket,
+    ) => Promise<boolean | undefined>,
   ];
 }

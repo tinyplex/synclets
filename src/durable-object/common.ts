@@ -10,15 +10,20 @@ export const createDurableObjectTransport = (
   {
     fetch,
     webSocketMessage,
+    webSocketClose,
   }: {
     fetch: (
       ctx: DurableObjectState,
       request: Request,
     ) => Promise<Response | undefined>;
-    webSocketMessage?: (
+    webSocketMessage: (
       ctx: DurableObjectState,
       client: WebSocket,
       message: ArrayBuffer | string,
+    ) => Promise<boolean | undefined>;
+    webSocketClose: (
+      ctx: DurableObjectState,
+      client: WebSocket,
     ) => Promise<boolean | undefined>;
   },
   extraMembers: ExtraMembers,
@@ -29,7 +34,7 @@ export const createDurableObjectTransport = (
   return createTransport({connect, disconnect, sendPacket}, options, {
     ...extraMembers,
     _brand2: 'DurableObjectTransport',
-    __: [fetch, webSocketMessage],
+    __: [fetch, webSocketMessage, webSocketClose],
     getDurableObject,
   }) as DurableObjectTransport;
 };

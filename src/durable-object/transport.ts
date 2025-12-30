@@ -16,6 +16,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     const [
       addConnection,
       getReceive,
+      getDel,
       clearConnections,
       getValidPath,
       getPaths,
@@ -58,6 +59,18 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
         },
       );
 
+    const webSocketClose = async (
+      ctx: DurableObjectState,
+      ws: WebSocket,
+    ): Promise<boolean | undefined> =>
+      ifNotUndefined(
+        getDel(...(ctx.getTags(ws) as [string, string])),
+        (del) => {
+          del();
+          return true;
+        },
+      );
+
     const connect = async (
       receivePacket: (packet: string) => Promise<void>,
     ): Promise<void> => {
@@ -83,7 +96,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
 
     return createDurableObjectTransport(
       {connect, disconnect, sendPacket},
-      {fetch, webSocketMessage},
+      {fetch, webSocketMessage, webSocketClose},
       {getPaths, getClientIds},
       options,
     ) as DurableObjectBrokerTransport;

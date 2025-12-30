@@ -1322,7 +1322,7 @@ export const describeCommonBrokerTests = (
   });
 
   describe('common broker tests', () => {
-    test.only('accept WebSocket upgrade requests, valid path', async () => {
+    test('accept WebSocket upgrade requests, valid path', async () => {
       expect(await getPaths()).toEqual([]);
 
       const {status, webSocket} = await connect('valid');

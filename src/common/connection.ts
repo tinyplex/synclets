@@ -30,6 +30,7 @@ export const getConnectionFunctions = (
     path: string,
     id: string,
   ) => ((message: ArrayBuffer | string) => void) | undefined,
+  getDel: (path: string, id: string) => (() => void) | undefined,
   clearConnections: () => void,
   getValidPath: (requestUrl: {url?: string}) => string | undefined,
   getPaths: () => string[],
@@ -89,6 +90,9 @@ export const getConnectionFunctions = (
   const getReceive = (path: string, id: string) =>
     mapGet(mapGet(connectionsByPath, path), id)?.[2];
 
+  const getDel = (path: string, id: string) =>
+    mapGet(mapGet(connectionsByPath, path), id)?.[3];
+
   const clearConnections = () => {
     mapClear(connectionsByPath);
     mapClear(connectionsBySendable);
@@ -115,6 +119,7 @@ export const getConnectionFunctions = (
   return [
     addConnection,
     getReceive,
+    getDel,
     clearConnections,
     getValidPath,
     getPaths,

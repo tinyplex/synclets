@@ -84,6 +84,16 @@ export abstract class SyncletDurableObject<
     }
   }
 
+  async webSocketClose(ws: WebSocket): Promise<void> {
+    for (const {
+      __: [, , webSocketClose],
+    } of this.#durableObjectTransports) {
+      if (await webSocketClose(this.ctx, ws)) {
+        break;
+      }
+    }
+  }
+
   getCreateDataConnector?(): DataConnectorType;
 
   getCreateMetaConnector?(): MetaConnectorType;

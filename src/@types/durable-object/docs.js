@@ -165,16 +165,8 @@
 }
 
 /**
- * The DurableObjectTransportOptions type describes the options for
- * creating a broker transport for Cloudflare Durable Objects.
- * @example
- * ```typescript
- * const transport = createDurableObjectTransport({
- *   durableObject: this,
- *   path: null, // -only mode
- *   brokerPaths: /room[0-9]+/, // Only broker paths matching this pattern
- * });
- * ```
+ * The DurableObjectTransportOptions type describes the options for creating a
+ * transport for Cloudflare Durable Objects.
  * @category Type
  * @since v0.0.0
  */
