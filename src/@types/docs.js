@@ -593,6 +593,9 @@
  * Synclet will use memory-based connectors and transport by default if none are
  * provided, making it simple to start with a basic configuration and add
  * persistence later.
+ * @param components Data connector, meta connector, and transport(s).
+ * @param implementations Lifecycle hooks and permission callbacks.
+ * @param options Synclet configuration including id and logger.
  * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
@@ -752,6 +755,10 @@
  * Most applications should use pre-built connector factories like
  * createPgliteDataConnector or createFileDataConnector rather than calling this
  * function directly.
+ * @param options Depth of the data hierarchy.
+ * @param implementations Methods for reading/writing atoms and IDs.
+ * @param optimizations Bulk read methods for improved performance.
+ * @param extraMembers Additional properties to attach.
  * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
@@ -903,6 +910,10 @@
  * Most applications should use pre-built connector factories like
  * createPgliteMetaConnector or createFileMetaConnector rather than calling this
  * function directly.
+ * @param options Depth of the metadata hierarchy.
+ * @param implementations Methods for reading/writing timestamps and IDs.
+ * @param optimizations Bulk read methods for improved performance.
+ * @param extraMembers Additional properties to attach.
  * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0
@@ -1002,6 +1013,9 @@
  * Most applications should use pre-built transport factories like
  * createWsClientTransport or createBroadcastChannelTransport rather than
  * calling this function directly.
+ * @param implementations Methods for connecting and sending/receiving.
+ * @param options Transport configuration including fragment size.
+ * @param extraMembers Additional properties to attach.
  * @essential Configuring a Synclet
  * @category Core
  * @since v0.0.0

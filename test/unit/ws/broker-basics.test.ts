@@ -1,4 +1,4 @@
-import {createSynclet, Synclet} from 'synclets';
+import {createSynclet, type Synclet} from 'synclets';
 import {createWsBrokerTransport, type WsBrokerTransport} from 'synclets/ws';
 import {WebSocket, WebSocketServer} from 'ws';
 import {allocatePort, describeCommonBrokerTests} from '../common.ts';

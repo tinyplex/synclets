@@ -50,6 +50,7 @@
  *
  * This connector is designed for Node.js environments and requires file system
  * access. It will not work in browsers.
+ * @param options Depth and file path for data storage.
  * @category Connector
  * @since v0.0.0
  */
@@ -94,6 +95,7 @@
  * The metadata tree is stored as a JSON object mirroring the data tree
  * structure but containing HLC timestamps instead of Atom values. The file is
  * read on initialization and written atomically after each timestamp change.
+ * @param options Depth and file path for metadata storage.
  * @category Connector
  * @since v0.0.0
  */
@@ -189,6 +191,7 @@
  *
  * The directory structure is created automatically. This connector is designed
  * for Node.js environments and requires file system access.
+ * @param options Depth and directory path for data storage.
  * @category Connector
  * @since v0.0.0
  */
@@ -238,6 +241,7 @@
  *
  * The directory structure is created automatically. This connector is designed
  * for Node.js environments and requires file system access.
+ * @param options Depth and directory path for metadata storage.
  * @category Connector
  * @since v0.0.0
  */

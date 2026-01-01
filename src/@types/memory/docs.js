@@ -18,6 +18,7 @@
  *
  * The connector works in any JavaScript environment (Node.js, browsers, etc.)
  * and has no external dependencies.
+ * @param options Depth of the data hierarchy.
  * @category Connector
  * @since v0.0.0
  */
@@ -34,6 +35,7 @@
  *
  * The connector works in any JavaScript environment and has no external
  * dependencies.
+ * @param options Depth of the metadata hierarchy.
  * @category Connector
  * @since v0.0.0
  */
@@ -122,6 +124,7 @@
  * The transport works in any JavaScript environment and has no external
  * dependencies. It is the default transport used by createSynclet when no
  * transport is explicitly provided.
+ * @param options Optional pool ID and fragment size.
  * @category Transport
  * @since v0.0.0
  */
