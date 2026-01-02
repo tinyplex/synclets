@@ -28,9 +28,11 @@ const metaConnector = createPgliteMetaConnector({
 import {createWsClientTransport} from 'synclets/ws';
 import {WebSocket} from 'ws';
 
-const transport = createWsClientTransport(
-  new WebSocket('wss://demo.synclets.org/room1'),
-);
+const transport = createWsClientTransport({
+  webSocket: new WebSocket(
+    'wss://demo.synclets.org/room1',
+  ),
+});
 ```
 
 <section><h2 id="and-then-put-it-all-together">And then put it all together</h2><p>Finally compose a <a href="https://synclets.org/api/synclets/interfaces/core/synclet/"><code>Synclet</code></a> instance with your chosen data connector, meta connector, and transport - and start it!</p><p>We&#x27;re good to go.</p><p>Take a look at <a href="http://localhost:8082/guides/releases/#how-do-synclets-work">the sample</a> in our launch announcement for a working example.</p></section>

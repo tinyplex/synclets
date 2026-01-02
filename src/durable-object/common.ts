@@ -6,7 +6,7 @@ import {
 } from '@synclets/@types/durable-object';
 
 export const createDurableObjectTransport = (
-  {connect, disconnect, sendPacket}: TransportImplementations,
+  {attach, detach, sendPacket}: TransportImplementations,
   {
     fetch,
     webSocketMessage,
@@ -31,7 +31,7 @@ export const createDurableObjectTransport = (
 ) => {
   const getDurableObject = () => durableObject;
 
-  return createTransport({connect, disconnect, sendPacket}, options, {
+  return createTransport({attach, detach, sendPacket}, options, {
     ...extraMembers,
     _brand2: 'DurableObjectTransport',
     __: [fetch, webSocketMessage, webSocketClose],

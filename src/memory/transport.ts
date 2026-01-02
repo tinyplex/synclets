@@ -31,13 +31,13 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = ({
   const id = getUniqueId();
   const pool = mapEnsure(pools, poolId, mapNew) as Pool;
 
-  const connect = async (
+  const attach = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
     mapSet(pool, id, receivePacket);
   };
 
-  const disconnect = async (): Promise<void> => {
+  const detach = async (): Promise<void> => {
     mapDel(pool, id);
   };
 
@@ -60,5 +60,5 @@ export const createMemoryTransport: typeof createMemoryTransportDecl = ({
     }
   };
 
-  return createTransport({connect, disconnect, sendPacket}, options);
+  return createTransport({attach, detach, sendPacket}, options);
 };

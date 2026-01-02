@@ -19,7 +19,11 @@ const RECEIVE_MESSAGE = 1;
 const PACKET = /^(.+) (.+) (\d+) (\d+) (.+)$/;
 
 export const createTransport: typeof createTransportDecl = (
-  {connect, disconnect, sendPacket}: TransportImplementations,
+  {
+    attach: attachImpl,
+    detach: detachImpl,
+    sendPacket,
+  }: TransportImplementations,
   options: TransportOptions = {},
   extraMembers = {},
 ): ProtectedTransport => {
@@ -78,11 +82,11 @@ export const createTransport: typeof createTransportDecl = (
     }
     attachedSynclet = synclet;
     buffer.clear();
-    await connect?.(receivePacket);
+    await attachImpl?.(receivePacket);
   };
 
   const detach = async () => {
-    await disconnect?.();
+    await detachImpl?.();
     buffer.clear();
     attachedSynclet = undefined;
   };

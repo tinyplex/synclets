@@ -71,7 +71,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
         },
       );
 
-    const connect = async (
+    const attach = async (
       receivePacket: (packet: string) => Promise<void>,
     ): Promise<void> => {
       connected = true;
@@ -82,7 +82,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       }
     };
 
-    const disconnect = async () => {
+    const detach = async () => {
       connected = false;
       handleDel?.();
       clearConnections();
@@ -95,7 +95,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     };
 
     return createDurableObjectTransport(
-      {connect, disconnect, sendPacket},
+      {attach, detach, sendPacket},
       {fetch, webSocketMessage, webSocketClose},
       {getPaths, getClientIds},
       options,

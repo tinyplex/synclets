@@ -19,8 +19,8 @@ export const createDataConnector: typeof createDataConnectorDecl = <
 >(
   {depth}: DataConnectorOptions<Depth>,
   {
-    connect,
-    disconnect,
+    attach: attachImpl,
+    detach: detachImpl,
     readAtom,
     writeAtom: writeAtomImpl,
     removeAtom: removeAtomImpl,
@@ -58,11 +58,11 @@ export const createDataConnector: typeof createDataConnectorDecl = <
       errorNew('Data connector is already attached to Synclet');
     }
     attachedSynclet = synclet;
-    await connect?.(syncChangedAtoms);
+    await attachImpl?.(syncChangedAtoms);
   };
 
   const detach = async () => {
-    await disconnect?.();
+    await detachImpl?.();
     attachedSynclet = undefined;
   };
 

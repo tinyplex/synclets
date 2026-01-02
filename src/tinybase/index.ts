@@ -22,7 +22,7 @@ export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl
     let cellListenerId: Id;
     let valueListenerId: Id;
 
-    const connect = async (
+    const attach = async (
       syncChangedAtoms: (...addresses: AtomAddress<3>[]) => Promise<void>,
     ) => {
       cellListenerId = store.addCellListener(
@@ -38,7 +38,7 @@ export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl
       });
     };
 
-    const disconnect = async () => {
+    const detach = async () => {
       store.delListener(cellListenerId);
       store.delListener(valueListenerId);
     };
@@ -86,7 +86,7 @@ export const createTinyBaseDataConnector: typeof createTinyBaseDataConnectorDecl
 
     return createDataConnector(
       {depth: 3},
-      {connect, disconnect, readAtom, writeAtom, removeAtom, readChildIds},
+      {attach, detach, readAtom, writeAtom, removeAtom, readChildIds},
       {},
       extraMembers,
     ) as TinyBaseDataConnector;

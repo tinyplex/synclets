@@ -27,7 +27,7 @@ export const createMemoryConnector = <
 >(
   createMeta: CreateMeta,
   depth: Depth,
-  connectImpl?: () => Promise<void>,
+  attachImpl?: () => Promise<void>,
   onChange?: (tree: CreateMeta extends true ? Meta : Data) => Promise<void>,
   getInitialAfterConnect?: () => Promise<
     (CreateMeta extends true ? Meta : Data) | undefined
@@ -36,8 +36,8 @@ export const createMemoryConnector = <
 ) => {
   let tree: Data | Meta = {};
 
-  const connect = async () => {
-    await connectImpl?.();
+  const attach = async () => {
+    await attachImpl?.();
     tree = (await getInitialAfterConnect?.()) ?? tree;
   };
 
@@ -90,7 +90,7 @@ export const createMemoryConnector = <
     ? createMetaConnector(
         {depth},
         {
-          connect,
+          attach,
           readTimestamp:
             readLeaf as MetaConnectorImplementations<Depth>['readTimestamp'],
           writeTimestamp: writeLeaf,
@@ -106,7 +106,7 @@ export const createMemoryConnector = <
     : createDataConnector(
         {depth},
         {
-          connect,
+          attach,
           readAtom: readLeaf as DataConnectorImplementations<Depth>['readAtom'],
           writeAtom: writeLeaf,
           removeAtom: removeAtom,

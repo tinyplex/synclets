@@ -53,7 +53,7 @@ export const createFileConnector = <
 ) => {
   let validatedFile: string;
 
-  const connect = async () => {
+  const attach = async () => {
     validatedFile = await validateFile(file);
   };
 
@@ -72,7 +72,7 @@ export const createFileConnector = <
   return createMemoryConnector(
     createMeta,
     depth,
-    connect,
+    attach,
     onChange,
     getInitialAfterConnect,
     extraMembers,
@@ -91,7 +91,7 @@ export const createDirectoryConnector = <
 ) => {
   let validatedDirectory: string;
 
-  const connect = async () => {
+  const attach = async () => {
     validatedDirectory = await validateDirectory(directory);
   };
 
@@ -123,7 +123,7 @@ export const createDirectoryConnector = <
     ? createMetaConnector(
         {depth},
         {
-          connect,
+          attach,
           readTimestamp:
             readLeaf as MetaConnectorImplementations<Depth>['readTimestamp'],
           writeTimestamp: writeLeaf,
@@ -135,7 +135,7 @@ export const createDirectoryConnector = <
     : createDataConnector(
         {depth},
         {
-          connect,
+          attach,
           readAtom: readLeaf,
           writeAtom: writeLeaf,
           removeAtom,

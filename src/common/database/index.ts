@@ -45,7 +45,7 @@ export const createDatabaseConnector = <
     (_, i) => `${addressColumn}${i + 1}`,
   );
 
-  const connect = async () => {
+  const attach = async () => {
     const schema = await getSchema(table);
     const targetSchema = {
       [addressColumn]: 'text',
@@ -172,7 +172,7 @@ export const createDatabaseConnector = <
     ? createMetaConnector(
         {depth},
         {
-          connect,
+          attach,
           readTimestamp: readLeaf,
           writeTimestamp: writeLeaf,
           readChildIds,
@@ -183,7 +183,7 @@ export const createDatabaseConnector = <
     : createDataConnector(
         {depth},
         {
-          connect,
+          attach,
           readAtom: readLeaf,
           writeAtom: writeLeaf,
           removeAtom,

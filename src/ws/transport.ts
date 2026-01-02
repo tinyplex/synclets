@@ -50,7 +50,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
       () => webSocket.close(),
     );
 
-  const connect = async (
+  const attach = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
     originalShouldHandle = webSocketServer.shouldHandle.bind(
@@ -67,7 +67,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
     }
   };
 
-  const disconnect = async () => {
+  const detach = async () => {
     webSocketServer.off('connection', onConnection);
     webSocketServer.shouldHandle = originalShouldHandle;
 
@@ -83,7 +83,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
 
   const getWebSocketServer = () => webSocketServer;
 
-  return createTransport({connect, disconnect, sendPacket}, options, {
+  return createTransport({attach, detach, sendPacket}, options, {
     getWebSocketServer,
     getPaths,
     getClientIds,
@@ -106,7 +106,7 @@ export const createWsClientTransport: typeof createWsClientTransportDecl = <
     return () => webSocket.removeEventListener(event, handler);
   };
 
-  const connect = async (
+  const attach = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
     removeMessageListener = addEventListener('message', ({data}) =>
@@ -131,14 +131,14 @@ export const createWsClientTransport: typeof createWsClientTransportDecl = <
     });
   };
 
-  const disconnect = async (): Promise<void> => removeMessageListener?.();
+  const detach = async (): Promise<void> => removeMessageListener?.();
 
   const sendPacket = async (packet: string): Promise<void> =>
     webSocket.send(packet);
 
   const getWebSocket = () => webSocket;
 
-  return createTransport({connect, disconnect, sendPacket}, options, {
+  return createTransport({attach, detach, sendPacket}, options, {
     getWebSocket,
   }) as WsClientTransport<WebSocketType>;
 };

@@ -23,7 +23,7 @@ const pglite = await PGlite.create();
 const synclet1 = await createSynclet({
   dataConnector: createPgliteDataConnector({depth: 1, pglite}),
   metaConnector: createPgliteMetaConnector({depth: 1, pglite}),
-  transport: createWsClientTransport(new WebSocket(SERVER)),
+  transport: createWsClientTransport({webSocket: new WebSocket(SERVER)}),
 });
 await synclet1.start();
 
@@ -32,7 +32,7 @@ const database = new Database(':memory:');
 const synclet2 = await createSynclet({
   dataConnector: createSqlite3DataConnector({depth: 1, database}),
   metaConnector: createSqlite3MetaConnector({depth: 1, database}),
-  transport: createWsClientTransport(new WebSocket(SERVER)),
+  transport: createWsClientTransport({webSocket: new WebSocket(SERVER)}),
 });
 await synclet2.start();
 

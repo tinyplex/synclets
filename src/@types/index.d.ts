@@ -282,13 +282,13 @@ export type DataConnectorOptions<Depth extends number> = {
 
 /// DataConnectorImplementations
 export type DataConnectorImplementations<Depth extends number> = {
-  /// DataConnectorImplementations.connect
-  readonly connect?: (
+  /// DataConnectorImplementations.attach
+  readonly attach?: (
     syncChangedAtoms: (...address: AtomAddress<Depth>[]) => Promise<void>,
   ) => Promise<void>;
 
-  /// DataConnectorImplementations.disconnect
-  readonly disconnect?: () => Promise<void>;
+  /// DataConnectorImplementations.detach
+  readonly detach?: () => Promise<void>;
 
   /// DataConnectorImplementations.readAtom
   readonly readAtom: (address: AtomAddress<Depth>) => Promise<Atom | undefined>;
@@ -347,11 +347,11 @@ export type MetaConnectorOptions<Depth extends number> = {
 
 /// MetaConnectorImplementations
 export type MetaConnectorImplementations<Depth extends number> = {
-  /// MetaConnectorImplementations.connect
-  readonly connect?: () => Promise<void>;
+  /// MetaConnectorImplementations.attach
+  readonly attach?: () => Promise<void>;
 
-  /// MetaConnectorImplementations.disconnect
-  readonly disconnect?: () => Promise<void>;
+  /// MetaConnectorImplementations.detach
+  readonly detach?: () => Promise<void>;
 
   /// MetaConnectorImplementations.readTimestamp
   readonly readTimestamp: (
@@ -402,13 +402,13 @@ export interface Transport {
 
 /// TransportImplementations
 export type TransportImplementations = {
-  /// TransportImplementations.connect
-  readonly connect?: (
+  /// TransportImplementations.attach
+  readonly attach?: (
     receivePacket: (string: string) => Promise<void>,
   ) => Promise<void>;
 
-  /// TransportImplementations.disconnect
-  readonly disconnect?: () => Promise<void>;
+  /// TransportImplementations.detach
+  readonly detach?: () => Promise<void>;
 
   /// TransportImplementations.sendPacket
   readonly sendPacket: (string: string) => Promise<void>;

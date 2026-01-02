@@ -29,7 +29,7 @@ export const createBroadcastChannelTransport: typeof createBroadcastChannelTrans
     let channel: BroadcastChannel;
     let removeMessageListener: (() => void) | undefined;
 
-    const connect = async (
+    const attach = async (
       receivePacket: (packet: string) => Promise<void>,
     ): Promise<void> => {
       channel = new BroadcastChannel(channelName);
@@ -45,7 +45,7 @@ export const createBroadcastChannelTransport: typeof createBroadcastChannelTrans
       );
     };
 
-    const disconnect = async (): Promise<void> => {
+    const detach = async (): Promise<void> => {
       removeMessageListener?.();
       channel.close();
     };
@@ -53,7 +53,7 @@ export const createBroadcastChannelTransport: typeof createBroadcastChannelTrans
     const sendPacket = async (packet: string): Promise<void> =>
       channel.postMessage({from: id, packet});
 
-    return createTransport({connect, disconnect, sendPacket}, options, {
+    return createTransport({attach, detach, sendPacket}, options, {
       getChannelName: () => channelName,
     }) as BroadcastChannelTransport;
   };

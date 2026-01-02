@@ -15,8 +15,8 @@ export const createMetaConnector: typeof createMetaConnectorDecl = <
 >(
   {depth}: MetaConnectorOptions<Depth>,
   {
-    connect,
-    disconnect,
+    attach: attachImpl,
+    detach: detachImpl,
     readTimestamp,
     writeTimestamp,
     readChildIds,
@@ -34,11 +34,11 @@ export const createMetaConnector: typeof createMetaConnectorDecl = <
       errorNew('Meta connector is already attached to Synclet');
     }
     attachedSynclet = synclet;
-    await connect?.();
+    await attachImpl?.();
   };
 
   const detach = async () => {
-    await disconnect?.();
+    await detachImpl?.();
     attachedSynclet = undefined;
   };
 
