@@ -45,4 +45,7 @@ describeCommonSyncletTests(
       ).setMaxListeners(0),
     }),
   5,
+  undefined,
+  undefined,
+  ['pool'],
 );

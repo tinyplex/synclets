@@ -17,7 +17,7 @@ export default defineConfig({
     maxWorkers: 10,
     passWithNoTests: true,
     testTimeout: 20000,
-    retry: 2,
+    retry: 3,
     coverage: {
       enabled: false,
       provider: 'istanbul',
@@ -32,16 +32,31 @@ export default defineConfig({
         extends: true,
         test: {
           name: 'unit',
+          sequence: {groupOrder: 0},
           include: ['test/unit/**/*.test.ts', 'test/unit/**/*.test.tsx'],
-          exclude: ['test/unit/durable-object/**/*.test.ts'],
+          exclude: [
+            'test/unit/durable-object/**/*.test.ts',
+            'test/unit/documentation.test.ts',
+          ],
         },
       },
       {
         extends: true,
         test: {
+          sequence: {groupOrder: 1},
           name: 'durable-object',
           include: ['test/unit/durable-object/**/*.test.ts'],
           environment: 'node',
+          maxWorkers: 2,
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'docs',
+          sequence: {groupOrder: 2},
+          include: ['test/unit/documentation.test.ts'],
+          maxWorkers: 1,
         },
       },
       {

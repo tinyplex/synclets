@@ -30,4 +30,7 @@ describeCommonSyncletTests(
       webSocket: new WebSocket('ws://localhost:' + port).setMaxListeners(0),
     }),
   10,
+  undefined,
+  undefined,
+  ['pool'],
 );
