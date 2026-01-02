@@ -644,8 +644,8 @@ export const describeCommonSyncletTests = <
             await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
-          test('connected, far atom', async (test) => {
-            if (farAddress) {
+          if (farAddress) {
+            test('connected, far atom', async (test) => {
               eachEnvironment = await beforeEachSyncletTest(
                 depth,
                 allEnvironment,
@@ -669,8 +669,8 @@ export const describeCommonSyncletTests = <
               await synclet1.destroy();
               await synclet2.destroy();
               await afterEachSyncletTest(eachEnvironment, finalData);
-            }
-          });
+            });
+          }
 
           test('disconnected, near atom', async (test) => {
             eachEnvironment = await beforeEachSyncletTest(
@@ -701,8 +701,8 @@ export const describeCommonSyncletTests = <
             await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
-          test('disconnected, far atom', async (test) => {
-            if (farAddress) {
+          if (farAddress) {
+            test('disconnected, far atom', async (test) => {
               eachEnvironment = await beforeEachSyncletTest(
                 depth,
                 allEnvironment,
@@ -729,8 +729,8 @@ export const describeCommonSyncletTests = <
               await synclet1.destroy();
               await synclet2.destroy();
               await afterEachSyncletTest(eachEnvironment, finalData);
-            }
-          });
+            });
+          }
 
           test('disconnected, conflicting values', async (test) => {
             eachEnvironment = await beforeEachSyncletTest(
@@ -762,8 +762,8 @@ export const describeCommonSyncletTests = <
             await afterEachSyncletTest(eachEnvironment, finalData);
           });
 
-          test('disconnected, conflicting values 2', async (test) => {
-            if (farAddress) {
+          if (farAddress) {
+            test('disconnected, conflicting values 2', async (test) => {
               eachEnvironment = await beforeEachSyncletTest(
                 depth,
                 allEnvironment,
@@ -793,13 +793,13 @@ export const describeCommonSyncletTests = <
               await synclet1.destroy();
               await synclet2.destroy();
               await afterEachSyncletTest(eachEnvironment, finalData);
-            }
-          });
+            });
+          }
         });
 
         describe.each(onlyNWay)('%d-way', (count: number) => {
-          test('pool', async (test) => {
-            if (onlyNWayTypes.includes('pool')) {
+          if (onlyNWayTypes.includes('pool')) {
+            test('pool', async (test) => {
               eachEnvironment = await beforeEachSyncletTest(
                 depth,
                 allEnvironment,
@@ -823,11 +823,11 @@ export const describeCommonSyncletTests = <
                 await synclet.destroy();
               }
               await afterEachSyncletTest(eachEnvironment, finalData);
-            }
-          });
+            });
+          }
 
-          test('chain', async (test) => {
-            if (onlyNWayTypes.includes('chain')) {
+          if (onlyNWayTypes.includes('chain')) {
+            test('chain', async (test) => {
               eachEnvironment = await beforeEachSyncletTest(
                 depth,
                 allEnvironment,
@@ -851,11 +851,11 @@ export const describeCommonSyncletTests = <
                 await synclet.destroy();
               }
               await afterEachSyncletTest(eachEnvironment, finalData);
-            }
-          });
+            });
+          }
 
-          test('ring', async (test) => {
-            if (onlyNWayTypes.includes('ring')) {
+          if (onlyNWayTypes.includes('ring')) {
+            test('ring', async (test) => {
               eachEnvironment = await beforeEachSyncletTest(
                 depth,
                 allEnvironment,
@@ -880,8 +880,8 @@ export const describeCommonSyncletTests = <
                 await synclet.destroy();
               }
               await afterEachSyncletTest(eachEnvironment, finalData);
-            }
-          });
+            });
+          }
         });
       },
     );
