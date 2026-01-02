@@ -10,10 +10,10 @@ import {
   mapNew,
   mapSet,
 } from './map.ts';
-import {ifNotUndefined, slice} from './other.ts';
+import {ifNotUndefined, isNull, slice} from './other.ts';
 import {ASTERISK, EMPTY_STRING, SPACE, strMatch, strTest} from './string.ts';
 
-type Sendable = {send: (packet: string) => void};
+type Socketish = {send: (packet: string) => void};
 type Connection = [
   id: string,
   send: (packet: string) => void,
@@ -21,27 +21,32 @@ type Connection = [
   del: () => void,
 ];
 
-export const getConnectionFunctions = (
+export const getBrokerFunctions = (
   path: string | null,
   brokerPaths: RegExp,
 ): [
-  createConnection: (sendable: Sendable, path: string) => Connection,
+  createConnection: (socketish: Socketish, path: string) => Connection,
   getReceive: (
     path: string,
     id: string,
   ) => ((message: ArrayBuffer | string) => void) | undefined,
   getDel: (path: string, id: string) => (() => void) | undefined,
-  clearConnections: () => void,
   getValidPath: (requestUrl: {url?: string}) => string | undefined,
   getPaths: () => string[],
   getClientIds: (path: string) => string[],
+  serverAttach: (receivePacket: (packet: string) => Promise<void>) => void,
+  serverDetach: () => void,
+  serverSendPacket: (packet: string) => void,
 ] => {
-  const connectionsBySendable: Map<Sendable, Connection> = mapNew();
+  let serverSend: ((packet: string) => void) | undefined;
+  let serverDel: (() => void) | undefined;
+
+  const connectionsBySendable: Map<Socketish, Connection> = mapNew();
   const connectionsByPath: Map<string, Map<string, Connection>> = mapNew();
 
-  const addConnection = (sendable: Sendable, path: string): Connection =>
+  const addConnection = (socketish: Socketish, path: string): Connection =>
     ifNotUndefined(
-      mapGet(connectionsBySendable, sendable),
+      mapGet(connectionsBySendable, socketish),
       (existingConnection) => existingConnection,
       () => {
         const id = getUniqueId();
@@ -51,7 +56,7 @@ export const getConnectionFunctions = (
           mapNew<string, Connection>,
         );
 
-        const send = (packet: string) => sendable.send(packet);
+        const send = (packet: string) => socketish.send(packet);
 
         const receive = (message: ArrayBuffer | string) => {
           const packet = message.toString();
@@ -71,7 +76,7 @@ export const getConnectionFunctions = (
         };
 
         const del = () => {
-          mapDel(connectionsBySendable, sendable);
+          mapDel(connectionsBySendable, socketish);
           mapDel(connectionsForPath, id);
           if (mapIsEmpty(connectionsForPath)) {
             mapDel(connectionsByPath, path);
@@ -80,7 +85,7 @@ export const getConnectionFunctions = (
 
         const connection: Connection = [id, send, receive, del];
 
-        connectionsBySendable.set(sendable, connection);
+        connectionsBySendable.set(socketish, connection);
         mapSet(connectionsForPath, id, connection);
 
         return connection;
@@ -116,13 +121,34 @@ export const getConnectionFunctions = (
   const getClientIds = (path: string): string[] =>
     mapKeys(mapGet(connectionsByPath, path)) ?? [];
 
+  const serverAttach = (
+    receivePacket: (packet: string) => Promise<void>,
+  ): void => {
+    if (!isNull(path)) {
+      [, , serverSend, serverDel] = addConnection({send: receivePacket}, path);
+    }
+  };
+
+  const serverDetach = (): void => {
+    serverDel?.();
+    clearConnections();
+    serverDel = undefined;
+    serverSend = undefined;
+  };
+
+  const serverSendPacket = (packet: string): void => {
+    serverSend?.(packet);
+  };
+
   return [
     addConnection,
     getReceive,
     getDel,
-    clearConnections,
     getValidPath,
     getPaths,
     getClientIds,
+    serverAttach,
+    serverDetach,
+    serverSendPacket,
   ];
 };

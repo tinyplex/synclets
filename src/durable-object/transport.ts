@@ -2,26 +2,37 @@ import {
   createDurableObjectBrokerTransport as createDurableObjectBrokerTransportDecl,
   DurableObjectBrokerTransport,
 } from '@synclets/@types/durable-object';
-import {getConnectionFunctions} from '../common/connection.ts';
+import {getBrokerFunctions} from '../common/broker.ts';
 import {objValues} from '../common/object.ts';
-import {ifNotUndefined, isNull} from '../common/other.ts';
+import {ifNotUndefined} from '../common/other.ts';
 import {createDurableObjectTransport, createResponse} from './common.ts';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
   ({path = null, brokerPaths = /.*/, ...options}) => {
-    let serverSend: ((packet: string) => void) | undefined;
-    let serverDel: (() => void) | undefined;
     let attached = false;
 
     const [
       addConnection,
       getReceive,
       getDel,
-      clearConnections,
       getValidPath,
       getPaths,
       getClientIds,
-    ] = getConnectionFunctions(path, brokerPaths);
+      serverAttach,
+      serverDetach,
+      serverSendPacket,
+    ] = getBrokerFunctions(path, brokerPaths);
+
+    const onConnection = (
+      webSocket: WebSocket,
+      ctx: DurableObjectState,
+      request: Request,
+    ) =>
+      ifNotUndefined(getValidPath(request), (path) => {
+        const [clientId] = addConnection(webSocket, path);
+        ctx.acceptWebSocket(webSocket, [path, clientId]);
+        return true;
+      });
 
     const fetch = async (
       ctx: DurableObjectState,
@@ -34,17 +45,6 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
           : createResponse(400);
       }
     };
-
-    const onConnection = (
-      webSocket: WebSocket,
-      ctx: DurableObjectState,
-      request: Request,
-    ) =>
-      ifNotUndefined(getValidPath(request), (path) => {
-        const [clientId] = addConnection(webSocket, path);
-        ctx.acceptWebSocket(webSocket, [path, clientId]);
-        return true;
-      });
 
     const webSocketMessage = async (
       ctx: DurableObjectState,
@@ -77,24 +77,16 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       receivePacket: (packet: string) => Promise<void>,
     ): Promise<void> => {
       attached = true;
-      if (!isNull(path)) {
-        [, , serverSend, serverDel] = addConnection(
-          {send: receivePacket},
-          path,
-        );
-      }
+      serverAttach(receivePacket);
     };
 
     const detach = async () => {
       attached = false;
-      serverDel?.();
-      clearConnections();
-      serverDel = undefined;
-      serverSend = undefined;
+      serverDetach();
     };
 
     const sendPacket = async (packet: string): Promise<void> => {
-      serverSend?.(packet);
+      serverSendPacket(packet);
     };
 
     return createDurableObjectTransport(

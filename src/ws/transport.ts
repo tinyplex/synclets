@@ -10,13 +10,8 @@ import type {
 } from '@synclets/@types/ws';
 import {IncomingMessage} from 'http';
 import {WebSocket} from 'ws';
-import {getConnectionFunctions} from '../common/connection.ts';
-import {
-  ifNotUndefined,
-  isNull,
-  isUndefined,
-  promiseNew,
-} from '../common/other.ts';
+import {getBrokerFunctions} from '../common/broker.ts';
+import {ifNotUndefined, isUndefined, promiseNew} from '../common/other.ts';
 import {UTF8} from '../common/string.ts';
 
 export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
@@ -25,19 +20,19 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   brokerPaths = /.*/,
   ...options
 }: WsBrokerTransportOptions): WsBrokerTransport => {
-  let handleSend: ((packet: string) => void) | undefined;
-  let handleDel: (() => void) | undefined;
   let originalShouldHandle: (request: IncomingMessage) => boolean;
 
   const [
     addConnection,
     ,
     ,
-    clearConnections,
     getValidPath,
     getPaths,
     getClientIds,
-  ] = getConnectionFunctions(path, brokerPaths);
+    serverAttach,
+    serverDetach,
+    serverSendPacket,
+  ] = getBrokerFunctions(path, brokerPaths);
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
     ifNotUndefined(
@@ -60,25 +55,17 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
       originalShouldHandle(request) && !isUndefined(getValidPath(request));
 
     webSocketServer.on('connection', onConnection);
-    if (!isNull(path)) {
-      const [, , send, del] = addConnection({send: receivePacket}, path);
-      handleSend = send;
-      handleDel = del;
-    }
+    serverAttach(receivePacket);
   };
 
   const detach = async () => {
     webSocketServer.off('connection', onConnection);
     webSocketServer.shouldHandle = originalShouldHandle;
-
-    handleDel?.();
-    clearConnections();
-    handleDel = undefined;
-    handleSend = undefined;
+    serverDetach();
   };
 
   const sendPacket = async (packet: string): Promise<void> => {
-    handleSend?.(packet);
+    serverSendPacket(packet);
   };
 
   const getWebSocketServer = () => webSocketServer;
