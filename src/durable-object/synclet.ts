@@ -14,15 +14,20 @@ import type {
   Transport,
 } from '@synclets/@types';
 import {DurableObject} from 'cloudflare:workers';
-import {arrayFilter} from '../common/array.ts';
-import {isUndefined} from '../common/other.ts';
+import {arrayFind} from '../common/array.ts';
 import {EMPTY_STRING} from '../common/string.ts';
 import {createSynclet} from '../core/synclet.ts';
 import {
   createNotImplementedResponse,
   createUpgradeRequiredResponse,
 } from './common.ts';
-import {ProtectedDurableObjectTransport} from './types.ts';
+import {
+  ProtectedDurableObjectTransport,
+  TransportFetch,
+  TransportWebSocketClose,
+  TransportWebSocketError,
+  TransportWebSocketMessage,
+} from './types.ts';
 
 export abstract class SyncletDurableObject<
   Env = unknown,
@@ -35,7 +40,10 @@ export abstract class SyncletDurableObject<
   >,
 > extends DurableObject<Env> {
   #synclet!: Synclet<Depth, DataConnectorType, MetaConnectorType>;
-  #durableObjectTransports!: ProtectedDurableObjectTransport[];
+  #transportFetch: TransportFetch | undefined;
+  #transportWebSocketMessage: TransportWebSocketMessage | undefined;
+  #transportWebSocketClose: TransportWebSocketClose | undefined;
+  #transportWebSocketError: TransportWebSocketError | undefined;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -49,49 +57,42 @@ export abstract class SyncletDurableObject<
         this.getCreateImplementations?.(),
         this.getCreateOptions?.(),
       );
-      this.#durableObjectTransports = arrayFilter(
-        this.#synclet.getTransport() as ProtectedDurableObjectTransport[],
-        (transport) =>
-          '_brand2' in transport &&
-          transport._brand2 === 'DurableObjectTransport' &&
-          transport.getDurableObject() === this,
-      );
+      [
+        this.#transportFetch,
+        this.#transportWebSocketMessage,
+        this.#transportWebSocketClose,
+        this.#transportWebSocketError,
+      ] =
+        arrayFind(
+          this.#synclet.getTransport() as ProtectedDurableObjectTransport[],
+          (transport) =>
+            '_brand2' in transport &&
+            transport._brand2 === 'DurableObjectTransport' &&
+            transport.getDurableObject() === this,
+        )?.__ ?? [];
     });
   }
 
   async fetch(request: Request): Promise<Response> {
-    for (const {
-      __: [fetch],
-    } of this.#durableObjectTransports) {
-      const response = await fetch(this.ctx, request);
-      if (!isUndefined(response)) {
-        return response;
-      }
-    }
-    return createNotImplementedResponse();
+    return (
+      (await this.#transportFetch?.(this.ctx, request)) ??
+      createNotImplementedResponse()
+    );
   }
 
   async webSocketMessage(
     ws: WebSocket,
     message: string | ArrayBuffer,
   ): Promise<void> {
-    for (const {
-      __: [, webSocketMessage],
-    } of this.#durableObjectTransports) {
-      if (await webSocketMessage(this.ctx, ws, message)) {
-        break;
-      }
-    }
+    await this.#transportWebSocketMessage?.(this.ctx, ws, message);
   }
 
   async webSocketClose(ws: WebSocket): Promise<void> {
-    for (const {
-      __: [, , webSocketClose],
-    } of this.#durableObjectTransports) {
-      if (await webSocketClose(this.ctx, ws)) {
-        break;
-      }
-    }
+    await this.#transportWebSocketClose?.(this.ctx, ws);
+  }
+
+  async webSocketError(ws: WebSocket, error: any): Promise<void> {
+    await this.#transportWebSocketError?.(this.ctx, ws, error);
   }
 
   getCreateDataConnector?(): DataConnectorType;

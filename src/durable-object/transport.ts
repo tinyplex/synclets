@@ -71,6 +71,8 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
         },
       );
 
+    const webSocketError = webSocketClose;
+
     const attach = async (
       receivePacket: (packet: string) => Promise<void>,
     ): Promise<void> => {
@@ -96,7 +98,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
 
     return createDurableObjectTransport(
       {attach, detach, sendPacket},
-      {fetch, webSocketMessage, webSocketClose},
+      {fetch, webSocketMessage, webSocketClose, webSocketError},
       {getPaths, getClientIds},
       options,
     ) as DurableObjectBrokerTransport;
