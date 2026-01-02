@@ -9,9 +9,9 @@ import {createDurableObjectTransport, createResponse} from './common.ts';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
   ({path = null, brokerPaths = /.*/, ...options}) => {
-    let handleSend: ((packet: string) => void) | undefined;
-    let handleDel: (() => void) | undefined;
-    let connected = false;
+    let serverSend: ((packet: string) => void) | undefined;
+    let serverDel: (() => void) | undefined;
+    let attached = false;
 
     const [
       addConnection,
@@ -27,7 +27,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       ctx: DurableObjectState,
       request: Request,
     ): Promise<Response | undefined> => {
-      if (connected) {
+      if (attached) {
         const [client, server] = objValues(new WebSocketPair());
         return onConnection(server, ctx, request)
           ? createResponse(101, client)
@@ -76,24 +76,25 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     const attach = async (
       receivePacket: (packet: string) => Promise<void>,
     ): Promise<void> => {
-      connected = true;
+      attached = true;
       if (!isNull(path)) {
-        const [, , send, del] = addConnection({send: receivePacket}, path);
-        handleSend = send;
-        handleDel = del;
+        [, , serverSend, serverDel] = addConnection(
+          {send: receivePacket},
+          path,
+        );
       }
     };
 
     const detach = async () => {
-      connected = false;
-      handleDel?.();
+      attached = false;
+      serverDel?.();
       clearConnections();
-      handleDel = undefined;
-      handleSend = undefined;
+      serverDel = undefined;
+      serverSend = undefined;
     };
 
     const sendPacket = async (packet: string): Promise<void> => {
-      handleSend?.(packet);
+      serverSend?.(packet);
     };
 
     return createDurableObjectTransport(
