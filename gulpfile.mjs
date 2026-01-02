@@ -602,7 +602,7 @@ export const testE2e = async () => {
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
 
 export const testDurableObject = async () =>
-  await test(['test/durable-object']);
+  await test(['test/unit/durable-object']);
 
 export const compileAndTestDurableObject = series(
   compileForTest,
