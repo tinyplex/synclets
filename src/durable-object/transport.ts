@@ -13,15 +13,15 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
 
     const [
       addConnection,
-      getValidPath,
-      getPaths,
-      getClientIds,
-      serverAttach,
-      serverDetach,
-      serverSendPacket,
       socketMessage,
       socketClose,
       socketError,
+      serverAttach,
+      serverDetach,
+      serverSendPacket,
+      getValidPath,
+      getPaths,
+      getClientIds,
     ] = getBrokerFunctions(path, brokerPaths);
 
     const fetch = (ctx: DurableObjectState, request: Request): Response => {

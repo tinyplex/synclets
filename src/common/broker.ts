@@ -18,7 +18,7 @@ type Connection = [
   id: string,
   send: (packet: string) => void,
   receive: (message: ArrayBuffer | string) => void,
-  del: () => void,
+  close: () => void,
 ];
 
 export const getBrokerFunctions = (
@@ -26,21 +26,18 @@ export const getBrokerFunctions = (
   brokerPaths: RegExp,
 ): [
   createConnection: (socket: Socket, path: string) => void,
+  socketMessage: (socket: Socket, message: ArrayBuffer | string) => void,
+  socketClose: (socket: Socket) => void,
+  socketError: (socket: Socket) => void,
+  serverAttach: (receivePacket: (packet: string) => void) => void,
+  serverDetach: () => void,
+  serverSendPacket: (packet: string) => void,
   getValidPath: (requestUrl: {url?: string}) => string | undefined,
   getPaths: () => string[],
   getClientIds: (path: string) => string[],
-  serverAttach: (receivePacket: (packet: string) => Promise<void>) => void,
-  serverDetach: () => void,
-  serverSendPacket: (packet: string) => void,
-  socketMessage: (
-    socket: Socket,
-    message: ArrayBuffer | string,
-  ) => Promise<void>,
-  socketClose: (socket: Socket) => Promise<void>,
-  socketError: (socket: Socket) => Promise<void>,
 ] => {
   let serverSend: ((packet: string) => void) | undefined;
-  let serverDel: (() => void) | undefined;
+  let serverClose: (() => void) | undefined;
 
   const connectionsBySocket: Map<Socket, Connection> = mapNew();
   const connectionsByPath: Map<string, Map<string, Connection>> = mapNew();
@@ -76,7 +73,7 @@ export const getBrokerFunctions = (
           }
         };
 
-        const del = () => {
+        const close = () => {
           mapDel(connectionsBySocket, socket);
           mapDel(connectionsForPath, id);
           if (mapIsEmpty(connectionsForPath)) {
@@ -84,7 +81,7 @@ export const getBrokerFunctions = (
           }
         };
 
-        const connection: Connection = [id, send, receive, del];
+        const connection: Connection = [id, send, receive, close];
 
         connectionsBySocket.set(socket, connection);
         mapSet(connectionsForPath, id, connection);
@@ -93,9 +90,33 @@ export const getBrokerFunctions = (
       },
     ) as Connection;
 
-  const clearConnections = () => {
+  const socketMessage = (socket: Socket, message: ArrayBuffer | string): void =>
+    mapGet(connectionsBySocket, socket)?.[2]?.(message);
+
+  const socketClose = (socket: Socket): void =>
+    mapGet(connectionsBySocket, socket)?.[3]?.();
+
+  const socketError = socketClose;
+
+  const serverAttach = (receivePacket: (packet: string) => void): void => {
+    if (!isNull(path)) {
+      [, , serverSend, serverClose] = addConnection(
+        {send: receivePacket},
+        path,
+      );
+    }
+  };
+
+  const serverDetach = (): void => {
+    serverClose?.();
     mapClear(connectionsByPath);
     mapClear(connectionsBySocket);
+    serverClose = undefined;
+    serverSend = undefined;
+  };
+
+  const serverSendPacket = (packet: string): void => {
+    serverSend?.(packet);
   };
 
   const getValidPath = ({
@@ -116,48 +137,16 @@ export const getBrokerFunctions = (
   const getClientIds = (path: string): string[] =>
     mapKeys(mapGet(connectionsByPath, path)) ?? [];
 
-  const serverAttach = (
-    receivePacket: (packet: string) => Promise<void>,
-  ): void => {
-    if (!isNull(path)) {
-      [, , serverSend, serverDel] = addConnection({send: receivePacket}, path);
-    }
-  };
-
-  const serverDetach = (): void => {
-    serverDel?.();
-    clearConnections();
-    serverDel = undefined;
-    serverSend = undefined;
-  };
-
-  const serverSendPacket = (packet: string): void => {
-    serverSend?.(packet);
-  };
-
-  const socketMessage = async (
-    socket: Socket,
-    message: ArrayBuffer | string,
-  ): Promise<void> =>
-    ifNotUndefined(mapGet(connectionsBySocket, socket)?.[2], (received) =>
-      received(message),
-    );
-
-  const socketClose = async (socket: Socket): Promise<void> =>
-    ifNotUndefined(mapGet(connectionsBySocket, socket)?.[3], (del) => del());
-
-  const socketError = socketClose;
-
   return [
     addConnection,
-    getValidPath,
-    getPaths,
-    getClientIds,
-    serverAttach,
-    serverDetach,
-    serverSendPacket,
     socketMessage,
     socketClose,
     socketError,
+    serverAttach,
+    serverDetach,
+    serverSendPacket,
+    getValidPath,
+    getPaths,
+    getClientIds,
   ];
 };

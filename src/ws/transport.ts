@@ -24,15 +24,15 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
 
   const [
     addConnection,
-    getValidPath,
-    getPaths,
-    getClientIds,
-    serverAttach,
-    serverDetach,
-    serverSendPacket,
     socketMessage,
     socketClose,
     socketError,
+    serverAttach,
+    serverDetach,
+    serverSendPacket,
+    getValidPath,
+    getPaths,
+    getClientIds,
   ] = getBrokerFunctions(path, brokerPaths);
 
   const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
