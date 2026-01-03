@@ -23,7 +23,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   let originalShouldHandle: (request: IncomingMessage) => boolean;
 
   const [
-    addConnection,
+    addSocket,
     socketMessage,
     socketClose,
     socketError,
@@ -39,7 +39,7 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
     ifNotUndefined(
       getValidPath(request),
       (path) => {
-        addConnection(webSocket, path);
+        addSocket(webSocket, path);
         bindWebSocket(webSocket);
       },
       () => webSocket.close(),

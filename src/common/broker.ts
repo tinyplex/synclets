@@ -15,7 +15,6 @@ import {ASTERISK, EMPTY_STRING, SPACE, strMatch, strTest} from './string.ts';
 
 type Socket = {send: (packet: string) => void};
 type Connection = [
-  id: string,
   send: (packet: string) => void,
   receive: (message: ArrayBuffer | string) => void,
   close: () => void,
@@ -42,7 +41,7 @@ export const getBrokerFunctions = (
   const connectionsBySocket: Map<Socket, Connection> = mapNew();
   const connectionsByPath: Map<string, Map<string, Connection>> = mapNew();
 
-  const addConnection = (socket: Socket, path: string): Connection =>
+  const addSocket = (socket: Socket, path: string): Connection =>
     ifNotUndefined(
       mapGet(connectionsBySocket, socket),
       (existingConnection) => existingConnection,
@@ -64,11 +63,11 @@ export const getBrokerFunctions = (
             const remainder = slice(packet, splitAt + 1);
             const forwardedPacket = id + SPACE + remainder;
             if (to === ASTERISK) {
-              mapForEach(connectionsForPath, (otherId, [, send]) =>
+              mapForEach(connectionsForPath, (otherId, [send]) =>
                 otherId !== id ? send(forwardedPacket) : 0,
               );
             } else if (to != id) {
-              mapGet(connectionsForPath, to)?.[1](forwardedPacket);
+              mapGet(connectionsForPath, to)?.[0](forwardedPacket);
             }
           }
         };
@@ -81,7 +80,7 @@ export const getBrokerFunctions = (
           }
         };
 
-        const connection: Connection = [id, send, receive, close];
+        const connection: Connection = [send, receive, close];
 
         connectionsBySocket.set(socket, connection);
         mapSet(connectionsForPath, id, connection);
@@ -91,19 +90,16 @@ export const getBrokerFunctions = (
     ) as Connection;
 
   const socketMessage = (socket: Socket, message: ArrayBuffer | string): void =>
-    mapGet(connectionsBySocket, socket)?.[2]?.(message);
+    mapGet(connectionsBySocket, socket)?.[1]?.(message);
 
   const socketClose = (socket: Socket): void =>
-    mapGet(connectionsBySocket, socket)?.[3]?.();
+    mapGet(connectionsBySocket, socket)?.[2]?.();
 
   const socketError = socketClose;
 
   const serverAttach = (receivePacket: (packet: string) => void): void => {
     if (!isNull(path)) {
-      [, , serverSend, serverClose] = addConnection(
-        {send: receivePacket},
-        path,
-      );
+      [, serverSend, serverClose] = addSocket({send: receivePacket}, path);
     }
   };
 
@@ -138,7 +134,7 @@ export const getBrokerFunctions = (
     mapKeys(mapGet(connectionsByPath, path)) ?? [];
 
   return [
-    addConnection,
+    addSocket,
     socketMessage,
     socketClose,
     socketError,

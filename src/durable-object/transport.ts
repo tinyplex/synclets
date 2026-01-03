@@ -12,7 +12,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     let attached = false;
 
     const [
-      addConnection,
+      addSocket,
       socketMessage,
       socketClose,
       socketError,
@@ -40,7 +40,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       request: Request,
     ) =>
       ifNotUndefined(getValidPath(request), (path) => {
-        addConnection(webSocket, path);
+        addSocket(webSocket, path);
         bindWebSocket(ctx, webSocket);
         return true;
       });
