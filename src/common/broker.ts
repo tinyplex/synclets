@@ -25,17 +25,19 @@ export const getBrokerFunctions = (
   path: string | null,
   brokerPaths: RegExp,
 ): [
-  createConnection: (socket: Socket, path: string) => Connection,
-  getReceive: (
-    socket: Socket,
-  ) => ((message: ArrayBuffer | string) => void) | undefined,
-  getDel: (socket: Socket) => (() => void) | undefined,
+  createConnection: (socket: Socket, path: string) => void,
   getValidPath: (requestUrl: {url?: string}) => string | undefined,
   getPaths: () => string[],
   getClientIds: (path: string) => string[],
   serverAttach: (receivePacket: (packet: string) => Promise<void>) => void,
   serverDetach: () => void,
   serverSendPacket: (packet: string) => void,
+  socketMessage: (
+    socket: Socket,
+    message: ArrayBuffer | string,
+  ) => Promise<void>,
+  socketClose: (socket: Socket) => Promise<void>,
+  socketError: (socket: Socket) => Promise<void>,
 ] => {
   let serverSend: ((packet: string) => void) | undefined;
   let serverDel: (() => void) | undefined;
@@ -91,11 +93,6 @@ export const getBrokerFunctions = (
       },
     ) as Connection;
 
-  const getReceive = (socket: Socket) =>
-    mapGet(connectionsBySocket, socket)?.[2];
-
-  const getDel = (socket: Socket) => mapGet(connectionsBySocket, socket)?.[3];
-
   const clearConnections = () => {
     mapClear(connectionsByPath);
     mapClear(connectionsBySocket);
@@ -138,15 +135,29 @@ export const getBrokerFunctions = (
     serverSend?.(packet);
   };
 
+  const socketMessage = async (
+    socket: Socket,
+    message: ArrayBuffer | string,
+  ): Promise<void> =>
+    ifNotUndefined(mapGet(connectionsBySocket, socket)?.[2], (received) =>
+      received(message),
+    );
+
+  const socketClose = async (socket: Socket): Promise<void> =>
+    ifNotUndefined(mapGet(connectionsBySocket, socket)?.[3], (del) => del());
+
+  const socketError = socketClose;
+
   return [
     addConnection,
-    getReceive,
-    getDel,
     getValidPath,
     getPaths,
     getClientIds,
     serverAttach,
     serverDetach,
     serverSendPacket,
+    socketMessage,
+    socketClose,
+    socketError,
   ];
 };

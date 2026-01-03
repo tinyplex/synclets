@@ -3,7 +3,7 @@ import {DurableObjectTransport} from '@synclets/@types/durable-object';
 export type TransportFetch = (
   ctx: DurableObjectState,
   request: Request,
-) => Promise<Response>;
+) => Promise<Response> | Response;
 
 export type TransportWebSocketMessage = (
   ctx: DurableObjectState,

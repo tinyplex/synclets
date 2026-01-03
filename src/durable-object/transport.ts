@@ -13,23 +13,21 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
 
     const [
       addConnection,
-      getReceive,
-      getDel,
       getValidPath,
       getPaths,
       getClientIds,
       serverAttach,
       serverDetach,
       serverSendPacket,
+      socketMessage,
+      socketClose,
+      socketError,
     ] = getBrokerFunctions(path, brokerPaths);
 
-    const fetch = async (
-      ctx: DurableObjectState,
-      request: Request,
-    ): Promise<Response> => {
+    const fetch = (ctx: DurableObjectState, request: Request): Response => {
       if (attached) {
-        const [client, server] = objValues(new WebSocketPair());
-        if (onConnection(server, ctx, request)) {
+        const [client, webSocket] = objValues(new WebSocketPair());
+        if (onConnection(ctx, webSocket, request)) {
           return createResponse(101, client);
         }
       }
@@ -37,29 +35,34 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     };
 
     const onConnection = (
-      webSocket: WebSocket,
       ctx: DurableObjectState,
+      webSocket: WebSocket,
       request: Request,
     ) =>
       ifNotUndefined(getValidPath(request), (path) => {
-        const [clientId] = addConnection(webSocket, path);
-        ctx.acceptWebSocket(webSocket, [path, clientId]);
+        addConnection(webSocket, path);
+        bindWebSocket(ctx, webSocket);
         return true;
       });
+
+    const bindWebSocket = (ctx: DurableObjectState, webSocket: WebSocket) =>
+      ctx.acceptWebSocket(webSocket);
 
     const webSocketMessage = async (
       _ctx: DurableObjectState,
       webSocket: WebSocket,
       message: ArrayBuffer | string,
-    ): Promise<void> =>
-      ifNotUndefined(getReceive(webSocket), (received) => received(message));
+    ): Promise<void> => socketMessage(webSocket, message);
 
     const webSocketClose = async (
       _ctx: DurableObjectState,
       webSocket: WebSocket,
-    ): Promise<void> => ifNotUndefined(getDel(webSocket), (del) => del());
+    ): Promise<void> => socketClose(webSocket);
 
-    const webSocketError = webSocketClose;
+    const webSocketError = async (
+      _ctx: DurableObjectState,
+      webSocket: WebSocket,
+    ): Promise<void> => socketError(webSocket);
 
     const attach = async (
       receivePacket: (packet: string) => Promise<void>,
