@@ -24,8 +24,8 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
 
   const [
     addConnection,
-    ,
-    ,
+    getReceive,
+    getDel,
     getValidPath,
     getPaths,
     getClientIds,
@@ -38,12 +38,27 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
     ifNotUndefined(
       getValidPath(request),
       (path) => {
-        const [, , receive, del] = addConnection(webSocket, path);
-        webSocket.on('message', receive).on('close', del);
-        return true;
+        addConnection(webSocket, path);
+        webSocket
+          .on('message', (message: ArrayBuffer | string) =>
+            webSocketMessage(webSocket, message),
+          )
+          .on('close', () => webSocketClose(webSocket))
+          .on('error', () => webSocketError(webSocket));
       },
       () => webSocket.close(),
     );
+
+  const webSocketMessage = async (
+    webSocket: WebSocket,
+    message: ArrayBuffer | string,
+  ): Promise<void> =>
+    ifNotUndefined(getReceive(webSocket), (received) => received(message));
+
+  const webSocketClose = async (webSocket: WebSocket): Promise<void> =>
+    ifNotUndefined(getDel(webSocket), (del) => del());
+
+  const webSocketError = webSocketClose;
 
   const attach = async (
     receivePacket: (packet: string) => Promise<void>,

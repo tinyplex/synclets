@@ -3,24 +3,24 @@ import {DurableObjectTransport} from '@synclets/@types/durable-object';
 export type TransportFetch = (
   ctx: DurableObjectState,
   request: Request,
-) => Promise<Response | undefined>;
+) => Promise<Response>;
 
 export type TransportWebSocketMessage = (
   ctx: DurableObjectState,
   webSocket: WebSocket,
   message: ArrayBuffer | string,
-) => Promise<boolean | undefined>;
+) => Promise<void>;
 
 export type TransportWebSocketClose = (
   ctx: DurableObjectState,
   webSocket: WebSocket,
-) => Promise<boolean | undefined>;
+) => Promise<void>;
 
 export type TransportWebSocketError = (
   ctx: DurableObjectState,
   webSocket: WebSocket,
   error: any,
-) => Promise<boolean | undefined>;
+) => Promise<void>;
 
 export interface ProtectedDurableObjectTransport extends DurableObjectTransport {
   __: [

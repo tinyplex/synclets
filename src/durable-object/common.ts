@@ -4,6 +4,12 @@ import {
   DurableObjectTransport,
   DurableObjectTransportOptions,
 } from '@synclets/@types/durable-object';
+import {
+  TransportFetch,
+  TransportWebSocketClose,
+  TransportWebSocketError,
+  TransportWebSocketMessage,
+} from './types.ts';
 
 export const createDurableObjectTransport = (
   {attach, detach, sendPacket}: TransportImplementations,
@@ -13,24 +19,10 @@ export const createDurableObjectTransport = (
     webSocketClose,
     webSocketError,
   }: {
-    fetch: (
-      ctx: DurableObjectState,
-      request: Request,
-    ) => Promise<Response | undefined>;
-    webSocketMessage: (
-      ctx: DurableObjectState,
-      webSocket: WebSocket,
-      message: ArrayBuffer | string,
-    ) => Promise<boolean | undefined>;
-    webSocketClose: (
-      ctx: DurableObjectState,
-      webSocket: WebSocket,
-    ) => Promise<boolean | undefined>;
-    webSocketError: (
-      ctx: DurableObjectState,
-      webSocket: WebSocket,
-      error: any,
-    ) => Promise<boolean | undefined>;
+    fetch: TransportFetch;
+    webSocketMessage: TransportWebSocketMessage;
+    webSocketClose: TransportWebSocketClose;
+    webSocketError: TransportWebSocketError;
   },
   extraMembers: ExtraMembers,
   {durableObject, ...options}: DurableObjectTransportOptions,

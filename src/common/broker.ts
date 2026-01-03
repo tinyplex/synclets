@@ -13,7 +13,7 @@ import {
 import {ifNotUndefined, isNull, slice} from './other.ts';
 import {ASTERISK, EMPTY_STRING, SPACE, strMatch, strTest} from './string.ts';
 
-type Socketish = {send: (packet: string) => void};
+type Socket = {send: (packet: string) => void};
 type Connection = [
   id: string,
   send: (packet: string) => void,
@@ -25,12 +25,11 @@ export const getBrokerFunctions = (
   path: string | null,
   brokerPaths: RegExp,
 ): [
-  createConnection: (socketish: Socketish, path: string) => Connection,
+  createConnection: (socket: Socket, path: string) => Connection,
   getReceive: (
-    path: string,
-    id: string,
+    socket: Socket,
   ) => ((message: ArrayBuffer | string) => void) | undefined,
-  getDel: (path: string, id: string) => (() => void) | undefined,
+  getDel: (socket: Socket) => (() => void) | undefined,
   getValidPath: (requestUrl: {url?: string}) => string | undefined,
   getPaths: () => string[],
   getClientIds: (path: string) => string[],
@@ -41,12 +40,12 @@ export const getBrokerFunctions = (
   let serverSend: ((packet: string) => void) | undefined;
   let serverDel: (() => void) | undefined;
 
-  const connectionsBySendable: Map<Socketish, Connection> = mapNew();
+  const connectionsBySocket: Map<Socket, Connection> = mapNew();
   const connectionsByPath: Map<string, Map<string, Connection>> = mapNew();
 
-  const addConnection = (socketish: Socketish, path: string): Connection =>
+  const addConnection = (socket: Socket, path: string): Connection =>
     ifNotUndefined(
-      mapGet(connectionsBySendable, socketish),
+      mapGet(connectionsBySocket, socket),
       (existingConnection) => existingConnection,
       () => {
         const id = getUniqueId();
@@ -56,7 +55,7 @@ export const getBrokerFunctions = (
           mapNew<string, Connection>,
         );
 
-        const send = (packet: string) => socketish.send(packet);
+        const send = (packet: string) => socket.send(packet);
 
         const receive = (message: ArrayBuffer | string) => {
           const packet = message.toString();
@@ -76,7 +75,7 @@ export const getBrokerFunctions = (
         };
 
         const del = () => {
-          mapDel(connectionsBySendable, socketish);
+          mapDel(connectionsBySocket, socket);
           mapDel(connectionsForPath, id);
           if (mapIsEmpty(connectionsForPath)) {
             mapDel(connectionsByPath, path);
@@ -85,22 +84,21 @@ export const getBrokerFunctions = (
 
         const connection: Connection = [id, send, receive, del];
 
-        connectionsBySendable.set(socketish, connection);
+        connectionsBySocket.set(socket, connection);
         mapSet(connectionsForPath, id, connection);
 
         return connection;
       },
     ) as Connection;
 
-  const getReceive = (path: string, id: string) =>
-    mapGet(mapGet(connectionsByPath, path), id)?.[2];
+  const getReceive = (socket: Socket) =>
+    mapGet(connectionsBySocket, socket)?.[2];
 
-  const getDel = (path: string, id: string) =>
-    mapGet(mapGet(connectionsByPath, path), id)?.[3];
+  const getDel = (socket: Socket) => mapGet(connectionsBySocket, socket)?.[3];
 
   const clearConnections = () => {
     mapClear(connectionsByPath);
-    mapClear(connectionsBySendable);
+    mapClear(connectionsBySocket);
   };
 
   const getValidPath = ({

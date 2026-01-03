@@ -23,6 +23,19 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       serverSendPacket,
     ] = getBrokerFunctions(path, brokerPaths);
 
+    const fetch = async (
+      ctx: DurableObjectState,
+      request: Request,
+    ): Promise<Response> => {
+      if (attached) {
+        const [client, server] = objValues(new WebSocketPair());
+        if (onConnection(server, ctx, request)) {
+          return createResponse(101, client);
+        }
+      }
+      return createResponse(400);
+    };
+
     const onConnection = (
       webSocket: WebSocket,
       ctx: DurableObjectState,
@@ -34,42 +47,17 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
         return true;
       });
 
-    const fetch = async (
-      ctx: DurableObjectState,
-      request: Request,
-    ): Promise<Response | undefined> => {
-      if (attached) {
-        const [client, server] = objValues(new WebSocketPair());
-        return onConnection(server, ctx, request)
-          ? createResponse(101, client)
-          : createResponse(400);
-      }
-    };
-
     const webSocketMessage = async (
-      ctx: DurableObjectState,
-      ws: WebSocket,
+      _ctx: DurableObjectState,
+      webSocket: WebSocket,
       message: ArrayBuffer | string,
-    ): Promise<boolean | undefined> =>
-      ifNotUndefined(
-        getReceive(...(ctx.getTags(ws) as [string, string])),
-        (received) => {
-          received(message);
-          return true;
-        },
-      );
+    ): Promise<void> =>
+      ifNotUndefined(getReceive(webSocket), (received) => received(message));
 
     const webSocketClose = async (
-      ctx: DurableObjectState,
-      ws: WebSocket,
-    ): Promise<boolean | undefined> =>
-      ifNotUndefined(
-        getDel(...(ctx.getTags(ws) as [string, string])),
-        (del) => {
-          del();
-          return true;
-        },
-      );
+      _ctx: DurableObjectState,
+      webSocket: WebSocket,
+    ): Promise<void> => ifNotUndefined(getDel(webSocket), (del) => del());
 
     const webSocketError = webSocketClose;
 
