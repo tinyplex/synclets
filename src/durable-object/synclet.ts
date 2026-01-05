@@ -16,7 +16,6 @@ import type {
 import {DurableObject} from 'cloudflare:workers';
 import {arrayFind} from '../common/array.ts';
 import {ifNotUndefined} from '../common/other.ts';
-import {strMatch} from '../common/string.ts';
 import {createSynclet} from '../core/synclet.ts';
 import {
   createNotImplementedResponse,
@@ -169,7 +168,10 @@ export abstract class SyncletDurableObject<
 }
 
 export const getSyncletDurableObjectFetch =
-  <Namespace extends string>(namespace: Namespace) =>
+  <Namespace extends string>(
+    namespace: Namespace,
+    getName: (request: Request) => string | undefined = () => 'default',
+  ) =>
   (
     request: Request,
     env: {
@@ -181,11 +183,7 @@ export const getSyncletDurableObjectFetch =
       : request.headers.get('upgrade')?.toLowerCase() != 'websocket'
         ? createUpgradeRequiredResponse()
         : (ifNotUndefined(
-            strMatch(
-              new URL(request.url, 'http://l').pathname ?? '/',
-              /\/([^?]*)/,
-            ),
-            ([, requestPath]) =>
-              env[namespace].getByName(requestPath).fetch(request),
+            getName(request),
+            (name) => env[namespace].getByName(name).fetch(request),
             createNotImplementedResponse,
           ) as Promise<Response>);
