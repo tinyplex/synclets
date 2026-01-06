@@ -12,7 +12,6 @@ describeCommonBrokerTests(
         webSocketServer: new WebSocketServer({
           port: allocatePort(),
         }).setMaxListeners(0),
-        brokerPaths: /^valid.*/,
       }),
     });
     await serverSynclet.start();
@@ -36,11 +35,7 @@ describeCommonBrokerTests(
         });
       },
       async () =>
-        (serverSynclet.getTransport()[0] as WsBrokerTransport).getPaths(),
-      async (path: string) =>
-        (serverSynclet.getTransport()[0] as WsBrokerTransport).getClientIds(
-          path,
-        ),
+        (serverSynclet.getTransport()[0] as WsBrokerTransport).getClientIds(),
     ] as const;
   },
 

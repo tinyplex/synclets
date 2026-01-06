@@ -1,17 +1,19 @@
+import {RESERVED} from '@synclets';
 import {getUniqueId} from '@synclets/utils';
+import {arrayFilter} from './array.ts';
 import {
   mapClear,
   mapDel,
-  mapEnsure,
   mapForEach,
   mapGet,
-  mapIsEmpty,
   mapKeys,
   mapNew,
   mapSet,
 } from './map.ts';
-import {ifNotUndefined, isNull, slice} from './other.ts';
-import {ASTERISK, EMPTY_STRING, SPACE, strMatch, strTest} from './string.ts';
+import {ifNotUndefined, slice} from './other.ts';
+import {ASTERISK, SPACE} from './string.ts';
+
+const SERVER_ID = RESERVED + 's';
 
 type Socket = {send: (packet: string) => void};
 type Connection = [
@@ -20,39 +22,27 @@ type Connection = [
   close: () => void,
 ];
 
-export const getBrokerFunctions = (
-  path: string | null,
-  brokerPaths: RegExp,
-): [
-  createConnection: (socket: Socket, path: string) => void,
+export const getBrokerFunctions = (): [
+  createConnection: (socket: Socket) => void,
   socketMessage: (socket: Socket, message: ArrayBuffer | string) => void,
   socketClose: (socket: Socket) => void,
   socketError: (socket: Socket) => void,
   serverAttach: (receivePacket: (packet: string) => void) => void,
   serverDetach: () => void,
   serverSendPacket: (packet: string) => void,
-  getValidPath: (requestUrl: {url?: string}) => string | undefined,
-  getPaths: () => string[],
-  getClientIds: (path: string) => string[],
+  getClientIds: () => string[],
 ] => {
   let serverSend: ((packet: string) => void) | undefined;
   let serverClose: (() => void) | undefined;
 
   const connectionsBySocket: Map<Socket, Connection> = mapNew();
-  const connectionsByPath: Map<string, Map<string, Connection>> = mapNew();
+  const connectionsById: Map<string, Connection> = mapNew();
 
-  const addSocket = (socket: Socket, path: string): Connection =>
+  const addSocket = (socket: Socket, id = getUniqueId()): Connection =>
     ifNotUndefined(
       mapGet(connectionsBySocket, socket),
       (existingConnection) => existingConnection,
       () => {
-        const id = getUniqueId();
-        const connectionsForPath = mapEnsure(
-          connectionsByPath,
-          path,
-          mapNew<string, Connection>,
-        );
-
         const send = (packet: string) => socket.send(packet);
 
         const receive = (message: ArrayBuffer | string) => {
@@ -63,27 +53,24 @@ export const getBrokerFunctions = (
             const remainder = slice(packet, splitAt + 1);
             const forwardedPacket = id + SPACE + remainder;
             if (to === ASTERISK) {
-              mapForEach(connectionsForPath, (otherId, [send]) =>
+              mapForEach(connectionsById, (otherId, [send]) =>
                 otherId !== id ? send(forwardedPacket) : 0,
               );
             } else if (to != id) {
-              mapGet(connectionsForPath, to)?.[0](forwardedPacket);
+              mapGet(connectionsById, to)?.[0](forwardedPacket);
             }
           }
         };
 
         const close = () => {
           mapDel(connectionsBySocket, socket);
-          mapDel(connectionsForPath, id);
-          if (mapIsEmpty(connectionsForPath)) {
-            mapDel(connectionsByPath, path);
-          }
+          mapDel(connectionsById, id);
         };
 
         const connection: Connection = [send, receive, close];
 
         connectionsBySocket.set(socket, connection);
-        mapSet(connectionsForPath, id, connection);
+        mapSet(connectionsById, id, connection);
 
         return connection;
       },
@@ -98,14 +85,12 @@ export const getBrokerFunctions = (
   const socketError = socketClose;
 
   const serverAttach = (receivePacket: (packet: string) => void): void => {
-    if (!isNull(path)) {
-      [, serverSend, serverClose] = addSocket({send: receivePacket}, path);
-    }
+    [, serverSend, serverClose] = addSocket({send: receivePacket}, SERVER_ID);
   };
 
   const serverDetach = (): void => {
     serverClose?.();
-    mapClear(connectionsByPath);
+    mapClear(connectionsById);
     mapClear(connectionsBySocket);
     serverClose = undefined;
     serverSend = undefined;
@@ -115,23 +100,8 @@ export const getBrokerFunctions = (
     serverSend?.(packet);
   };
 
-  const getValidPath = ({
-    url = EMPTY_STRING,
-  }: {
-    url?: string;
-  }): string | undefined =>
-    ifNotUndefined(
-      strMatch(new URL(url, 'http://l').pathname ?? '/', /\/([^?]*)/),
-      ([, requestPath]) =>
-        requestPath === path || strTest(requestPath, brokerPaths)
-          ? requestPath
-          : undefined,
-    );
-
-  const getPaths = (): string[] => mapKeys(connectionsByPath);
-
-  const getClientIds = (path: string): string[] =>
-    mapKeys(mapGet(connectionsByPath, path)) ?? [];
+  const getClientIds = (): string[] =>
+    arrayFilter(mapKeys(connectionsById), (id) => id != SERVER_ID);
 
   return [
     addSocket,
@@ -141,8 +111,6 @@ export const getBrokerFunctions = (
     serverAttach,
     serverDetach,
     serverSendPacket,
-    getValidPath,
-    getPaths,
     getClientIds,
   ];
 };

@@ -186,23 +186,16 @@
  * The DurableObjectBrokerTransport type represents a transport that enables
  * WebSocket-based message brokering within a Cloudflare Durable Object.
  *
- * This transport handles WebSocket connections, routes messages between clients
- * based on path isolation, and integrates with the Durable Object lifecycle.
+ * This transport handles WebSocket connections, routes messages between all
+ * connected clients, and integrates with the Durable Object lifecycle.
  * @category Type
  * @since v0.0.0
  */
 /// DurableObjectBrokerTransport
 {
   /**
-   * The getPaths method returns the list of paths currently associated with
-   * this transport.
-   * @category Accessor
-   * @since v0.0.0
-   */
-  /// DurableObjectBrokerTransport.getPaths
-  /**
    * The getClientIds method returns the list of client IDs currently connected
-   * on the specified path.
+   * to this broker.
    * @category Accessor
    * @since v0.0.0
    */
@@ -210,48 +203,12 @@
 }
 
 /**
- * The DurableObjectBrokerTransportOptions type describes the options for
- * creating a broker transport for Cloudflare Durable Objects.
- * @example
- * ```typescript
- * const transport = createDurableObjectBrokerTransport({
- *   durableObject: this,
- *   path: null, // Broker-only mode
- *   brokerPaths: /room[0-9]+/, // Only broker paths matching this pattern
- * });
- * ```
- * @category Type
- * @since v0.0.0
- */
-/// DurableObjectBrokerTransportOptions
-{
-  /**
-   * The path property specifies the WebSocket path to listen on such that the
-   * synclet can itself participate in the brokered communication. Leave
-   * as the default (`null`) for broker-only mode where the synclet only
-   * routes messages between clients without participating itself.
-   * @category Property
-   * @since v0.0.0
-   */
-  /// DurableObjectBrokerTransportOptions.path
-  /**
-   * A regular expression pattern that determines which paths this broker will
-   * accept and route. Clients connecting to paths that don't match this
-   * pattern will be rejected. Defaults to accept all paths.
-   * @category Property
-   * @since v0.0.0
-   */
-  /// DurableObjectBrokerTransportOptions.brokerPaths
-}
-
-/**
  * The createDurableObjectBrokerTransport function creates a transport for
  * brokering WebSocket messages within a Cloudflare Durable Object.
  *
- * This transport enables path-based message isolation, where clients on
- * different paths cannot communicate with each other, even though they're all
- * connected to the same Durable Object instance. It's commonly used with
- * BrokerOnlyDurableObject to create stateless broker servers.
+ * This transport routes messages between all clients connected to the broker,
+ * regardless of the path they connected on. It's commonly used with
+ * BrokerOnlyDurableObject to create broker servers.
  * @param options - The transport options, including the Durable Object
  * reference.
  * @returns A broker transport configured for the Durable Object.
@@ -261,8 +218,6 @@
  *   getCreateTransport() {
  *     return createDurableObjectBrokerTransport({
  *       durableObject: this,
- *       path: null, // Broker-only mode
- *       brokerPaths: /^room-[a-z0-9]+$/, // Only accept specific room paths
  *     });
  *   }
  * }

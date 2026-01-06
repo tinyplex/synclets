@@ -78,24 +78,13 @@ export type DurableObjectTransportOptions = {
 
 /// DurableObjectBrokerTransport
 export interface DurableObjectBrokerTransport extends DurableObjectTransport {
-  /// DurableObjectBrokerTransport.getPaths
-  getPaths(): string[];
   /// DurableObjectBrokerTransport.getClientIds
-  getClientIds(path: string): string[];
+  getClientIds(): string[];
 }
-
-/// DurableObjectBrokerTransportOptions
-export type DurableObjectBrokerTransportOptions = {
-  /// DurableObjectBrokerTransportOptions.path
-  readonly path?: string | null;
-
-  /// DurableObjectBrokerTransportOptions.brokerPaths
-  readonly brokerPaths?: RegExp;
-} & DurableObjectTransportOptions;
 
 /// createDurableObjectBrokerTransport
 export function createDurableObjectBrokerTransport(
-  options: DurableObjectBrokerTransportOptions,
+  options: DurableObjectTransportOptions,
 ): DurableObjectBrokerTransport;
 
 /// SyncletDurableObject

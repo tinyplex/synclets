@@ -10,22 +10,14 @@ export type WebSocketTypes = WebSocket | WsWebSocket;
 export interface WsBrokerTransport extends Transport {
   /// WsBrokerTransport.getWebSocketServer
   getWebSocketServer(): WebSocketServer;
-  /// WsBrokerTransport.getPaths
-  getPaths(): string[];
   /// WsBrokerTransport.getClientIds
-  getClientIds(path: string): string[];
+  getClientIds(): string[];
 }
 
 /// WsBrokerTransportOptions
 export type WsBrokerTransportOptions = {
   /// WsBrokerTransportOptions.webSocketServer
   readonly webSocketServer: WebSocketServer;
-
-  /// WsBrokerTransportOptions.path
-  readonly path?: string | null;
-
-  /// WsBrokerTransportOptions.brokerPaths
-  readonly brokerPaths?: RegExp;
 } & TransportOptions;
 
 /// createWsBrokerTransport

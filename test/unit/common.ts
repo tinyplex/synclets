@@ -1282,16 +1282,14 @@ export const describeCommonBrokerTests = (
   getFunctions: () => Promise<
     [
       connect: (path: string) => Promise<{status: number; webSocket: any}>,
-      getPaths: () => Promise<string[]>,
-      getClientIds: (path: string) => Promise<string[]>,
+      getClientIds: () => Promise<string[]>,
     ]
   >,
   cleanup: () => Promise<void>,
   transportPause: number = 5,
 ) => {
   let connect: (path: string) => Promise<{status: number; webSocket: any}>;
-  let getPaths: () => Promise<string[]>;
-  let getClientIds: (path: string) => Promise<string[]>;
+  let getClientIds: () => Promise<string[]>;
 
   const createClients = async (number: number) => {
     const webSockets: any[] = [];
@@ -1300,7 +1298,7 @@ export const describeCommonBrokerTests = (
       () => [],
     );
     for (let i = 0; i < number; i++) {
-      const {webSocket} = await connect('valid');
+      const {webSocket} = await connect('');
       if (!webSocket) {
         throw new Error('failed to obtain WebSocket');
       }
@@ -1314,7 +1312,7 @@ export const describeCommonBrokerTests = (
   };
 
   beforeAll(async () => {
-    [connect, getPaths, getClientIds] = await getFunctions();
+    [connect, getClientIds] = await getFunctions();
   });
 
   afterAll(async () => {
@@ -1322,40 +1320,27 @@ export const describeCommonBrokerTests = (
   });
 
   describe('common broker tests', () => {
-    test('accept WebSocket upgrade requests, valid path', async () => {
-      expect(await getPaths()).toEqual([]);
-
-      const {status, webSocket} = await connect('valid');
+    test('accept WebSocket upgrade requests', async () => {
+      const {status, webSocket} = await connect('');
       expect(status).toBe(101);
       expect(webSocket).not.toBeNull();
       expect(webSocket?.readyState).toBe(WebSocket.OPEN);
 
       webSocket!.accept?.();
       await pause(transportPause);
-      expect(await getPaths()).toEqual(['valid']);
-      expect((await getClientIds('valid')).length).toEqual(1);
+      expect((await getClientIds()).length).toEqual(1);
 
       webSocket!.close();
       await pause(transportPause);
 
-      expect(await getPaths()).toEqual([]);
-      expect((await getClientIds('valid')).length).toEqual(0);
-    });
-
-    test('accept WebSocket upgrade requests, invalid path', async () => {
-      const {status, webSocket} = await connect('invalid');
-      expect(status).toBe(400);
-      expect(webSocket).toBeNull();
-
-      expect(await getPaths()).toEqual([]);
+      expect((await getClientIds()).length).toEqual(0);
     });
 
     test('2 clients communicate', async () => {
       const [[webSocket1, webSocket2], [received1, received2]] =
         await createClients(2);
 
-      expect(await getPaths()).toEqual(['valid']);
-      expect((await getClientIds('valid')).length).toEqual(2);
+      expect((await getClientIds()).length).toEqual(2);
 
       webSocket1.send('* from1To*');
       webSocket2.send('* from2To*');
@@ -1393,8 +1378,7 @@ export const describeCommonBrokerTests = (
         [received1, received2, received3],
       ] = await createClients(3);
 
-      expect(await getPaths()).toEqual(['valid']);
-      expect((await getClientIds('valid')).length).toEqual(3);
+      expect((await getClientIds()).length).toEqual(3);
 
       webSocket1.send('* from1To*');
 
@@ -1459,70 +1443,10 @@ export const describeCommonBrokerTests = (
       webSocket3.close();
     });
 
-    test('path isolation - no message leakage', async () => {
-      const {webSocket: ws1Path1} = await connect('valid-path1');
-      const {webSocket: ws2Path1} = await connect('valid-path1');
-      const {webSocket: ws1Path2} = await connect('valid-path2');
-      const {webSocket: ws2Path2} = await connect('valid-path2');
-
-      ws1Path1.accept?.();
-      ws2Path1.accept?.();
-      ws1Path2.accept?.();
-      ws2Path2.accept?.();
-
-      const receivedPath1_1: [string, string][] = [];
-      const receivedPath1_2: [string, string][] = [];
-      const receivedPath2_1: [string, string][] = [];
-      const receivedPath2_2: [string, string][] = [];
-
-      ws1Path1.addEventListener('message', (event: any) =>
-        receivedPath1_1.push(getPartsFromPacket(event.data)),
-      );
-      ws2Path1.addEventListener('message', (event: any) =>
-        receivedPath1_2.push(getPartsFromPacket(event.data)),
-      );
-      ws1Path2.addEventListener('message', (event: any) =>
-        receivedPath2_1.push(getPartsFromPacket(event.data)),
-      );
-      ws2Path2.addEventListener('message', (event: any) =>
-        receivedPath2_2.push(getPartsFromPacket(event.data)),
-      );
-
-      await pause(transportPause);
-
-      ws1Path1.send('* messagePath1');
-
-      await pause(transportPause);
-
-      expect(receivedPath1_1.length).toBe(0);
-      expect(receivedPath1_2.length).toBe(1);
-      expect(receivedPath1_2[0][1]).toBe('messagePath1');
-      expect(receivedPath2_1.length).toBe(0);
-      expect(receivedPath2_2.length).toBe(0);
-
-      ws1Path2.send('* messagePath2');
-
-      await pause(transportPause);
-
-      expect(receivedPath1_1.length).toBe(0);
-      expect(receivedPath1_2.length).toBe(1);
-      expect(receivedPath2_1.length).toBe(0);
-      expect(receivedPath2_2.length).toBe(1);
-      expect(receivedPath2_2[0][1]).toBe('messagePath2');
-
-      ws1Path1.close();
-      ws2Path1.close();
-      ws1Path2.close();
-      ws2Path2.close();
-      await pause(transportPause);
-    });
-
     test('multiple concurrent paths', async () => {
-      expect(await getPaths()).toEqual([]);
-
-      const {webSocket: ws1} = await connect('valid-pathA');
-      const {webSocket: ws2} = await connect('valid-pathB');
-      const {webSocket: ws3} = await connect('valid-pathC');
+      const {webSocket: ws1} = await connect('A');
+      const {webSocket: ws2} = await connect('B');
+      const {webSocket: ws3} = await connect('C');
 
       ws1.accept?.();
       ws2.accept?.();
@@ -1530,98 +1454,37 @@ export const describeCommonBrokerTests = (
 
       await pause(transportPause);
 
-      const paths = await getPaths();
-      expect(paths.sort()).toEqual([
-        'valid-pathA',
-        'valid-pathB',
-        'valid-pathC',
-      ]);
-      expect((await getClientIds('valid-pathA')).length).toEqual(1);
-      expect((await getClientIds('valid-pathB')).length).toEqual(1);
-      expect((await getClientIds('valid-pathC')).length).toEqual(1);
+      expect((await getClientIds()).length).toEqual(3);
 
       ws2.close();
       await pause(transportPause);
-
-      const pathsAfter = await getPaths();
-      expect(pathsAfter.sort()).toEqual(['valid-pathA', 'valid-pathC']);
+      expect((await getClientIds()).length).toEqual(2);
 
       ws1.close();
       ws3.close();
       await pause(transportPause);
 
-      expect(await getPaths()).toEqual([]);
-    });
-
-    test('client ID uniqueness across paths', async () => {
-      const {webSocket: ws1Path1} = await connect('valid-pathX');
-      const {webSocket: ws2Path1} = await connect('valid-pathX');
-      const {webSocket: ws1Path2} = await connect('valid-pathY');
-      const {webSocket: ws2Path2} = await connect('valid-pathY');
-
-      ws1Path1.accept?.();
-      ws2Path1.accept?.();
-      ws1Path2.accept?.();
-      ws2Path2.accept?.();
-
-      const receivedPath1_1: [string, string][] = [];
-      const receivedPath1_2: [string, string][] = [];
-      const receivedPath2_1: [string, string][] = [];
-      const receivedPath2_2: [string, string][] = [];
-
-      ws1Path1.addEventListener('message', (event: any) =>
-        receivedPath1_1.push(getPartsFromPacket(event.data)),
-      );
-      ws2Path1.addEventListener('message', (event: any) =>
-        receivedPath1_2.push(getPartsFromPacket(event.data)),
-      );
-      ws1Path2.addEventListener('message', (event: any) =>
-        receivedPath2_1.push(getPartsFromPacket(event.data)),
-      );
-      ws2Path2.addEventListener('message', (event: any) =>
-        receivedPath2_2.push(getPartsFromPacket(event.data)),
-      );
-
-      await pause(transportPause);
-
-      ws1Path1.send('* hello');
-      ws1Path2.send('* hello');
-
-      await pause(transportPause);
-
-      const clientIdPath1 = receivedPath1_2[0]?.[0];
-      const clientIdPath2 = receivedPath2_2[0]?.[0];
-
-      expect(clientIdPath1).toBeDefined();
-      expect(clientIdPath2).toBeDefined();
-      expect(clientIdPath1).not.toBe(clientIdPath2);
-
-      ws1Path1.close();
-      ws2Path1.close();
-      ws1Path2.close();
-      ws2Path2.close();
-      await pause(transportPause);
+      expect((await getClientIds()).length).toEqual(0);
     });
 
     test('rapid connect and disconnect', async () => {
       const connections = [];
 
       for (let i = 0; i < 5; i++) {
-        const {webSocket} = await connect('valid-rapid');
+        const {webSocket} = await connect('');
         webSocket.accept?.();
         connections.push(webSocket);
       }
 
       await pause(transportPause);
-      expect((await getClientIds('valid-rapid')).length).toEqual(5);
+      expect((await getClientIds()).length).toEqual(5);
 
       for (const ws of connections) {
         ws.close();
       }
 
       await pause(transportPause);
-      expect(await getPaths()).toEqual([]);
-      expect((await getClientIds('valid-rapid')).length).toEqual(0);
+      expect((await getClientIds()).length).toEqual(0);
     });
 
     test('direct message to specific client only', async () => {
@@ -1654,58 +1517,6 @@ export const describeCommonBrokerTests = (
       webSocket1.close();
       webSocket2.close();
       webSocket3.close();
-    });
-
-    test('client reconnection maintains isolation', async () => {
-      const {webSocket: ws1} = await connect('valid-reconnect');
-      ws1.accept?.();
-
-      const received1: [string, string][] = [];
-      ws1.addEventListener('message', (event: any) =>
-        received1.push(getPartsFromPacket(event.data)),
-      );
-
-      await pause(transportPause);
-      expect((await getClientIds('valid-reconnect')).length).toEqual(1);
-
-      const {webSocket: ws2} = await connect('valid-reconnect');
-      ws2.accept?.();
-      const received2: [string, string][] = [];
-      ws2.addEventListener('message', (event: any) =>
-        received2.push(getPartsFromPacket(event.data)),
-      );
-
-      await pause(transportPause);
-      expect((await getClientIds('valid-reconnect')).length).toEqual(2);
-
-      ws1.send('* msg1');
-      await pause(transportPause);
-
-      const client1Id = received2[0][0];
-
-      ws1.close();
-      await pause(transportPause);
-      expect((await getClientIds('valid-reconnect')).length).toEqual(1);
-
-      const {webSocket: ws1New} = await connect('valid-reconnect');
-      ws1New.accept?.();
-      const received1New: [string, string][] = [];
-      ws1New.addEventListener('message', (event: any) =>
-        received1New.push(getPartsFromPacket(event.data)),
-      );
-
-      await pause(transportPause);
-      expect((await getClientIds('valid-reconnect')).length).toEqual(2);
-
-      ws1New.send('* msg2');
-      await pause(transportPause);
-
-      const client1NewId = received2[1][0];
-      expect(client1NewId).not.toBe(client1Id);
-
-      ws1New.close();
-      ws2.close();
-      await pause(transportPause);
     });
   });
 };

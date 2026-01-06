@@ -11,17 +11,13 @@ import type {
 import {IncomingMessage} from 'http';
 import {WebSocket} from 'ws';
 import {getBrokerFunctions} from '../common/broker.ts';
-import {ifNotUndefined, isUndefined, promiseNew} from '../common/other.ts';
+import {promiseNew} from '../common/other.ts';
 import {UTF8} from '../common/string.ts';
 
 export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   webSocketServer,
-  path = null,
-  brokerPaths = /.*/,
   ...options
 }: WsBrokerTransportOptions): WsBrokerTransport => {
-  let originalShouldHandle: (request: IncomingMessage) => boolean;
-
   const [
     addSocket,
     socketMessage,
@@ -30,20 +26,13 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
     serverAttach,
     serverDetach,
     serverSendPacket,
-    getValidPath,
-    getPaths,
     getClientIds,
-  ] = getBrokerFunctions(path, brokerPaths);
+  ] = getBrokerFunctions();
 
-  const onConnection = (webSocket: WebSocket, request: IncomingMessage) =>
-    ifNotUndefined(
-      getValidPath(request),
-      (path) => {
-        addSocket(webSocket, path);
-        bindWebSocket(webSocket);
-      },
-      () => webSocket.close(),
-    );
+  const onConnection = (webSocket: WebSocket, _request: IncomingMessage) => {
+    addSocket(webSocket);
+    bindWebSocket(webSocket);
+  };
 
   const bindWebSocket = (webSocket: WebSocket) =>
     webSocket
@@ -56,19 +45,12 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
   const attach = async (
     receivePacket: (packet: string) => Promise<void>,
   ): Promise<void> => {
-    originalShouldHandle = webSocketServer.shouldHandle.bind(
-      webSocketServer,
-    ) as (request: IncomingMessage) => boolean;
-    webSocketServer.shouldHandle = (request) =>
-      originalShouldHandle(request) && !isUndefined(getValidPath(request));
-
     webSocketServer.on('connection', onConnection);
     serverAttach(receivePacket);
   };
 
   const detach = async () => {
     webSocketServer.off('connection', onConnection);
-    webSocketServer.shouldHandle = originalShouldHandle;
     serverDetach();
   };
 
@@ -80,7 +62,6 @@ export const createWsBrokerTransport: typeof createWsBrokerTransportDecl = ({
 
   return createTransport({attach, detach, sendPacket}, options, {
     getWebSocketServer,
-    getPaths,
     getClientIds,
   }) as WsBrokerTransport;
 };

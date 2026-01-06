@@ -34,7 +34,6 @@ export class TestBrokerStoreDurableObject extends TestSyncletDurableObject {
   getCreateTransport() {
     return createDurableObjectBrokerTransport({
       durableObject: this,
-      path: '',
     });
   }
 }
@@ -51,18 +50,13 @@ export class TestSelectiveBrokerOnlyDurableObject extends TestSyncletDurableObje
   getCreateTransport() {
     return createDurableObjectBrokerTransport({
       durableObject: this,
-      brokerPaths: /^valid.*/,
     });
   }
 
-  getPaths() {
-    return (this.getTransport()[0] as DurableObjectBrokerTransport).getPaths();
-  }
-
-  getClientIds(path: string) {
+  getClientIds() {
     return (
       this.getTransport()[0] as DurableObjectBrokerTransport
-    ).getClientIds(path);
+    ).getClientIds();
   }
 }
 

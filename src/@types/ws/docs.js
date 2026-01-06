@@ -30,22 +30,6 @@
    * @since v0.0.0
    */
   /// WsBrokerTransportOptions.webSocketServer
-  /**
-   * The path property specifies the WebSocket path to listen on such that the
-   * synclet can itself participate in the brokered communication. Leave
-   * as the default (`null`) for broker-only mode where the synclet only
-   * routes messages between clients without participating itself.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// WsBrokerTransportOptions.path
-  /**
-   * The brokerPaths property specifies a regex pattern for broker path
-   * matching.
-   * @category Option
-   * @since v0.0.0
-   */
-  /// WsBrokerTransportOptions.brokerPaths
 }
 
 /**
@@ -63,15 +47,8 @@
    */
   /// WsBrokerTransport.getWebSocketServer
   /**
-   * The getPaths method returns the list of paths currently associated with
-   * this transport.
-   * @category Accessor
-   * @since v0.0.0
-   */
-  /// WsBrokerTransport.getPaths
-  /**
    * The getClientIds method returns the list of client IDs currently connected
-   * on the specified path.
+   * to this broker.
    * @category Accessor
    * @since v0.0.0
    */

@@ -4,11 +4,10 @@ import {
 } from '@synclets/@types/durable-object';
 import {getBrokerFunctions} from '../common/broker.ts';
 import {objValues} from '../common/object.ts';
-import {ifNotUndefined} from '../common/other.ts';
 import {createDurableObjectTransport, createResponse} from './common.ts';
 
 export const createDurableObjectBrokerTransport: typeof createDurableObjectBrokerTransportDecl =
-  ({path = null, brokerPaths = /.*/, ...options}) => {
+  (options) => {
     let attached = false;
 
     const [
@@ -19,31 +18,18 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
       serverAttach,
       serverDetach,
       serverSendPacket,
-      getValidPath,
-      getPaths,
       getClientIds,
-    ] = getBrokerFunctions(path, brokerPaths);
+    ] = getBrokerFunctions();
 
-    const fetch = (ctx: DurableObjectState, request: Request): Response => {
+    const fetch = (ctx: DurableObjectState, _request: Request): Response => {
       if (attached) {
         const [client, webSocket] = objValues(new WebSocketPair());
-        if (onConnection(ctx, webSocket, request)) {
-          return createResponse(101, client);
-        }
+        addSocket(webSocket);
+        bindWebSocket(ctx, webSocket);
+        return createResponse(101, client);
       }
       return createResponse(400);
     };
-
-    const onConnection = (
-      ctx: DurableObjectState,
-      webSocket: WebSocket,
-      request: Request,
-    ) =>
-      ifNotUndefined(getValidPath(request), (path) => {
-        addSocket(webSocket, path);
-        bindWebSocket(ctx, webSocket);
-        return true;
-      });
 
     const bindWebSocket = (ctx: DurableObjectState, webSocket: WebSocket) =>
       ctx.acceptWebSocket(webSocket);
@@ -83,7 +69,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
     return createDurableObjectTransport(
       {attach, detach, sendPacket},
       {fetch, webSocketMessage, webSocketClose, webSocketError},
-      {getPaths, getClientIds},
+      {getClientIds},
       options,
     ) as DurableObjectBrokerTransport;
   };
