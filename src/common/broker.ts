@@ -17,13 +17,14 @@ const SERVER_ID = RESERVED + 's';
 
 type Socket = {send: (packet: string) => void};
 type Connection = [
+  id: string,
   send: (packet: string) => void,
   receive: (message: ArrayBuffer | string) => void,
   close: () => void,
 ];
 
 export const getBrokerFunctions = (): [
-  addSocket: (socket: Socket) => void,
+  addSocket: (socket: Socket, id?: string) => string,
   socketMessage: (socket: Socket, message: ArrayBuffer | string) => void,
   socketClose: (socket: Socket) => void,
   socketError: (socket: Socket) => void,
@@ -38,10 +39,10 @@ export const getBrokerFunctions = (): [
   const connectionsBySocket: Map<Socket, Connection> = mapNew();
   const connectionsById: Map<string, Connection> = mapNew();
 
-  const addSocket = (socket: Socket, id = getUniqueId()): Connection =>
+  const addSocket = (socket: Socket, id = getUniqueId()): string =>
     ifNotUndefined(
       mapGet(connectionsBySocket, socket),
-      (existingConnection) => existingConnection,
+      ([id]) => id,
       () => {
         const send = (packet: string) => socket.send(packet);
 
@@ -53,11 +54,11 @@ export const getBrokerFunctions = (): [
             const remainder = slice(packet, splitAt + 1);
             const forwardedPacket = id + SPACE + remainder;
             if (to === ASTERISK) {
-              mapForEach(connectionsById, (otherId, [send]) =>
+              mapForEach(connectionsById, (otherId, [, send]) =>
                 otherId !== id ? send(forwardedPacket) : 0,
               );
             } else if (to != id) {
-              mapGet(connectionsById, to)?.[0](forwardedPacket);
+              mapGet(connectionsById, to)?.[1](forwardedPacket);
             }
           }
         };
@@ -67,25 +68,29 @@ export const getBrokerFunctions = (): [
           mapDel(connectionsById, id);
         };
 
-        const connection: Connection = [send, receive, close];
-
+        const connection: Connection = [id, send, receive, close];
         connectionsBySocket.set(socket, connection);
         mapSet(connectionsById, id, connection);
 
-        return connection;
+        if (id === SERVER_ID) {
+          serverSend = receive;
+          serverClose = close;
+        }
+
+        return id;
       },
-    ) as Connection;
+    ) as string;
 
   const socketMessage = (socket: Socket, message: ArrayBuffer | string): void =>
-    mapGet(connectionsBySocket, socket)?.[1]?.(message);
+    mapGet(connectionsBySocket, socket)?.[2]?.(message);
 
   const socketClose = (socket: Socket): void =>
-    mapGet(connectionsBySocket, socket)?.[2]?.();
+    mapGet(connectionsBySocket, socket)?.[3]?.();
 
   const socketError = socketClose;
 
   const serverAttach = (receivePacket: (packet: string) => void): void => {
-    [, serverSend, serverClose] = addSocket({send: receivePacket}, SERVER_ID);
+    addSocket({send: receivePacket}, SERVER_ID);
   };
 
   const serverDetach = (): void => {
