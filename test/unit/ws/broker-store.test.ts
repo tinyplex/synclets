@@ -23,7 +23,6 @@ describeCommonSyncletTests(
         webSocketServer: new WebSocketServer({
           port: allocatePort(),
         }).setMaxListeners(0),
-        path: '',
       }),
     });
     await serverSynclet.start();
