@@ -1,6 +1,10 @@
 import {createServer, Server} from 'http';
 import {createSynclet, type Synclet} from 'synclets';
-import {createWsBrokerTransport, type WsBrokerTransport} from 'synclets/ws';
+import {
+  createWsBrokerTransport,
+  getWebSocketServerUpgradeHandler,
+  type WsBrokerTransport,
+} from 'synclets/ws';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {
@@ -125,10 +129,9 @@ describe('external httpServer', () => {
     });
     await synclet.start();
 
-    httpServer.on('upgrade', (request, socket, head) =>
-      wss.handleUpgrade(request, socket, head, (ws) =>
-        wss.emit('connection', ws, request),
-      ),
+    httpServer.on(
+      'upgrade',
+      getWebSocketServerUpgradeHandler(() => wss),
     );
 
     const [[ws1, ws2], [received1, received2]] = await createClients(
@@ -174,18 +177,19 @@ describe('external httpServer', () => {
     });
     await synclet2.start();
 
-    httpServer.on('upgrade', (request, socket, head) => {
-      const pathname = new URL(request.url!, 'ws://localhost').pathname;
-      if (pathname === '/p1') {
-        wss1.handleUpgrade(request, socket, head, (ws) =>
-          wss1.emit('connection', ws, request),
-        );
-      } else if (pathname === '/p2') {
-        wss2.handleUpgrade(request, socket, head, (ws) =>
-          wss2.emit('connection', ws, request),
-        );
-      }
-    });
+    httpServer.on(
+      'upgrade',
+      getWebSocketServerUpgradeHandler((request) => {
+        const pathname = new URL(request.url!, 'ws://localhost').pathname;
+        if (pathname === '/p1') {
+          return wss1;
+        }
+        if (pathname === '/p2') {
+          return wss2;
+        }
+        return undefined;
+      }),
+    );
 
     const [[ws1p1, ws2p1], [received1p1, received2p1]] = await createClients(
       2,

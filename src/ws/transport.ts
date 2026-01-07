@@ -2,13 +2,14 @@ import {createTransport} from '@synclets';
 import type {
   createWsBrokerTransport as createWsBrokerTransportDecl,
   createWsClientTransport as createWsClientTransportDecl,
+  getWebSocketServerUpgradeHandler as getWebSocketServerUpgradeHandlerDecl,
   WebSocketTypes,
   WsBrokerTransport,
   WsBrokerTransportOptions,
   WsClientTransport,
   WsClientTransportOptions,
 } from '@synclets/@types/ws';
-import {IncomingMessage} from 'http';
+import type {IncomingMessage} from 'http';
 import {WebSocket} from 'ws';
 import {getBrokerFunctions} from '../common/broker.ts';
 import {promiseNew} from '../common/other.ts';
@@ -118,3 +119,15 @@ export const createWsClientTransport: typeof createWsClientTransportDecl = <
     getWebSocket,
   }) as WsClientTransport<WebSocketType>;
 };
+
+export const getWebSocketServerUpgradeHandler: typeof getWebSocketServerUpgradeHandlerDecl =
+  (getServer) => (request, socket, head) => {
+    const wss = getServer(request);
+    if (wss) {
+      wss.handleUpgrade(request, socket, head, (ws) =>
+        wss.emit('connection', ws, request),
+      );
+    } else {
+      socket.destroy();
+    }
+  };

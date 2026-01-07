@@ -1,1 +1,5 @@
-export {createWsBrokerTransport, createWsClientTransport} from './transport.ts';
+export {
+  createWsBrokerTransport,
+  createWsClientTransport,
+  getWebSocketServerUpgradeHandler,
+} from './transport.ts';

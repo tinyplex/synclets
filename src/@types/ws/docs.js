@@ -132,3 +132,46 @@
  * @since v0.0.0
  */
 /// createWsClientTransport
+
+/**
+ * The getWebSocketServerUpgradeHandler function creates an HTTP upgrade event
+ * handler that routes WebSocket connections to the appropriate WebSocketServer
+ * based on the incoming request.
+ *
+ * This utility simplifies the boilerplate needed to route WebSocket upgrade
+ * requests on an HTTP server to different WebSocketServer instances. It's
+ * particularly useful when you need to isolate clients on different paths to
+ * separate broker instances.
+ *
+ * The handler will destroy the socket if no WebSocketServer is returned for the
+ * request.
+ * @param getServer A function that receives the incoming HTTP request and
+ * returns the appropriate WebSocketServer instance, or undefined if the request
+ * should be rejected.
+ * @returns An upgrade event handler that can be attached to an HTTP server with
+ * `httpServer.on('upgrade', handler)`.
+ * @example
+ * ```typescript
+ * import {createServer} from 'http';
+ * import {WebSocketServer} from 'ws';
+ * import {getWebSocketServerUpgradeHandler} from 'synclets/ws';
+ *
+ * const httpServer = createServer();
+ * const wss1 = new WebSocketServer({noServer: true});
+ * const wss2 = new WebSocketServer({noServer: true});
+ *
+ * httpServer.on('upgrade', getWebSocketServerUpgradeHandler((request) => {
+ *   const pathname = new URL(request.url!, 'http://localhost').pathname;
+ *   if (pathname === '/room1') {
+ *     return wss1;
+ *   }
+ *   if (pathname === '/room2') {
+ *     return wss2;
+ *   }
+ *   return undefined; // Reject other paths
+ * }));
+ * ```
+ * @category Transport
+ * @since v0.0.0
+ */
+/// getWebSocketServerUpgradeHandler

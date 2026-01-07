@@ -1,4 +1,6 @@
 /// ws
+import type {IncomingMessage} from 'http';
+import type {Duplex} from 'stream';
 import type {WebSocketServer, WebSocket as WsWebSocket} from 'ws';
 
 import type {Transport, TransportOptions} from '../index.d.ts';
@@ -43,3 +45,8 @@ export type WsClientTransportOptions<WebSocketType extends WebSocketTypes> = {
 export function createWsClientTransport<WebSocketType extends WebSocketTypes>(
   options: WsClientTransportOptions<WebSocketType>,
 ): WsClientTransport<WebSocketType>;
+
+/// getWebSocketServerUpgradeHandler
+export function getWebSocketServerUpgradeHandler(
+  getServer: (request: IncomingMessage) => WebSocketServer | undefined,
+): (request: IncomingMessage, socket: Duplex, head: Buffer) => void;
