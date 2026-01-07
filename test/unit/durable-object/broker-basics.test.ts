@@ -6,7 +6,10 @@ import {
   describeCommonBrokerTests,
   pause,
 } from '../common.ts';
+import {UPGRADE_HEADERS} from './common.ts';
 import {createMiniflare} from './miniflare/index.ts';
+
+const TRANSPORT_PAUSE = 5;
 
 let miniflare: Miniflare;
 
@@ -19,9 +22,7 @@ describeCommonBrokerTests(
     miniflare = miniFlareFetchApi[0];
     return [
       async (path: string) =>
-        await miniFlareFetchApi[1]('/' + path, {
-          headers: {upgrade: 'websocket'},
-        }),
+        await miniFlareFetchApi[1]('/' + path, UPGRADE_HEADERS),
       async () => await miniFlareFetchApi[2]('getClientIds'),
     ] as const;
   },
@@ -31,7 +32,6 @@ describeCommonBrokerTests(
 );
 
 describe('two DO instances, two paths', () => {
-  const transportPause = 5;
   let miniflare: Miniflare;
   let port: number;
   let connect: (path: string, init?: any) => Promise<any>;
@@ -64,12 +64,12 @@ describe('two DO instances, two paths', () => {
       () => 'p2',
     );
 
-    await pause(transportPause);
+    await pause(TRANSPORT_PAUSE);
 
     ws1p1.send('* from1p1To*');
-    await pause(transportPause);
+    await pause(TRANSPORT_PAUSE);
     ws2p1.send('* from2p1To*');
-    await pause(transportPause);
+    await pause(TRANSPORT_PAUSE);
 
     expect(received1p1.length).toEqual(1);
     expect(received1p1[0][1]).toEqual('from2p1To*');
@@ -79,9 +79,9 @@ describe('two DO instances, two paths', () => {
     expect(received2p2.length).toEqual(0);
 
     ws1p2.send('* from1p2To*');
-    await pause(transportPause);
+    await pause(TRANSPORT_PAUSE);
     ws2p2.send('* from2p2To*');
-    await pause(transportPause);
+    await pause(TRANSPORT_PAUSE);
 
     expect(received1p1.length).toEqual(1);
     expect(received2p1.length).toEqual(1);

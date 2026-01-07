@@ -140,6 +140,28 @@ export class TestBrokerStoreDurableObject4 extends TestBrokerStoreDurableObject 
   }
 }
 
+let constructorCallCount = 0;
+export class TestHibernationDurableObject extends TestSyncletDurableObject {
+  constructor(ctx: DurableObjectState, env: any) {
+    super(ctx, env);
+    constructorCallCount++;
+  }
+
+  resetConstructorCount() {
+    constructorCallCount = 1;
+  }
+
+  getCreateTransport() {
+    return createDurableObjectBrokerTransport({
+      durableObject: this,
+    });
+  }
+
+  getConstructorCount() {
+    return constructorCallCount;
+  }
+}
+
 export default {
   // @ts-expect-error token is replaced at compile time
   fetch: getSyncletDurableObjectFetch('testNamespace', GET_NAME),

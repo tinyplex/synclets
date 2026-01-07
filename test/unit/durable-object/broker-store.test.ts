@@ -29,7 +29,7 @@ describeCommonSyncletTests(
     createWsClientTransport({
       webSocket: new WebSocket('ws://localhost:' + port).setMaxListeners(0),
     }),
-  10,
+  5,
   undefined,
   undefined,
   ['pool'],
