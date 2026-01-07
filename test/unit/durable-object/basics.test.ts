@@ -23,14 +23,14 @@ describe('synclet only', () => {
 
   test('return 501 for POST', async () => {
     const response = await fetch('/', {method: 'POST'});
-    expect(response.status).toBe(501);
-    expect(await response.text()).toBe('Not Implemented');
+    expect(response.status).toEqual(501);
+    expect(await response.text()).toEqual('Not Implemented');
   });
 
   test('return 426 for GET', async () => {
     const response = await fetch('/', {method: 'GET'});
-    expect(response.status).toBe(426);
-    expect(await response.text()).toBe('Upgrade Required');
+    expect(response.status).toEqual(426);
+    expect(await response.text()).toEqual('Upgrade Required');
   });
 
   test('getData', async () => {

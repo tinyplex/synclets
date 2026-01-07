@@ -1278,6 +1278,26 @@ export const describeSchemaTests = <DB, Depth extends number>(
   });
 };
 
+export const createClients = async (
+  number: number,
+  connect: (path: string) => Promise<{status: number; webSocket: any}>,
+) => {
+  const webSockets: any[] = [];
+  const received: [string, string][][] = Array.from({length: number}, () => []);
+  for (let i = 0; i < number; i++) {
+    const {webSocket} = await connect('');
+    if (!webSocket) {
+      throw new Error('failed to obtain WebSocket');
+    }
+    webSocket.accept?.();
+    webSocket.addEventListener('message', (event: any) =>
+      received[i].push(getPartsFromPacket(event.data)),
+    );
+    webSockets.push(webSocket);
+  }
+  return [webSockets, received];
+};
+
 export const describeCommonBrokerTests = (
   getFunctions: () => Promise<
     [
@@ -1291,26 +1311,6 @@ export const describeCommonBrokerTests = (
   let connect: (path: string) => Promise<{status: number; webSocket: any}>;
   let getClientIds: () => Promise<string[]>;
 
-  const createClients = async (number: number) => {
-    const webSockets: any[] = [];
-    const received: [string, string][][] = Array.from(
-      {length: number},
-      () => [],
-    );
-    for (let i = 0; i < number; i++) {
-      const {webSocket} = await connect('');
-      if (!webSocket) {
-        throw new Error('failed to obtain WebSocket');
-      }
-      webSocket.accept?.();
-      webSocket.addEventListener('message', (event: any) =>
-        received[i].push(getPartsFromPacket(event.data)),
-      );
-      webSockets.push(webSocket);
-    }
-    return [webSockets, received];
-  };
-
   beforeAll(async () => {
     [connect, getClientIds] = await getFunctions();
   });
@@ -1322,9 +1322,9 @@ export const describeCommonBrokerTests = (
   describe('common broker tests', () => {
     test('accept WebSocket upgrade requests', async () => {
       const {status, webSocket} = await connect('');
-      expect(status).toBe(101);
+      expect(status).toEqual(101);
       expect(webSocket).not.toBeNull();
-      expect(webSocket?.readyState).toBe(WebSocket.OPEN);
+      expect(webSocket?.readyState).toEqual(WebSocket.OPEN);
 
       webSocket!.accept?.();
       await pause(transportPause);
@@ -1338,7 +1338,7 @@ export const describeCommonBrokerTests = (
 
     test('2 clients communicate', async () => {
       const [[webSocket1, webSocket2], [received1, received2]] =
-        await createClients(2);
+        await createClients(2, connect);
 
       expect((await getClientIds()).length).toEqual(2);
 
@@ -1346,10 +1346,10 @@ export const describeCommonBrokerTests = (
       webSocket2.send('* from2To*');
 
       await pause(transportPause);
-      expect(received1.length).toBe(1);
-      expect(received2.length).toBe(1);
-      expect(received1[0][1]).toBe('from2To*');
-      expect(received2[0][1]).toBe('from1To*');
+      expect(received1.length).toEqual(1);
+      expect(received2.length).toEqual(1);
+      expect(received1[0][1]).toEqual('from2To*');
+      expect(received2[0][1]).toEqual('from1To*');
       const client1Id = received2[0][0];
       const client2Id = received1[0][0];
 
@@ -1376,7 +1376,7 @@ export const describeCommonBrokerTests = (
       const [
         [webSocket1, webSocket2, webSocket3],
         [received1, received2, received3],
-      ] = await createClients(3);
+      ] = await createClients(3, connect);
 
       expect((await getClientIds()).length).toEqual(3);
 
@@ -1389,15 +1389,15 @@ export const describeCommonBrokerTests = (
       webSocket3.send('* from3To*');
 
       await pause(transportPause);
-      expect(received1.length).toBe(2);
-      expect(received2.length).toBe(2);
-      expect(received3.length).toBe(2);
-      expect(received1[0][1]).toBe('from2To*');
-      expect(received1[1][1]).toBe('from3To*');
-      expect(received2[0][1]).toBe('from1To*');
-      expect(received2[1][1]).toBe('from3To*');
-      expect(received3[0][1]).toBe('from1To*');
-      expect(received3[1][1]).toBe('from2To*');
+      expect(received1.length).toEqual(2);
+      expect(received2.length).toEqual(2);
+      expect(received3.length).toEqual(2);
+      expect(received1[0][1]).toEqual('from2To*');
+      expect(received1[1][1]).toEqual('from3To*');
+      expect(received2[0][1]).toEqual('from1To*');
+      expect(received2[1][1]).toEqual('from3To*');
+      expect(received3[0][1]).toEqual('from1To*');
+      expect(received3[1][1]).toEqual('from2To*');
       const client1Id = received2[0][0];
       const client2Id = received1[0][0];
       const client3Id = received1[1][0];
@@ -1491,7 +1491,7 @@ export const describeCommonBrokerTests = (
       const [
         [webSocket1, webSocket2, webSocket3],
         [received1, received2, received3],
-      ] = await createClients(3);
+      ] = await createClients(3, connect);
 
       webSocket1.send('* discover');
       await pause(transportPause);
@@ -1509,8 +1509,8 @@ export const describeCommonBrokerTests = (
 
       await pause(transportPause);
 
-      expect(received1.length).toBe(1);
-      expect(received1[0][1]).toBe('direct');
+      expect(received1.length).toEqual(1);
+      expect(received1[0][1]).toEqual('direct');
       expect(received2).toEqual([]);
       expect(received3).toEqual([]);
 
