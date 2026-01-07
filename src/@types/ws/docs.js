@@ -66,6 +66,13 @@
  *
  * This transport is only available in Node.js environments. It automatically
  * broadcasts packets to all connected clients.
+ *
+ * It is important to note that a single WsBrokerTransport instance will route
+ * messages between all WebSocket clients connected to it, regardless of the
+ * path used to connect. To isolate clients on different paths, create separate
+ * WebSocketServer instances (with `noServer: true`) and use the HTTP server's
+ * `upgrade` event handler to route connections to the appropriate
+ * WebSocketServer based on the request path.
  * @param options WsBrokerTransportOptions for configuring the transport.
  * @returns A WsBrokerTransport instance for server-side WebSocket
  * communication.

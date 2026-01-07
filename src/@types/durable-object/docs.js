@@ -209,6 +209,14 @@
  * This transport routes messages between all clients connected to the broker,
  * regardless of the path they connected on. It's commonly used with
  * BrokerOnlyDurableObject to create broker servers.
+ *
+ * It is important to note that a single Durable Object instance will route
+ * messages between all WebSocket clients connected to it, regardless of the
+ * path used to connect. To isolate clients on different paths, use the worker's
+ * fetch handler to route requests to different Durable Object instances (using
+ * different names) based on the request path. For example, use
+ * `getSyncletDurableObjectFetch` with a custom `getName` function that extracts
+ * a unique name from the request URL.
  * @param options - The transport options, including the Durable Object
  * reference.
  * @returns A broker transport configured for the Durable Object.
