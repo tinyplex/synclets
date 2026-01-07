@@ -141,5 +141,6 @@ export class TestBrokerStoreDurableObject4 extends TestBrokerStoreDurableObject 
 }
 
 export default {
-  fetch: getSyncletDurableObjectFetch('testNamespace'),
+  // @ts-expect-error token is replaced at compile time
+  fetch: getSyncletDurableObjectFetch('testNamespace', GET_NAME),
 };

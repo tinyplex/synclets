@@ -5,22 +5,29 @@ import {fileURLToPath} from 'url';
 export type Fetch = (path: string, init?: RequestInit) => Promise<Response>;
 export type Api = (method: string, ...args: any[]) => Promise<string>;
 
-const {
-  outputFiles: [{text: servers}],
-} = await build({
-  entryPoints: [fileURLToPath(new URL('./servers.ts', import.meta.url))],
-  write: false,
-  bundle: true,
-  format: 'esm',
-  target: ['es2020'],
-  external: ['cloudflare:workers'],
-});
-
 const HOST = 'http://localhost';
+
+const getScript = async (
+  getName?: (request: Request) => string | undefined,
+) => {
+  const {
+    outputFiles: [{text: servers}],
+  } = await build({
+    entryPoints: [fileURLToPath(new URL('./servers.ts', import.meta.url))],
+    write: false,
+    bundle: true,
+    format: 'esm',
+    target: ['es2020'],
+    external: ['cloudflare:workers'],
+  });
+
+  return servers.replace('GET_NAME', getName?.toString() || 'undefined');
+};
 
 export const createMiniflare = async (
   className: string,
   port: number,
+  getName?: (request: Request) => string | undefined,
 ): Promise<
   [
     Miniflare,
@@ -29,9 +36,10 @@ export const createMiniflare = async (
     port: number,
   ]
 > => {
+  const script = await getScript(getName);
   const miniflare = new Miniflare({
     port,
-    script: servers,
+    script,
     modules: true,
     durableObjects: {testNamespace: {className, useSQLite: true}},
     compatibilityDate: '2025-12-02',

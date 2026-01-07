@@ -172,6 +172,7 @@ export class BrokerOnlyDurableObject<
 /// getSyncletDurableObjectFetch
 export function getSyncletDurableObjectFetch<Namespace extends string>(
   namespace: Namespace,
+  getName?: (request: Request) => string | undefined,
 ): (
   request: Request,
   env: {

@@ -232,10 +232,10 @@
  * Synclet-powered Durable Objects.
  *
  * Extend this class and optionally implement the `getCreateDataConnector`,
- * `getCreateMetaConnector`, and `getCreateTransport` methods to define how
- * your Durable Object stores data and metadata, and how it communicates. The
- * class automatically manages the Synclet lifecycle internally - you don't
- * need to initialize or access the synclet directly.
+ * `getCreateMetaConnector`, and `getCreateTransport` methods to define how your
+ * Durable Object stores data and metadata, and how it communicates. The class
+ * automatically manages the Synclet lifecycle internally - you don't need to
+ * initialize or access the synclet directly.
  *
  * Optionally implement `getCreateImplementations` or `getCreateOptions` to
  * configure custom implementations or other options.
@@ -283,8 +283,8 @@
    */
   /// SyncletDurableObject.getCreateMetaConnector
   /**
-   * The getCreateTransport method can optionally be implemented to provide
-   * a transport or array of transports for the Synclet.
+   * The getCreateTransport method can optionally be implemented to provide a
+   * transport or array of transports for the Synclet.
    * @returns A Transport instance or array of Transport instances.
    * @category Creation
    * @since v0.0.0
@@ -459,6 +459,9 @@
  * wasn't actually provided by the client WebSocket.
  * @param namespace A string for the namespace of the Durable Objects that you
  * want this worker to route requests to.
+ * @param getName An optional function that takes a Request and returns the name
+ * of the Durable Object instance to route the request to. If not provided, the
+ * name will be 'default'.
  * @returns A fetch handler that routes WebSocket upgrade requests to a Durable
  * Object.
  * @category Creation
@@ -467,17 +470,16 @@
 /// getSyncletDurableObjectFetch
 
 /**
- * The getTableSchema function retrieves the schema of a table
- * from a Cloudflare Durable Object SQL Storage, returning an object mapping
- * column names to their data types.
+ * The getTableSchema function retrieves the schema of a table from a Cloudflare
+ * Durable Object SQL Storage, returning an object mapping column names to their
+ * data types.
  *
- * This utility function provides a standardized way to inspect table
- * structure across different database connectors, with consistent output
- * format regardless of the underlying database engine.
+ * This utility function provides a standardized way to inspect table structure
+ * across different database connectors, with consistent output format
+ * regardless of the underlying database engine.
  * @param sqlStorage The Durable Object SQL Storage instance.
  * @param table The name of the table to inspect.
- * @returns A Promise that resolves to an object mapping column names to
- * types.
+ * @returns A Promise that resolves to an object mapping column names to types.
  * @category Utility
  * @since v0.0.0
  */
