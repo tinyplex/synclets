@@ -23,7 +23,7 @@ type Connection = [
 ];
 
 export const getBrokerFunctions = (): [
-  createConnection: (socket: Socket) => void,
+  addSocket: (socket: Socket) => void,
   socketMessage: (socket: Socket, message: ArrayBuffer | string) => void,
   socketClose: (socket: Socket) => void,
   socketError: (socket: Socket) => void,
