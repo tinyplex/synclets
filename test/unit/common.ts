@@ -1281,11 +1281,13 @@ export const describeSchemaTests = <DB, Depth extends number>(
 export const createClients = async (
   number: number,
   connect: (path: string) => Promise<{status: number; webSocket: any}>,
+  getPath?: (index: number) => string,
 ) => {
   const webSockets: any[] = [];
   const received: [string, string][][] = Array.from({length: number}, () => []);
   for (let i = 0; i < number; i++) {
-    const {webSocket} = await connect('');
+    const path = getPath ? getPath(i) : '';
+    const {webSocket} = await connect(path);
     if (!webSocket) {
       throw new Error('failed to obtain WebSocket');
     }
