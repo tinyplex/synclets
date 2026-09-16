@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      # `gulp lint` rewrites files with Prettier, so check rather than fix here.
+      - name: Format
+        run: npx prettier --check "src/**/*.{ts,tsx,js}" "test/**/*.{ts,tsx}"
+
+      - name: Lint
+        run: npx eslint src test site
+
+      - name: Types
+        run: npx gulp ts
+
+      - name: Spelling
+        run: npx gulp spell
+
+      # Compiles to dist/ and runs the unit, Durable Object and docs projects.
+      - name: Test
+        run: npm run compileAndTestUnit
