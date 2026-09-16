@@ -21,6 +21,11 @@ jobs:
       - name: Install
         run: npm ci --legacy-peer-deps
 
+      # node_modules/synclets is a symlink to dist, which is not checked in, so
+      # imports of synclets do not resolve for lint or tsc until this has run.
+      - name: Build
+        run: npx gulp compileForTest
+
       # `gulp lint` rewrites files with Prettier, so check rather than fix here.
       - name: Format
         run: npx prettier --check "src/**/*.{ts,tsx,js}" "test/**/*.{ts,tsx}"
