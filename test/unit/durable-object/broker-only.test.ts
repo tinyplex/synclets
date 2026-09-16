@@ -20,8 +20,13 @@ describeCommonSyncletTests(
     return [miniflare, fetch, api, port] as const;
   },
   async ([miniflare, , api]) => {
-    expect(await api('getData')).toEqual({});
-    await miniflare.dispose();
+    try {
+      expect(await api('getData')).toEqual({});
+    } finally {
+      // Dispose even when the assertion fails, or this Miniflare instance and
+      // its workerd child process leak for the rest of the run.
+      await miniflare.dispose();
+    }
   },
   <Depth extends number>(depth: Depth) => createMemoryDataConnector({depth}),
   <Depth extends number>(depth: Depth) => createMemoryMetaConnector({depth}),

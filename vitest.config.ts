@@ -17,6 +17,8 @@ export default defineConfig({
     maxWorkers: 10,
     passWithNoTests: true,
     testTimeout: 20000,
+    // Hooks default to 10s, but beforeAll can be a cold WASM database start.
+    hookTimeout: 20000,
     retry: 3,
     coverage: {
       enabled: false,

@@ -202,12 +202,42 @@ export const createMockTransport = () =>
     sendPacket: async () => {},
   });
 
+const CONVERGENCE_TIMEOUT = 2000;
+
+// Child id order can differ between connectors, so normalize before comparing.
+const getComparable = (thing: unknown): string =>
+  JSON.stringify(thing, (_, value) =>
+    value === null || typeof value !== 'object' || Array.isArray(value)
+      ? value
+      : Object.fromEntries(
+          Object.entries(value).sort(([id1], [id2]) => (id1 < id2 ? -1 : 1)),
+        ),
+  );
+
 export const expectEquivalentSynclets = async <Depth extends number>(
   synclets: Synclet<Depth>[],
   test: TestContext & object,
 ): Promise<Data> => {
-  const data = await synclets[0].getData();
-  const meta = await synclets[0].getMeta();
+  // Synchronization is asynchronous, so poll until every Synclet agrees rather
+  // than trusting the caller's fixed pause, which flakes when the machine is
+  // loaded. If they never agree, fall through and let the assertions below
+  // report the actual difference.
+  const expiry = Date.now() + CONVERGENCE_TIMEOUT;
+  let allData = await Promise.all(synclets.map((s) => s.getData()));
+  let allMeta = await Promise.all(synclets.map((s) => s.getMeta()));
+  while (
+    !(
+      allData.every((d) => getComparable(d) == getComparable(allData[0])) &&
+      allMeta.every((m) => getComparable(m) == getComparable(allMeta[0]))
+    ) &&
+    Date.now() < expiry
+  ) {
+    await pause(1);
+    allData = await Promise.all(synclets.map((s) => s.getData()));
+    allMeta = await Promise.all(synclets.map((s) => s.getMeta()));
+  }
+  const data = allData[0];
+  const meta = allMeta[0];
 
   await expect(data).toMatchFileSnapshot(getFileSnapshot('equivalent', test));
   await Promise.all(
@@ -275,10 +305,38 @@ export const describeCommonSyncletTests = <
   describe(`common connector tests`, () => {
     let allEnvironment: AllEnvironment;
     let eachEnvironment: EachEnvironment;
+    let eachEnvironmentLive = false;
+
+    // A test that fails part way through never reaches its own
+    // afterEachSyncletTest call, stranding whatever that test created - most
+    // expensively a Miniflare instance and its workerd child process. Wrap the
+    // callbacks so that the afterEach below can guarantee teardown.
+    const beforeEachImpl = beforeEachSyncletTest;
+    const afterEachImpl = afterEachSyncletTest;
+    beforeEachSyncletTest = async (testDepth, environment) => {
+      const eachTestEnvironment = await beforeEachImpl(testDepth, environment);
+      eachEnvironmentLive = true;
+      return eachTestEnvironment;
+    };
+    afterEachSyncletTest = async (eachTestEnvironment, finalData) => {
+      eachEnvironmentLive = false;
+      await afterEachImpl(eachTestEnvironment, finalData);
+    };
 
     beforeAll(async () => (allEnvironment = await beforeAllSyncletTests()));
 
     afterAll(async () => await afterAllSyncletTests(allEnvironment));
+
+    afterEach(async () => {
+      if (eachEnvironmentLive) {
+        eachEnvironmentLive = false;
+        // The failing test has already been reported, and this teardown
+        // asserts against data it never produced, so ignore what it throws.
+        try {
+          await afterEachImpl(eachEnvironment);
+        } catch {}
+      }
+    });
 
     describe.each([
       [1, ['a'], ['b']],
@@ -1312,14 +1370,47 @@ export const describeCommonBrokerTests = (
 ) => {
   let connect: (path: string) => Promise<{status: number; webSocket: any}>;
   let getClientIds: () => Promise<string[]>;
+  const openWebSockets: any[] = [];
 
   beforeAll(async () => {
-    [connect, getClientIds] = await getFunctions();
+    const [connectOne, getClientIdsImpl] = await getFunctions();
+    connect = async (path: string) => {
+      const connection = await connectOne(path);
+      if (connection.webSocket) {
+        openWebSockets.push(connection.webSocket);
+      }
+      return connection;
+    };
+    getClientIds = getClientIdsImpl;
+  });
+
+  afterEach(async () => {
+    // A test that fails part-way through will not have closed its own
+    // WebSockets, so close them here to stop them leaking into the next test.
+    // Sockets the test did close throw when closed again, so ignore that.
+    openWebSockets.splice(0).forEach((webSocket) => {
+      try {
+        webSocket.close();
+      } catch {}
+    });
+    await pause(transportPause);
   });
 
   afterAll(async () => {
     await cleanup();
   });
+
+  // A broker registers and drops clients asynchronously, so poll for the
+  // expected count instead of asserting once after a fixed pause.
+  const expectClientIds = async (count: number) => {
+    const expiry = Date.now() + CONVERGENCE_TIMEOUT;
+    let clientIds = await getClientIds();
+    while (clientIds.length != count && Date.now() < expiry) {
+      await pause(1);
+      clientIds = await getClientIds();
+    }
+    expect(clientIds.length).toEqual(count);
+  };
 
   describe('common broker tests', () => {
     test('accept WebSocket upgrade requests', async () => {
@@ -1330,19 +1421,19 @@ export const describeCommonBrokerTests = (
 
       webSocket!.accept?.();
       await pause(transportPause);
-      expect((await getClientIds()).length).toEqual(1);
+      await expectClientIds(1);
 
       webSocket!.close();
       await pause(transportPause);
 
-      expect((await getClientIds()).length).toEqual(0);
+      await expectClientIds(0);
     });
 
     test('2 clients communicate', async () => {
       const [[webSocket1, webSocket2], [received1, received2]] =
         await createClients(2, connect);
 
-      expect((await getClientIds()).length).toEqual(2);
+      await expectClientIds(2);
 
       webSocket1.send('* from1To*');
       webSocket2.send('* from2To*');
@@ -1380,7 +1471,7 @@ export const describeCommonBrokerTests = (
         [received1, received2, received3],
       ] = await createClients(3, connect);
 
-      expect((await getClientIds()).length).toEqual(3);
+      await expectClientIds(3);
 
       webSocket1.send('* from1To*');
 
@@ -1456,17 +1547,17 @@ export const describeCommonBrokerTests = (
 
       await pause(transportPause);
 
-      expect((await getClientIds()).length).toEqual(3);
+      await expectClientIds(3);
 
       ws2.close();
       await pause(transportPause);
-      expect((await getClientIds()).length).toEqual(2);
+      await expectClientIds(2);
 
       ws1.close();
       ws3.close();
       await pause(transportPause);
 
-      expect((await getClientIds()).length).toEqual(0);
+      await expectClientIds(0);
     });
 
     test('rapid connect and disconnect', async () => {
@@ -1479,14 +1570,14 @@ export const describeCommonBrokerTests = (
       }
 
       await pause(transportPause);
-      expect((await getClientIds()).length).toEqual(5);
+      await expectClientIds(5);
 
       for (const ws of connections) {
         ws.close();
       }
 
       await pause(transportPause);
-      expect((await getClientIds()).length).toEqual(0);
+      await expectClientIds(0);
     });
 
     test('direct message to specific client only', async () => {
