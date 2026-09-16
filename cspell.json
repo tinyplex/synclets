@@ -1,5 +1,6 @@
 {
   "ignorePaths": [
+    "*.code-workspace",
     "*.tsv",
     "*.webp",
     "*.svg",
@@ -33,6 +34,7 @@
     "tinybase",
     "tinybasejs",
     "tinydocs",
-    "Vitest"
+    "Vitest",
+    "workerd"
   ]
 }
