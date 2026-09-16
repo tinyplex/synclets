@@ -21,6 +21,7 @@ import {
   createNotImplementedResponse,
   createUpgradeRequiredResponse,
 } from './common.ts';
+import {createDurableObjectBrokerTransport} from './transport.ts';
 import {
   ProtectedDurableObjectTransport,
   TransportFetch,
@@ -164,6 +165,14 @@ export abstract class SyncletDurableObject<
 
   async getMeta(): Promise<Readonly<Meta>> {
     return await this.#synclet.getMeta();
+  }
+}
+
+export class BrokerOnlyDurableObject<
+  Env = unknown,
+> extends SyncletDurableObject<Env> {
+  getCreateTransport(): Transport {
+    return createDurableObjectBrokerTransport({durableObject: this});
   }
 }
 

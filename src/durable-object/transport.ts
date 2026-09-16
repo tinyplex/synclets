@@ -81,6 +81,7 @@ export const createDurableObjectBrokerTransport: typeof createDurableObjectBroke
 
     const detach = async () => {
       attached = false;
+      hibernated = true;
       serverDetach();
     };
 
