@@ -3,6 +3,84 @@
 This is a reverse chronological list of the major Synclets releases, with
 highlighted features.
 
+# v0.0.9
+
+This release fixes three bugs in the previous version, and includes the
+Durable Object routing and hibernation work developed since it.
+
+Messages are now fragmented only on code point boundaries. Previously a
+character outside the Basic Multilingual Plane - an emoji, for example - could
+be split across two fragments, and since each fragment is encoded and
+transmitted on its own, both halves were then corrupted. Data containing such
+characters could be silently mangled in transit.
+
+Transports also no longer retain the fragments of messages they have already
+reassembled. That buffer previously grew for the lifetime of the transport.
+
+Incoming fragments are now validated and bounded. A fragment indexed beyond its
+own total, a total greater than 1000, or a total contradicting an earlier
+fragment of the same message is discarded. A transport holds at most 100
+incomplete messages and 16MiB of partial data, and abandons an incomplete
+message after five seconds, so a peer that stops part way through can no longer
+consume memory indefinitely. Note that a message fragmented into more than 1000
+packets - larger than roughly 4MB at the default fragment size - will now be
+rejected, where previously it would have been reassembled.
+
+BrokerOnlyDurableObject is now implemented. It was described in the
+documentation and declared in the type definitions, but was never exported, so
+importing it failed at runtime.
+
+For routing, getSyncletDurableObjectFetch gives a worker a fetch handler that
+routes an incoming WebSocket upgrade request to a Durable Object instance based
+on the path of the request, and getWebSocketServerUpgradeHandler does the
+equivalent for a Node WebSocket server. A broker now serves a single path.
+
+Durable Objects also now survive hibernation: a broker transport rebuilds its
+client connections from the tags of the WebSockets it finds when it wakes.
+
+---
+
+# v0.0.8
+
+This release reworked the broker and the Durable Object transport.
+
+The connect method on connectors and transports is now called attach, and the
+ExtraFunctions type is now called ExtraMembers. The DataConnectorOptions and
+MetaConnectorOptions types were added.
+
+---
+
+# v0.0.7
+
+This release reorganized the modules, and importing code will need updating.
+
+Each connector and transport now lives in its own top-level module, rather than
+under connector and transport paths: synclets/browser, synclets/database,
+synclets/fs, synclets/memory, synclets/pglite, synclets/sqlite3,
+synclets/tinybase, synclets/durable-object, and synclets/ws. The broadcast
+channel transport merged into the browser module, and the memory connector and
+transport merged into a single memory module.
+
+The WebSocket server transport is now called a broker, and a broker no longer
+listens on an empty path. The SyncletDurableObject class was added, and all of
+the components passed to createSynclet are now optional.
+
+---
+
+# v0.0.6
+
+This release added a convenience factory for each supported store, so that a
+Synclet and its two connectors can be created in a single call:
+createLocalStorageSynclet, createSessionStorageSynclet, createFileSynclet,
+createDirectorySynclet, createMemorySynclet, createPgliteSynclet, and
+createSqlite3Synclet.
+
+It also introduced initial support for Cloudflare Durable Objects, and
+rationalized the SQL-based connectors so that PGlite and SQLite share one
+templated query implementation.
+
+---
+
 # v0.0.5
 
 This release includes some important changes to the WebSocket-oriented synclet
