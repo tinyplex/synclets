@@ -991,8 +991,8 @@
    * The fragmentSize option specifies the maximum packet size in bytes before
    * messages are split into multiple fragments. This is useful for adapting to
    * channel constraints like WebSocket frame size limits. The Transport handles
-   * fragmentation and reassembly automatically. If not specified, messages are
-   * not fragmented.
+   * fragmentation and reassembly automatically, splitting only on code point
+   * boundaries. If not specified, messages are fragmented at 4096 bytes.
    * @category Tuning
    * @since v0.0.0
    */

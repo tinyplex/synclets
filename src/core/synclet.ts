@@ -244,16 +244,12 @@ export const createSynclet: typeof createSyncletDecl = (async <
         context: Context = {},
         syncOrFromTransport: boolean | ProtectedTransport = true,
         newTimestamp?: Timestamp,
-        oldTimestamp?: Timestamp,
       ) => {
         log(`set ${address} ${atomOrUndefined}`);
         if (isUndefined(newTimestamp)) {
           newTimestamp = getNextTimestamp();
         } else {
           seenTimestamp(newTimestamp);
-        }
-        if (isUndefined(oldTimestamp)) {
-          oldTimestamp = await metaReadTimestamp!(address);
         }
         const tasks = [
           async () => {
@@ -534,7 +530,6 @@ export const createSynclet: typeof createSyncletDecl = (async <
           context,
           transport,
           otherTimestamp,
-          myTimestamp,
         );
       } else if (otherTimestamp < myTimestamp) {
         return [myTimestamp, await readAtom(address, context)];

@@ -1,10 +1,15 @@
 import {
   createSynclet,
+  createTransport,
   type DataConnector,
   type MetaConnector,
   type Transport,
 } from 'synclets';
-import {createMemoryTransport} from 'synclets/memory';
+import {
+  createMemoryDataConnector,
+  createMemoryMetaConnector,
+  createMemoryTransport,
+} from 'synclets/memory';
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 import {
   createMockDataConnector,
@@ -239,6 +244,116 @@ test('start & stop', async () => {
   expect(synclet.isStarted()).toEqual(false);
 
   await synclet.destroy();
+});
+
+describe('fragmentation', () => {
+  test('does not split code points across fragments', async () => {
+    const packets: string[] = [];
+    const synclet = await createSynclet({
+      dataConnector: createMemoryDataConnector({depth: 1}),
+      metaConnector: createMemoryMetaConnector({depth: 1}),
+      transport: createTransport(
+        {
+          sendPacket: async (packet) => {
+            packets.push(packet);
+          },
+        },
+        {fragmentSize: 7},
+      ),
+    });
+    await synclet.start();
+    await synclet.setAtom(['😀😀😀😀'], 1);
+
+    expect(packets.length).toBeGreaterThan(1);
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    packets.forEach((packet) =>
+      // A fragment that ends half way through a surrogate pair loses that
+      // character, because each fragment is encoded on its own.
+      expect(decoder.decode(encoder.encode(packet))).toEqual(packet),
+    );
+
+    await synclet.destroy();
+  });
+});
+
+describe('fragment bounds', () => {
+  const createReceivingSynclet = async (warn: (string: string) => void) => {
+    let receivePacket: ((packet: string) => Promise<void>) | undefined;
+    const synclet = await createSynclet(
+      {
+        dataConnector,
+        metaConnector,
+        transport: createTransport({
+          attach: async (receive) => {
+            receivePacket = receive;
+          },
+          sendPacket: async () => {},
+        }),
+      },
+      {},
+      {id: 'synclet', logger: {warn}},
+    );
+    await synclet.start();
+    return [synclet, receivePacket!] as const;
+  };
+
+  test('drops a fragment indexed beyond its total', async () => {
+    const warn = vi.fn();
+    const [synclet, receivePacket] = await createReceivingSynclet(warn);
+
+    // Packets are '<from> <messageId> <index> <total> <fragment>'.
+    await receivePacket('peer message1 5 2 fragment');
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('invalid fragment 5/2'),
+    );
+
+    await synclet.destroy();
+  });
+
+  test('drops a fragment claiming an implausible total', async () => {
+    const warn = vi.fn();
+    const [synclet, receivePacket] = await createReceivingSynclet(warn);
+
+    await receivePacket('peer message1 0 100000 fragment');
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('invalid fragment 0/100000'),
+    );
+
+    await synclet.destroy();
+  });
+
+  test('drops a fragment that contradicts an earlier total', async () => {
+    const warn = vi.fn();
+    const [synclet, receivePacket] = await createReceivingSynclet(warn);
+
+    await receivePacket('peer message1 0 3 fragment');
+    await receivePacket('peer message1 1 2 fragment');
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('invalid fragment total 2'),
+    );
+
+    await synclet.destroy();
+  });
+
+  test('stops buffering once too many messages are incomplete', async () => {
+    const warn = vi.fn();
+    const [synclet, receivePacket] = await createReceivingSynclet(warn);
+
+    // Each of these starts a two-fragment message that never completes.
+    for (let message = 0; message <= 100; message++) {
+      await receivePacket(`peer message${message} 0 2 fragment`);
+    }
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('invalid fragment buffer overflow'),
+    );
+
+    await synclet.destroy();
+  });
 });
 
 describe('context', () => {
